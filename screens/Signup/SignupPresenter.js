@@ -1,0 +1,172 @@
+import React from 'react';
+import {Checkbox, CheckBox} from 'react-native';
+import styled from 'styled-components';
+import {
+  BG_COLOR,
+  TINT_COLOR,
+  GREY_COLOR2,
+  GREY_COLOR,
+} from '../../constants/Colors';
+import Layout from '../../constants/Layout';
+import Loader from '../../components/Loader';
+import {withNavigation} from 'react-navigation';
+import CheckboxForm from 'react-native-checkbox-form';
+
+const ViewContainer = styled.View`
+  flex: 1;
+  background-color: ${BG_COLOR};
+  padding: 20px;
+`;
+
+const Title = styled.Text`
+  color: ${TINT_COLOR};
+  font-size: 28px;
+  font-weight: 800;
+  margin-top: 20px;
+  margin-bottom: 40px;
+`;
+
+const SubTitle = styled.Text`
+  font-size: 16px;
+  font-weight: 600;
+  color: ${TINT_COLOR};
+`;
+
+const TextInput = styled.TextInput`
+  color: ${TINT_COLOR};
+  padding: 5px;
+  border-bottom-width: 1;
+  border-color: ${TINT_COLOR};
+  margin-top: 10px;
+  margin-bottom: 20px;
+`;
+
+const BtnContainer = styled.TouchableOpacity`
+  background-color: ${TINT_COLOR};
+  border-radius: 15px;
+  flex-direction: row;
+  justify-content: center;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  margin-top: 40px;
+`;
+
+const TextContainer = styled.View`
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+`;
+
+const TouchableOpacity = styled.TouchableOpacity``;
+
+const BtnText = styled.Text`
+  color: ${BG_COLOR};
+  font-size: 16px;
+`;
+
+const ImgView = styled.View`
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const ImgContainer = styled.TouchableOpacity`
+  justify-content: center;
+  align-items: center;
+  width: ${Layout.width / 4 + 15};
+`;
+
+const Img = styled.Image`
+  width: ${Layout.width / 4 + 15};
+  height: 50px;
+  background-color: ${TINT_COLOR};
+  border-radius: 10px;
+`;
+
+const Blank = styled.View`
+  width: 45%;
+  background-color: royalblue;
+`;
+
+const checkData = [
+  {
+    label: '',
+    RNchecked: false,
+  },
+];
+_onSelect = item => {
+  onCheckSignup;
+  console.log(item[0].RNchecked);
+};
+
+const SignupPresenter = ({
+  loading,
+  checked,
+  handleEmailText,
+  handlePasswordText,
+  handleCheckPasswordText,
+  handleCheckBox,
+  onCheckSignup,
+  navigation,
+}) =>
+  loading ? (
+    <Loader />
+  ) : (
+    <ViewContainer>
+      <Title>회원가입</Title>
+
+      <SubTitle>아이디</SubTitle>
+      <TextInput
+        returnKeyType={'done'}
+        keyboardType={'email-address'}
+        placeholder={'아이디로 사용할 이메일을 입력해주세요.'}
+        placeholderTextColor={GREY_COLOR2}
+        onChangeText={handleEmailText}
+      />
+
+      <SubTitle>비밀번호</SubTitle>
+      <TextInput
+        returnKeyType={'done'}
+        keyboardType={'default'}
+        placeholder={'비밀번호 (영문숫자포함 6~12자).'}
+        placeholderTextColor={GREY_COLOR2}
+        secureTextEntry
+        onChangeText={handlePasswordText}
+      />
+      <SubTitle>비밀번호 확인</SubTitle>
+      <TextInput
+        returnKeyType={'done'}
+        keyboardType={'default'}
+        placeholder={'비밀번호 확인.'}
+        placeholderTextColor={GREY_COLOR2}
+        secureTextEntry
+        onChangeText={handleCheckPasswordText}
+      />
+
+      <TextContainer>
+        <CheckboxForm
+          style={{width: 10, backgroundColor: {BG_COLOR}}}
+          dataSource={checkData}
+          itemShowKey="label"
+          itemCheckedKey="RNchecked"
+          iconSize={26}
+          iconColor={TINT_COLOR}
+          formHorizontal={false}
+          labelHorizontal={true}
+          onChecked={item => handleCheckBox(item[0].RNchecked)}
+        />
+
+        <TouchableOpacity>
+          <SubTitle>이용약관 및 개인정보보호</SubTitle>
+        </TouchableOpacity>
+        <Blank />
+      </TextContainer>
+
+      <BtnContainer onPress={onCheckSignup}>
+        <BtnText>회원가입</BtnText>
+      </BtnContainer>
+    </ViewContainer>
+  );
+
+export default withNavigation(SignupPresenter);

@@ -19,6 +19,7 @@ const HomeNavigation = createStackNavigator(
     Login: {
       screen: LoginScreen,
       navigationOptions: {
+        header: null,
         headerTitle: '제주배틀투어',
         headerBackTitle: null,
         ...tapsHeaderStyles,
@@ -27,6 +28,7 @@ const HomeNavigation = createStackNavigator(
     Signup: {
       screen: SignupScreen,
       navigationOptions: {
+        header: null,
         headerTitle: '제주배틀투어',
         headerBackTitle: null,
         ...tapsHeaderStyles,

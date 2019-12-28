@@ -1,5 +1,7 @@
 import React from 'react';
+import {StyleSheet} from 'react-native';
 import styled from 'styled-components';
+import LinearGradient from 'react-native-linear-gradient';
 import {BG_COLOR, TINT_COLOR, GREY_COLOR2} from '../../constants/Colors';
 import Layout from '../../constants/Layout';
 import Loader from '../../components/Loader';
@@ -12,8 +14,23 @@ const TOKEN = '';
 
 const ViewContainer = styled.View`
   flex: 1;
-  background-color: ${BG_COLOR};
+  /* background-color: ${BG_COLOR}; */
   padding: 20px;
+`;
+
+var styles = StyleSheet.create({
+  linearGradient: {
+    flex: 1
+  }})
+
+const HeaderTitle = styled.Text`
+  color: ${TINT_COLOR};
+  font-size: 28px;
+  font-weight: bold;
+  margin-top: ${Platform.OS === 'ios' ? '20px' : '0px'};
+  margin-bottom: 40px;
+  align-self: center;
+  justify-content: center;
 `;
 
 const Title = styled.Text`
@@ -89,7 +106,10 @@ const LoginPresenter = ({loading, email, password, kakaoLogin, navigation}) =>
   loading ? (
     <Loader />
   ) : (
+    <LinearGradient start={{x: 0.0, y: 0.25}} end={{x: 0.5, y: 1.0}}
+    locations={[0,0.5,0.6]} colors={['#fedd66', '#f98b59', '#f55b60']} style={styles.linearGradient}>
     <ViewContainer>
+      <HeaderTitle>제주배틀투어</HeaderTitle>
       <Title>Log in</Title>
 
       <SubTitle>아이디</SubTitle>
@@ -203,6 +223,7 @@ const LoginPresenter = ({loading, email, password, kakaoLogin, navigation}) =>
         </ImgContainer>
       </ImgView>
     </ViewContainer>
+    </LinearGradient>
   );
-
+  
 export default withNavigation(LoginPresenter);

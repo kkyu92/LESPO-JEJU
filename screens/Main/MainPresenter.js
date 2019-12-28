@@ -64,7 +64,7 @@ const IconContainer = styled.View`
   margin-left: 40px;
 `;
 const IconBattle = styled.Image`
-  width: ${Layout.width / 4 + 20};
+  width: ${Layout.width / 4 + 40};
   height: ${Layout.width / 4};
 `;
 const IconTrip = styled.Image`
@@ -116,7 +116,7 @@ const MainPresenter = ({loading, upComing, popular, nowPlaying, navigation}) =>
               })
             }>
             <IconBattle
-              source={require(`../../assets/drawable-xxhdpi/img_sportsbattle.png`)}
+              source={require(`../../assets/drawable-xxhdpi/btn_ch_sb.png`)}
             />
             <IconText>스포츠 배틀</IconText>
           </TouchableContainer>

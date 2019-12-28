@@ -1,21 +1,45 @@
 import React from 'react';
-import {Checkbox, CheckBox} from 'react-native';
+import {StyleSheet} from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import styled from 'styled-components';
 import {
   BG_COLOR,
   TINT_COLOR,
-  GREY_COLOR2,
-  GREY_COLOR,
+  GREY_COLOR2
 } from '../../constants/Colors';
-import Layout from '../../constants/Layout';
+import Icon from 'react-native-vector-icons/Ionicons';
 import Loader from '../../components/Loader';
 import {withNavigation} from 'react-navigation';
 import CheckboxForm from 'react-native-checkbox-form';
 
 const ViewContainer = styled.View`
   flex: 1;
-  background-color: ${BG_COLOR};
+  /* background-color: ${BG_COLOR}; */
   padding: 20px;
+`;
+
+var styles = StyleSheet.create({
+  linearGradient: {
+    flex: 1
+  }})
+
+const HeaderContainer = styled.View`
+flex-direction:row;
+margin-top: ${Platform.OS === 'ios' ? '20px' : '0px'};
+  margin-bottom: 40px;
+  align-items:center;
+  justify-content:space-between;
+`;
+
+const HeaderIcon = styled.TouchableOpacity`
+`;
+
+const HeaderTitle = styled.Text`
+  color: ${TINT_COLOR};
+  font-size: 28px;
+  font-weight: bold;
+  align-items: center;
+  justify-content:center;
 `;
 
 const Title = styled.Text`
@@ -64,26 +88,6 @@ const BtnText = styled.Text`
   font-size: 16px;
 `;
 
-const ImgView = styled.View`
-  width: 100%;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const ImgContainer = styled.TouchableOpacity`
-  justify-content: center;
-  align-items: center;
-  width: ${Layout.width / 4 + 15};
-`;
-
-const Img = styled.Image`
-  width: ${Layout.width / 4 + 15};
-  height: 50px;
-  background-color: ${TINT_COLOR};
-  border-radius: 10px;
-`;
-
 const Blank = styled.View`
   width: 45%;
   background-color: royalblue;
@@ -113,7 +117,20 @@ const SignupPresenter = ({
   loading ? (
     <Loader />
   ) : (
+    <LinearGradient start={{x: 0.0, y: 0.25}} end={{x: 0.5, y: 1.0}}
+    locations={[0,0.5,0.6]} colors={['#fedd66', '#f98b59', '#f55b60']} style={styles.linearGradient}>
     <ViewContainer>
+      <HeaderContainer>
+        <HeaderIcon onPress={() => navigation.goBack(null)}>
+      <Icon
+            size={30}
+            name={Platform.OS === 'ios' ? 'ios-arrow-back' : 'md-arrow-back'}
+            color={`${TINT_COLOR}`}
+          />
+          </HeaderIcon>
+      <HeaderTitle>제주배틀투어</HeaderTitle>
+      <HeaderTitle> </HeaderTitle>
+      </HeaderContainer>
       <Title>회원가입</Title>
 
       <SubTitle>아이디</SubTitle>
@@ -167,6 +184,7 @@ const SignupPresenter = ({
         <BtnText>회원가입</BtnText>
       </BtnContainer>
     </ViewContainer>
+    </LinearGradient>
   );
 
 export default withNavigation(SignupPresenter);

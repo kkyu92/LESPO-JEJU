@@ -8,9 +8,16 @@ import TripScreen from "../screens/Trip/TripContainer";
 import MainScreen from "../screens/Main/MainContainer";
 import MyScreen from "../screens/My/MyContainer";
 import AddScreen from "../screens/Add/AddContainer";
-import { BG_COLOR } from "../constants/Colors";
+import { BG_COLOR, TINT_COLOR } from "../constants/Colors";
 import TabBarIcon from "../components/TabBarIcons";
 import { createStack } from "./config";
+import styled from "styled-components";
+
+const Icon = styled.Image`
+width:20px;
+height:20px;
+background-color:${BG_COLOR};
+`;
 
 const TabNavigation = createBottomTabNavigator(
   {
@@ -19,11 +26,17 @@ const TabNavigation = createBottomTabNavigator(
       screen: createStack(MainScreen, "제주배틀투어"),
       navigationOptions: {
         tabBarIcon: ({ focused }) => (
+          // <Icon source={require(`../assets/drawable-xxxhdpi/icon_home.png`)} />
+          
           <TabBarIcon
             focused={focused}
             name={Platform.OS === "ios" ? "ios-home" : "md-home"}
           />
-        )
+        ),
+        tabBarOptions: {
+          activeTintColor: 'orange',
+          inactiveTintColor: 'gray',
+        },
       }
     },
     스포츠배틀: {
@@ -34,7 +47,11 @@ const TabNavigation = createBottomTabNavigator(
             focused={focused}
             name={Platform.OS === "ios" ? "ios-football" : "md-football"}
           />
-        )
+        ),
+        tabBarOptions: {
+          activeTintColor: 'orange',
+          inactiveTintColor: 'gray',
+        },
       }
     },
     여행하기: {
@@ -45,7 +62,11 @@ const TabNavigation = createBottomTabNavigator(
             focused={focused}
             name={Platform.OS === "ios" ? "ios-bus" : "md-bus"}
           />
-        )
+        ),
+        tabBarOptions: {
+          activeTintColor: 'orange',
+          inactiveTintColor: 'gray',
+        },
       }
     },
     내정보: {
@@ -56,7 +77,11 @@ const TabNavigation = createBottomTabNavigator(
             focused={focused}
             name={Platform.OS === "ios" ? "ios-person" : "md-person"}
           />
-        )
+        ),
+        tabBarOptions: {
+          activeTintColor: 'orange',
+          inactiveTintColor: 'gray',
+        },
       }
     },
     더보기: {
@@ -67,7 +92,12 @@ const TabNavigation = createBottomTabNavigator(
             focused={focused}
             name={Platform.OS === "ios" ? "ios-more" : "ios-more"}
           />
-        )
+          // <Icon source={require(`../assets/drawable-xxxhdpi/icon_more.png`)} />
+        ),
+        tabBarOptions: {
+          activeTintColor: 'orange',
+          inactiveTintColor: 'gray',
+        },
       }
     }
   },
@@ -76,7 +106,7 @@ const TabNavigation = createBottomTabNavigator(
     tabBarOptions: {
       //   showLabel: false,
       style: {
-        backgroundColor: BG_COLOR
+        backgroundColor: TINT_COLOR
         // inactiveBackgroundColor: BG_COLOR,
         // activeBackgroundColor: ACTIVE_COLOR
       }

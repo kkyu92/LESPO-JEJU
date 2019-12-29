@@ -10,6 +10,7 @@ import DetailScreen from '../screens/Detail/DetailContainer';
 import JejuSoundScreen from '../screens/Add/JejuSound/JejuSoundContainer';
 import JejuGiftScreen from '../screens/Add/JejuGift/JejuGiftContainer';
 import AddBattleScreen from '../screens/Sports/AddBattle/BattleContainer';
+import MyBattleScreen from '../screens/My/MyBattle/MyBattleContainer';
 import {headerStyles, detailHeaderStyles, tapsHeaderStyles} from './config';
 
 // 최상위 Nav [ Main tap4 + 검색 + 메인리스트 + 위시리스트... ]
@@ -90,6 +91,13 @@ const HomeNavigation = createStackNavigator(
       navigationOptions: {
         ...tapsHeaderStyles,
         headerTitle: '추천관광',
+      },
+    },
+    MyBattleList: {
+      screen: MyBattleScreen,
+      navigationOptions: {
+        ...tapsHeaderStyles,
+        headerTitle: '나의 배틀',
       },
     },
     // 먹거리 텝 화면

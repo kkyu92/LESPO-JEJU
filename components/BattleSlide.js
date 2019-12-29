@@ -109,7 +109,52 @@ const CoinText = styled.Text`
   color: ${BG_COLOR};
   font-size: 14px;
 `;
-const MessageImg = styled.Image``;
+
+const Status = styled.View`
+  width: 30%;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5;
+  border-width: 1;
+  border-color: ${BG_COLOR};
+  padding: 5px;
+  margin-left: 10px;
+`;
+
+const StatusText = styled.Text`
+  color: ${BG_COLOR};
+`;
+
+const StatusIng = styled.View`
+  width: 30%;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5;
+  border-width: 1;
+  border-color: ${BG_COLOR};
+  background-color: ${BG_COLOR};
+  padding: 5px;
+  margin-left: 10px;
+`;
+
+const StatusTextIng = styled.Text`
+  color: ${TINT_COLOR};
+`;
+const StatusEnd = styled.View`
+  width: 30%;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5;
+  border-width: 1;
+  border-color: ${GREY_COLOR2};
+  background-color: ${GREY_COLOR};
+  padding: 5px;
+  margin-left: 10px;
+`;
+
+const StatusTextEnd = styled.Text`
+  color: ${GREY_COLOR2};
+`;
 
 // 별점 표시
 ratingCompleted = rating => {
@@ -118,6 +163,8 @@ ratingCompleted = rating => {
 
 // 리스트 기본틀
 const BattleSlide = ({
+  myBattleList,
+  statusText,
   id,
   profile,
   name,
@@ -129,51 +176,121 @@ const BattleSlide = ({
   area,
   memo,
   coinList,
-}) => (
-  // 세로로 슬라이드 + TAG [ 관광상품 ]
-  <BattleContainer>
-    <BattleProfileContainer>
-      <ProfileImg source={{uri: PhotoUri(profile)}} />
-      <ProfileName>{name}</ProfileName>
-      <ProfileLevel>{level}</ProfileLevel>
-      {/* <AirbnbRating
+}) =>
+  statusText === '배틀신청중' ? (
+    // 나의 배틀 리스트
+    <BattleContainer>
+      <BattleTitleConatiner>
+        <TitleText>배틀종목</TitleText>
+        <TitleText>매칭형태</TitleText>
+        <TitleText>배틀날짜</TitleText>
+        <TitleText>배틀지역</TitleText>
+        <TitleText>메 모</TitleText>
+      </BattleTitleConatiner>
+
+      <BattleTextContainer>
+        <GetText>{sport}</GetText>
+        <GetText>{type}</GetText>
+        <GetText>{date}</GetText>
+        <GetText>{area}</GetText>
+        <GetText numberOfLines={1}>{memo}</GetText>
+      </BattleTextContainer>
+
+      <Status>
+        <StatusText>{statusText}</StatusText>
+      </Status>
+    </BattleContainer>
+  ) : statusText === '배틀진행중' ? (
+    // 나의 배틀 리스트
+    <BattleContainer>
+      <BattleTitleConatiner>
+        <TitleText>배틀종목</TitleText>
+        <TitleText>매칭형태</TitleText>
+        <TitleText>배틀날짜</TitleText>
+        <TitleText>배틀지역</TitleText>
+        <TitleText>메 모</TitleText>
+      </BattleTitleConatiner>
+
+      <BattleTextContainer>
+        <GetText>{sport}</GetText>
+        <GetText>{type}</GetText>
+        <GetText>{date}</GetText>
+        <GetText>{area}</GetText>
+        <GetText numberOfLines={1}>{memo}</GetText>
+      </BattleTextContainer>
+
+      <StatusIng>
+        <StatusTextIng>{statusText}</StatusTextIng>
+      </StatusIng>
+    </BattleContainer>
+  ) : statusText === '배틀종료' ? (
+    // 나의 배틀 리스트
+    <BattleContainer>
+      <BattleTitleConatiner>
+        <TitleText>배틀종목</TitleText>
+        <TitleText>매칭형태</TitleText>
+        <TitleText>배틀날짜</TitleText>
+        <TitleText>배틀지역</TitleText>
+        <TitleText>메 모</TitleText>
+      </BattleTitleConatiner>
+
+      <BattleTextContainer>
+        <GetText>{sport}</GetText>
+        <GetText>{type}</GetText>
+        <GetText>{date}</GetText>
+        <GetText>{area}</GetText>
+        <GetText numberOfLines={1}>{memo}</GetText>
+      </BattleTextContainer>
+
+      <StatusEnd>
+        <StatusTextEnd>{statusText}</StatusTextEnd>
+      </StatusEnd>
+    </BattleContainer>
+  ) : (
+    // 스포츠배틀 리스트
+    <BattleContainer>
+      <BattleProfileContainer>
+        <ProfileImg source={{uri: PhotoUri(profile)}} />
+        <ProfileName>{name}</ProfileName>
+        <ProfileLevel>{level}</ProfileLevel>
+        {/* <AirbnbRating
         count={5}
         defaultRating={2.5}
         size={15}
         showRating={false}
         isDisabled={true}
       /> */}
-      <Rating startingValue={3.5} ratingCount={5} imageSize={15} readonly />
-    </BattleProfileContainer>
+        <Rating startingValue={3.5} ratingCount={5} imageSize={15} readonly />
+      </BattleProfileContainer>
 
-    <BattleTitleConatiner>
-      <TitleText>배틀종목</TitleText>
-      <TitleText>매칭형태</TitleText>
-      <TitleText>배틀날짜</TitleText>
-      <TitleText>배틀지역</TitleText>
-      <TitleText>메 모</TitleText>
-    </BattleTitleConatiner>
+      <BattleTitleConatiner>
+        <TitleText>배틀종목</TitleText>
+        <TitleText>매칭형태</TitleText>
+        <TitleText>배틀날짜</TitleText>
+        <TitleText>배틀지역</TitleText>
+        <TitleText>메 모</TitleText>
+      </BattleTitleConatiner>
 
-    <BattleTextContainer>
-      <GetText>{sport}</GetText>
-      <GetText>{type}</GetText>
-      <GetText>{date}</GetText>
-      <GetText>{area}</GetText>
-      <GetText numberOfLines={1}>{memo}</GetText>
-    </BattleTextContainer>
+      <BattleTextContainer>
+        <GetText>{sport}</GetText>
+        <GetText>{type}</GetText>
+        <GetText>{date}</GetText>
+        <GetText>{area}</GetText>
+        <GetText numberOfLines={1}>{memo}</GetText>
+      </BattleTextContainer>
 
-    <BattleIconContainer>
-      {coinList ? (
-        <CoinText>1 Coin</CoinText>
-      ) : (
-        <Ionicons
-          size={30}
-          name={Platform.OS === 'ios' ? 'ios-send' : 'md-send'}
-          color={`${BG_COLOR}`}
-        />
-      )}
-    </BattleIconContainer>
-  </BattleContainer>
-);
+      <BattleIconContainer>
+        {coinList ? (
+          <CoinText>1 Coin</CoinText>
+        ) : (
+          <Ionicons
+            size={30}
+            name={Platform.OS === 'ios' ? 'ios-send' : 'md-send'}
+            color={`${BG_COLOR}`}
+          />
+        )}
+      </BattleIconContainer>
+    </BattleContainer>
+  );
 
 export default withNavigation(BattleSlide);

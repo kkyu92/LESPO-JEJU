@@ -20,8 +20,9 @@ const ViewContainer = styled.View`
 
 var styles = StyleSheet.create({
   linearGradient: {
-    flex: 1
-  }})
+    flex: 1,
+  },
+});
 
 const HeaderTitle = styled.Text`
   color: ${TINT_COLOR};
@@ -106,124 +107,128 @@ const LoginPresenter = ({loading, email, password, kakaoLogin, navigation}) =>
   loading ? (
     <Loader />
   ) : (
-    <LinearGradient start={{x: 0.0, y: 0.25}} end={{x: 0.5, y: 1.0}}
-    locations={[0,0.5,0.6]} colors={['#fedd66', '#f98b59', '#f55b60']} style={styles.linearGradient}>
-    <ViewContainer>
-      <HeaderTitle>제주배틀투어</HeaderTitle>
-      <Title>Log in</Title>
+    <LinearGradient
+      start={{x: 0.0, y: 0.25}}
+      end={{x: 0.5, y: 1.0}}
+      locations={[0, 0.5, 0.6]}
+      colors={['#fedd66', '#f98b59', '#f55b60']}
+      style={styles.linearGradient}>
+      <ViewContainer>
+        <HeaderTitle>제주배틀투어</HeaderTitle>
+        <Title>Log in</Title>
 
-      <SubTitle>아이디</SubTitle>
-      <TextInput
-        returnKeyType={'done'}
-        keyboardType={'email-address'}
-        placeholder={'이메일을 입력해주세요.'}
-        placeholderTextColor={GREY_COLOR2}
-        // onChangeText={handleSearchUpdate}
-        // value={searchTerm}
-        // onSubmitEditing={onSubmitEditing}
-      />
+        <SubTitle>아이디</SubTitle>
+        <TextInput
+          returnKeyType={'done'}
+          keyboardType={'email-address'}
+          placeholder={'이메일을 입력해주세요.'}
+          placeholderTextColor={GREY_COLOR2}
+          // onChangeText={handleSearchUpdate}
+          // value={searchTerm}
+          // onSubmitEditing={onSubmitEditing}
+        />
 
-      <SubTitle>비밀번호</SubTitle>
-      <TextInput
-        returnKeyType={'done'}
-        keyboardType={'default'}
-        placeholder={'비밀번호를 입력해주세요.'}
-        placeholderTextColor={GREY_COLOR2}
-        secureTextEntry
-      />
+        <SubTitle>비밀번호</SubTitle>
+        <TextInput
+          returnKeyType={'done'}
+          keyboardType={'default'}
+          placeholder={'비밀번호를 입력해주세요.'}
+          placeholderTextColor={GREY_COLOR2}
+          secureTextEntry
+        />
 
-      <BtnContainer
-        onPress={() =>
-          navigation.navigate({
-            routeName: 'Tabs',
-          })
-        }>
-        <BtnText>로그인</BtnText>
-      </BtnContainer>
-
-      <TextContainer>
-        <TouchableOpacity>
-          <SubTitle>비밀번호찾기</SubTitle>
-        </TouchableOpacity>
-
-        <TouchableOpacity
+        <BtnContainer
           onPress={() =>
             navigation.navigate({
-              routeName: 'Signup',
+              routeName: 'Tabs',
             })
           }>
-          <SubTitle>회원가입</SubTitle>
-        </TouchableOpacity>
-      </TextContainer>
+          <BtnText>로그인</BtnText>
+        </BtnContainer>
 
-      <SubTitle>SNS 로그인</SubTitle>
-      <ImgView>
-        <ImgContainer onPress={() => kakaoLogin()}>
-          <Img
-            source={require(`../../assets/drawable-xxhdpi/btn_login_01.png`)}
-          />
-        </ImgContainer>
-        <ImgContainer>
-          <Img
-            source={require(`../../assets/drawable-xxhdpi/btn_login_02.png`)}
-          />
-        </ImgContainer>
-        <ImgContainer
-          onPress={() =>
-            LoginManager.logInWithPermissions(['public_profile']).then(
-              function(result) {
-                if (result.isCancelled) {
-                  console.log('Login cancelled');
-                } else {
-                  AccessToken.getCurrentAccessToken().then(data => {
-                    let accessToken = data.accessToken;
-                    // alert(accessToken.toString());
+        <TextContainer>
+          <TouchableOpacity>
+            <SubTitle>비밀번호찾기</SubTitle>
+          </TouchableOpacity>
 
-                    const responseInfoCallback = (error, result) => {
-                      if (error) {
-                        console.log(error);
-                        alert('Error fetching data: ' + error.toString());
-                      } else {
-                        console.log(
-                          result.id,
-                          result.name,
-                          result.picture.data.url,
-                        );
-                        alert('Success fetching data: ' + result.name);
-                      }
-                    };
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate({
+                routeName: 'Signup',
+              })
+            }>
+            <SubTitle>회원가입</SubTitle>
+          </TouchableOpacity>
+        </TextContainer>
 
-                    const infoRequest = new GraphRequest(
-                      '/me',
-                      {
-                        accessToken: accessToken,
-                        parameters: {
-                          fields: {
-                            string: 'id,name,picture',
-                            // picture.type(large)
+        <SubTitle>SNS 로그인</SubTitle>
+        <ImgView>
+          <ImgContainer onPress={() => kakaoLogin()}>
+            <Img
+              source={require(`../../assets/drawable-xxhdpi/btn_login_01.png`)}
+            />
+          </ImgContainer>
+          <ImgContainer>
+            <Img
+              source={require(`../../assets/drawable-xxhdpi/btn_login_02.png`)}
+            />
+          </ImgContainer>
+          <ImgContainer
+            onPress={() =>
+              LoginManager.logInWithPermissions(['public_profile']).then(
+                function(result) {
+                  if (result.isCancelled) {
+                    console.log('Login cancelled');
+                  } else {
+                    AccessToken.getCurrentAccessToken().then(data => {
+                      let accessToken = data.accessToken;
+                      // alert(accessToken.toString());
+
+                      const responseInfoCallback = (error, result) => {
+                        if (error) {
+                          console.log(error);
+                          alert('Error fetching data: ' + error.toString());
+                        } else {
+                          console.log(
+                            result.id,
+                            result.name,
+                            result.picture.data.url,
+                          );
+                          alert('Success fetching data: ' + result.name);
+                        }
+                      };
+
+                      const infoRequest = new GraphRequest(
+                        '/me',
+                        {
+                          accessToken: accessToken,
+                          parameters: {
+                            fields: {
+                              string: 'id,name,picture',
+                              // picture.type(large)
+                            },
                           },
                         },
-                      },
-                      responseInfoCallback,
-                    );
+                        responseInfoCallback,
+                      );
 
-                    // Start the graph request.
-                    new GraphRequestManager().addRequest(infoRequest).start();
-                  });
-                }
-              },
-              function(error) {
-                console.log('Login fail with error: ' + error);
-              },
-            )
-          }>
-          <Img
-            source={require(`../../assets/drawable-xxhdpi/btn_login_03.png`)}
-          />
-        </ImgContainer>
-      </ImgView>
-    </ViewContainer>
+                      // Start the graph request.
+                      new GraphRequestManager().addRequest(infoRequest).start();
+                    });
+                  }
+                },
+                function(error) {
+                  console.log('Login fail with error: ' + error);
+                },
+              )
+            }>
+            <Img
+              source={require(`../../assets/drawable-xxhdpi/btn_login_03.png`)}
+            />
+          </ImgContainer>
+        </ImgView>
+      </ViewContainer>
     </LinearGradient>
   );
-  
+
 export default withNavigation(LoginPresenter);

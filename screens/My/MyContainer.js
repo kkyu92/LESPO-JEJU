@@ -1,12 +1,12 @@
-import React from "react";
-import MyPresenter from "./MyPresenter";
+import React from 'react';
+import MyPresenter from './MyPresenter';
 
 export default class extends React.Component {
   state = {
-    loading: true
+    loading: false,
   };
   render() {
-    const { loading } = this.state;
+    const {loading} = this.state;
     return <MyPresenter loading={loading} />;
   }
 }

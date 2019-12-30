@@ -1,10 +1,10 @@
-import React from "react";
-import { withNavigation } from "react-navigation";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import Loader from "../../components/Loader";
-import { BG_COLOR, TINT_COLOR, BLACK_COLOR } from "../../constants/Colors";
-import Layout from "../../constants/Layout";
+import React from 'react';
+import {withNavigation} from 'react-navigation';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import Loader from '../../components/Loader';
+import {BG_COLOR, TINT_COLOR, BLACK_COLOR} from '../../constants/Colors';
+import Layout from '../../constants/Layout';
 
 const View = styled.View`
   background-color: ${TINT_COLOR};
@@ -21,8 +21,8 @@ const TitleContainer = styled.View`
 const TitleText = styled.Text`
   color: ${TINT_COLOR};
   font-size: 18px;
+  font-weight: 800;
   margin: 30px;
-  font-weight: 600;
   text-align: center;
   align-self: center;
   justify-content: center;
@@ -61,13 +61,36 @@ const Text = styled.Text`
   font-weight: 600;
 `;
 
+const HeaderContainer = styled.View`
+  flex-direction: row;
+  margin-top: ${Platform.OS === 'ios' ? '35px' : '15px'};
+  margin-left: 20px;
+  margin-right: 20px;
+  justify-content: center;
+  align-items: center;
+  /* background-color: goldenrod; */
+`;
+
+const HeaderText = styled.Text`
+  /* width: 40%; */
+  color: ${TINT_COLOR};
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 600;
+  /* background-color: gainsboro; */
+`;
+
 // show DATA
-const TripPresenter = ({ loading, navigation }) =>
+const TripPresenter = ({loading, navigation}) =>
   loading ? (
     <Loader />
   ) : (
     <>
       <TitleContainer>
+        <HeaderContainer>
+          <HeaderText>여행하기</HeaderText>
+        </HeaderContainer>
         <TitleText>좋아하는 여행을 찾아보세요!</TitleText>
 
         <View>
@@ -75,10 +98,9 @@ const TripPresenter = ({ loading, navigation }) =>
             <Card
               onPress={() =>
                 navigation.navigate({
-                  routeName: "Recommend"
+                  routeName: 'Recommend',
                 })
-              }
-            >
+              }>
               <Img
                 source={require(`../../assets/drawable-xxhdpi/icon_sightseeing.png`)}
               />
@@ -111,7 +133,7 @@ const TripPresenter = ({ loading, navigation }) =>
   );
 
 TripPresenter.propTypes = {
-  loading: PropTypes.bool.isRequired
+  loading: PropTypes.bool.isRequired,
 };
 
 export default withNavigation(TripPresenter);

@@ -1,8 +1,8 @@
-import React from "react";
-import { ActivityIndicator, View, StyleSheet } from "react-native";
-import { BG_COLOR, TINT_COLOR } from "../../../constants/Colors";
-import styled from "styled-components";
-import Layout from "../../../constants/Layout";
+import React from 'react';
+import {ActivityIndicator, View, StyleSheet} from 'react-native';
+import {BG_COLOR, TINT_COLOR} from '../../../constants/Colors';
+import styled from 'styled-components';
+import Layout from '../../../constants/Layout';
 
 const Container = styled.View`
   flex: 1;
@@ -25,14 +25,16 @@ const SearchNo = giveText => {};
 
 export default class extends React.Component {
   state = {
-    searchText: ""
+    searchText: '',
   };
 
   // text 검색한 값 받아온다
   handleGetSearchText = text => {
     this.setState({
-      searchText: text
+      searchText: text,
     });
+    this.state.searchText = text;
+    console.log(text);
   };
 
   render() {
@@ -42,8 +44,7 @@ export default class extends React.Component {
         <Image
           width={Layout.width / 2}
           height={Layout.height / 2}
-          source={require(`../../../assets/drawable-xxhdpi/icon_loser_or.png`)}
-        ></Image>
+          source={require(`../../../assets/drawable-xxhdpi/icon_loser_or.png`)}></Image>
       </Container>
     );
   }

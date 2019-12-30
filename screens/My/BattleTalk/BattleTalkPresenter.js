@@ -6,11 +6,23 @@ import {BG_COLOR, TINT_COLOR, BLACK_COLOR} from '../../../constants/Colors';
 import {Platform} from 'react-native';
 import Section from '../../../components/Section';
 import SearchNo from '../../Main/Search/SearchNo';
-import BattleSlide from '../../../components/BattleSlide';
+import TalkListSlide from '../../../components/TalkListSlide';
 
 const View = styled.View`
   background-color: ${BG_COLOR};
   flex: 1;
+`;
+
+const TitleContainer = styled.View`
+  padding: 20px;
+`;
+
+const TitleText = styled.Text`
+  color: ${TINT_COLOR};
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 5px;
+  margin-right: 5px;
 `;
 
 const Container = styled.ScrollView`
@@ -19,15 +31,17 @@ const Container = styled.ScrollView`
   border-top-right-radius: 15;
   padding-top: 10;
   padding-bottom: 20;
-  margin-top: 20;
   flex: 1;
 `;
 
-const MyBattlePresenter = ({loading, listChanged}) =>
+const BattleTalkPresenter = ({loading, listChanged}) =>
   loading ? (
     <Loader />
   ) : (
     <View>
+      <TitleContainer>
+        <TitleText>나의 배틀상대와{'\n'}대화해보세요.</TitleText>
+      </TitleContainer>
       <Container>
         {loading ? (
           <Loader />
@@ -39,20 +53,14 @@ const MyBattlePresenter = ({loading, listChanged}) =>
                   {listChanged
                     .filter(list => list.backdrop_path !== null)
                     .map(list => (
-                      <BattleSlide
-                        myBattleList={true}
+                      <TalkListSlide
                         key={list.id}
                         id={list.id}
                         profile={list.backdrop_path}
-                        name={'박명수'}
-                        level={'초고수'}
-                        rate={list.vote_average}
-                        sport={list.title}
-                        type={'개인전'}
-                        date={'2020-01-22'}
-                        area={'제주시 연동'}
-                        memo={list.overview}
-                        statusText={'배틀종료'}
+                        name={list.title}
+                        date={'2020/01/22'}
+                        time={'14:00'}
+                        msg={list.overview}
                       />
                     ))}
                 </Section>
@@ -68,4 +76,4 @@ const MyBattlePresenter = ({loading, listChanged}) =>
     </View>
   );
 
-export default withNavigation(MyBattlePresenter);
+export default withNavigation(BattleTalkPresenter);

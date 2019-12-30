@@ -1,21 +1,21 @@
-import React from "react";
-import { withNavigation } from "react-navigation";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import Loader from "../../components/Loader";
-import { BG_COLOR, TINT_COLOR, BLACK_COLOR } from "../../constants/Colors";
-import PickerSelect from "react-native-picker-select";
-import Layout from "../../constants/Layout";
-import { Platform } from "react-native";
-import Section from "../../components/Section";
-import SubSlide from "../../components/SubSlide";
-import SearchNo from "../Main/Search/SearchNo";
-import BattleSlide from "../../components/BattleSlide";
+import React from 'react';
+import {withNavigation} from 'react-navigation';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import Loader from '../../components/Loader';
+import {BG_COLOR, TINT_COLOR, BLACK_COLOR} from '../../constants/Colors';
+import PickerSelect from 'react-native-picker-select';
+import Layout from '../../constants/Layout';
+import {Platform} from 'react-native';
+import Section from '../../components/Section';
+import SubSlide from '../../components/SubSlide';
+import SearchNo from '../Main/Search/SearchNo';
+import BattleSlide from '../../components/BattleSlide';
 
-let select = "";
+let select = '';
 
 const state = {
-  selected: "~~"
+  selected: '~~',
 };
 
 // const sports = [
@@ -26,44 +26,44 @@ const state = {
 // ];
 
 const data = [
-  { label: "등록일순", value: "latest" },
-  { label: "가까운순", value: "nearest" },
-  { label: "배틀일순", value: "battle" }
+  {label: '등록일순', value: 'latest'},
+  {label: '가까운순', value: 'nearest'},
+  {label: '배틀일순', value: 'battle'},
 ];
 
 const pickerStyle = {
   flex: 1,
-  alignItems: "center",
-  justifyContent: "center",
+  alignItems: 'center',
+  justifyContent: 'center',
   inputIOS: {
-    color: "white",
+    color: 'white',
     paddingTop: 13,
     paddingHorizontal: 20,
     paddingLeft: 55,
-    paddingBottom: 12
+    paddingBottom: 12,
   },
   inputAndroid: {
-    color: "white"
+    color: 'white',
   },
-  placeholderColor: "white",
-  underline: { borderTopWidth: 0 },
+  placeholderColor: 'white',
+  underline: {borderTopWidth: 0},
   icon: {
-    position: "absolute",
-    backgroundColor: "transparent",
+    position: 'absolute',
+    backgroundColor: 'transparent',
     borderTopWidth: 5,
-    borderTopColor: "#00000099",
+    borderTopColor: '#00000099',
     borderRightWidth: 5,
-    borderRightColor: "transparent",
+    borderRightColor: 'transparent',
     borderLeftWidth: 5,
-    borderLeftColor: "transparent",
+    borderLeftColor: 'transparent',
     width: 0,
     height: 0,
     top: 20,
-    right: 15
-  }
+    right: 15,
+  },
 };
 
-const HeaderConatiner = styled.View`
+const HeaderConatinerPicker = styled.View`
   flex-direction: row;
   justify-content: space-between;
 `;
@@ -80,7 +80,7 @@ const AddBattleContainer = styled.TouchableOpacity`
 
 const AddBattleText = styled.Text`
   color: ${TINT_COLOR};
-  font-size: ${Platform.OS === "ios" ? "14px" : "16px"};
+  font-size: ${Platform.OS === 'ios' ? '14px' : '16px'};
   border-radius: 5;
   padding: 5px;
 `;
@@ -110,18 +110,38 @@ const Container = styled.ScrollView`
   flex: 1;
 `;
 
+const HeaderContainer = styled.View`
+  flex-direction: row;
+  margin-top: ${Platform.OS === 'ios' ? '35px' : '15px'};
+  margin-left: 20px;
+  margin-right: 20px;
+  justify-content: center;
+  align-items: center;
+  /* background-color: goldenrod; */
+`;
+
+const HeaderText = styled.Text`
+  /* width: 40%; */
+  color: ${TINT_COLOR};
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 600;
+  /* background-color: gainsboro; */
+`;
+
 // onSportsChange = selected => {
 //   console.log("onSportsChange fun ::: " + selected);
 //   sports = selected;
 // };
 
 onValueChange = selected => {
-  console.log("onValueChange fun ::: " + selected);
+  console.log('onValueChange fun ::: ' + selected);
   select = selected;
 };
 
 refresh = () => {
-  console.log("refresh");
+  console.log('refresh');
 };
 
 // show DATA
@@ -132,13 +152,16 @@ const SportsPresenter = ({
   listChanged,
   onListChanging,
   handleListUpdate,
-  navigation
+  navigation,
 }) =>
   loading ? (
     <Loader />
   ) : (
     <View>
-      <HeaderConatiner>
+      <HeaderContainer>
+        <HeaderText>스포츠배틀</HeaderText>
+      </HeaderContainer>
+      <HeaderConatinerPicker>
         <PickerContainer>
           <PickerSelect
             placeholder={{}}
@@ -148,7 +171,7 @@ const SportsPresenter = ({
             // TODO: ios
             onClose={onListChanging}
             // onDonePress={onListChanging}
-            doneText={"완료"}
+            doneText={'완료'}
             style={pickerStyle}
             value={listName}
           />
@@ -156,13 +179,12 @@ const SportsPresenter = ({
         <AddBattleContainer
           onPress={() =>
             navigation.navigate({
-              routeName: "InsertBattle"
+              routeName: 'InsertBattle',
             })
-          }
-        >
+          }>
           <AddBattleText>배틀등록</AddBattleText>
         </AddBattleContainer>
-      </HeaderConatiner>
+      </HeaderConatinerPicker>
       <Container>
         {loading ? (
           <Loader />
@@ -178,13 +200,13 @@ const SportsPresenter = ({
                         key={list.id}
                         id={list.id}
                         profile={list.backdrop_path}
-                        name={"박명수"}
-                        level={"초고수"}
+                        name={'박명수'}
+                        level={'초고수'}
                         rate={list.vote_average}
                         sport={list.title}
-                        type={"개인전"}
-                        date={"2020-01-22"}
-                        area={"제주시 연동"}
+                        type={'개인전'}
+                        date={'2020-01-22'}
+                        area={'제주시 연동'}
                         memo={list.overview}
                         coinList={false}
                       />
@@ -194,7 +216,7 @@ const SportsPresenter = ({
                 <SearchNo handleGetSearchText={searchTerm} />
               )
             ) : (
-              console.log("null")
+              console.log('null')
             )}
           </>
         )}

@@ -8,7 +8,7 @@ import MainSlider from '../../components/MainSlider';
 import {Platform} from 'react-native';
 import Section from '../../components/Section';
 import SubSlide from '../../components/SubSlide';
-import {BLACK_COLOR, GREY_COLOR} from '../../constants/Colors';
+import {BLACK_COLOR, GREY_COLOR, TINT_COLOR} from '../../constants/Colors';
 import Layout from '../../constants/Layout';
 
 const View = styled.View`
@@ -82,12 +82,89 @@ const TouchableContainer = styled.TouchableOpacity`
   justify-content: center;
 `;
 
+const HeaderContainer = styled.View`
+  flex-direction: row;
+  margin-top: ${Platform.OS === 'ios' ? '35px' : '15px'};
+  margin-left: 20px;
+  margin-right: 20px;
+  justify-content: center;
+  align-items: center;
+  /* background-color: goldenrod; */
+`;
+
+const HeaderText = styled.Text`
+  /* width: 40%; */
+  color: ${TINT_COLOR};
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 600;
+  /* background-color: gainsboro; */
+`;
+
+const RightButtonContainer = styled.View`
+  position: absolute;
+  right: 20px;
+  top: ${Platform.OS === 'ios' ? '25px' : '15px'};
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  /* background-color: royalblue; */
+`;
+
+const WishListBtn = styled.TouchableOpacity`
+  margin-right: 5px;
+  padding: 5px;
+  align-items: center;
+  justify-content: center;
+`;
+
+const WishList = styled.Image`
+  width: 26px;
+  height: 22.4px;
+`;
+const Map = styled.Image`
+  width: 21.6px;
+  height: 26px;
+`;
+
+const MapBtn = styled.TouchableOpacity`
+  padding: 5px;
+  align-items: center;
+  justify-content: center;
+`;
+
 // show DATA
 const MainPresenter = ({loading, upComing, popular, nowPlaying, navigation}) =>
   loading ? (
     <Loader />
   ) : (
     <View>
+      <HeaderContainer>
+        <HeaderText>제주배틀투어</HeaderText>
+      </HeaderContainer>
+      <RightButtonContainer>
+        <WishListBtn
+          onPress={() =>
+            navigation.navigate({
+              routeName: 'MyWishList',
+            })
+          }>
+          <WishList
+            source={require(`../../assets/drawable-xxxhdpi/icon_wish_wh.png`)}
+          />
+        </WishListBtn>
+        <MapBtn
+          onPress={() =>
+            navigation.navigate({
+              routeName: 'MyWishList',
+            })
+          }>
+          <Map
+            source={require(`../../assets/drawable-xxxhdpi/icon_map_wh.png`)}
+          />
+        </MapBtn>
+      </RightButtonContainer>
       <SearchContainer
         onPress={() =>
           navigation.navigate({

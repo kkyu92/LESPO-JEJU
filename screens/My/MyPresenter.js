@@ -4,10 +4,11 @@ import PropTypes from 'prop-types';
 import Loader from '../../components/Loader';
 import {TINT_COLOR, BG_COLOR, GREY_COLOR} from '../../constants/Colors';
 import {Rating, AirbnbRating} from 'react-native-ratings';
-import {Platform} from 'react-native';
+import {Platform, Alert} from 'react-native';
+// import Modal from 'react-native-modal';
+// import AlertPro from 'react-native-alert-pro';
+import MyModal from '../../components/AlertProDialog';
 import {withNavigation} from 'react-navigation';
-
-const STAR_IMAGE = require(`../../assets/drawable-xxxhdpi/icon_star.png`);
 
 const View = styled.View`
   background-color: orange;
@@ -27,6 +28,7 @@ const ProfileContainer = styled.View`
 const LeftContainer = styled.View`
   flex-direction: row;
   align-items: center;
+  justify-content: center;
 `;
 
 const Profile = styled.Image`
@@ -38,6 +40,7 @@ const Profile = styled.Image`
 const ProfileTextContainer = styled.View`
   align-content: center;
   justify-content: center;
+  margin-top: 5px;
 `;
 
 const ProfileNameContainer = styled.View`
@@ -48,14 +51,15 @@ const ProfileNameContainer = styled.View`
 
 const BattleCoinList = styled.TouchableOpacity`
   flex-direction: row;
-  align-content: center;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: 5px;
 `;
 
 const NameText = styled.Text`
   color: ${TINT_COLOR};
   font-size: 24px;
   font-weight: 800;
-  /* margin-bottom: 5px; */
   margin-right: 5px;
 `;
 const BattleText = styled.Text`
@@ -121,12 +125,35 @@ const BtnImg2 = styled.Image`
   height: 25px;
 `;
 
+const HeaderContainer = styled.View`
+  flex-direction: row;
+  margin-top: ${Platform.OS === 'ios' ? '35px' : '15px'};
+  margin-left: 20px;
+  margin-right: 20px;
+  justify-content: center;
+  align-items: center;
+  /* background-color: goldenrod; */
+`;
+
+const HeaderText = styled.Text`
+  /* width: 40%; */
+  color: ${TINT_COLOR};
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 600;
+  /* background-color: gainsboro; */
+`;
+
 // show DATA
-const MyPresenter = ({loading, navigation}) =>
+const MyPresenter = ({loading, changeModalVisiblity, setData, navigation}) =>
   loading ? (
     <Loader />
   ) : (
     <View>
+      <HeaderContainer>
+        <HeaderText>내정보</HeaderText>
+      </HeaderContainer>
       <ProfileContainer>
         <LeftContainer>
           <Profile
@@ -177,7 +204,7 @@ const MyPresenter = ({loading, navigation}) =>
         <BtnContainer
           onPress={() =>
             navigation.navigate({
-              routeName: 'JejuSound',
+              routeName: 'MyBattleTalk',
             })
           }>
           <Text>배틀 톡</Text>
@@ -188,7 +215,7 @@ const MyPresenter = ({loading, navigation}) =>
         <BtnContainer
           onPress={() =>
             navigation.navigate({
-              routeName: 'JejuSound',
+              routeName: 'MyWishList',
             })
           }>
           <Text>위시리스트</Text>
@@ -197,10 +224,27 @@ const MyPresenter = ({loading, navigation}) =>
           />
         </BtnContainer>
         <BtnContainer
-          onPress={() =>
-            navigation.navigate({
-              routeName: 'JejuSound',
-            })
+          onPress={
+            () => changeModalVisiblity(true)
+
+            // // Works on both Android and iOS
+            // Alert.alert(
+            //   '로그아웃 하시겠습니까?',
+            //   '',
+            //   [
+            //     // {
+            //     //   text: 'Ask me later',
+            //     //   onPress: () => console.log('Ask me later pressed'),
+            //     // },
+            //     {
+            //       text: '취소',
+            //       onPress: () => console.log('로그아웃 취소'),
+            //       style: 'destructive',
+            //     },
+            //     {text: '로그아웃', onPress: () => console.log('로그아웃')},
+            //   ],
+            //   {cancelable: false},
+            // )
           }>
           <TextLogout>로그아웃</TextLogout>
         </BtnContainer>

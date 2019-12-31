@@ -12,6 +12,7 @@
 #import <React/RCTRootView.h>
 #import <KakaoOpenSDK/KakaoOpenSDK.h>
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <GoogleMaps/GoogleMaps.h>
 
 @implementation AppDelegate
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -30,7 +31,7 @@
 
   [[FBSDKApplicationDelegate sharedInstance] application:application
     didFinishLaunchingWithOptions:launchOptions];
-
+  [GMSServices provideAPIKey:@"AIzaSyDHUfqOG16BIZHBzD7JY8oBgCTzMWSldmk"]; // add this line using the api key obtained from Google Console
   return YES;
 }
 

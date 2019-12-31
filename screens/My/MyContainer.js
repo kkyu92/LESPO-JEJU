@@ -20,10 +20,12 @@ export default class extends React.Component {
     this.setState({isModalVisible: bool});
   };
 
+  //TODO: Logout
   setData = data => {
     console.log('setData::: ', data);
     this.setState({choosenData: data});
   };
+
   render() {
     const {loading} = this.state;
     return (

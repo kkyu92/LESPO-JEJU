@@ -1,14 +1,14 @@
-import React from "react";
-import { withNavigation } from "react-navigation";
-import MapView, { Marker } from "react-native-maps";
-import styled from "styled-components";
-import Loader from "../../../components/Loader";
-import { BG_COLOR, TINT_COLOR, BLACK_COLOR } from "../../../constants/Colors";
-import Layout from "../../../constants/Layout";
-import { Platform } from "react-native";
-import Section from "../../../components/Section";
-import SubSlide from "../../../components/SubSlide";
-import SearchNo from "../../../screens/Main/Search/SearchNo";
+import React from 'react';
+import {withNavigation} from 'react-navigation';
+import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
+import styled from 'styled-components';
+import Loader from '../../../components/Loader';
+import {BG_COLOR, TINT_COLOR, BLACK_COLOR} from '../../../constants/Colors';
+import Layout from '../../../constants/Layout';
+import {Platform} from 'react-native';
+import Section from '../../../components/Section';
+import SubSlide from '../../../components/SubSlide';
+import SearchNo from '../../../screens/Main/Search/SearchNo';
 
 const MapContainer = styled.View`
   margin-top: 4px;
@@ -36,23 +36,23 @@ const loactions = {
   markers: [
     {
       key: 1,
-      name: "Rixos The Palm Dubai",
-      text: "Text tttt::: Rixos The Palm Dubai",
-      location: { latitude: 25.1212, longitude: 55.1535 }
+      name: 'Rixos The Palm Dubai',
+      text: 'Text tttt::: Rixos The Palm Dubai',
+      location: {latitude: 25.1212, longitude: 55.1535},
     },
     {
       key: 2,
-      name: "Shangri-La Hotel",
-      text: "Text tttt::: Shangri-La Hotel",
-      location: { latitude: 25.2084, longitude: 55.2719 }
+      name: 'Shangri-La Hotel',
+      text: 'Text tttt::: Shangri-La Hotel',
+      location: {latitude: 25.2084, longitude: 55.2719},
     },
     {
       key: 3,
-      name: "Grand Hyatt",
-      text: "Text tttt::: Grand Hyatt",
-      location: { latitude: 25.2285, longitude: 55.3273 }
-    }
-  ]
+      name: 'Grand Hyatt',
+      text: 'Text tttt::: Grand Hyatt',
+      location: {latitude: 25.2285, longitude: 55.3273},
+    },
+  ],
 };
 
 // show DATA
@@ -61,7 +61,7 @@ const CoursePresenter = ({
   latitude,
   longitude,
   listChanged,
-  navigation
+  navigation,
 }) =>
   loading ? (
     <Loader />
@@ -69,16 +69,17 @@ const CoursePresenter = ({
     <View>
       <MapContainer>
         <MapView
+          provider={PROVIDER_GOOGLE}
+          ref={map => (this._map = map)}
           showsMyLocationButton
           showsUserLocation
-          style={{ flex: 1 }}
+          style={{flex: 1}}
           initialRegion={{
             latitude: latitude,
             longitude: longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421
-          }}
-        >
+            latitudeDelta: 0.09,
+            longitudeDelta: 0.035,
+          }}>
           {loactions.markers.map(list => (
             <Marker
               key={list.key}
@@ -101,7 +102,7 @@ const CoursePresenter = ({
                     .filter(list => list.backdrop_path !== null)
                     .map(list => (
                       <SubSlide
-                        tag={"notag"}
+                        tag={'notag'}
                         horizontal={false}
                         key={list.id}
                         id={list.id}
@@ -116,7 +117,7 @@ const CoursePresenter = ({
                 <SearchNo handleGetSearchText={searchTerm} />
               )
             ) : (
-              console.log("null")
+              console.log('null')
             )}
           </>
         )}

@@ -9,6 +9,7 @@ import {
   Dimensions,
 } from 'react-native';
 import Layout from '../constants/Layout';
+import {GREY_COLOR} from '../constants/Colors';
 
 export default class SimpleDialog extends Component {
   constructor(props) {
@@ -35,21 +36,23 @@ export default class SimpleDialog extends Component {
         style={styles.contentContainer}>
         <View style={[styles.modal, {width: this.state.width - 80}]}>
           <View style={styles.textView}>
-            <Text style={[styles.text, {fontSize: 20}]}> Modal Header </Text>
-            <Text style={styles.text}> Modal Text </Text>
+            <Text style={[styles.text, {color: 'black'}, {fontSize: 20}]}>
+              로그아웃 하시겠습니까?
+            </Text>
+            {/* <Text style={styles.text}> Modal Text </Text> */}
           </View>
           <View style={styles.buttonView}>
             <TouchableHighlight
               onPress={() => this.closeModal('Cancel')}
               style={styles.touchableHighlight}
               underlayColor={'#f1f1f1'}>
-              <Text style={[styles.text, {color: 'blue'}]}> Cancel </Text>
+              <Text style={[styles.text, {color: 'red'}]}> 취소 </Text>
             </TouchableHighlight>
             <TouchableHighlight
               onPress={() => this.closeModal('OK')}
               style={styles.touchableHighlight}
               underlayColor={'#f1f1f1'}>
-              <Text style={[styles.text, {color: 'blue'}]}> OK </Text>
+              <Text style={[styles.text, {color: 'orange'}]}> 로그아웃 </Text>
             </TouchableHighlight>
           </View>
         </View>
@@ -65,12 +68,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   modal: {
-    height: 150,
+    height: Layout.height / 6,
     paddingTop: 10,
     alignSelf: 'center',
     alignItems: 'center',
     textAlign: 'center',
     backgroundColor: 'white',
+    borderColor: 'orange',
+    borderWidth: 1,
     borderRadius: 10,
   },
   text: {
@@ -89,9 +94,12 @@ const styles = StyleSheet.create({
   textView: {
     flex: 1,
     alignItems: 'center',
+    marginTop: 10,
   },
   buttonView: {
     width: '100%',
     flexDirection: 'row',
+    // borderTopWidth: 1,
+    // borderColor: GREY_COLOR,
   },
 });

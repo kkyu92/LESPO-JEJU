@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import {Platform} from 'react-native';
 import {createAppContainer} from 'react-navigation';
 import {createMaterialTopTabNavigator} from 'react-navigation-tabs';
-import CourseTap from '../taps/Recommend/CourseList/CourseContainer';
-import FoodTap from '../taps/Recommend/FoodList/FoodListContainer';
-import ViewTap from '../taps/Recommend/ViewList/ViewListContainer';
-import PlayTap from '../taps/Recommend/PlayList/PlayListContainer';
+import CourseTap from '../taps/RecommendTab/CourseList/CourseContainer';
+import FoodTap from '../taps/RecommendTab/FoodList/FoodListContainer';
+import ViewTap from '../taps/RecommendTab/ViewList/ViewListContainer';
+import PlayTap from '../taps/RecommendTab/PlayList/PlayListContainer';
 
 import {BG_COLOR} from '../constants/Colors';
 import {createStack, createTap} from './config';

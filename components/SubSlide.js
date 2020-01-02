@@ -1,26 +1,26 @@
-import React from "react";
-import styled from "styled-components";
-import { withNavigation } from "react-navigation";
-import Poster from "./Poster";
-import Like from "./Like";
+import React from 'react';
+import styled from 'styled-components';
+import {withNavigation} from 'react-navigation';
+import Poster from './Poster';
+import Like from './Like';
 import {
   BG_COLOR,
   TINT_COLOR,
   GREY_COLOR,
-  BLACK_COLOR
-} from "../constants/Colors";
-import PhotoUri from "../api/PhotoUri";
-import Layout from "../constants/Layout";
+  BLACK_COLOR,
+} from '../constants/Colors';
+import PhotoUri from '../api/PhotoUri';
+import Layout from '../constants/Layout';
 
 function ChangeColor() {
   let ColorCode =
-    "rgb(" +
+    'rgb(' +
     Math.floor(Math.random() * 256) +
-    "," +
+    ',' +
     Math.floor(Math.random() * 256) +
-    "," +
+    ',' +
     Math.floor(Math.random() * 256) +
-    ")";
+    ')';
   return ColorCode;
 }
 
@@ -142,6 +142,19 @@ const TagImg = styled.Text`
   margin: 4px;
 `;
 
+// 상세보기 버튼
+const DetailBtn = styled.TouchableOpacity`
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  background-color: ${BG_COLOR};
+  padding: 8px;
+`;
+const DetailText = styled.Text`
+  color: ${TINT_COLOR};
+  font-size: 12px;
+`;
+
 // 리스트 기본틀
 const SubSlide = ({
   id,
@@ -150,22 +163,21 @@ const SubSlide = ({
   avg,
   overview,
   horizontal = true,
-  tag = "tag",
-  navigation
+  tag = 'tag',
+  navigation,
 }) =>
   horizontal ? (
     // 가로로 슬라이드
     <Container
       onPress={() =>
         navigation.navigate({
-          routeName: "Detail",
-          params: { id, backgroundPoster, title, avg, overview, tag }
+          routeName: 'Detail',
+          params: {id, backgroundPoster, title, avg, overview, tag},
         })
-      }
-    >
+      }>
       {/* <Poster path={poster} /> */}
       <BackColor backgroundColor={ChangeColor()}>
-        <FoodImg source={{ uri: PhotoUri(backgroundPoster) }} />
+        <FoodImg source={{uri: PhotoUri(backgroundPoster)}} />
       </BackColor>
       <LikeConatiner>
         <Like votes={avg} inSlide={true} />
@@ -183,11 +195,11 @@ const SubSlide = ({
         ) : null}
       </TextContainer>
     </Container>
-  ) : tag === "tag" ? (
+  ) : tag === 'tag' ? (
     // 세로로 슬라이드 + TAG [ 관광상품 ]
     <VerticalContainer>
       <VerticalImgContainer>
-        <VerticalImg source={{ uri: PhotoUri(backgroundPoster) }} />
+        <VerticalImg source={{uri: PhotoUri(backgroundPoster)}} />
         <TagImg>먹거리</TagImg>
       </VerticalImgContainer>
       <VerticalColum>
@@ -200,11 +212,11 @@ const SubSlide = ({
       </VerticalColum>
       <Like votes={avg} inSlide={false} />
     </VerticalContainer>
-  ) : tag === "notag" ? (
+  ) : tag === 'notag' ? (
     // 세로로 슬라이드 - TAG [ 여행하기 ]
     <VerticalContainer>
       <VerticalImgContainer>
-        <VerticalImg source={{ uri: PhotoUri(backgroundPoster) }} />
+        <VerticalImg source={{uri: PhotoUri(backgroundPoster)}} />
       </VerticalImgContainer>
       <VerticalColum>
         <VerticalTitle numberOfLines={1}>{title}</VerticalTitle>
@@ -216,11 +228,35 @@ const SubSlide = ({
       </VerticalColum>
       <Like votes={avg} inSlide={false} />
     </VerticalContainer>
+  ) : tag === 'recommend' ? (
+    // 추천관광 - [ 상세보기 ]
+    <VerticalContainer>
+      <VerticalImgContainer>
+        <VerticalImg source={{uri: PhotoUri(backgroundPoster)}} />
+      </VerticalImgContainer>
+      <VerticalColum>
+        <VerticalTitle numberOfLines={1}>{title}</VerticalTitle>
+        <VerticalContext numberOfLines={5}>
+          {overview.length > 115
+            ? `${overview.substring(0, 112)}...`
+            : overview}
+        </VerticalContext>
+      </VerticalColum>
+      <DetailBtn
+        onPress={() =>
+          navigation.navigate({
+            routeName: 'Detail',
+            params: {id, backgroundPoster, title, avg, overview, tag},
+          })
+        }>
+        <DetailText>상세보기</DetailText>
+      </DetailBtn>
+    </VerticalContainer>
   ) : (
     // 세로로 슬라이드 - Image [ 제주의 소리 ]
     <VerticalContainer>
       <ADContainer>
-        <ADImg source={{ uri: PhotoUri(backgroundPoster) }} />
+        <ADImg source={{uri: PhotoUri(backgroundPoster)}} />
       </ADContainer>
     </VerticalContainer>
   );

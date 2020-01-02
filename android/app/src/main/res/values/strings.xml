@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">LespoJeju</string>
     <string name="facebook_app_id">2516363172019512</string>
-     <string name="fb_login_protocol_scheme">fb2516363172019512</string>
-
+    <string name="fb_login_protocol_scheme">fb2516363172019512</string>
+    <string name="google_map_api">AIzaSyDHUfqOG16BIZHBzD7JY8oBgCTzMWSldmk</string>
 </resources>

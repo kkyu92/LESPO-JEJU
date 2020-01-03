@@ -13,18 +13,18 @@ export default class extends React.Component {
   // init 초기상태 값 설정
   state = {
     loading: true,
-    getJejuSound: null,
+    listChanged: null,
     error: null,
   };
 
   async componentDidMount() {
     // let : 변할 수 있는 변수
-    let getJejuSound, error;
+    let listChanged, error;
 
     try {
       ({
-        data: {results: getJejuSound},
-      } = await tv.getAiringThisWeek());
+        data: {results: listChanged},
+      } = await movie.getUpComing());
     } catch (error) {
       console.log('JejuSound get api ::: ' + error);
       error = "Cant't get Movies.";
@@ -32,13 +32,13 @@ export default class extends React.Component {
       this.setState({
         loading: false,
         error,
-        getJejuSound,
+        listChanged,
       });
     }
   }
 
   render() {
-    const {loading, getJejuSound} = this.state;
-    return <WishListPresenter loading={loading} getJejuSound={getJejuSound} />;
+    const {loading, listChanged} = this.state;
+    return <WishListPresenter loading={loading} listChanged={listChanged} />;
   }
 }

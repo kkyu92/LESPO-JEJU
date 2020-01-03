@@ -192,6 +192,7 @@ const LoginPresenter = ({loading, email, password, kakaoLogin, navigation}) =>
                           console.log(
                             result.id,
                             result.name,
+                            result.email,
                             result.picture.data.url,
                           );
                           alert('Success fetching data: ' + result.name);

@@ -1,8 +1,7 @@
 import React, {useEffect} from 'react';
 import {request, PERMISSIONS} from 'react-native-permissions';
-import CoursePresenter from './CoursePresenter';
+import MapPresenter from './MapPresenter';
 import Geolocation from 'react-native-geolocation-service';
-import {tv, movie} from '../../../api/Api';
 import {View, Text, Platform} from 'react-native';
 
 export default class extends React.Component {
@@ -13,18 +12,37 @@ export default class extends React.Component {
     listChanged: null,
     error: null,
   };
+  static navigationOptions = () => {
+    // return {
+    //   title: navigation.getParam("title")
+    // };
+  };
+
+  constructor(props) {
+    super(props);
+    const {
+      navigation: {
+        state: {
+          //   params: { id, backgroundPoster, title, avg, overview }
+          params: {listChanged},
+        },
+      },
+    } = props;
+    this.state.listChanged = listChanged;
+    this.state.loading = false;
+  }
 
   // 사용자 위치
   requestLocationPermission = async () => {
     if (Platform.OS === 'ios') {
       var response = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
-      console.log('Course iPhone : ', response);
+      console.log('MapView iPhone : ', response);
       if (response === 'granted') {
         this.locateCurrentPosition();
       }
     } else {
       var response = await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
-      console.log('Course Android : ', response);
+      console.log('MapView Android : ', response);
       if (response === 'granted') {
         this.locateCurrentPosition();
       }
@@ -43,7 +61,7 @@ export default class extends React.Component {
         } catch (error) {
           console.log(error);
         } finally {
-          console.log('Course: ', this.state.latitude, this.state.longitude);
+          console.log('MapView: ', this.state.latitude, this.state.longitude);
         }
       },
       error => {
@@ -55,33 +73,18 @@ export default class extends React.Component {
 
   // 시작시 불러옴
   async componentDidMount() {
-    let listChanged, error;
-    try {
-      ({
-        data: {results: listChanged},
-      } = await movie.getSearchMovie('king'));
-    } catch (error) {
-      console.log(error);
-      error = "Cnat't get Course";
-    } finally {
-      this.setState({
-        loading: false,
-        listChanged,
-        error,
-      });
-      this.requestLocationPermission();
-    }
+    this.requestLocationPermission();
   }
   render() {
     const {loading, latitude, longitude, listChanged} = this.state;
     // 위치정보 받기 전
     if (latitude) {
       return (
-        <CoursePresenter
+        <MapPresenter
           loading={loading}
-          listChanged={listChanged}
           latitude={latitude}
           longitude={longitude}
+          listChanged={listChanged}
         />
       );
     } else {

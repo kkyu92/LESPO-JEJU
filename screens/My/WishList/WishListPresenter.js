@@ -1,4 +1,5 @@
 import React from 'react';
+import {withNavigation} from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import styled from 'styled-components';
 import Loader from '../../../components/Loader';
@@ -7,6 +8,7 @@ import SubSlide from '../../../components/SubSlide';
 import {TINT_COLOR, BG_COLOR} from '../../../constants/Colors';
 import {Platform} from 'react-native';
 import SearchNo from '../../Main/Search/SearchNo';
+import Layout from '../../../constants/Layout';
 
 const View = styled.View`
   background-color: orange;
@@ -22,26 +24,43 @@ const Container = styled.ScrollView`
   margin-top: 20;
   flex: 1;
 `;
-
-const MapIcon = styled.TouchableOpacity`
-  justify-content: flex-end;
-  align-items: flex-end;
-  padding-top: 20px;
-  padding-left: 20px;
-  padding-right: 20px;
+const MapBtn = styled.TouchableOpacity`
+  width: ${Layout.width / 3};
+  margin-top: 10px;
+  margin-right: 20px;
+  margin-bottom: 10px;
+  padding: 5px;
+  flex-direction: row;
+  border-radius: 10px;
+  border-color: ${BG_COLOR};
+  border-width: 1px;
+  align-items: center;
+  align-self: flex-end;
+  justify-content: space-around;
+`;
+const MapText = styled.Text`
+  color: ${BG_COLOR};
+  font-size: 14px;
 `;
 
-const WishListPresenter = ({loading, getJejuSound}) =>
+const WishListPresenter = ({loading, listChanged, navigation}) =>
   loading ? (
     <Loader />
-  ) : getJejuSound ? (
+  ) : listChanged ? (
     <View>
       <Container>
-        <MapIcon>
+        <MapBtn
+          onPress={() =>
+            navigation.navigate({
+              routeName: 'Map',
+              params: {listChanged},
+            })
+          }>
+          <MapText>지도로 보기</MapText>
           <Icon size={30} name={'map-marker-radius'} color={`${BG_COLOR}`} />
-        </MapIcon>
+        </MapBtn>
         <Section horizontal={false} title="관광 상품">
-          {getJejuSound
+          {listChanged
             .filter(list => list.backdrop_path !== null)
             .map(list => (
               <SubSlide
@@ -50,7 +69,7 @@ const WishListPresenter = ({loading, getJejuSound}) =>
                 key={list.id}
                 id={list.id}
                 backgroundPoster={list.backdrop_path}
-                title={list.name}
+                title={list.title}
                 avg={list.vote_average}
                 overview={list.overview}
               />
@@ -62,4 +81,4 @@ const WishListPresenter = ({loading, getJejuSound}) =>
     <SearchNo handleGetSearchText={'등록된 위시리스트가 없습니다.'} />
   );
 
-export default WishListPresenter;
+export default withNavigation(WishListPresenter);

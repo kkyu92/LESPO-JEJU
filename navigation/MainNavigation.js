@@ -13,6 +13,7 @@ import AddBattleScreen from '../screens/Sports/AddBattle/BattleContainer';
 import MyBattleScreen from '../screens/My/MyBattle/MyBattleContainer';
 import MyBattleTalkScreen from '../screens/My/BattleTalk/BattleTalkContainer';
 import MyWishListScreen from '../screens/My/WishList/WishListContainer';
+import MapScreen from '../screens/Map/MapContainer';
 import {headerStyles, detailHeaderStyles, tapsHeaderStyles} from './config';
 
 // 최상위 Nav [ Main tap4 + 검색 + 메인리스트 + 위시리스트... ]
@@ -115,6 +116,13 @@ const HomeNavigation = createStackNavigator(
       navigationOptions: {
         ...tapsHeaderStyles,
         headerTitle: '위시리스트',
+      },
+    },
+    // 지도 화면
+    Map: {
+      screen: MapScreen,
+      navigationOptions: {
+        ...detailHeaderStyles,
       },
     },
     // 먹거리 텝 화면

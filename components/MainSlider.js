@@ -9,14 +9,40 @@ const SWIPER_HEIGHT = Layout.height / 4;
 
 const View = styled.View`
   border-radius: 15;
-  margin-right: 20;
   height: ${SWIPER_HEIGHT};
+  position: absolute;
 `;
 
 const Text = styled.Text``;
 
-const MainSlider = ({movies}) =>
-  movies ? (
+const MainSlider = ({map = false, movies}) =>
+  map ? (
+    <Swiper
+      showsPagination={true}
+      autoplay={false}
+      autoplayTimeout={3}
+      style={{
+        height: (Layout.width / 5) * 3,
+        position: 'absolute',
+        bottom: 20,
+      }}>
+      {movies
+        .filter(movie => movie.backdrop_path !== null)
+        .map(movie => (
+          <View key={movie.id}>
+            <MainSlide
+              map={map}
+              overview={movie.overview}
+              avg={movie.vote_average}
+              title={movie.title}
+              id={movie.id}
+              backgroundPoster={movie.backdrop_path}
+              poster={movie.poster_path}
+            />
+          </View>
+        ))}
+    </Swiper>
+  ) : movies ? (
     <Swiper
       marginBottom={20}
       showsPagination={false}

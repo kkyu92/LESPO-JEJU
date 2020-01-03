@@ -117,6 +117,19 @@ const VerticalImg = styled.Image`
   position: absolute;
 `;
 
+const RecommendImgContainer = styled.View`
+  width: ${Layout.width / 3};
+  height: ${Layout.height / 8};
+  border-radius: 15;
+  align-items: flex-end;
+`;
+const RecommendImg = styled.Image`
+  width: ${Layout.width / 3};
+  height: ${Layout.height / 8};
+  border-radius: 15;
+  position: absolute;
+`;
+
 const ADContainer = styled.View`
   width: 100%;
   height: 120px;
@@ -197,7 +210,13 @@ const SubSlide = ({
     </Container>
   ) : tag === 'tag' ? (
     // 세로로 슬라이드 + TAG [ 관광상품 ]
-    <VerticalContainer>
+    <VerticalContainer
+      onPress={() =>
+        navigation.navigate({
+          routeName: 'Detail',
+          params: {id, backgroundPoster, title, avg, overview, tag},
+        })
+      }>
       <VerticalImgContainer>
         <VerticalImg source={{uri: PhotoUri(backgroundPoster)}} />
         <TagImg>먹거리</TagImg>
@@ -214,7 +233,13 @@ const SubSlide = ({
     </VerticalContainer>
   ) : tag === 'notag' ? (
     // 세로로 슬라이드 - TAG [ 여행하기 ]
-    <VerticalContainer>
+    <VerticalContainer
+      onPress={() =>
+        navigation.navigate({
+          routeName: 'Detail',
+          params: {id, backgroundPoster, title, avg, overview, tag},
+        })
+      }>
       <VerticalImgContainer>
         <VerticalImg source={{uri: PhotoUri(backgroundPoster)}} />
       </VerticalImgContainer>
@@ -231,9 +256,9 @@ const SubSlide = ({
   ) : tag === 'recommend' ? (
     // 추천관광 - [ 상세보기 ]
     <VerticalContainer>
-      <VerticalImgContainer>
-        <VerticalImg source={{uri: PhotoUri(backgroundPoster)}} />
-      </VerticalImgContainer>
+      <RecommendImgContainer>
+        <RecommendImg source={{uri: PhotoUri(backgroundPoster)}} />
+      </RecommendImgContainer>
       <VerticalColum>
         <VerticalTitle numberOfLines={1}>{title}</VerticalTitle>
         <VerticalContext numberOfLines={5}>
@@ -254,7 +279,13 @@ const SubSlide = ({
     </VerticalContainer>
   ) : (
     // 세로로 슬라이드 - Image [ 제주의 소리 ]
-    <VerticalContainer>
+    <VerticalContainer
+      onPress={() =>
+        navigation.navigate({
+          routeName: 'Detail',
+          params: {id, backgroundPoster, title, avg, overview, tag},
+        })
+      }>
       <ADContainer>
         <ADImg source={{uri: PhotoUri(backgroundPoster)}} />
       </ADContainer>

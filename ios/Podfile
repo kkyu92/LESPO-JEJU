@@ -34,7 +34,8 @@ target 'LespoJeju' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
-  pod 'react-native-geolocation', path: '../node_modules/@react-native-community/geolocation'
+  permissions_path = '../node_modules/react-native-permissions/ios'
+  pod 'Permission-LocationWhenInUse', :path => "#{permissions_path}/LocationWhenInUse.podspec"
 
   # React Native Maps dependencies
   rn_maps_path = '../node_modules/react-native-maps'

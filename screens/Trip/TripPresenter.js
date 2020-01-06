@@ -34,14 +34,29 @@ const Container = styled.View`
   justify-content: space-between;
 `;
 
-const Card = styled.TouchableOpacity`
-  width: ${Layout.width / 2 - 50};
-  height: ${Layout.width / 2};
+const BigCard = styled.TouchableOpacity`
+  width: ${Layout.width - 80};
+  height: ${Layout.width / 2 - 50};
   background-color: ${BG_COLOR};
   border-radius: 15px;
   align-items: center;
   justify-content: center;
   margin: 10px;
+`;
+
+const Card = styled.TouchableOpacity`
+  width: ${Layout.width / 2 - 50};
+  height: ${Layout.width / 2 - 50};
+  background-color: ${BG_COLOR};
+  border-radius: 15px;
+  align-items: center;
+  justify-content: center;
+  margin: 10px;
+`;
+
+const BigImg = styled.Image`
+  width: 90px;
+  height: 90px;
 `;
 
 const Img = styled.Image`
@@ -54,10 +69,10 @@ const Img2 = styled.Image`
 `;
 
 const Text = styled.Text`
-  margin-top: 20px;
+  margin-top: 10px;
   color: ${TINT_COLOR};
   align-self: center;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
 `;
 
@@ -95,36 +110,64 @@ const TripPresenter = ({loading, navigation}) =>
 
         <View>
           <Container>
-            <Card
+            <BigCard
               onPress={() =>
                 navigation.navigate({
                   routeName: 'Recommend',
                 })
               }>
-              <Img
+              <BigImg
                 source={require(`../../assets/drawable-xxhdpi/icon_sightseeing.png`)}
               />
               <Text>추천관광</Text>
-            </Card>
-            <Card>
+            </BigCard>
+          </Container>
+          <Container>
+            <Card
+              onPress={() =>
+                navigation.navigate({
+                  routeName: 'Food',
+                })
+              }>
               <Img
                 source={require(`../../assets/drawable-xxhdpi/icon_meal.png`)}
               />
               <Text>먹거리</Text>
             </Card>
-          </Container>
-          <Container>
-            <Card>
+            <Card
+              onPress={() =>
+                navigation.navigate({
+                  routeName: 'View',
+                })
+              }>
               <Img2
                 source={require(`../../assets/drawable-xxhdpi/icon_viewthing.png`)}
               />
               <Text>볼거리</Text>
             </Card>
-            <Card>
+          </Container>
+          <Container>
+            <Card
+              onPress={() =>
+                navigation.navigate({
+                  routeName: 'Leisure',
+                })
+              }>
               <Img
-                source={require(`../../assets/drawable-xxhdpi/icon_snorkle.png`)}
+                source={require(`../../assets/drawable-xxhdpi/icon_leisure.png`)}
               />
-              <Text>익사이팅</Text>
+              <Text>레저스포츠</Text>
+            </Card>
+            <Card
+              onPress={() =>
+                navigation.navigate({
+                  routeName: 'Sports',
+                })
+              }>
+              <Img
+                source={require(`../../assets/drawable-xxhdpi/icon_gym.png`)}
+              />
+              <Text>운동시설</Text>
             </Card>
           </Container>
         </View>

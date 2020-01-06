@@ -16,7 +16,6 @@ import styled from 'styled-components';
 const Icon = styled.Image`
   width: 20px;
   height: 20px;
-  background-color: ${BG_COLOR};
 `;
 
 const TabNavigation = createBottomTabNavigator(
@@ -25,13 +24,20 @@ const TabNavigation = createBottomTabNavigator(
     메인: {
       screen: createStackMain(MainScreen),
       navigationOptions: {
-        tabBarIcon: ({focused}) => (
-          // <Icon source={require(`../assets/drawable-xxxhdpi/icon_home.png`)} />
-          <TabBarIcon
-            focused={focused}
-            name={Platform.OS === 'ios' ? 'ios-home' : 'md-home'}
-          />
-        ),
+        tabBarIcon: ({focused}) =>
+          focused ? (
+            <Icon
+              source={require(`../assets/drawable-xxhdpi/icon_home_orange.png`)}
+            />
+          ) : (
+            <Icon
+              source={require(`../assets/drawable-xxhdpi/icon_home_gray.png`)}
+            />
+          ),
+        // <TabBarIcon
+        //   focused={focused}
+        //   name={Platform.OS === 'ios' ? 'ios-home' : 'md-home'}
+        // />
         tabBarOptions: {
           activeTintColor: 'orange',
           inactiveTintColor: 'gray',
@@ -41,12 +47,16 @@ const TabNavigation = createBottomTabNavigator(
     스포츠배틀: {
       screen: createStackMain(SportsScreen),
       navigationOptions: {
-        tabBarIcon: ({focused}) => (
-          <TabBarIcon
-            focused={focused}
-            name={Platform.OS === 'ios' ? 'ios-football' : 'md-football'}
-          />
-        ),
+        tabBarIcon: ({focused}) =>
+          focused ? (
+            <Icon
+              source={require(`../assets/drawable-xxhdpi/icon_battle_orange.png`)}
+            />
+          ) : (
+            <Icon
+              source={require(`../assets/drawable-xxhdpi/icon_battle_gray.png`)}
+            />
+          ),
         tabBarOptions: {
           activeTintColor: 'orange',
           inactiveTintColor: 'gray',
@@ -56,12 +66,16 @@ const TabNavigation = createBottomTabNavigator(
     여행하기: {
       screen: createStackMain(TripScreen),
       navigationOptions: {
-        tabBarIcon: ({focused}) => (
-          <TabBarIcon
-            focused={focused}
-            name={Platform.OS === 'ios' ? 'ios-bus' : 'md-bus'}
-          />
-        ),
+        tabBarIcon: ({focused}) =>
+          focused ? (
+            <Icon
+              source={require(`../assets/drawable-xxhdpi/icon_trip_orange.png`)}
+            />
+          ) : (
+            <Icon
+              source={require(`../assets/drawable-xxhdpi/icon_trip_gray.png`)}
+            />
+          ),
         tabBarOptions: {
           activeTintColor: 'orange',
           inactiveTintColor: 'gray',
@@ -71,12 +85,16 @@ const TabNavigation = createBottomTabNavigator(
     내정보: {
       screen: createStackMain(MyScreen),
       navigationOptions: {
-        tabBarIcon: ({focused}) => (
-          <TabBarIcon
-            focused={focused}
-            name={Platform.OS === 'ios' ? 'ios-person' : 'md-person'}
-          />
-        ),
+        tabBarIcon: ({focused}) =>
+          focused ? (
+            <Icon
+              source={require(`../assets/drawable-xxhdpi/icon_user_orange.png`)}
+            />
+          ) : (
+            <Icon
+              source={require(`../assets/drawable-xxhdpi/icon_user_gray.png`)}
+            />
+          ),
         tabBarOptions: {
           activeTintColor: 'orange',
           inactiveTintColor: 'gray',
@@ -86,13 +104,17 @@ const TabNavigation = createBottomTabNavigator(
     더보기: {
       screen: createStackMain(AddScreen),
       navigationOptions: {
-        tabBarIcon: ({focused}) => (
-          <TabBarIcon
-            focused={focused}
-            name={Platform.OS === 'ios' ? 'ios-more' : 'ios-more'}
-          />
-          // <Icon source={require(`../assets/drawable-xxxhdpi/icon_more.png`)} />
-        ),
+        tabBarIcon: ({focused}) =>
+          focused ? (
+            <Icon
+              source={require(`../assets/drawable-xxhdpi/icon_more_orange.png`)}
+            />
+          ) : (
+            <Icon
+              source={require(`../assets/drawable-xxhdpi/icon_more_gray.png`)}
+            />
+          ),
+        // <Icon source={require(`../assets/drawable-xxxhdpi/icon_more.png`)} />
         tabBarOptions: {
           activeTintColor: 'orange',
           inactiveTintColor: 'gray',

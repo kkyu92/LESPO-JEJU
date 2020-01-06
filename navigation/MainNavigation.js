@@ -3,6 +3,10 @@ import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 import TabNavigation from './TabNavigation';
 import RecommendNavigation from './RecommendNavigation';
+import FoodNavigation from './FoodNavigation';
+import ViewNavigation from './ViewNavigation';
+import LeisureNavigation from './LeisureNavigation';
+import SportsNavigation from './SportsNavigation';
 import LoginScreen from '../screens/Login/LoginContainer';
 import SignupScreen from '../screens/Signup/SignupContainer';
 import SearchScreen from '../screens/Main/Search/SearchContainer';
@@ -88,14 +92,6 @@ const HomeNavigation = createStackNavigator(
         ...headerStyles,
       },
     },
-    // 추천관광 텝 화면
-    Recommend: {
-      screen: RecommendNavigation,
-      navigationOptions: {
-        ...tapsHeaderStyles,
-        headerTitle: '추천관광',
-      },
-    },
     // 내정보 화면
     MyBattleList: {
       screen: MyBattleScreen,
@@ -125,9 +121,46 @@ const HomeNavigation = createStackNavigator(
         ...detailHeaderStyles,
       },
     },
+    // 추천관광 텝 화면
+    Recommend: {
+      screen: RecommendNavigation,
+      navigationOptions: {
+        ...tapsHeaderStyles,
+        headerTitle: '추천관광',
+      },
+    },
     // 먹거리 텝 화면
+    Food: {
+      screen: FoodNavigation,
+      navigationOptions: {
+        ...tapsHeaderStyles,
+        headerTitle: '먹거리',
+      },
+    },
     // 볼거리 텝 화면
-    // 놀거리 텝 화면
+    View: {
+      screen: ViewNavigation,
+      navigationOptions: {
+        ...tapsHeaderStyles,
+        headerTitle: '볼거리',
+      },
+    },
+    // 레저 텝 화면
+    Leisure: {
+      screen: LeisureNavigation,
+      navigationOptions: {
+        ...tapsHeaderStyles,
+        headerTitle: '레저스포츠',
+      },
+    },
+    // 볼거리 텝 화면
+    Sports: {
+      screen: SportsNavigation,
+      navigationOptions: {
+        ...tapsHeaderStyles,
+        headerTitle: '운동시설',
+      },
+    },
   },
   {
     //TODO: 옆에서 나오는거 할때 사용하면 좋을듯

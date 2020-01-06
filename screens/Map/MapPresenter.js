@@ -22,7 +22,7 @@ const MyLocation = styled.TouchableOpacity`
   width: 50px;
   height: 50px;
   right: 0;
-  top: ${Platform.OS === 'ios' ? '50px' : '0px'};
+  top: 50px;
   margin: 20px;
   border-radius: 25px;
   align-items: center;
@@ -49,6 +49,7 @@ const _getLocation = async (latitude, longitude) => {
   );
 };
 
+let INDEX = 0;
 const coordinates = {
   mark: [],
   markers: [
@@ -116,7 +117,8 @@ const coordinates = {
 };
 
 const onSwiperItemChange = (index, list) => {
-  console.log('onSwiperItemChange');
+  INDEX = index;
+  console.log(INDEX + ' :::onSwiperItemChange::: ' + index);
   let location = coordinates.markers[index];
   console.log(
     'latlng ::: ' + location.latlng.latitude + ', ' + location.latlng.longitude,
@@ -130,14 +132,17 @@ const onSwiperItemChange = (index, list) => {
   coordinates.mark[index].showCallout();
 };
 
-const onMarkerPressed = (location, index) => {
+const onMarkerPressed = location => {
   this.map.animateToRegion({
     latitude: location.latlng.latitude,
     longitude: location.latlng.longitude,
     latitudeDelta: 0.09,
     longitudeDelta: 0.035,
   });
-  this.swiper.scrollBy(index, true);
+  let moveIndex = location.key - INDEX;
+  console.log('index::: ' + location.key);
+  console.log('INDEX::: ' + moveIndex);
+  this.swiper.scrollBy(moveIndex, true);
 };
 
 const MapPresenter = ({
@@ -171,7 +176,7 @@ const MapPresenter = ({
           <Marker
             key={list.key}
             ref={marker => (coordinates.mark[index] = marker)}
-            onPress={() => onMarkerPressed(list, index)}
+            onPress={() => onMarkerPressed(list)}
             coordinate={list.latlng}
             title={list.name}
             description={list.text}

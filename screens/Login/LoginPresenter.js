@@ -183,6 +183,17 @@ const LoginPresenter = ({loading, email, password, kakaoLogin, navigation}) =>
                     AccessToken.getCurrentAccessToken().then(data => {
                       let accessToken = data.accessToken;
                       // alert(accessToken.toString());
+                      //   let req = new GraphRequest('/me', {
+                      //     httpMethod: 'GET',
+                      //     version: 'v2.5',
+                      //     parameters: {
+                      //         'fields': {
+                      //             'string' : 'email,name,friends'
+                      //         }
+                      //     }
+                      // }, (err, res) => {
+                      //     console.log(err, res);
+                      // });
 
                       const responseInfoCallback = (error, result) => {
                         if (error) {
@@ -205,7 +216,7 @@ const LoginPresenter = ({loading, email, password, kakaoLogin, navigation}) =>
                           accessToken: accessToken,
                           parameters: {
                             fields: {
-                              string: 'id,name,picture',
+                              string: 'id,email,name,picture',
                               // picture.type(large)
                             },
                           },

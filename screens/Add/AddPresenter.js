@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Loader from '../../components/Loader';
 import {GREY_COLOR, BG_COLOR, TINT_COLOR} from '../../constants/Colors';
+import {Linking} from 'react-native';
+import {EMAIL_TITLE, EMAIL_DESCRIPTION} from '../../constants/Strings';
 
 const View = styled.View`
   background-color: ${BG_COLOR};
@@ -96,21 +98,40 @@ const AddPresenter = ({loading, navigation}) =>
           />
         </BtnContainer>
 
-        <BtnContainer>
+        <BtnContainer
+          onPress={() =>
+            Linking.openURL(
+              'mailto:support@lespo.com?subject=' +
+                JSON.stringify(EMAIL_TITLE) +
+                '&body=' +
+                JSON.stringify(EMAIL_DESCRIPTION),
+            )
+          }
+          title="support@lespo.com">
           <Text>고객센터</Text>
           <BtnImg
             source={require(`../../assets/drawable-xxhdpi/icon_callcenter.png`)}
           />
         </BtnContainer>
 
-        <BtnContainer>
+        <BtnContainer
+          onPress={() =>
+            navigation.navigate({
+              routeName: 'Notice',
+            })
+          }>
           <Text>공지사항</Text>
           <BtnImg
             source={require(`../../assets/drawable-xxhdpi/icon_notice.png`)}
           />
         </BtnContainer>
 
-        <BtnContainer>
+        <BtnContainer
+          onPress={() =>
+            navigation.navigate({
+              routeName: 'Setting',
+            })
+          }>
           <Text>설정</Text>
           <BtnImg
             source={require(`../../assets/drawable-xxhdpi/icon_setting.png`)}

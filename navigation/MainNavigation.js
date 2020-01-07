@@ -13,6 +13,8 @@ import SearchScreen from '../screens/Main/Search/SearchContainer';
 import DetailScreen from '../screens/Detail/DetailContainer';
 import JejuSoundScreen from '../screens/Add/JejuSound/JejuSoundContainer';
 import JejuGiftScreen from '../screens/Add/JejuGift/JejuGiftContainer';
+import NoticeScreen from '../screens/Add/Notice/NoticeContainer';
+import SettingScreen from '../screens/Add/Setting/SettingContainer';
 import AddBattleScreen from '../screens/Sports/AddBattle/BattleContainer';
 import MyBattleScreen from '../screens/My/MyBattle/MyBattleContainer';
 import MyBattleTalkScreen from '../screens/My/BattleTalk/BattleTalkContainer';
@@ -76,6 +78,20 @@ const HomeNavigation = createStackNavigator(
       screen: JejuGiftScreen,
       navigationOptions: {
         ...headerStyles,
+      },
+    },
+    // 공지사항
+    Notice: {
+      screen: NoticeScreen,
+      navigationOptions: {
+        ...headerStyles,
+      },
+    },
+    // 설정
+    Setting: {
+      screen: SettingScreen,
+      navigationOptions: {
+        ...detailHeaderStyles,
       },
     },
     // Search

@@ -16,8 +16,8 @@ import {createStack, createTap} from './config';
 import Layout from '../constants/Layout';
 
 const Icon = styled.Image`
-  /* width: 30px;
-  height: 29px; */
+  width: 40px;
+  height: 40px;
 `;
 
 // const Icon10 = styled.
@@ -30,9 +30,8 @@ const LeisureNavigation = createMaterialTopTabNavigator(
       navigationOptions: {
         tabBarIcon: ({focused}) => (
           <Icon
-            style={{width: 30, height: 30}}
             focused={focused}
-            source={require(`../assets/drawable-xxhdpi/icon_koreanfood.png`)}
+            source={require(`../assets/drawable-xxhdpi/icon_extreme.png`)}
           />
         ),
       },
@@ -42,9 +41,8 @@ const LeisureNavigation = createMaterialTopTabNavigator(
       navigationOptions: {
         tabBarIcon: ({focused}) => (
           <Icon
-            style={{width: 30, height: 30}}
             focused={focused}
-            source={require(`../assets/drawable-xxhdpi/icon_koreanfood.png`)}
+            source={require(`../assets/drawable-xxhdpi/icon_waterpark.png`)}
           />
         ),
       },
@@ -54,9 +52,8 @@ const LeisureNavigation = createMaterialTopTabNavigator(
       navigationOptions: {
         tabBarIcon: ({focused}) => (
           <Icon
-            style={{width: 30, height: 29}}
             focused={focused}
-            source={require(`../assets/drawable-xxhdpi/icon_chinesefood.png`)}
+            source={require(`../assets/drawable-xxhdpi/icon_themepark.png`)}
           />
         ),
       },
@@ -66,9 +63,8 @@ const LeisureNavigation = createMaterialTopTabNavigator(
       navigationOptions: {
         tabBarIcon: ({focused}) => (
           <Icon
-            style={{width: 30, height: 29}}
             focused={focused}
-            source={require(`../assets/drawable-xxhdpi/icon_pizza.png`)}
+            source={require(`../assets/drawable-xxhdpi/icon_fishing.png`)}
           />
         ),
       },
@@ -78,9 +74,8 @@ const LeisureNavigation = createMaterialTopTabNavigator(
       navigationOptions: {
         tabBarIcon: ({focused}) => (
           <Icon
-            style={{width: 38, height: 25}}
             focused={focused}
-            source={require(`../assets/drawable-xxhdpi/icon_sushi.png`)}
+            source={require(`../assets/drawable-xxhdpi/icon_experience.png`)}
           />
         ),
       },
@@ -90,9 +85,8 @@ const LeisureNavigation = createMaterialTopTabNavigator(
       navigationOptions: {
         tabBarIcon: ({focused}) => (
           <Icon
-            style={{width: 38, height: 25}}
             focused={focused}
-            source={require(`../assets/drawable-xxhdpi/icon_blackpig.png`)}
+            source={require(`../assets/drawable-xxhdpi/icon_camping.png`)}
           />
         ),
       },
@@ -102,9 +96,8 @@ const LeisureNavigation = createMaterialTopTabNavigator(
       navigationOptions: {
         tabBarIcon: ({focused}) => (
           <Icon
-            style={{width: 38, height: 25}}
             focused={focused}
-            source={require(`../assets/drawable-xxhdpi/icon_blackpig.png`)}
+            source={require(`../assets/drawable-xxhdpi/icon_leisure_other.png`)}
           />
         ),
       },

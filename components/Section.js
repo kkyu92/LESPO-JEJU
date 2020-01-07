@@ -1,13 +1,14 @@
-import React from "react";
-import styled from "styled-components";
-import SubSlide from "./SubSlide";
-import PropTypes from "prop-types";
+import React from 'react';
+import styled from 'styled-components';
+import SubSlide from './SubSlide';
+import PropTypes from 'prop-types';
 
 // 먹거리, 볼거리, 놀거리 Sections
-
 const Container = styled.View`
   margin-bottom: 20px;
 `;
+
+const NoticeContainer = styled.View``;
 
 const Title = styled.Text`
   font-weight: bold;
@@ -17,23 +18,25 @@ const Title = styled.Text`
 
 const ScrollView = styled.ScrollView``;
 
-const Section = ({ title, children, horizontal = true }) =>
+const Section = ({title, children, horizontal = true}) =>
   horizontal ? (
     <Container>
       <Title>{title}</Title>
       <ScrollView
         horizontal={horizontal}
-        showsHorizontalScrollIndicator={false}
-      >
+        showsHorizontalScrollIndicator={false}>
         {children}
       </ScrollView>
     </Container>
+  ) : title === '공지사항' ? (
+    <NoticeContainer>
+      <ScrollView horizontal={horizontal} showsVerticalScrollIndicator={false}>
+        {children}
+      </ScrollView>
+    </NoticeContainer>
   ) : (
     <Container>
-      <ScrollView
-        horizontal={horizontal}
-        showsHorizontalScrollIndicator={false}
-      >
+      <ScrollView horizontal={horizontal} showsVerticalScrollIndicator={false}>
         {children}
       </ScrollView>
     </Container>
@@ -42,10 +45,10 @@ const Section = ({ title, children, horizontal = true }) =>
 Section.propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
+    PropTypes.node,
   ]),
   horizontal: PropTypes.bool,
-  title: PropTypes.string.isRequired
+  title: PropTypes.string.isRequired,
 };
 
 export default Section;

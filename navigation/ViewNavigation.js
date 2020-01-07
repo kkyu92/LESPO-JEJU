@@ -9,14 +9,13 @@ import Sea from '../taps/ViewTab/Sea/SeaContainer';
 import Mountain from '../taps/ViewTab/Mountain/MountainContainer';
 import OlleGill from '../taps/ViewTab/OlleGill/OlleGillContainer';
 import Other from '../taps/ViewTab/Other/OtherContainer';
-
 import {BG_COLOR} from '../constants/Colors';
 import {createStack, createTap} from './config';
 import Layout from '../constants/Layout';
 
 const Icon = styled.Image`
-  /* width: 30px;
-  height: 29px; */
+  width: 40px;
+  height: 40px;
 `;
 
 // const Icon10 = styled.
@@ -29,9 +28,8 @@ const ViewNavigation = createMaterialTopTabNavigator(
       navigationOptions: {
         tabBarIcon: ({focused}) => (
           <Icon
-            style={{width: 30, height: 30}}
             focused={focused}
-            source={require(`../assets/drawable-xxhdpi/icon_koreanfood.png`)}
+            source={require(`../assets/drawable-xxhdpi/icon_famous.png`)}
           />
         ),
       },
@@ -41,9 +39,8 @@ const ViewNavigation = createMaterialTopTabNavigator(
       navigationOptions: {
         tabBarIcon: ({focused}) => (
           <Icon
-            style={{width: 30, height: 30}}
             focused={focused}
-            source={require(`../assets/drawable-xxhdpi/icon_koreanfood.png`)}
+            source={require(`../assets/drawable-xxhdpi/icon_tour.png`)}
           />
         ),
       },
@@ -53,9 +50,8 @@ const ViewNavigation = createMaterialTopTabNavigator(
       navigationOptions: {
         tabBarIcon: ({focused}) => (
           <Icon
-            style={{width: 30, height: 29}}
             focused={focused}
-            source={require(`../assets/drawable-xxhdpi/icon_chinesefood.png`)}
+            source={require(`../assets/drawable-xxhdpi/icon_sea.png`)}
           />
         ),
       },
@@ -65,9 +61,8 @@ const ViewNavigation = createMaterialTopTabNavigator(
       navigationOptions: {
         tabBarIcon: ({focused}) => (
           <Icon
-            style={{width: 30, height: 29}}
             focused={focused}
-            source={require(`../assets/drawable-xxhdpi/icon_pizza.png`)}
+            source={require(`../assets/drawable-xxhdpi/icon_olle.png`)}
           />
         ),
       },
@@ -77,9 +72,8 @@ const ViewNavigation = createMaterialTopTabNavigator(
       navigationOptions: {
         tabBarIcon: ({focused}) => (
           <Icon
-            style={{width: 38, height: 25}}
             focused={focused}
-            source={require(`../assets/drawable-xxhdpi/icon_sushi.png`)}
+            source={require(`../assets/drawable-xxhdpi/icon_orm.png`)}
           />
         ),
       },
@@ -89,9 +83,8 @@ const ViewNavigation = createMaterialTopTabNavigator(
       navigationOptions: {
         tabBarIcon: ({focused}) => (
           <Icon
-            style={{width: 38, height: 25}}
             focused={focused}
-            source={require(`../assets/drawable-xxhdpi/icon_blackpig.png`)}
+            source={require(`../assets/drawable-xxhdpi/icon_view_other.png`)}
           />
         ),
       },

@@ -1,13 +1,13 @@
-import React from "react";
-import styled from "styled-components";
-import Loader from "../../../components/Loader";
-import Section from "../../../components/Section";
-import SubSlide from "../../../components/SubSlide";
-import { TINT_COLOR } from "../../../constants/Colors";
-import Layout from "../../../constants/Layout";
+import React from 'react';
+import styled from 'styled-components';
+import Loader from '../../../components/Loader';
+import Section from '../../../components/Section';
+import SubSlide from '../../../components/SubSlide';
+import {TINT_COLOR, BG_COLOR} from '../../../constants/Colors';
+import Layout from '../../../constants/Layout';
 
 const View = styled.View`
-  background-color: orange;
+  background-color: ${BG_COLOR};
   flex: 1;
 `;
 
@@ -37,7 +37,7 @@ const Container = styled.ScrollView`
   flex: 1;
 `;
 
-const JejuPresenter = ({ loading, getJejuSound }) =>
+const JejuPresenter = ({loading, getJejuSound}) =>
   loading ? (
     <Loader />
   ) : (
@@ -52,7 +52,7 @@ const JejuPresenter = ({ loading, getJejuSound }) =>
               .filter(list => list.backdrop_path !== null)
               .map(list => (
                 <SubSlide
-                  tag={"image"}
+                  tag={'image'}
                   horizontal={false}
                   key={list.id}
                   id={list.id}

@@ -8,11 +8,16 @@ import MainSlider from '../../components/MainSlider';
 import {Platform} from 'react-native';
 import Section from '../../components/Section';
 import SubSlide from '../../components/SubSlide';
-import {BLACK_COLOR, GREY_COLOR, TINT_COLOR} from '../../constants/Colors';
+import {
+  BLACK_COLOR,
+  GREY_COLOR,
+  TINT_COLOR,
+  BG_COLOR,
+} from '../../constants/Colors';
 import Layout from '../../constants/Layout';
 
 const View = styled.View`
-  background-color: orange;
+  background-color: ${BG_COLOR};
   flex: 1;
 `;
 

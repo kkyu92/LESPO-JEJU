@@ -87,7 +87,7 @@ const AddBattleText = styled.Text`
 
 const PickerContainer = styled.TouchableOpacity`
   flex: 1;
-  background-color: orange;
+  background-color: ${BG_COLOR};
   border-radius: 5px;
   border-width: 2px;
   border-color: white;

@@ -8,9 +8,11 @@ import ChineseFood from '../taps/FoodTab/CFood/CFoodContainer';
 import WesternFood from '../taps/FoodTab/WFood/WFoodContainer';
 import JapaneseFood from '../taps/FoodTab/JFood/JFoodContainer';
 import JejuFood from '../taps/FoodTab/JejuFood/JejuFoodContainer';
+import Other from '../taps/FoodTab/Other/OtherContainer';
 
 import {BG_COLOR} from '../constants/Colors';
 import {createStack, createTap} from './config';
+import Layout from '../constants/Layout';
 
 const Icon = styled.Image`
   /* width: 30px;
@@ -82,10 +84,23 @@ const FoodNavigation = createMaterialTopTabNavigator(
         ),
       },
     },
+    기타: {
+      screen: createTap(Other),
+      navigationOptions: {
+        tabBarIcon: ({focused}) => (
+          <Icon
+            style={{width: 31, height: 30}}
+            focused={focused}
+            source={require(`../assets/drawable-xxhdpi/icon_etcfood.png`)}
+          />
+        ),
+      },
+    },
   },
   {
     // Top Nav 모든설정
     tabBarOptions: {
+      scrollEnabled: true,
       showLabel: true,
       labelStyle: {
         fontSize: 14,
@@ -99,6 +114,7 @@ const FoodNavigation = createMaterialTopTabNavigator(
         justifyContent: 'center',
       },
       tabStyle: {
+        width: Layout.width / 5,
         alignItems: 'center',
         justifyContent: 'center',
       },

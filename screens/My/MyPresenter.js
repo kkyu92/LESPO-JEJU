@@ -5,13 +5,11 @@ import Loader from '../../components/Loader';
 import {TINT_COLOR, BG_COLOR, GREY_COLOR} from '../../constants/Colors';
 import {Rating, AirbnbRating} from 'react-native-ratings';
 import {Platform, Alert} from 'react-native';
-// import Modal from 'react-native-modal';
-// import AlertPro from 'react-native-alert-pro';
 import MyModal from '../../components/AlertProDialog';
 import {withNavigation} from 'react-navigation';
 
 const View = styled.View`
-  background-color: orange;
+  background-color: ${BG_COLOR};
   flex: 1;
 `;
 

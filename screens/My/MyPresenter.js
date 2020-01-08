@@ -102,13 +102,13 @@ const BtnContainer = styled.TouchableOpacity`
 
 const Text = styled.Text`
   color: black;
-  font-size: 20;
+  font-size: 20px;
   align-items: center;
 `;
 
 const TextLogout = styled.Text`
   color: ${BG_COLOR};
-  font-size: 20;
+  font-size: 20px;
   font-weight: 800;
   align-items: center;
 `;

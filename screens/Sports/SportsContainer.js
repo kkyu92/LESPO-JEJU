@@ -1,14 +1,14 @@
-import React from "react";
-import { Platform } from "react-native";
-import SportsPresenter from "./SportsPresenter";
-import { tv, movie } from "../../api/Api";
+import React from 'react';
+import {Platform} from 'react-native';
+import SportsPresenter from './SportsPresenter';
+import {tv, movie} from '../../api/Api';
 
 export default class extends React.Component {
   state = {
     loading: true,
     listName: null,
     listChanged: null,
-    error: null
+    error: null,
   };
 
   // 시작시 불러옴
@@ -16,8 +16,8 @@ export default class extends React.Component {
     let listChanged, error;
     try {
       ({
-        data: { results: listChanged }
-      } = await movie.getSearchMovie("king"));
+        data: {results: listChanged},
+      } = await movie.getSearchMovie('default'));
     } catch (error) {
       console.log(error);
       error = "Cnat't get TV";
@@ -25,32 +25,32 @@ export default class extends React.Component {
       this.setState({
         loading: false,
         listChanged,
-        error
+        error,
       });
     }
     // 화면 돌아왔을 때 reload !
     this.subs = [
-      this.props.navigation.addListener("willFocus", () => {
-        console.log("willFocus ::: reload");
+      this.props.navigation.addListener('willFocus', () => {
+        console.log('willFocus ::: reload');
         this.onListChanging();
-      })
+      }),
     ];
   }
 
   // 언제쓰이는지 아직 모름
   componentWillUnmount() {
-    console.log("componentWillUnmount ::: ");
+    console.log('componentWillUnmount ::: ');
     this.subs.forEach(sub => sub.remove());
   }
 
   // List 입력값 받아온다
   handleListUpdate = list => {
     this.setState({
-      listName: list
+      listName: list,
     });
-    console.log("getListName ::: " + list);
-    if (Platform.OS === "android") {
-      console.log("go Android ::: " + list);
+    console.log('getListName ::: ' + list);
+    if (Platform.OS === 'android') {
+      console.log('go Android ::: ' + list);
       this.state.listName = list;
       this.onListChanging();
     }
@@ -58,26 +58,30 @@ export default class extends React.Component {
 
   // 검색한 결과값
   onListChanging = async () => {
-    const { listName } = this.state;
-    if (listName !== "") {
-      console.log("listChanging ::: " + listName);
+    const {listName} = this.state;
+    if (listName !== '') {
+      console.log('listChanging ::: ' + listName);
       let listChanged, error;
       this.setState({
-        loading: true
+        loading: true,
       });
       try {
-        if (listName === "latest") {
+        if (listName === 'latest') {
           ({
-            data: { results: listChanged }
-          } = await movie.getSearchMovie("king"));
-        } else if (listName === "battle") {
+            data: {results: listChanged},
+          } = await movie.getSearchMovie('latest'));
+        } else if (listName === 'battle') {
           ({
-            data: { results: listChanged }
-          } = await movie.getSearchMovie("harry"));
+            data: {results: listChanged},
+          } = await movie.getSearchMovie('battle'));
+        } else if (listName === 'nearest') {
+          ({
+            data: {results: listChanged},
+          } = await movie.getSearchMovie('nearest'));
         } else {
           ({
-            data: { results: listChanged }
-          } = await movie.getSearchMovie("spider"));
+            data: {results: listChanged},
+          } = await movie.getSearchMovie('default'));
         }
       } catch {
         error = "Can't Search";
@@ -86,7 +90,7 @@ export default class extends React.Component {
           loading: false,
           listChanged,
           listName,
-          error
+          error,
         });
       }
       return;
@@ -94,7 +98,7 @@ export default class extends React.Component {
   };
 
   render() {
-    const { loading, popular, listName, listChanged } = this.state;
+    const {loading, popular, listName, listChanged} = this.state;
     return (
       <SportsPresenter
         loading={loading}

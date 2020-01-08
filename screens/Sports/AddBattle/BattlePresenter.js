@@ -1,33 +1,33 @@
-import React from "react";
-import { KeyboardAvoidingView, StyleSheet } from "react-native";
-import { withNavigation } from "react-navigation";
-import DatePicker from "react-native-datepicker";
-import moment from "moment";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import Loader from "../../../components/Loader";
+import React from 'react';
+import {KeyboardAvoidingView, StyleSheet} from 'react-native';
+import {withNavigation} from 'react-navigation';
+import DatePicker from 'react-native-datepicker';
+import moment from 'moment';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import Loader from '../../../components/Loader';
 import {
   BG_COLOR,
   TINT_COLOR,
   BLACK_COLOR,
-  GREY_COLOR
-} from "../../../constants/Colors";
-import PickerSelect from "react-native-picker-select";
-import Layout from "../../../constants/Layout";
-import { Platform } from "react-native";
+  GREY_COLOR,
+} from '../../../constants/Colors';
+import PickerSelect from 'react-native-picker-select';
+import Layout from '../../../constants/Layout';
+import {Platform} from 'react-native';
 
 moment.locale();
-var nowAll = moment().format("MMMM Do YYYY, h:mm:ss a");
-var nowDate = moment().format("YYYY-MM-DD");
+var nowAll = moment().format('MMMM Do YYYY, h:mm:ss a');
+var nowDate = moment().format('YYYY-MM-DD');
 let pickDate = nowDate;
 var maxDate = moment(nowDate)
-  .add(1, "years")
-  .format("YYYY-MM-DD");
-var nowTime = moment().format("hh:mm");
-var Time = moment().format("h:mm a");
-console.log("NOW ::: " + nowAll);
-console.log("nowDate ::: " + nowDate);
-console.log("maxDate ::: " + maxDate);
+  .add(1, 'years')
+  .format('YYYY-MM-DD');
+var nowTime = moment().format('hh:mm');
+var Time = moment().format('h:mm a');
+console.log('NOW ::: ' + nowAll);
+console.log('nowDate ::: ' + nowDate);
+console.log('maxDate ::: ' + maxDate);
 
 // let battle = {
 //   sport: "",
@@ -40,33 +40,33 @@ console.log("maxDate ::: " + maxDate);
 
 const pickerStyle = {
   flex: 1,
-  alignItems: "center",
-  justifyContent: "center",
+  alignItems: 'center',
+  justifyContent: 'center',
   inputIOS: {
-    color: "grey",
+    color: 'grey',
     paddingTop: 13,
     paddingHorizontal: 20,
-    paddingBottom: 12
+    paddingBottom: 12,
   },
   inputAndroid: {
-    color: "grey"
+    color: 'grey',
   },
-  placeholderColor: "grey",
-  underline: { borderTopWidth: 0 },
+  placeholderColor: 'grey',
+  underline: {borderTopWidth: 0},
   icon: {
-    position: "absolute",
-    backgroundColor: "transparent",
+    position: 'absolute',
+    backgroundColor: 'transparent',
     borderTopWidth: 5,
-    borderTopColor: "#00000099",
+    borderTopColor: '#00000099',
     borderRightWidth: 5,
-    borderRightColor: "transparent",
+    borderRightColor: 'transparent',
     borderLeftWidth: 5,
-    borderLeftColor: "transparent",
+    borderLeftColor: 'transparent',
     width: 0,
     height: 0,
     top: 20,
-    right: 15
-  }
+    right: 15,
+  },
 };
 
 const View = styled.View`
@@ -100,7 +100,7 @@ const Title = styled.Text`
   margin-bottom: 10px;
 `;
 
-const PickerContainer = styled.TouchableOpacity`
+const PickerContainer = styled.View`
   flex: 1;
   border-radius: 5px;
   border-width: 2px;
@@ -144,8 +144,8 @@ const StartText = styled.Text`
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
-  }
+    flex: 1,
+  },
 });
 
 // show DATA
@@ -160,7 +160,7 @@ const BattlePresenter = ({
   setLevelChange,
   setMemoChange,
   updateBattle,
-  navigation
+  navigation,
 }) =>
   loading ? (
     <Loader />
@@ -178,7 +178,7 @@ const BattlePresenter = ({
               onValueChange={setSportChange}
               // TODO: only ios
               //   onClose={value => setSportChange(value)}
-              doneText={"완료"}
+              doneText={'완료'}
               style={pickerStyle}
               // value={sport}
             />
@@ -187,13 +187,14 @@ const BattlePresenter = ({
           <Title>지역선택</Title>
           <PickerContainer>
             <PickerSelect
+              flex={1}
               placeholder={{}}
               items={areas}
               // TODO: android
               onValueChange={setAreaChange}
               // TODO: ios
               //   onClose={value => setAreaChange(value)}
-              doneText={"완료"}
+              doneText={'완료'}
               style={pickerStyle}
               // value={listName}
             />
@@ -208,7 +209,7 @@ const BattlePresenter = ({
               onValueChange={setTypeChange}
               // TODO: ios
               //   onClose={value => setTypeChange(value)}
-              doneText={"완료"}
+              doneText={'완료'}
               style={pickerStyle}
               // value={listName}
             />
@@ -218,7 +219,7 @@ const BattlePresenter = ({
 
           <PickerContainer>
             <DatePicker
-              style={{ width: "100%" }}
+              style={{width: '100%'}}
               date={date}
               mode="date"
               placeholder="이용 일자를 선택해주세요."
@@ -229,16 +230,16 @@ const BattlePresenter = ({
               cancelBtnText="취소"
               customStyles={{
                 dateIcon: {
-                  position: "absolute",
+                  position: 'absolute',
                   right: 0,
                   top: 4,
-                  marginRight: 10
+                  marginRight: 10,
                 },
                 dateInput: {
-                  width: "100%",
+                  width: '100%',
                   backgroundColor: null,
-                  borderWidth: 0
-                }
+                  borderWidth: 0,
+                },
                 // ... You can check the source to find the other keys.
               }}
               onDateChange={getDate => {
@@ -256,7 +257,7 @@ const BattlePresenter = ({
               onValueChange={setLevelChange}
               // TODO: ios
               //   onClose={value => setLevelChange(value)}
-              doneText={"완료"}
+              doneText={'완료'}
               style={pickerStyle}
               // value={listName}
             />
@@ -266,13 +267,13 @@ const BattlePresenter = ({
           <MemoContainer>
             <Memo
               onChangeText={setMemoChange}
-              returnKeyType={"next"}
+              returnKeyType={'next'}
               // placeholder="댓글 달기..."
               placeholderTextColor={GREY_COLOR}
               // onSubmitEditing={onSubmitEditing}
               autoCorrect={false}
               multiline={true}
-              textAlignVertical={"top"}
+              textAlignVertical={'top'}
             />
           </MemoContainer>
           <StartBtn onPress={() => navigation.goBack(null)}>
@@ -290,32 +291,32 @@ handleGoBack = navigation => {
 };
 
 const sports = [
-  { label: "당구", value: "당구" },
-  { label: "농구", value: "농구" },
-  { label: "축구", value: "축구" },
-  { label: "볼링", value: "볼링" },
-  { label: "골프", value: "골프" },
-  { label: "배드민턴", value: "배드민턴" }
+  {label: '당구', value: '당구'},
+  {label: '농구', value: '농구'},
+  {label: '축구', value: '축구'},
+  {label: '볼링', value: '볼링'},
+  {label: '골프', value: '골프'},
+  {label: '배드민턴', value: '배드민턴'},
 ];
 
 const areas = [
-  { label: "당구", value: "당구" },
-  { label: "농구", value: "농구" },
-  { label: "축구", value: "축구" },
-  { label: "볼링", value: "볼링" },
-  { label: "골프", value: "골프" },
-  { label: "배드민턴", value: "배드민턴" }
+  {label: '당구', value: '당구'},
+  {label: '농구', value: '농구'},
+  {label: '축구', value: '축구'},
+  {label: '볼링', value: '볼링'},
+  {label: '골프', value: '골프'},
+  {label: '배드민턴', value: '배드민턴'},
 ];
 const types = [
-  { label: "개인전", value: "개인전" },
-  { label: "팀전", value: "팀전" }
+  {label: '개인전', value: '개인전'},
+  {label: '팀전', value: '팀전'},
 ];
 
 const leveles = [
-  { label: "초보", value: "초보" },
-  { label: "중수", value: "중수" },
-  { label: "고수", value: "고수" },
-  { label: "초고수", value: "초고수" }
+  {label: '초보', value: '초보'},
+  {label: '중수', value: '중수'},
+  {label: '고수', value: '고수'},
+  {label: '초고수', value: '초고수'},
 ];
 
 export default withNavigation(BattlePresenter);

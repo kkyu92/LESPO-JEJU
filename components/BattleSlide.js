@@ -176,6 +176,7 @@ const BattleSlide = ({
   area,
   memo,
   coinList,
+  navigation,
 }) =>
   statusText === '배틀신청중' ? (
     // 나의 배틀 리스트
@@ -248,7 +249,17 @@ const BattleSlide = ({
     </BattleContainer>
   ) : (
     // 스포츠배틀 리스트
-    <BattleContainer>
+    <BattleContainer
+      onPress={() =>
+        navigation.navigate({
+          routeName: 'BattleTalk',
+          params: {
+            id,
+            profile,
+            name,
+          },
+        })
+      }>
       <BattleProfileContainer>
         <ProfileImg source={{uri: PhotoUri(profile)}} />
         <ProfileName>{name}</ProfileName>

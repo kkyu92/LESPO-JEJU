@@ -16,11 +16,13 @@ import JejuGiftScreen from '../screens/Add/JejuGift/JejuGiftContainer';
 import NoticeScreen from '../screens/Add/Notice/NoticeContainer';
 import SettingScreen from '../screens/Add/Setting/SettingContainer';
 import AddBattleScreen from '../screens/Sports/AddBattle/BattleContainer';
+import BattleTalkScreen from '../screens/Sports/BattleTalk/BattleTalkContainer';
 import MyBattleScreen from '../screens/My/MyBattle/MyBattleContainer';
 import MyBattleTalkScreen from '../screens/My/BattleTalk/BattleTalkContainer';
 import MyWishListScreen from '../screens/My/WishList/WishListContainer';
 import MapScreen from '../screens/Map/MapContainer';
 import {headerStyles, detailHeaderStyles, tapsHeaderStyles} from './config';
+import {TINT_COLOR} from '../constants/Colors';
 
 // 최상위 Nav [ Main tap4 + 검색 + 메인리스트 + 위시리스트... ]
 const HomeNavigation = createStackNavigator(
@@ -91,7 +93,9 @@ const HomeNavigation = createStackNavigator(
     Setting: {
       screen: SettingScreen,
       navigationOptions: {
-        ...detailHeaderStyles,
+        headerTransparent: true,
+        headerTintColor: TINT_COLOR,
+        headerStyle: {marginTop: 5},
       },
     },
     // Search
@@ -106,6 +110,15 @@ const HomeNavigation = createStackNavigator(
       screen: AddBattleScreen,
       navigationOptions: {
         ...headerStyles,
+      },
+    },
+    // BattleTalk
+    BattleTalk: {
+      screen: BattleTalkScreen,
+      navigationOptions: {
+        headerTransparent: true,
+        headerStyle: {marginTop: 5},
+        headerTintColor: TINT_COLOR,
       },
     },
     // 내정보 화면

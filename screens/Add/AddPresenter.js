@@ -35,13 +35,18 @@ const BtnContainer = styled.TouchableOpacity`
 
 const Text = styled.Text`
   color: black;
-  font-size: 25;
+  font-size: 20px;
   align-items: center;
 `;
 
 const BtnImg = styled.Image`
-  width: 25px;
-  height: 25px;
+  width: 30px;
+  height: 30px;
+`;
+
+const BtnImg2 = styled.Image`
+  width: 36px;
+  height: 27px;
 `;
 
 const HeaderContainer = styled.View`

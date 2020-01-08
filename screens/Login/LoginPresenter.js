@@ -7,6 +7,7 @@ import Layout from '../../constants/Layout';
 import Loader from '../../components/Loader';
 import {withNavigation} from 'react-navigation';
 import {LoginManager, AccessToken} from 'react-native-fbsdk';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const FBSDK = require('react-native-fbsdk');
 const {GraphRequest, GraphRequestManager} = FBSDK;
@@ -182,18 +183,6 @@ const LoginPresenter = ({loading, email, password, kakaoLogin, navigation}) =>
                   } else {
                     AccessToken.getCurrentAccessToken().then(data => {
                       let accessToken = data.accessToken;
-                      // alert(accessToken.toString());
-                      //   let req = new GraphRequest('/me', {
-                      //     httpMethod: 'GET',
-                      //     version: 'v2.5',
-                      //     parameters: {
-                      //         'fields': {
-                      //             'string' : 'email,name,friends'
-                      //         }
-                      //     }
-                      // }, (err, res) => {
-                      //     console.log(err, res);
-                      // });
 
                       const responseInfoCallback = (error, result) => {
                         if (error) {
@@ -206,6 +195,21 @@ const LoginPresenter = ({loading, email, password, kakaoLogin, navigation}) =>
                             result.email,
                             result.picture.data.url,
                           );
+                          storeData = async () => {
+                            try {
+                              await AsyncStorage.setItem('@USER_ID', result.id);
+                              await AsyncStorage.setItem(
+                                '@USER_NAME',
+                                result.name,
+                              );
+                              await AsyncStorage.setItem(
+                                '@USER_PROFILE',
+                                result.picture.data.url,
+                              );
+                            } catch (e) {
+                              console.log('Can not saved AsyncStorage' + e);
+                            }
+                          };
                           alert('Success fetching data: ' + result.name);
                         }
                       };

@@ -1,6 +1,7 @@
 import React from 'react';
 import LoginPresenter from './LoginPresenter';
 import KakaoLogins from '@react-native-seoul/kakao-login';
+import AsyncStorage from '@react-native-community/async-storage';
 
 if (!KakaoLogins) {
   console.error('Module is Not Linked');
@@ -77,6 +78,18 @@ const getProfile = () => {
       logCallback(
         `Get Profile Finished:${JSON.stringify(result)}`,
         setProfileLoading(false),
+        (storeData = async () => {
+          try {
+            await AsyncStorage.setItem('@USER_ID', result.id);
+            await AsyncStorage.setItem('@USER_NAME', result.nickname);
+            await AsyncStorage.setItem(
+              '@USER_PROFILE',
+              result.profile_image_url,
+            );
+          } catch (e) {
+            // saving error
+          }
+        }),
       );
     })
     .catch(err => {

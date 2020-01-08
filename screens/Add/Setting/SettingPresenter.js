@@ -50,12 +50,12 @@ const SwitchContainer = styled.View`
 
 const Text = styled.Text`
   color: black;
-  font-size: 25px;
+  font-size: 20px;
   align-items: center;
 `;
 
 const VersionText = styled.Text`
-  color: ${GREY_COLOR2};
+  color: ${BG_COLOR};
   font-size: 20px;
 `;
 
@@ -123,9 +123,9 @@ const SettingPresenter = ({loading, alarm, alarmChange, navigation}) =>
         <BtnContainer>
           <Text>개인정보, 이용약관</Text>
           <Icon
-            size={Platform.OS === 'ios' ? 25 : 30}
+            size={Platform.OS === 'ios' ? 30 : 30}
             name={'shield-account-outline'}
-            color={`${GREY_COLOR2}`}
+            color={`${BG_COLOR}`}
           />
         </BtnContainer>
 

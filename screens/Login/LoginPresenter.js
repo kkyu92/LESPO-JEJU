@@ -7,6 +7,7 @@ import Layout from '../../constants/Layout';
 import Loader from '../../components/Loader';
 import {withNavigation} from 'react-navigation';
 import {LoginManager, AccessToken} from 'react-native-fbsdk';
+// import {AsyncStorage} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 
 const FBSDK = require('react-native-fbsdk');
@@ -104,7 +105,14 @@ const Img = styled.Image`
   border-radius: 10px;
 `;
 
-const LoginPresenter = ({loading, email, password, kakaoLogin, navigation}) =>
+const LoginPresenter = ({
+  loading,
+  handleEmailUpdate,
+  handlePasswordUpdate,
+  kakaoLogin,
+  onLogin,
+  navigation,
+}) =>
   loading ? (
     <Loader />
   ) : (
@@ -120,6 +128,7 @@ const LoginPresenter = ({loading, email, password, kakaoLogin, navigation}) =>
 
         <SubTitle>아이디</SubTitle>
         <TextInput
+          onChangeText={handleEmailUpdate}
           returnKeyType={'done'}
           keyboardType={'email-address'}
           placeholder={'이메일을 입력해주세요.'}
@@ -131,6 +140,7 @@ const LoginPresenter = ({loading, email, password, kakaoLogin, navigation}) =>
 
         <SubTitle>비밀번호</SubTitle>
         <TextInput
+          onChangeText={handlePasswordUpdate}
           returnKeyType={'done'}
           keyboardType={'default'}
           placeholder={'비밀번호를 입력해주세요.'}
@@ -138,12 +148,7 @@ const LoginPresenter = ({loading, email, password, kakaoLogin, navigation}) =>
           secureTextEntry
         />
 
-        <BtnContainer
-          onPress={() =>
-            navigation.navigate({
-              routeName: 'Tabs',
-            })
-          }>
+        <BtnContainer onPress={() => onLogin()}>
           <BtnText>로그인</BtnText>
         </BtnContainer>
 
@@ -195,21 +200,7 @@ const LoginPresenter = ({loading, email, password, kakaoLogin, navigation}) =>
                             result.email,
                             result.picture.data.url,
                           );
-                          storeData = async () => {
-                            try {
-                              await AsyncStorage.setItem('@USER_ID', result.id);
-                              await AsyncStorage.setItem(
-                                '@USER_NAME',
-                                result.name,
-                              );
-                              await AsyncStorage.setItem(
-                                '@USER_PROFILE',
-                                result.picture.data.url,
-                              );
-                            } catch (e) {
-                              console.log('Can not saved AsyncStorage' + e);
-                            }
-                          };
+                          storeData(result);
                           alert('Success fetching data: ' + result.name);
                         }
                       };
@@ -220,8 +211,8 @@ const LoginPresenter = ({loading, email, password, kakaoLogin, navigation}) =>
                           accessToken: accessToken,
                           parameters: {
                             fields: {
-                              string: 'id,email,name,picture',
-                              // picture.type(large)
+                              string: 'id,email,name,picture.type(large)',
+                              // picture
                             },
                           },
                         },
@@ -246,5 +237,15 @@ const LoginPresenter = ({loading, email, password, kakaoLogin, navigation}) =>
       </ViewContainer>
     </LinearGradient>
   );
+
+const storeData = async result => {
+  try {
+    await AsyncStorage.setItem('@USER_ID', result.id);
+    await AsyncStorage.setItem('@USER_NAME', result.name);
+    await AsyncStorage.setItem('@USER_PROFILE', result.picture.data.url);
+  } catch (e) {
+    console.log('Can not saved AsyncStorage' + e);
+  }
+};
 
 export default withNavigation(LoginPresenter);

@@ -7,7 +7,7 @@ import {
   GREY_COLOR,
   GREY_COLOR2,
 } from '../../../constants/Colors';
-import {KeyboardAvoidingView, StyleSheet} from 'react-native';
+import {KeyboardAvoidingView, StyleSheet, Platform} from 'react-native';
 import {withNavigation} from 'react-navigation';
 import Layout from '../../../constants/Layout';
 import PhotoUri from '../../../api/PhotoUri';
@@ -168,14 +168,17 @@ const BattleTalkPresenter = ({
   date,
   profile,
   name,
-  my_name,
-  my_profile,
+  myName,
+  myProfile,
   navigation,
 }) =>
   loading ? (
     <Loader />
   ) : (
-    <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : null}
+      enabled>
       <View>
         <TitleContainer>
           <TitleText>배틀톡</TitleText>
@@ -203,9 +206,10 @@ const BattleTalkPresenter = ({
       <InputContainer>
         <ChatProfile
           source={
-            my_profile
-              ? {uri: ProfileUri(my_profile)}
+            myProfile
+              ? {uri: ProfileUri(myProfile)}
               : require(`../../../assets/drawable-xxhdpi/icon_profile.png`)
+            // console.log('myPofile:' + myProfile))
           }
         />
         <Input

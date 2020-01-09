@@ -1,10 +1,10 @@
-import React from "react";
-import { KeyboardAvoidingView, StyleSheet } from "react-native";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import { BG_COLOR, GREY_COLOR, GREY_COLOR2 } from "../../constants/Colors";
-import Layout from "../../constants/Layout";
-import makePhotoUrl from "../../api/PhotoUri";
+import React from 'react';
+import {KeyboardAvoidingView, StyleSheet} from 'react-native';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import {BG_COLOR, GREY_COLOR, GREY_COLOR2} from '../../constants/Colors';
+import Layout from '../../constants/Layout';
+import makePhotoUrl from '../../api/PhotoUri';
 
 // keybord
 // const KeyboardAvoidingView = styled.KeyboardAvoidingView`
@@ -120,7 +120,6 @@ const CommentContainer = styled.ScrollView`
 // 입력창
 const InputContainer = styled.View`
   width: ${Layout.width};
-
   padding: 8px;
   border-top-width: 1;
   border-color: ${GREY_COLOR2};
@@ -164,16 +163,19 @@ const SendText = styled.Text`
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
-  }
+    flex: 1,
+  },
 });
 
-const DetailPresenter = ({ id, backgroundPoster, title, avg, overview }) => (
-  <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+const DetailPresenter = ({id, backgroundPoster, title, avg, overview}) => (
+  <KeyboardAvoidingView
+    style={styles.container}
+    behavior={Platform.OS === 'ios' ? 'padding' : null}
+    enabled>
     {/* <> */}
     <Container>
       <ImageContainer>
-        <Image source={{ uri: makePhotoUrl(backgroundPoster) }} />
+        <Image source={{uri: makePhotoUrl(backgroundPoster)}} />
       </ImageContainer>
       <ContextContainer>
         <HeaderContainer>
@@ -217,7 +219,7 @@ const DetailPresenter = ({ id, backgroundPoster, title, avg, overview }) => (
         //   onChangeText={handleSearchUpdate}
         // value={searchTerm}
         // autoFocus
-        returnKeyType={"next"}
+        returnKeyType={'next'}
         placeholder="댓글 달기..."
         placeholderTextColor={GREY_COLOR2}
         // onSubmitEditing={onSubmitEditing}
@@ -237,7 +239,7 @@ DetailPresenter.prototypes = {
   backgroundPoster: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   avg: PropTypes.number,
-  overview: PropTypes.string
+  overview: PropTypes.string,
 };
 
 export default DetailPresenter;

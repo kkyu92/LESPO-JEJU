@@ -1,10 +1,12 @@
-import React from "react";
-import { withNavigation } from "react-navigation";
-import styled from "styled-components";
-import Layout from "../../constants/Layout";
-import SignupPresenter from "./SignupPresenter";
-import { verifyEmail, verifyPassword } from "../../constants/Regex";
-import { Alert } from "react-native";
+import React from 'react';
+import {withNavigation} from 'react-navigation';
+import styled from 'styled-components';
+import Layout from '../../constants/Layout';
+import SignupPresenter from './SignupPresenter';
+import {verifyEmail, verifyPassword} from '../../constants/Regex';
+import {Alert} from 'react-native';
+import Axios from 'axios';
+import {BASEURL} from '../../api/Api';
 
 export default class extends React.Component {
   state = {
@@ -13,7 +15,7 @@ export default class extends React.Component {
     password: null,
     checkPassword: null,
     checked: false,
-    error: null
+    error: null,
   };
 
   async componentDidMount() {
@@ -26,7 +28,7 @@ export default class extends React.Component {
     } finally {
       this.setState({
         loading: false,
-        error
+        error,
       });
     }
   }
@@ -34,71 +36,89 @@ export default class extends React.Component {
   // get Email text
   handleEmailText = getEmail => {
     this.setState({
-      email: getEmail
+      email: getEmail,
     });
   };
   // get PasswordText
   handlePasswordText = getPassword => {
     this.setState({
-      password: getPassword
+      password: getPassword,
     });
   };
   // get checkPasswordText
   handleCheckPasswordText = getPassword => {
     this.setState({
-      checkPassword: getPassword
+      checkPassword: getPassword,
     });
   };
   // get CheckBox value
   handleCheckBox = getChecked => {
     this.setState({
-      checked: getChecked
+      checked: getChecked,
     });
   };
-
+  onSignup = async () => {
+    const {email, password} = this.state;
+    if (email === '' || password === '') {
+      alert.toString('아이디와 비밀번호를 정확하게 입력해주세요.');
+    } else {
+      this.setState({
+        loading: true,
+      });
+    }
+  };
   // check user info
   onCheckSignup = async () => {
-    const { email, password, checkPassword, checked } = this.state;
+    const {email, password, checkPassword, checked} = this.state;
     if (email === null || password === null || checkPassword === null) {
-      Alert.alert("", "빈공간이 없는지 확인해주세요.");
+      Alert.alert('', '빈공간이 없는지 확인해주세요.');
       //   console.log("빈공간이 없는지 확인해주세요.");
     } else if (password !== checkPassword) {
-      Alert.alert("", "비밀번호가 일치하는지 확인해주세요.");
+      Alert.alert('', '비밀번호가 일치하는지 확인해주세요.');
       //   console.log("비밀번호가 일치하는지 확인해주세요.");
     } else if (!checked) {
-      Alert.alert("", "이용약관 및 개인정보 동의를 확인해주세요.");
+      Alert.alert('', '이용약관 및 개인정보 동의를 확인해주세요.');
       //   console.log("이용약관 및 개인정보 동의를 확인해주세요.");
     } else if (verifyEmail(email)) {
-      Alert.alert("", "이메일 형식을 확인해주세요.");
+      Alert.alert('', '이메일 형식을 확인해주세요.');
     } else if (verifyPassword(password)) {
-      Alert.alert("", "비밀번호 형식을 확인해주세요.");
+      Alert.alert('', '비밀번호 형식을 확인해주세요.');
     } else {
-      console.log("통과 :: ", this.state);
+      console.log('통과 :: ', this.state);
       let loading, checkUserResult, error;
       this.setState({
-        loading: true
+        loading: true,
       });
       try {
-        // ({
-        //   data: { results: jejuResult }
-        // } = await movie.getSearchMovie(searchTerm));
-        checkUserResult = "OK";
+        const params = new URLSearchParams();
+        params.append('email', email);
+        params.append('password', password);
+        Axios.post(BASEURL + 'register', params)
+          .then(response => {
+            this.setState({
+              checkUserResult: response.data.messages.email,
+            });
+            console.log(JSON.stringify(response.data.messages.email));
+          })
+          .catch(error => {
+            console.log('register ' + error);
+          });
       } catch (error) {
         error = "Can't check userInfo";
       } finally {
         this.setState({
           loading: false,
           checkUserResult,
-          error
+          error,
         });
       }
     }
-    console.log("onCheckSignup2");
+    console.log('onCheckSignup2');
     return;
   };
 
   render() {
-    const { loading, checked } = this.state;
+    const {loading, checked} = this.state;
     return (
       <SignupPresenter
         loading={loading}

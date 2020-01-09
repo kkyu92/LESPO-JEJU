@@ -1,7 +1,10 @@
 import React from 'react';
 import LoginPresenter from './LoginPresenter';
+import {LESPO_API, BASEURL, CONFIG} from '../../api/Api';
 import KakaoLogins from '@react-native-seoul/kakao-login';
 import AsyncStorage from '@react-native-community/async-storage';
+import Axios from 'axios';
+import {Alert} from 'react-native';
 
 if (!KakaoLogins) {
   console.error('Module is Not Linked');
@@ -67,6 +70,16 @@ const kakaoLogin = () => {
 //       );
 //     });
 // };
+const storeData = async result => {
+  try {
+    await AsyncStorage.setItem('@USER_ID', result.id);
+    await AsyncStorage.setItem('@USER_NAME', result.nickname);
+    await AsyncStorage.setItem('@USER_PROFILE', result.profile_image_url);
+  } catch (e) {
+    // saving error
+    console.log('saving error: ' + e);
+  }
+};
 
 const getProfile = () => {
   console.log('     getProfile      ');
@@ -78,18 +91,7 @@ const getProfile = () => {
       logCallback(
         `Get Profile Finished:${JSON.stringify(result)}`,
         setProfileLoading(false),
-        (storeData = async () => {
-          try {
-            await AsyncStorage.setItem('@USER_ID', result.id);
-            await AsyncStorage.setItem('@USER_NAME', result.nickname);
-            await AsyncStorage.setItem(
-              '@USER_PROFILE',
-              result.profile_image_url,
-            );
-          } catch (e) {
-            // saving error
-          }
-        }),
+        storeData(result),
       );
     })
     .catch(err => {
@@ -103,12 +105,15 @@ const getProfile = () => {
 export default class extends React.Component {
   constructor(props) {
     super(props);
+    const {navigation} = this.props;
     this.state = {
+      navigation: navigation,
       isKakaoLogging: false,
       token: 'token has not fetched',
       loading: true,
-      email: 'email@gmail.com',
-      password: '1234567r',
+      email: '',
+      password: '',
+      res: null,
       loginCode: 1,
       error: null,
     };
@@ -143,45 +148,72 @@ export default class extends React.Component {
   };
 
   // check user info
-  onCheckUser = async () => {
+  onSignup = async () => {
     const {email, password} = this.state;
     if (email === '' || password === '') {
       alert.toString('아이디와 비밀번호를 정확하게 입력해주세요.');
     } else {
-      let loading, checkUserResult, error;
       this.setState({
         loading: true,
       });
-      try {
-        // ({
-        //   data: { results: jejuResult }
-        // } = await movie.getSearchMovie(searchTerm));
-        checkUserResult = 'OK';
-      } catch (error) {
-        error = "Can't check userInfo";
-      } finally {
-        this.setState({
-          loading: false,
-          checkUserResult,
-          error,
+      const params = new URLSearchParams();
+      params.append('email', email);
+      params.append('password', password);
+      Axios.post(BASEURL + 'register', params)
+        .then(response => {
+          console.log(JSON.stringify(response.data.messages.email));
+        })
+        .catch(error => {
+          console.log('register ' + error);
         });
-        return;
-      }
+      this.setState({
+        loading: false,
+      });
     }
   };
   // login Btn --> api(login) check
-  // onLogin() {
-  //   const { email, password, loginCode } = this.state;
-  // }
+  onLogin = async () => {
+    const {email, password} = this.state;
+    if (email === '' || password === '') {
+      Alert.alert('', '아이디와 비밀번호를 정확하게 입력해주세요.');
+    } else {
+      this.setState({
+        loading: true,
+      });
+      const params = new URLSearchParams();
+      params.append('email', email);
+      params.append('password', password);
+      Axios.post(BASEURL + 'login', params)
+        .then(response => {
+          console.log(JSON.stringify(response.data));
+          if (response.data.status !== 'error') {
+            this.state.navigation.navigate({
+              routeName: 'Tabs',
+            });
+          } else {
+            Alert.alert('', response.data.messages.login);
+          }
+        })
+        .catch(error => {
+          console.log('login email: ' + email);
+          console.log('login password: ' + password);
+          console.log('login error: ' + error);
+        });
+      this.setState({
+        loading: false,
+      });
+    }
+  };
 
   render() {
-    const {loading, email, password} = this.state;
+    const {loading} = this.state;
     return (
       <LoginPresenter
         loading={loading}
-        email={email}
-        password={password}
+        handleEmailUpdate={this.handleEmailText}
+        handlePasswordUpdate={this.handlePasswordText}
         kakaoLogin={kakaoLogin}
+        onLogin={this.onLogin}
         // kakaoLogout={kakaoLogout}
       />
     );

@@ -70,14 +70,27 @@ const kakaoLogin = () => {
 //       );
 //     });
 // };
-const storeData = async result => {
+
+// 로그인 정보 저장 SNS
+const storeSNS = async result => {
   try {
     await AsyncStorage.setItem('@USER_ID', result.id);
     await AsyncStorage.setItem('@USER_NAME', result.nickname);
     await AsyncStorage.setItem('@USER_PROFILE', result.profile_image_url);
   } catch (e) {
-    // saving error
     console.log('saving error: ' + e);
+  }
+};
+// 로그인 정보 저장 일반
+const storeAPI = async (result, email, password) => {
+  try {
+    await AsyncStorage.setItem('@USER_ID', email);
+    await AsyncStorage.setItem('@USER_NAME', result.data.data.nickname);
+    await AsyncStorage.setItem('@USER_PASSWORD', password);
+    await AsyncStorage.setItem('@USER_PROFILE', '');
+    console.log('saving name: ' + result.data.data.nickname);
+  } catch (error) {
+    console.log('saving error: ' + error);
   }
 };
 
@@ -91,7 +104,7 @@ const getProfile = () => {
       logCallback(
         `Get Profile Finished:${JSON.stringify(result)}`,
         setProfileLoading(false),
-        storeData(result),
+        storeSNS(result),
       );
     })
     .catch(err => {
@@ -112,7 +125,10 @@ export default class extends React.Component {
       token: 'token has not fetched',
       loading: true,
       email: '',
+      name: '',
       password: '',
+      signEmail: '',
+      signPassword: '',
       res: null,
       loginCode: 1,
       error: null,
@@ -121,6 +137,7 @@ export default class extends React.Component {
 
   async componentDidMount() {
     let load, error;
+    this.getData();
     try {
       // load
     } catch (error) {
@@ -133,6 +150,28 @@ export default class extends React.Component {
       });
     }
   }
+
+  // 회원가입 || 로그인했던 정보 가져오기
+  getData = async () => {
+    console.log('getData');
+    try {
+      let M_Email = await AsyncStorage.getItem('@USER_ID');
+      let M_Password = await AsyncStorage.getItem('@USER_PASSWORD');
+      if (M_Email.includes('@')) {
+        this.setState({
+          email: M_Email,
+          password: M_Password,
+        });
+        // console.log('sign email : ' + this.state.signEmail);
+        // console.log('sign password : ' + this.state.signPassword);
+      } else {
+        console.log('마지막 로그인이 SNS 로그인이다');
+      }
+    } catch (e) {
+      // error reading value
+      console.log('getData ERROR ::: ' + e);
+    }
+  };
 
   // get Email text
   handleEmailText = getEmail => {
@@ -147,8 +186,8 @@ export default class extends React.Component {
     });
   };
 
-  // check user info
-  onSignup = async () => {
+  // SNS 회원가입 + 로그인
+  onSNSLogin = async () => {
     const {email, password} = this.state;
     if (email === '' || password === '') {
       alert.toString('아이디와 비밀번호를 정확하게 입력해주세요.');
@@ -185,13 +224,14 @@ export default class extends React.Component {
       params.append('password', password);
       Axios.post(BASEURL + 'login', params)
         .then(response => {
-          console.log(JSON.stringify(response.data));
+          console.log(JSON.stringify(response.data.data));
+          storeAPI(response, email, password);
           if (response.data.status !== 'error') {
-            this.state.navigation.navigate({
+            this.state.navigation.replace({
               routeName: 'Tabs',
             });
           } else {
-            Alert.alert('', response.data.messages.login);
+            Alert.alert('', response.data.messages.message);
           }
         })
         .catch(error => {
@@ -206,10 +246,12 @@ export default class extends React.Component {
   };
 
   render() {
-    const {loading} = this.state;
+    const {loading, email, password} = this.state;
     return (
       <LoginPresenter
         loading={loading}
+        signEmail={email}
+        signPassword={password}
         handleEmailUpdate={this.handleEmailText}
         handlePasswordUpdate={this.handlePasswordText}
         kakaoLogin={kakaoLogin}

@@ -3,20 +3,28 @@ import {withNavigation} from 'react-navigation';
 import styled from 'styled-components';
 import Layout from '../../constants/Layout';
 import SignupPresenter from './SignupPresenter';
-import {verifyEmail, verifyPassword} from '../../constants/Regex';
+import {verifyEmail, verifyPassword, verifyName} from '../../constants/Regex';
 import {Alert} from 'react-native';
 import Axios from 'axios';
 import {BASEURL} from '../../api/Api';
+import Toast from 'react-native-simple-toast';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default class extends React.Component {
-  state = {
-    loading: true,
-    email: null,
-    password: null,
-    checkPassword: null,
-    checked: false,
-    error: null,
-  };
+  constructor(props) {
+    super(props);
+    const {navigation} = this.props;
+    this.state = {
+      navigation: navigation,
+      loading: true,
+      email: '',
+      name: '',
+      password: '',
+      checkPassword: '',
+      checked: false,
+      error: null,
+    };
+  }
 
   async componentDidMount() {
     let load, error;
@@ -37,6 +45,12 @@ export default class extends React.Component {
   handleEmailText = getEmail => {
     this.setState({
       email: getEmail,
+    });
+  };
+  // get Name text
+  handleNameText = getName => {
+    this.setState({
+      name: getName,
     });
   };
   // get PasswordText
@@ -67,10 +81,28 @@ export default class extends React.Component {
       });
     }
   };
-  // check user info
-  onCheckSignup = async () => {
-    const {email, password, checkPassword, checked} = this.state;
-    if (email === null || password === null || checkPassword === null) {
+  //FIXME: 회원가입 성공시 가입정보 저장 [프로필사진 없음]
+  storeData = async () => {
+    try {
+      await AsyncStorage.setItem('@USER_ID', this.state.email);
+      await AsyncStorage.setItem('@USER_NAME', this.state.name);
+      await AsyncStorage.setItem('@USER_PASSWORD', this.state.password);
+      await AsyncStorage.setItem('@USER_PROFILE', '');
+      console.log('(SignupContainer) save');
+    } catch (e) {
+      // saving error
+      console.log('(SignupContainer) saving error: ' + e);
+    }
+  };
+  // check Signup
+  onCheckSignup = () => {
+    const {email, name, password, checkPassword, checked} = this.state;
+    if (
+      email === '' ||
+      password === '' ||
+      checkPassword === '' ||
+      name === ''
+    ) {
       Alert.alert('', '빈공간이 없는지 확인해주세요.');
       //   console.log("빈공간이 없는지 확인해주세요.");
     } else if (password !== checkPassword) {
@@ -81,24 +113,30 @@ export default class extends React.Component {
       //   console.log("이용약관 및 개인정보 동의를 확인해주세요.");
     } else if (verifyEmail(email)) {
       Alert.alert('', '이메일 형식을 확인해주세요.');
+    } else if (verifyName(name)) {
+      Alert.alert('', '이름 형식을 확인해주세요.');
     } else if (verifyPassword(password)) {
       Alert.alert('', '비밀번호 형식을 확인해주세요.');
     } else {
-      console.log('통과 :: ', this.state);
-      let loading, checkUserResult, error;
+      let loading, error;
       this.setState({
         loading: true,
       });
       try {
         const params = new URLSearchParams();
         params.append('email', email);
+        params.append('name', name);
         params.append('password', password);
         Axios.post(BASEURL + 'register', params)
           .then(response => {
-            this.setState({
-              checkUserResult: response.data.messages.email,
-            });
-            console.log(JSON.stringify(response.data.messages.email));
+            console.log(JSON.stringify(response.data.messages.message));
+            if (response.data.status === 'error') {
+              Alert.alert('', JSON.stringify(response.data.messages.message));
+            } else {
+              this.storeData();
+              this.state.navigation.goBack(null);
+              Toast.show(name + '님의 회원가입이 완료되었습니다.', Toast.LONG);
+            }
           })
           .catch(error => {
             console.log('register ' + error);
@@ -108,12 +146,10 @@ export default class extends React.Component {
       } finally {
         this.setState({
           loading: false,
-          checkUserResult,
           error,
         });
       }
     }
-    console.log('onCheckSignup2');
     return;
   };
 
@@ -124,6 +160,7 @@ export default class extends React.Component {
         loading={loading}
         checked={checked}
         handleEmailText={this.handleEmailText}
+        handleNameText={this.handleNameText}
         handlePasswordText={this.handlePasswordText}
         handleCheckPasswordText={this.handleCheckPasswordText}
         handleCheckBox={this.handleCheckBox}

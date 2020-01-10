@@ -70,7 +70,7 @@ export default class extends React.Component {
     try {
       M_NAME = await AsyncStorage.getItem('@USER_NAME');
       M_PROFILE = await AsyncStorage.getItem('@USER_PROFILE');
-      if (M_PROFILE !== null) {
+      if (M_PROFILE !== null || M_PROFILE !== '') {
         this.setState({
           myName: M_NAME,
           myProfile: M_PROFILE,

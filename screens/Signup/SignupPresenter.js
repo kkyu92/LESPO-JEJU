@@ -38,6 +38,8 @@ const HeaderTitle = styled.Text`
   justify-content: center;
 `;
 
+const ScrollView = styled.ScrollView``;
+
 const Title = styled.Text`
   color: ${TINT_COLOR};
   font-size: 28px;
@@ -104,6 +106,7 @@ const SignupPresenter = ({
   loading,
   checked,
   handleEmailText,
+  handleNameText,
   handlePasswordText,
   handleCheckPasswordText,
   handleCheckBox,
@@ -131,58 +134,69 @@ const SignupPresenter = ({
           <HeaderTitle>제주배틀투어</HeaderTitle>
           <HeaderTitle> </HeaderTitle>
         </HeaderContainer>
-        <Title>회원가입</Title>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <Title>회원가입</Title>
 
-        <SubTitle>아이디</SubTitle>
-        <TextInput
-          returnKeyType={'done'}
-          keyboardType={'email-address'}
-          placeholder={'아이디로 사용할 이메일을 입력해주세요.'}
-          placeholderTextColor={GREY_COLOR2}
-          onChangeText={handleEmailText}
-        />
-
-        <SubTitle>비밀번호</SubTitle>
-        <TextInput
-          returnKeyType={'done'}
-          keyboardType={'default'}
-          placeholder={'비밀번호 (영문숫자포함 6~12자).'}
-          placeholderTextColor={GREY_COLOR2}
-          secureTextEntry
-          onChangeText={handlePasswordText}
-        />
-        <SubTitle>비밀번호 확인</SubTitle>
-        <TextInput
-          returnKeyType={'done'}
-          keyboardType={'default'}
-          placeholder={'비밀번호 확인.'}
-          placeholderTextColor={GREY_COLOR2}
-          secureTextEntry
-          onChangeText={handleCheckPasswordText}
-        />
-
-        <TextContainer>
-          <CheckboxForm
-            style={{width: 10, backgroundColor: {BG_COLOR}}}
-            dataSource={checkData}
-            itemShowKey="label"
-            itemCheckedKey="RNchecked"
-            iconSize={26}
-            iconColor={TINT_COLOR}
-            formHorizontal={false}
-            labelHorizontal={true}
-            onChecked={item => handleCheckBox(item[0].RNchecked)}
+          <SubTitle>아이디</SubTitle>
+          <TextInput
+            returnKeyType={'done'}
+            keyboardType={'email-address'}
+            placeholder={'아이디로 사용할 이메일을 입력해주세요.'}
+            placeholderTextColor={GREY_COLOR2}
+            onChangeText={handleEmailText}
           />
 
-          <TouchableOpacity>
-            <SubTitle>이용약관 및 개인정보보호</SubTitle>
-          </TouchableOpacity>
-          <Blank />
-        </TextContainer>
+          <SubTitle>이름</SubTitle>
+          <TextInput
+            returnKeyType={'done'}
+            keyboardType={'default'}
+            placeholder={'이름 (한글 2~4자 / 영문 2~10자 이내).'}
+            placeholderTextColor={GREY_COLOR2}
+            onChangeText={handleNameText}
+          />
 
-        <BtnContainer onPress={onCheckSignup}>
-          <BtnText>회원가입</BtnText>
-        </BtnContainer>
+          <SubTitle>비밀번호</SubTitle>
+          <TextInput
+            returnKeyType={'done'}
+            keyboardType={'default'}
+            placeholder={'비밀번호 (영문숫자포함 6~12자).'}
+            placeholderTextColor={GREY_COLOR2}
+            secureTextEntry
+            onChangeText={handlePasswordText}
+          />
+          <SubTitle>비밀번호 확인</SubTitle>
+          <TextInput
+            returnKeyType={'done'}
+            keyboardType={'default'}
+            placeholder={'비밀번호 확인.'}
+            placeholderTextColor={GREY_COLOR2}
+            secureTextEntry
+            onChangeText={handleCheckPasswordText}
+          />
+
+          <TextContainer>
+            <CheckboxForm
+              style={{width: 10, backgroundColor: {BG_COLOR}}}
+              dataSource={checkData}
+              itemShowKey="label"
+              itemCheckedKey="RNchecked"
+              iconSize={26}
+              iconColor={TINT_COLOR}
+              formHorizontal={false}
+              labelHorizontal={true}
+              onChecked={item => handleCheckBox(item[0].RNchecked)}
+            />
+
+            <TouchableOpacity>
+              <SubTitle>이용약관 및 개인정보보호</SubTitle>
+            </TouchableOpacity>
+            <Blank />
+          </TextContainer>
+
+          <BtnContainer onPress={onCheckSignup}>
+            <BtnText>회원가입</BtnText>
+          </BtnContainer>
+        </ScrollView>
       </ViewContainer>
     </LinearGradient>
   );

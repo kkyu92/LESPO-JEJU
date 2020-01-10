@@ -107,6 +107,8 @@ const Img = styled.Image`
 
 const LoginPresenter = ({
   loading,
+  signEmail,
+  signPassword,
   handleEmailUpdate,
   handlePasswordUpdate,
   kakaoLogin,
@@ -133,8 +135,7 @@ const LoginPresenter = ({
           keyboardType={'email-address'}
           placeholder={'이메일을 입력해주세요.'}
           placeholderTextColor={GREY_COLOR2}
-          // onChangeText={handleSearchUpdate}
-          // value={searchTerm}
+          value={signEmail}
           // onSubmitEditing={onSubmitEditing}
         />
 
@@ -146,6 +147,7 @@ const LoginPresenter = ({
           placeholder={'비밀번호를 입력해주세요.'}
           placeholderTextColor={GREY_COLOR2}
           secureTextEntry
+          value={signPassword}
         />
 
         <BtnContainer onPress={() => onLogin()}>

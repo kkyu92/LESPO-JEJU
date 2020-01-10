@@ -98,11 +98,10 @@ export default class extends React.Component {
   };
 
   render() {
-    const {loading, popular, listName, listChanged} = this.state;
+    const {loading, listName, listChanged} = this.state;
     return (
       <SportsPresenter
         loading={loading}
-        popular={popular}
         listName={listName}
         listChanged={listChanged}
         onListChanging={this.onListChanging}

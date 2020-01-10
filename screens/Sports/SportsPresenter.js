@@ -12,19 +12,6 @@ import SubSlide from '../../components/SubSlide';
 import SearchNo from '../Main/Search/SearchNo';
 import BattleSlide from '../../components/BattleSlide';
 
-let select = '';
-
-const state = {
-  selected: '~~',
-};
-
-// const sports = [
-//   { label: "스포츠", value: "all" },
-//   { label: "당구", value: "dang-gu" },
-//   { label: "탁구", value: "tak-gu" },
-//   { label: "족구", value: "jok-gu" }
-// ];
-
 const data = [
   {label: '등록일순', value: 'latest'},
   {label: '가까운순', value: 'nearest'},
@@ -147,7 +134,6 @@ refresh = () => {
 // show DATA
 const SportsPresenter = ({
   loading,
-  popular,
   listName,
   listChanged,
   onListChanging,
@@ -223,12 +209,5 @@ const SportsPresenter = ({
       </Container>
     </View>
   );
-
-// SportsPresenter.propTypes = {
-//   loading: PropTypes.bool.isRequired,
-//   popular: PropTypes.array,
-//   airingThisWeek: PropTypes.array,
-//   airingToday: PropTypes.array
-// };
 
 export default withNavigation(SportsPresenter);

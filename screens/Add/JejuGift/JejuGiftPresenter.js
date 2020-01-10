@@ -6,17 +6,12 @@ import Section from '../../../components/Section';
 import SubSlide from '../../../components/SubSlide';
 import {TINT_COLOR, BG_COLOR} from '../../../constants/Colors';
 import {Platform} from 'react-native';
-
-let select = '';
-
-const state = {
-  selected: '~~',
-};
+import SearchNo from '../../Main/Search/SearchNo';
 
 const data = [
+  {label: '등록일순', value: 'latest'},
   {label: '가까운순', value: 'nearest'},
   {label: '좋아요순', value: 'likes'},
-  {label: '등록일순', value: 'latest'},
 ];
 
 const pickerStyle = {
@@ -105,7 +100,14 @@ onValueChange = selected => {
   select = selected;
 };
 
-const JejuGiftPresenter = ({loading, getJejuSound}) =>
+const JejuGiftPresenter = ({
+  loading,
+  listName,
+  listChanged,
+  onListChanging,
+  handleListUpdate,
+  navigation,
+}) =>
   loading ? (
     <Loader />
   ) : (
@@ -116,11 +118,13 @@ const JejuGiftPresenter = ({loading, getJejuSound}) =>
             placeholder={{}}
             items={data}
             // TODO: android
-            onValueChange={value => onValueChange(value)}
+            onValueChange={handleListUpdate}
             // TODO: ios
-            onDonePress={value => console.log('ios ::: ' + select)}
+            onClose={onListChanging}
+            // onDonePress={onListChanging}
             doneText={'완료'}
             style={pickerStyle}
+            value={listName}
           />
         </PickerContainer>
         <AdApplyContainer>
@@ -128,24 +132,30 @@ const JejuGiftPresenter = ({loading, getJejuSound}) =>
         </AdApplyContainer>
       </HeaderConatiner>
       <Container>
-        {getJejuSound ? (
-          <Section horizontal={false} title="관광 상품">
-            {getJejuSound
-              .filter(list => list.backdrop_path !== null)
-              .map(list => (
-                <SubSlide
-                  tag={'tag'}
-                  horizontal={false}
-                  key={list.id}
-                  id={list.id}
-                  backgroundPoster={list.backdrop_path}
-                  title={list.name}
-                  avg={list.vote_average}
-                  overview={list.overview}
-                />
-              ))}
-          </Section>
-        ) : null}
+        {listChanged ? (
+          listChanged.length > 0 ? (
+            <Section horizontal={false} title="">
+              {listChanged
+                .filter(list => list.backdrop_path !== null)
+                .map(list => (
+                  <SubSlide
+                    tag={'tag'}
+                    horizontal={false}
+                    key={list.id}
+                    id={list.id}
+                    backgroundPoster={list.backdrop_path}
+                    title={list.title}
+                    avg={list.vote_average}
+                    overview={list.overview}
+                  />
+                ))}
+            </Section>
+          ) : (
+            <SearchNo handleGetSearchText={'리스트 없음'} />
+          )
+        ) : (
+          <SearchNo handleGetSearchText={'등록된 결과물 없음'} />
+        )}
       </Container>
     </View>
   );

@@ -11,6 +11,22 @@ export function verifyEmail(emailVal) {
   }
 }
 
+export function verifyName(nameVal) {
+  // 한글 이름 2~4자 이내
+  var regKO = /^[가-힣]{2,4}$/;
+  // 영문 이름 2~10자 이내 : 띄어쓰기(\s)가 들어가며 First, Last Name 형식
+  var regEN = /^[a-zA-Z]{2,10}\s[a-zA-Z]{2,10}$/;
+
+  // 검증에 사용할 정규식 변수 regExp에 저장
+
+  if (nameVal.match(regKO) != null || nameVal.match(regEN) != null) {
+    // name 형식 통과
+    return false;
+  } else {
+    return true;
+  }
+}
+
 // 핸드폰 번호 체크 정규식
 function isCelluar(asValue) {
   var regExp = /^01(?:0|1|[6-9])-(?:\d{3}|\d{4})-\d{4}$/;

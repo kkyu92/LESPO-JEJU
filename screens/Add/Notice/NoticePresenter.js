@@ -31,19 +31,19 @@ const NoticePresenter = ({loading, noticeList, index, handleClickIndex}) =>
       <Container showsVerticalScrollIndicator={false}>
         {noticeList
           ? noticeList
-              .filter(list => list.overview !== null)
+              .filter(list => list.title !== null)
               .map(list => (
                 <Notice
                   key={list.id}
                   id={list.id}
-                  title={list.name}
-                  date={list.vote_average}
-                  contents={list.overview}
+                  title={list.title}
+                  date={list.updated_at}
+                  contents={list.description}
                   index={index}
                   handleClickIndex={handleClickIndex}
                 />
               ))
-          : null}
+          : console.log('No Notice')}
       </Container>
     </View>
   );

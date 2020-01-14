@@ -163,6 +163,7 @@ ratingCompleted = rating => {
 
 // 리스트 기본틀
 const BattleSlide = ({
+  key,
   myBattleList,
   statusText,
   id,
@@ -253,6 +254,7 @@ const BattleSlide = ({
       onPress={() =>
         navigation.navigate({
           routeName: 'BattleTalk',
+          // routeName: 'Chat',
           params: {
             id,
             profile,
@@ -261,7 +263,13 @@ const BattleSlide = ({
         })
       }>
       <BattleProfileContainer>
-        <ProfileImg source={{uri: PhotoUri(profile)}} />
+        <ProfileImg
+          source={
+            profile
+              ? {uri: profile}
+              : require(`../assets/drawable-xxhdpi/icon_profile.png`)
+          }
+        />
         <ProfileName>{name}</ProfileName>
         <ProfileLevel>{level}</ProfileLevel>
         {/* <AirbnbRating
@@ -271,7 +279,7 @@ const BattleSlide = ({
         showRating={false}
         isDisabled={true}
       /> */}
-        <Rating startingValue={3.5} ratingCount={5} imageSize={15} readonly />
+        <Rating startingValue={rate} ratingCount={5} imageSize={15} readonly />
       </BattleProfileContainer>
 
       <BattleTitleConatiner>

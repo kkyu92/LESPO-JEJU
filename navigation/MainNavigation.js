@@ -19,6 +19,7 @@ import AddBattleScreen from '../screens/Sports/AddBattle/BattleContainer';
 import BattleTalkScreen from '../screens/Sports/BattleTalk/BattleTalkContainer';
 import MyBattleScreen from '../screens/My/MyBattle/MyBattleContainer';
 import MyBattleTalkScreen from '../screens/My/BattleTalk/BattleTalkContainer';
+import ChatScreen from '../screens/Sports/BattleTalk/Chat';
 import MyWishListScreen from '../screens/My/WishList/WishListContainer';
 import MapScreen from '../screens/Map/MapContainer';
 import {headerStyles, detailHeaderStyles, tapsHeaderStyles} from './config';
@@ -134,6 +135,13 @@ const HomeNavigation = createStackNavigator(
       navigationOptions: {
         ...tapsHeaderStyles,
         headerTitle: '배틀톡',
+      },
+    },
+    Chat: {
+      screen: ChatScreen,
+      navigationOptions: {
+        ...tapsHeaderStyles,
+        headerTitle: 'Chat',
       },
     },
     MyWishList: {

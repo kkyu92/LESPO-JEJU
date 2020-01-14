@@ -1,18 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
 import Loader from '../../../components/Loader';
+import {TINT_COLOR, BG_COLOR, GREY_COLOR2} from '../../../constants/Colors';
 import {
-  TINT_COLOR,
-  BG_COLOR,
-  GREY_COLOR,
-  GREY_COLOR2,
-} from '../../../constants/Colors';
-import {KeyboardAvoidingView, StyleSheet, Platform} from 'react-native';
+  KeyboardAvoidingView,
+  SafeAreaView,
+  StyleSheet,
+  Platform,
+} from 'react-native';
 import {withNavigation} from 'react-navigation';
 import Layout from '../../../constants/Layout';
 import PhotoUri from '../../../api/PhotoUri';
 import ProfileUri from '../../../api/ProfileUri';
-import AsyncStorage from '@react-native-community/async-storage';
 
 const View = styled.View`
   background-color: ${BG_COLOR};
@@ -175,6 +174,19 @@ const BattleTalkPresenter = ({
   loading ? (
     <Loader />
   ) : (
+    // Platform.OS === 'android' ? (
+    //   <KeyboardAvoidingView
+    //     style={styles.container}
+    //     behavior={Platform.OS === 'ios' ? 'padding' : null}
+    //     keyboardVerticalOffset={30}
+    //     enabled>
+    //     <GiftChat messages={messages} onSend={Fire.send} user={user} />
+    //   </KeyboardAvoidingView>
+    // ) : (
+    //   <SafeAreaView style={{flex: 1}}>
+    //     <GiftChat messages={messages} onSend={Fire.send} user={user} />
+    //   </SafeAreaView>
+    // );
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : null}
@@ -185,7 +197,13 @@ const BattleTalkPresenter = ({
         </TitleContainer>
         <HeaderContainer>
           <ProfileContainer>
-            <ProfileImg source={{uri: PhotoUri(profile)}} />
+            <ProfileImg
+              source={
+                profile
+                  ? {uri: ProfileUri(profile)}
+                  : require(`../../../assets/drawable-xxhdpi/icon_profile_wh.png`)
+              }
+            />
             <Name>{name}</Name>
           </ProfileContainer>
           <BtnContainer>

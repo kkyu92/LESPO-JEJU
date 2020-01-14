@@ -12,6 +12,7 @@ const API = axios.create({
   baseURL: 'https://www.jejubattle.com/api/',
 });
 
+// POST 사용
 export const BASEURL = 'https://www.jejubattle.com/api/';
 export const CONFIG = {
   headers: {
@@ -20,18 +21,20 @@ export const CONFIG = {
   },
 };
 
+// TODO: LESPO API
 export const LESPO_API = {
-  register: (email, password) =>
-    API.post('register', {
-      email: email,
-      password: password,
-    })
-      .then(response => {
-        console.log(JSON.stringify(response.data));
-      })
-      .catch(error => {
-        console.log('register error: ' + error);
-      }),
+  // register: (email, password) =>
+  //   API.post('register', {
+  //     email: email,
+  //     password: password,
+  //   })
+  //     .then(response => {
+  //       console.log(JSON.stringify(response.data));
+  //     })
+  //     .catch(error => {
+  //       console.log('register error: ' + error);
+  //     }),
+  getNotice: () => API.get('notices'),
 };
 
 // FIXME: 이름 그대로 불러다 쓰인다 api 이름 그대로 만들어 쓰면 된다

@@ -1,6 +1,5 @@
 import React from 'react';
 import moment from 'moment';
-// import {AsyncStorage} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import BattleTalkPresenter from './BattleTalkPresenter';
 
@@ -11,6 +10,7 @@ var M_PROFILE = '';
 export default class extends React.Component {
   constructor(props) {
     super(props);
+    // this.init();
     const {
       navigation: {
         state: {
@@ -29,41 +29,9 @@ export default class extends React.Component {
       msg: null,
       date: nowDate,
       error: null,
+      messages: [],
     };
   }
-
-  // setAreaChange = selected => {
-  //   console.log('setAreaChange fun ::: ' + selected);
-  //   this.setState({
-  //     area: selected,
-  //   });
-  // };
-  // setTypeChange = selected => {
-  //   console.log('setTypeChange fun ::: ' + selected);
-  //   this.setState({
-  //     type: selected,
-  //   });
-  // };
-  // setDateChange = selected => {
-  //   this.state.date = selected;
-  //   this.setState({
-  //     date: selected,
-  //   });
-  //   console.log('setDateChange fun ::: ' + this.state.date);
-  //   // this.onDateChanging();
-  // };
-  // setLevelChange = selected => {
-  //   console.log('setLevelChange fun ::: ' + selected);
-  //   this.setState({
-  //     level: selected,
-  //   });
-  // };
-  // setMemoChange = selected => {
-  //   console.log('setMemoChange fun ::: ' + selected);
-  //   this.setState({
-  //     memo: selected,
-  //   });
-  // };
 
   getData = async () => {
     console.log('getData');
@@ -91,8 +59,11 @@ export default class extends React.Component {
     // let : 변할 수 있는 변수
     let insertChatList, error;
     try {
-      // 내 로그인 정보 불러오기
+      // 내 로그인 정보 불러오ß기
       this.getData();
+      // this.writeUserData(this.state.id, this.state.name, 'KK');
+
+      // this.user();
       // 채팅 리스트 불러오기
       //   ({
       //     data: { results: insertBattle }
@@ -106,6 +77,7 @@ export default class extends React.Component {
         error,
         insertChatList,
       });
+      // this.readUserData();
     }
   }
 

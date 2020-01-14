@@ -48,6 +48,7 @@ const Title = styled.Text`
 `;
 
 const Contents = styled.Text`
+  width: 100%;
   align-items: center;
   justify-content: center;
   font-size: 14px;

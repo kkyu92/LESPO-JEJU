@@ -1,5 +1,5 @@
 import React from 'react';
-import {tv} from '../../../api/Api';
+import {tv, LESPO_API} from '../../../api/Api';
 import NoticePresenter from './NoticePresenter';
 
 export default class extends React.Component {
@@ -24,8 +24,9 @@ export default class extends React.Component {
 
     try {
       ({
-        data: {results: noticeList},
-      } = await tv.getPopular());
+        data: {data: noticeList},
+      } = await LESPO_API.getNotice());
+      console.log('Success: ' + noticeList);
     } catch (error) {
       console.log('Notice get api ::: ' + error);
       error = "Cant't get Notice.";

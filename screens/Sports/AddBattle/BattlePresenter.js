@@ -165,7 +165,10 @@ const BattlePresenter = ({
   loading ? (
     <Loader />
   ) : (
-    <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : null}
+      enabled>
       <View>
         <ViewTitle>스포츠배틀을 설정하세요!</ViewTitle>
         <Container>
@@ -276,7 +279,7 @@ const BattlePresenter = ({
               textAlignVertical={'top'}
             />
           </MemoContainer>
-          <StartBtn onPress={() => navigation.goBack(null)}>
+          <StartBtn onPress={() => updateBattle()}>
             <StartText>시작하기</StartText>
           </StartBtn>
         </Container>
@@ -291,6 +294,7 @@ handleGoBack = navigation => {
 };
 
 const sports = [
+  {label: '스포츠 선택', value: '스포츠'},
   {label: '당구', value: '당구'},
   {label: '농구', value: '농구'},
   {label: '축구', value: '축구'},
@@ -300,19 +304,60 @@ const sports = [
 ];
 
 const areas = [
-  {label: '당구', value: '당구'},
-  {label: '농구', value: '농구'},
-  {label: '축구', value: '축구'},
-  {label: '볼링', value: '볼링'},
-  {label: '골프', value: '골프'},
-  {label: '배드민턴', value: '배드민턴'},
+  {label: '지역 선택', value: '지역'},
+  {label: '서귀포시 남원읍', value: '서귀포시 남원읍'},
+  {label: '서귀포시 대륜동', value: '서귀포시 대륜동'},
+  {label: '서귀포시 대정읍/마라도', value: '서귀포시 대정읍/마라도'},
+  {label: '서귀포시 대천동', value: '서귀포시 대천동'},
+  {label: '서귀포시 동홍동', value: '서귀포시 동홍동'},
+  {label: '서귀포시 서홍동', value: '서귀포시 서홍동'},
+  {label: '서귀포시 성산읍', value: '서귀포시 성산읍'},
+  {label: '서귀포시 송산동', value: '서귀포시 송산동'},
+  {label: '서귀포시 안덕면', value: '서귀포시 안덕면'},
+  {label: '서귀포시 영천동', value: '서귀포시 영천동'},
+  {label: '서귀포시 예래동', value: '서귀포시 예래동'},
+  {label: '서귀포시 정방동', value: '서귀포시 정방동'},
+  {label: '서귀포시 중문동', value: '서귀포시 중문동'},
+  {label: '서귀포시 중앙동', value: '서귀포시 중앙동'},
+  {label: '서귀포시 천지동', value: '서귀포시 천지동'},
+  {label: '서귀포시 표선면', value: '서귀포시 표선면'},
+  {label: '서귀포시 효돈동', value: '서귀포시 효돈동'},
+  {label: '이어도', value: '이어도'},
+  {label: '제주시 건입동', value: '제주시 건입동'},
+  {label: '제주시 구좌읍', value: '제주시 구좌읍'},
+  {label: '제주시 노형동', value: '제주시 노형동'},
+  {label: '제주시 도두동', value: '제주시 도두동'},
+  {label: '제주시 봉개동', value: '제주시 봉개동'},
+  {label: '제주시 삼도1동', value: '제주시 삼도1동'},
+  {label: '제주시 삼도2동', value: '제주시 삼도2동'},
+  {label: '제주시 삼양동', value: '제주시 삼양동'},
+  {label: '제주시 아라동', value: '제주시 아라동'},
+  {label: '제주시 애월읍', value: '제주시 애월읍'},
+  {label: '제주시 연동', value: '제주시 연동'},
+  {label: '제주시 오라동', value: '제주시 오라동'},
+  {label: '제주시 외도동', value: '제주시 외도동'},
+  {label: '제주시 용담1동', value: '제주시 용담1동'},
+  {label: '제주시 용담2동', value: '제주시 용담2동'},
+  {label: '제주시 우도면', value: '제주시 우도면'},
+  {label: '제주시 이도1동', value: '제주시 이도1동'},
+  {label: '제주시 이도2동', value: '제주시 이도2동'},
+  {label: '제주시 이호동', value: '제주시 이호동'},
+  {label: '제주시 일도1동', value: '제주시 일도1동'},
+  {label: '제주시 일도2동', value: '제주시 일도2동'},
+  {label: '제주시 조천읍', value: '제주시 조천읍'},
+  {label: '제주시 추자면', value: '제주시 추자면'},
+  {label: '제주시 한경면', value: '제주시 한경면'},
+  {label: '제주시 한림읍', value: '제주시 한림읍'},
+  {label: '제주시 화북동', value: '제주시 화북동'},
 ];
 const types = [
+  {label: '타입 선택', value: '타입'},
   {label: '개인전', value: '개인전'},
   {label: '팀전', value: '팀전'},
 ];
 
 const leveles = [
+  {label: '실력 선택', value: '실력'},
   {label: '초보', value: '초보'},
   {label: '중수', value: '중수'},
   {label: '고수', value: '고수'},

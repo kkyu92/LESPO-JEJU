@@ -63,6 +63,7 @@ const AddBattleContainer = styled.TouchableOpacity`
   align-items: center;
   justify-content: center;
   margin: 20px;
+  padding: 5px;
 `;
 
 const AddBattleText = styled.Text`
@@ -136,6 +137,7 @@ const SportsPresenter = ({
   loading,
   listName,
   listChanged,
+  chatRoomList,
   onListChanging,
   handleListUpdate,
   navigation,
@@ -148,7 +150,7 @@ const SportsPresenter = ({
         <HeaderText>스포츠배틀</HeaderText>
       </HeaderContainer>
       <HeaderConatinerPicker>
-        <PickerContainer>
+        {/* <PickerContainer>
           <PickerSelect
             placeholder={{}}
             items={data}
@@ -161,7 +163,7 @@ const SportsPresenter = ({
             style={pickerStyle}
             value={listName}
           />
-        </PickerContainer>
+        </PickerContainer> */}
         <AddBattleContainer
           onPress={() =>
             navigation.navigate({
@@ -176,30 +178,30 @@ const SportsPresenter = ({
           <Loader />
         ) : (
           <>
-            {listChanged ? (
-              listChanged.length > 0 ? (
+            {chatRoomList ? (
+              chatRoomList.length > 0 ? (
                 <Section horizontal={false} title="">
-                  {listChanged
-                    .filter(list => list.backdrop_path !== null)
+                  {chatRoomList
+                    .filter(list => list.key !== null)
                     .map(list => (
                       <BattleSlide
-                        key={list.id}
-                        id={list.id}
-                        profile={list.backdrop_path}
-                        name={'박명수'}
-                        level={'초고수'}
-                        rate={list.vote_average}
-                        sport={list.title}
-                        type={'개인전'}
-                        date={'2020-01-22'}
-                        area={'제주시 연동'}
-                        memo={list.overview}
+                        key={list.key}
+                        id={list.key}
+                        profile={list.makeUser.userProfile}
+                        name={list.makeUser.userName}
+                        level={list.level}
+                        rate={list.makeUser.userRating}
+                        sport={list.sports}
+                        type={list.battleStyle}
+                        date={list.battleDate}
+                        area={list.area}
+                        memo={list.memo}
                         coinList={false}
                       />
                     ))}
                 </Section>
               ) : (
-                <SearchNo handleGetSearchText={searchTerm} />
+                <SearchNo />
               )
             ) : (
               console.log('null')

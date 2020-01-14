@@ -102,7 +102,8 @@ const getProfile = () => {
     .then(result => {
       setProfile(result);
       logCallback(
-        `Get Profile Finished:${JSON.stringify(result)}`,
+        alert('Success fetching data: ' + JSON.stringify(result)),
+        // `Get Profile Finished:${JSON.stringify(result)}`,
         setProfileLoading(false),
         storeSNS(result),
       );

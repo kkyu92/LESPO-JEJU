@@ -196,14 +196,16 @@ const LoginPresenter = ({
                           console.log(error);
                           alert('Error fetching data: ' + error.toString());
                         } else {
-                          console.log(
-                            result.id,
-                            result.name,
-                            result.email,
-                            result.picture.data.url,
-                          );
+                          // console.log(
+                          //   result.id,
+                          //   result.name,
+                          //   result.email,
+                          //   result.picture.data.url,
+                          // );
                           storeData(result);
-                          alert('Success fetching data: ' + result.name);
+                          alert(
+                            'Success fetching data: ' + JSON.stringify(result),
+                          );
                         }
                       };
 

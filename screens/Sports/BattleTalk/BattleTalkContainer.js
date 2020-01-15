@@ -1,9 +1,10 @@
 import React from 'react';
 import moment from 'moment';
+import firebase from 'firebase';
 import AsyncStorage from '@react-native-community/async-storage';
 import BattleTalkPresenter from './BattleTalkPresenter';
+import {Alert} from 'react-native';
 
-var nowDate = moment().format('YYYY-MM-DD');
 var M_NAME = '';
 var M_PROFILE = '';
 
@@ -25,15 +26,108 @@ export default class extends React.Component {
       myName: '',
       myProfile: '',
       loading: true,
+      getChatList: [],
       insertChatList: null,
       msg: null,
-      date: nowDate,
       error: null,
-      messages: [],
     };
   }
 
-  getData = async () => {
+  // msg handler
+  msgHandler = selected => {
+    console.log('setMessage change fun ::: ' + selected);
+    this.setState({
+      msg: selected,
+    });
+  };
+
+  // write Data [ set / push = uuid ]
+  writeChattingAdd(key, user, msg, date, read) {
+    firebase
+      .database()
+      .ref('chatRoomList/' + key + '/chatList/')
+      .push({user, msg, date, read})
+      .then(data => {
+        //success callback
+        console.log('writeChatting Add: ', data);
+      })
+      .catch(error => {
+        //error callback
+        console.log('error ', error);
+      });
+  }
+
+  // chatting add
+  insertChatList = async () => {
+    if (this.state.msg !== null) {
+      // let reader = [];
+      // reader.push({
+      //   is_read: false,
+      //   key: this.state.myName,
+      //   value: this.state.myName,
+      // });
+      let reader = {};
+      reader[this.state.myName] = this.state.myName;
+      try {
+        this.writeChattingAdd(
+          this.state.id,
+          this.state.myName,
+          this.state.msg,
+          moment()
+            .local()
+            .format('LT'),
+          reader,
+        );
+      } catch (error) {
+        console.log('insert Chatting message error ::: ' + error);
+      } finally {
+        console.log(
+          this.state.myName,
+          this.state.msg,
+          moment()
+            .local()
+            .format('LT'),
+          reader,
+        );
+      }
+    } else {
+      console.log('message : null');
+    }
+  };
+
+  // updateReader(key) {
+  //   var readUser = firebase.database().ref('chatRoomList/' + key + '/chatList/')
+  //   // Modify the 'first' and 'last' properties, but leave other data at
+  //   // adaNameRef unchanged.
+  //   readUser.update({ first: 'Ada', last: 'Lovelace' });
+  // }
+
+  // 체팅방 들어와있는지 상태 체크
+  updateSingleData(room, chatList) {
+    const {myName} = this.state;
+    // console.log(
+    //   room + ' :::: ' + chatList.length + JSON.stringify(chatList[0].read),
+    // );
+    let i;
+    if (typeof chatList.length !== 'undefined' && chatList.length > 0) {
+      for (i = 0; i < chatList.length; i++) {
+        let reader = chatList[i].read;
+        reader[myName] = myName;
+        firebase
+          .database()
+          .ref('chatRoomList/' + room + '/chatList/' + chatList[i].key + '/')
+          .update({
+            // key: chatList[i].key,
+            date: chatList[i].date,
+            user: chatList[i].user,
+            read: reader,
+            msg: chatList[i].msg,
+          });
+      }
+    }
+  }
+
+  getData = async (id, getChatList) => {
     console.log('getData');
     try {
       M_NAME = await AsyncStorage.getItem('@USER_NAME');
@@ -45,6 +139,7 @@ export default class extends React.Component {
         });
         console.log('myName : ' + this.state.myName);
         console.log('myProfile : ' + this.state.myProfile);
+        this.updateSingleData(id, getChatList);
       } else {
         console.log('Login profile image null');
       }
@@ -56,85 +151,63 @@ export default class extends React.Component {
 
   // init 초기값
   async componentDidMount() {
-    // let : 변할 수 있는 변수
-    let insertChatList, error;
+    let {id, getChatList} = this.state;
     try {
-      // 내 로그인 정보 불러오ß기
-      this.getData();
-      // this.writeUserData(this.state.id, this.state.name, 'KK');
-
-      // this.user();
-      // 채팅 리스트 불러오기
-      //   ({
-      //     data: { results: insertBattle }
-      //   } = await tv.getPopular());
-    } catch (error) {
-      console.log('insert ChatList api error ::: ' + error);
-      error = "Cant't insert ChatList.";
-    } finally {
-      this.setState({
-        loading: false,
-        error,
-        insertChatList,
+      // get ChattingList
+      var userRef = firebase
+        .database()
+        .ref('chatRoomList/' + id + '/chatList/');
+      // .orderByChild('key');
+      userRef.on('value', dataSnapshot => {
+        getChatList = [];
+        dataSnapshot.forEach(child => {
+          getChatList.push({
+            key: child.key,
+            user: child.val().user,
+            msg: child.val().msg,
+            date: child.val().date,
+            read: child.val().read,
+          });
+          this.setState({
+            getChatList: getChatList,
+            loading: false,
+          });
+        });
+        console.log(
+          'Firebase get chattingList Finish----------     ' +
+            JSON.stringify(getChatList),
+        );
+        // 내 로그인 정보 불러오ß기
+        this.getData(id, getChatList);
       });
-      // this.readUserData();
+      // this.updateSingleData(id, getChatList);
+      console.log(
+        'chatList Data[try 1]: ' + JSON.stringify(this.state.getChatList),
+      );
+    } catch (error) {
+      console.log('get chattingList error ::: ' + error);
+    } finally {
+      if (typeof getChatList !== 'undefined' && getChatList instanceof Array) {
+        this.setState({
+          loading: false,
+        });
+      }
+      console.log('try/catch [ finally ]');
     }
   }
 
-  // date change
-  onDateChanging = async () => {
-    const {date} = this.state.date;
-    // if (date !== "") {
-    console.log('date Changing ::: ' + date);
-
-    return;
-    // }
-  };
-
-  // 배틀 추가하는 api 따로 생성
-  updateBattle = async () => {
-    let error;
-    try {
-    } catch (error) {
-      console.log('update Battle error ::: ' + error);
-    } finally {
-      this.setState({
-        error,
-      });
-      console.log(
-        this.state.sport,
-        this.state.area,
-        this.state.type,
-        this.state.date,
-        this.state.level,
-        this.state.memo,
-      );
-    }
-    return;
-  };
-
   render() {
-    const {
-      loading,
-      insertChatList,
-      msg,
-      date,
-      profile,
-      name,
-      myName,
-      myProfile,
-    } = this.state;
+    const {loading, getChatList, profile, name, myProfile} = this.state;
     return (
       <BattleTalkPresenter
         loading={loading}
-        insertChatList={insertChatList}
-        msg={msg}
-        date={date}
+        getChatList={getChatList}
+        insertChatList={this.insertChatList}
+        msgHandler={this.msgHandler}
         // 상대 정보
         profile={profile}
         name={name}
         // 내 정보
-        myName={myName}
         myProfile={myProfile}
       />
     );

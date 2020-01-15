@@ -4,8 +4,10 @@ import firebase from 'firebase';
 import BattlePresenter from './BattlePresenter';
 import AsyncStorage from '@react-native-community/async-storage';
 import {Alert} from 'react-native';
+import {NavigationActions} from 'react-navigation';
 
 var nowDate = moment().format('YYYY-MM-DD');
+var makeDate;
 var M_ID = '';
 var M_NAME = '';
 var M_PROFILE = '';
@@ -219,7 +221,7 @@ export default class extends React.Component {
           makeUser,
           joinUser,
           chatList,
-          nowDate,
+          moment().format(),
           this.state.sport,
           this.state.area,
           this.state.type,
@@ -229,9 +231,19 @@ export default class extends React.Component {
           '배틀신청중',
           battleResult,
         );
-        this.state.navigation.goBack({
-          test: 'hi',
+        const resetAction = NavigationActions.navigate({
+          routeName: 'Tabs',
+          action: NavigationActions.navigate({
+            routeName: '스포츠배틀',
+            params: {
+              check: true,
+            },
+          }),
         });
+        this.props.navigation.dispatch(resetAction);
+        // this.state.navigation.dispatch({
+        //   routeName: 'Tabs',
+        // });
       } catch (error) {
         console.log('update Battle error ::: ' + error);
       } finally {

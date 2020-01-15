@@ -7,14 +7,17 @@ import firebase from 'firebase';
 export default class extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      loading: true,
+      listName: null,
+      listChanged: null,
+      chatRoomList: [],
+      error: null,
+    };
+    console.log('constructor ----');
+    var self = this;
+    self.init();
   }
-  state = {
-    loading: true,
-    listName: null,
-    listChanged: null,
-    chatRoomList: [],
-    error: null,
-  };
 
   init = () => {
     if (!firebase.apps.length) {
@@ -41,83 +44,62 @@ export default class extends React.Component {
       });
   }
 
-  // get ChatRoomList
-  listenForChatRoomList() {
-    // var list = [];
-    // firebase
-    //   .database()
-    //   .ref('chatRoomList/')
-    //   .on('value', function(dataSnapshot) {
-    //     // var list = [];
-    //     dataSnapshot.forEach(child => {
-    //       list.push({
-    //         key: child.key,
-    //         makeUser: child.val().makeUser,
-    //         joinUser: child.val().joinUser,
-    //         chatList: child.val().chatList,
-    //         date: child.val().date,
-    //         sports: child.val().sports,
-    //         area: child.val().area,
-    //         battleStyle: child.val().battleStyle,
-    //         battleDate: child.val().battleDate,
-    //         level: child.val().level,
-    //         memo: child.val().memo,
-    //         battleState: child.val().battleState,
-    //         battleResult: child.val().battleResult,
-    //       });
-    //     });
-    //     // console.log('chatList Data: ' + JSON.stringify(chatRoomList));
-    //   });
-    // this.setState({
-    //   chatRoomList: list,
-    // });
-    // console.log('chatList Data: ' + JSON.stringify(this.state.chatRoomList));
-  }
-
   // 시작시 불러옴
-  async componentWillMount() {
-    //async componentDidMount() {
-    var self = this;
-    self.init();
-    let listChanged, error;
+  async componentDidMount() {
+    let {listChanged, chatRoomList, error} = this.state;
     try {
-      var list = [];
-      firebase
-        .database()
-        .ref('chatRoomList/')
-        .on('value', function(dataSnapshot) {
-          // var list = [];
-          dataSnapshot.forEach(child => {
-            list.push({
-              key: child.key,
-              makeUser: child.val().makeUser,
-              joinUser: child.val().joinUser,
-              chatList: child.val().chatList,
-              date: child.val().date,
-              sports: child.val().sports,
-              area: child.val().area,
-              battleStyle: child.val().battleStyle,
-              battleDate: child.val().battleDate,
-              level: child.val().level,
-              memo: child.val().memo,
-              battleState: child.val().battleState,
-              battleResult: child.val().battleResult,
-            });
+      // get ChatRoomList
+      let list = [];
+      var userRef = firebase.database().ref('chatRoomList/');
+      // .orderByChild('key');
+      userRef.on('value', dataSnapshot => {
+        chatRoomList = [];
+        dataSnapshot.forEach(child => {
+          chatRoomList.push({
+            key: child.key,
+            makeUser: child.val().makeUser,
+            joinUser: child.val().joinUser,
+            chatList: child.val().chatList,
+            date: child.val().date,
+            sports: child.val().sports,
+            area: child.val().area,
+            battleStyle: child.val().battleStyle,
+            battleDate: child.val().battleDate,
+            level: child.val().level,
+            memo: child.val().memo,
+            battleState: child.val().battleState,
+            battleResult: child.val().battleResult,
           });
-          // console.log('chatList Data: ' + JSON.stringify(chatRoomList));
+          chatRoomList.sort(function(a, b) {
+            return new Date(b.date) - new Date(a.date);
+          });
+          // chatRoomList.reverse();
+          this.setState({
+            chatRoomList: chatRoomList,
+            loading: false,
+          });
         });
+        console.log('Firebase on Finish----------');
+      });
+      //console.log('chatList Data[finally 1]: ' + JSON.stringify(list));
+      console.log(
+        'chatList Data[try 1]: ' + JSON.stringify(this.state.chatRoomList),
+      );
     } catch (error) {
       console.log(error);
       error = "Cnat't get TV";
     } finally {
-      this.setState({
-        loading: false,
-        listChanged,
-        chatRoomList: list,
-        error,
-      });
-      console.log('chatList Data: ' + JSON.stringify(this.state.chatRoomList));
+      // this.setState({
+      //   loading: false,
+      //   listChanged,
+      //   chatRoomList,
+      //   error,
+      // });
+      console.log(
+        'chatList Data[finally 2]: ' + JSON.stringify(this.state.chatRoomList),
+      );
     }
+
     // 화면 돌아왔을 때 reload !
     // this.subs = [
     //   this.props.navigation.addListener('willFocus', () => {
@@ -133,11 +115,11 @@ export default class extends React.Component {
   // 나갔을때
   componentWillUnmount() {
     console.log('componentWillUnmount ::: ');
-    // firebase
-    //   .database()
-    //   .ref()
-    //   .off();
-    this.subs.forEach(sub => sub.remove());
+    firebase
+      .database()
+      .ref()
+      .off();
+    // this.subs.forEach(sub => sub.remove());
   }
 
   // List 입력값 받아온다
@@ -200,10 +182,10 @@ export default class extends React.Component {
       <SportsPresenter
         loading={loading}
         listName={listName}
-        listChanged={listChanged}
+        // listChanged={listChanged}
         chatRoomList={chatRoomList}
-        onListChanging={this.onListChanging}
-        handleListUpdate={this.handleListUpdate}
+        // onListChanging={this.onListChanging}
+        // handleListUpdate={this.handleListUpdate}
       />
     );
   }

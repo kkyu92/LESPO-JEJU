@@ -13,6 +13,10 @@ import Layout from '../../../constants/Layout';
 import PhotoUri from '../../../api/PhotoUri';
 import ProfileUri from '../../../api/ProfileUri';
 
+const Text = styled.Text`
+  color: ${BG_COLOR};
+`;
+
 const View = styled.View`
   background-color: ${BG_COLOR};
   flex: 1;
@@ -162,12 +166,11 @@ const styles = StyleSheet.create({
 // show DATA
 const BattleTalkPresenter = ({
   loading,
+  getChatList,
   insertChatList,
-  msg,
-  date,
+  msgHandler,
   profile,
   name,
-  myName,
   myProfile,
   navigation,
 }) =>
@@ -218,7 +221,9 @@ const BattleTalkPresenter = ({
             </RevBtn>
           </BtnContainer>
         </HeaderContainer>
-        <ChatListContainer></ChatListContainer>
+        <ChatListContainer>
+          <Text>{JSON.stringify(getChatList)}</Text>
+        </ChatListContainer>
       </View>
 
       <InputContainer>
@@ -231,7 +236,7 @@ const BattleTalkPresenter = ({
           }
         />
         <Input
-          //   onChangeText={handleSearchUpdate}
+          onChangeText={msgHandler}
           // value={searchTerm}
           // autoFocus
           returnKeyType={'next'}
@@ -241,7 +246,7 @@ const BattleTalkPresenter = ({
           autoCorrect={false}
           multiline={true}
         />
-        <SendContainer>
+        <SendContainer onPress={() => insertChatList()}>
           <SendText>보내기</SendText>
         </SendContainer>
       </InputContainer>

@@ -80,9 +80,15 @@ const GetText = styled.Text`
 `;
 
 const ProfileImg = styled.Image`
-  width: 80px;
-  height: 80px;
-  border-radius: 40;
+  width: 70px;
+  height: 70px;
+  border-radius: 35;
+  margin-top: 5px;
+`;
+
+const NullImg = styled.Image`
+  width: 65px;
+  height: 65px;
   margin-top: 5px;
 `;
 
@@ -263,13 +269,13 @@ const BattleSlide = ({
         })
       }>
       <BattleProfileContainer>
-        <ProfileImg
-          source={
-            profile
-              ? {uri: profile}
-              : require(`../assets/drawable-xxhdpi/icon_profile.png`)
-          }
-        />
+        {profile ? (
+          <ProfileImg source={{uri: profile}} />
+        ) : (
+          <NullImg
+            source={require(`../assets/drawable-xxhdpi/icon_profile.png`)}
+          />
+        )}
         <ProfileName>{name}</ProfileName>
         <ProfileLevel>{level}</ProfileLevel>
         {/* <AirbnbRating

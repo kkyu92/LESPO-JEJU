@@ -11,7 +11,6 @@ var M_PROFILE = '';
 export default class extends React.Component {
   constructor(props) {
     super(props);
-    // this.init();
     const {
       navigation: {
         state: {
@@ -32,6 +31,11 @@ export default class extends React.Component {
       error: null,
     };
   }
+
+  handleScroll = event => {
+    // console.log('handleScroll 1 : ' + event.nativeEvent.contentOffset.y);
+    console.log('handleScroll 1 : ' + event);
+  };
 
   // msg handler
   msgHandler = selected => {
@@ -58,18 +62,13 @@ export default class extends React.Component {
   }
 
   // chatting add
-  insertChatList = async () => {
-    if (this.state.msg !== null) {
-      // let reader = [];
-      // reader.push({
-      //   is_read: false,
-      //   key: this.state.myName,
-      //   value: this.state.myName,
-      // });
+  insertChatList = async msg => {
+    await console.log('insertChatList: ' + msg);
+    if (msg !== null && msg !== '') {
       let reader = {};
       reader[this.state.myName] = this.state.myName;
       try {
-        this.writeChattingAdd(
+        await this.writeChattingAdd(
           this.state.id,
           this.state.myName,
           this.state.msg,
@@ -78,52 +77,41 @@ export default class extends React.Component {
             .format('LT'),
           reader,
         );
+        this.setState({
+          msg: '',
+        });
       } catch (error) {
         console.log('insert Chatting message error ::: ' + error);
-      } finally {
-        console.log(
-          this.state.myName,
-          this.state.msg,
-          moment()
-            .local()
-            .format('LT'),
-          reader,
-        );
       }
     } else {
       console.log('message : null');
     }
   };
 
-  // updateReader(key) {
-  //   var readUser = firebase.database().ref('chatRoomList/' + key + '/chatList/')
-  //   // Modify the 'first' and 'last' properties, but leave other data at
-  //   // adaNameRef unchanged.
-  //   readUser.update({ first: 'Ada', last: 'Lovelace' });
-  // }
-
   // 체팅방 들어와있는지 상태 체크
   updateSingleData(room, chatList) {
     const {myName} = this.state;
-    // console.log(
-    //   room + ' :::: ' + chatList.length + JSON.stringify(chatList[0].read),
-    // );
     let i;
     if (typeof chatList.length !== 'undefined' && chatList.length > 0) {
-      for (i = 0; i < chatList.length; i++) {
-        let reader = chatList[i].read;
+      let list = {};
+      chatList.forEach(child => {
+        let key = child.key;
+        let reader = child.read;
         reader[myName] = myName;
-        firebase
-          .database()
-          .ref('chatRoomList/' + room + '/chatList/' + chatList[i].key + '/')
-          .update({
-            // key: chatList[i].key,
-            date: chatList[i].date,
-            user: chatList[i].user,
-            read: reader,
-            msg: chatList[i].msg,
-          });
-      }
+        list[key] = {
+          user: child.user,
+          msg: child.msg,
+          date: child.date,
+          read: reader,
+        };
+      });
+      // console.log('check2 :::: ' + JSON.stringify(list));
+      firebase
+        .database()
+        .ref('chatRoomList/' + room)
+        .update({
+          chatList: list,
+        });
     }
   }
 
@@ -175,7 +163,7 @@ export default class extends React.Component {
         });
         console.log(
           'Firebase get chattingList Finish----------     ' +
-            JSON.stringify(getChatList),
+            JSON.stringify(dataSnapshot),
         );
         // 내 로그인 정보 불러오ß기
         this.getData(id, getChatList);
@@ -196,18 +184,38 @@ export default class extends React.Component {
     }
   }
 
+  // Screen OUT
+  componentWillUnmount() {
+    console.log('componentWillUnmount ::: ');
+    firebase
+      .database()
+      .ref('chatRoomList/' + this.state.id + '/chatList/')
+      .off('value');
+  }
+
   render() {
-    const {loading, getChatList, profile, name, myProfile} = this.state;
+    const {
+      loading,
+      getChatList,
+      msg,
+      profile,
+      name,
+      myProfile,
+      myName,
+    } = this.state;
     return (
       <BattleTalkPresenter
         loading={loading}
+        handleScroll={this.handleScroll}
         getChatList={getChatList}
         insertChatList={this.insertChatList}
         msgHandler={this.msgHandler}
+        msg={msg}
         // 상대 정보
         profile={profile}
         name={name}
         // 내 정보
+        myName={myName}
         myProfile={myProfile}
       />
     );

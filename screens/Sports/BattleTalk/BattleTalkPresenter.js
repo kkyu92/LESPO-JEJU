@@ -12,6 +12,10 @@ import {withNavigation} from 'react-navigation';
 import Layout from '../../../constants/Layout';
 import PhotoUri from '../../../api/PhotoUri';
 import ProfileUri from '../../../api/ProfileUri';
+import ChatSlide from '../../../components/ChatSlide';
+import Section from '../../../components/Section';
+
+var scrollViewRef = React.createRef();
 
 const Text = styled.Text`
   color: ${BG_COLOR};
@@ -105,7 +109,7 @@ const RevBtnText = styled.Text`
   font-size: 16px;
 `;
 
-const ChatListContainer = styled.View`
+const ChatListContainer = styled.ScrollView`
   flex: 1;
   background-color: ${TINT_COLOR};
   border-top-left-radius: 15px;
@@ -166,12 +170,15 @@ const styles = StyleSheet.create({
 // show DATA
 const BattleTalkPresenter = ({
   loading,
+  handleScroll,
   getChatList,
   insertChatList,
+  msg,
   msgHandler,
   profile,
   name,
   myProfile,
+  myName,
   navigation,
 }) =>
   loading ? (
@@ -221,8 +228,93 @@ const BattleTalkPresenter = ({
             </RevBtn>
           </BtnContainer>
         </HeaderContainer>
-        <ChatListContainer>
-          <Text>{JSON.stringify(getChatList)}</Text>
+        <ChatListContainer
+          ref={scrollViewRef}
+          // onContentSizeChange={(contentWidth, contentHeight) => {
+          //   console.log('onContentSizeChange');
+          //   handleScroll(contentHeight);
+          // }}
+          // scrollToOverflowEnabled={true}
+          // onScroll={handleScroll}
+          // scrollTo={{y: height}}
+          //         setTimeout(() => {
+          //   this.scrollView.scrollTo({ x: DEVICE_WIDTH * current_index, y: 0, animated: false });
+          // }, 1)
+        >
+          {loading ? (
+            <Loader />
+          ) : getChatList.length > 0 ? (
+            <Section horizontal={false} title="">
+              {getChatList
+                .filter(list => list.msg !== null)
+                .map((value, index, list) =>
+                  list.length === 1 ? (
+                    <ChatSlide
+                      prevDate={''}
+                      nextDate={''}
+                      prevUser={''}
+                      nextUser={''}
+                      date={list[index].date}
+                      msg={list[index].msg}
+                      user={list[index].user}
+                      reader={list[index].read}
+                      name={name}
+                      profile={profile}
+                      myName={myName}
+                      myProfile={myProfile}
+                    />
+                  ) : index === list.length - 1 ? (
+                    <ChatSlide
+                      prevDate={list[index - 1].date}
+                      nextDate={''}
+                      prevUser={list[index - 1].user}
+                      nextUser={''}
+                      date={list[index].date}
+                      msg={list[index].msg}
+                      user={list[index].user}
+                      reader={list[index].read}
+                      name={name}
+                      profile={profile}
+                      myName={myName}
+                      myProfile={myProfile}
+                    />
+                  ) : index === 0 ? (
+                    <ChatSlide
+                      prevDate={''}
+                      nextDate={list[index + 1].date}
+                      prevUser={''}
+                      nextUser={list[index + 1].user}
+                      date={list[index].date}
+                      msg={list[index].msg}
+                      user={list[index].user}
+                      reader={list[index].read}
+                      name={name}
+                      profile={profile}
+                      myName={myName}
+                      myProfile={myProfile}
+                    />
+                  ) : (
+                    <ChatSlide
+                      prevDate={list[index - 1].date}
+                      nextDate={list[index + 1].date}
+                      prevUser={list[index - 1].user}
+                      nextUser={list[index + 1].user}
+                      date={list[index].date}
+                      msg={list[index].msg}
+                      user={list[index].user}
+                      reader={list[index].read}
+                      name={name}
+                      profile={profile}
+                      myName={myName}
+                      myProfile={myProfile}
+                    />
+                  ),
+                )}
+            </Section>
+          ) : (
+            console.log('no chattingList')
+          )}
+          {/* <Text>{JSON.stringify(getChatList)}</Text> */}
         </ChatListContainer>
       </View>
 
@@ -236,8 +328,9 @@ const BattleTalkPresenter = ({
           }
         />
         <Input
+          onFocus={_scrollToBottom()}
           onChangeText={msgHandler}
-          // value={searchTerm}
+          value={msg}
           // autoFocus
           returnKeyType={'next'}
           placeholder="메시지 작성"
@@ -246,11 +339,17 @@ const BattleTalkPresenter = ({
           autoCorrect={false}
           multiline={true}
         />
-        <SendContainer onPress={() => insertChatList()}>
+        <SendContainer onPress={() => insertChatList(msg)}>
           <SendText>보내기</SendText>
         </SendContainer>
       </InputContainer>
     </KeyboardAvoidingView>
   );
+
+const _scrollToBottom = () => {
+  setTimeout(() => {
+    scrollViewRef.current.scrollToEnd({animated: true});
+  }, 500);
+};
 
 export default withNavigation(BattleTalkPresenter);

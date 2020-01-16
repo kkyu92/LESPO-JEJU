@@ -117,8 +117,8 @@ export default class extends React.Component {
     console.log('componentWillUnmount ::: ');
     firebase
       .database()
-      .ref()
-      .off();
+      .ref('chatRoomList/')
+      .off('value');
     // this.subs.forEach(sub => sub.remove());
   }
 

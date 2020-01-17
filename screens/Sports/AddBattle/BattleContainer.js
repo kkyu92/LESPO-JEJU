@@ -176,7 +176,7 @@ export default class extends React.Component {
   componentWillUnmount() {
     firebase
       .database()
-      .ref()
+      .ref('chatRoomList/')
       .off();
   }
 
@@ -240,6 +240,10 @@ export default class extends React.Component {
             },
           }),
         });
+        Alert.alert(
+          '배틀등록 완료',
+          '나의 배틀 페이지에서 확인할 수 있습니다!',
+        );
         this.props.navigation.dispatch(resetAction);
         // this.state.navigation.dispatch({
         //   routeName: 'Tabs',

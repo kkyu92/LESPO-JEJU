@@ -169,9 +169,8 @@ ratingCompleted = rating => {
 
 // 리스트 기본틀
 const BattleSlide = ({
-  key,
-  myBattleList,
   statusText,
+  roomKey,
   id,
   profile,
   name,
@@ -187,7 +186,25 @@ const BattleSlide = ({
 }) =>
   statusText === '배틀신청중' ? (
     // 나의 배틀 리스트
-    <BattleContainer>
+    <BattleContainer
+      onPress={() =>
+        navigation.navigate({
+          routeName: 'MyBattleDetail',
+          params: {
+            roomKey,
+            id,
+            profile,
+            name,
+            sport,
+            type,
+            date,
+            area,
+            memo,
+            statusText,
+            level,
+          },
+        })
+      }>
       <BattleTitleConatiner>
         <TitleText>배틀종목</TitleText>
         <TitleText>매칭형태</TitleText>
@@ -210,7 +227,25 @@ const BattleSlide = ({
     </BattleContainer>
   ) : statusText === '배틀진행중' ? (
     // 나의 배틀 리스트
-    <BattleContainer>
+    <BattleContainer
+      onPress={() =>
+        navigation.navigate({
+          routeName: 'MyBattleDetail',
+          params: {
+            roomKey,
+            id,
+            profile,
+            name,
+            sport,
+            type,
+            date,
+            area,
+            memo,
+            statusText,
+            level,
+          },
+        })
+      }>
       <BattleTitleConatiner>
         <TitleText>배틀종목</TitleText>
         <TitleText>매칭형태</TitleText>
@@ -233,7 +268,25 @@ const BattleSlide = ({
     </BattleContainer>
   ) : statusText === '배틀종료' ? (
     // 나의 배틀 리스트
-    <BattleContainer>
+    <BattleContainer
+      onPress={() =>
+        navigation.navigate({
+          routeName: 'MyBattleDetail',
+          params: {
+            roomKey,
+            id,
+            profile,
+            name,
+            sport,
+            type,
+            date,
+            area,
+            memo,
+            statusText,
+            level,
+          },
+        })
+      }>
       <BattleTitleConatiner>
         <TitleText>배틀종목</TitleText>
         <TitleText>매칭형태</TitleText>
@@ -262,6 +315,7 @@ const BattleSlide = ({
           routeName: 'BattleTalk',
           // routeName: 'Chat',
           params: {
+            roomKey,
             id,
             profile,
             name,

@@ -84,11 +84,12 @@ const storeSNS = async result => {
 // 로그인 정보 저장 일반
 const storeAPI = async (result, email, password) => {
   try {
-    await AsyncStorage.setItem('@USER_ID', email);
+    await AsyncStorage.setItem('@TOKEN', result.data.data.token);
+    await AsyncStorage.setItem('@USER_ID', '' + result.data.data.id);
     await AsyncStorage.setItem('@USER_NAME', result.data.data.nickname);
     await AsyncStorage.setItem('@USER_PASSWORD', password);
     await AsyncStorage.setItem('@USER_PROFILE', '');
-    console.log('saving name: ' + result.data.data.nickname);
+    console.log('saving id: ' + result.data.data.id);
   } catch (error) {
     console.log('saving error: ' + error);
   }

@@ -140,6 +140,7 @@ const SportsPresenter = ({
   chatRoomList,
   onListChanging,
   handleListUpdate,
+  myId,
   navigation,
 }) =>
   loading ? (
@@ -182,11 +183,17 @@ const SportsPresenter = ({
               chatRoomList.length > 0 ? (
                 <Section horizontal={false} title="">
                   {chatRoomList
-                    .filter(list => list.key !== null)
+                    .filter(
+                      list =>
+                        list.makeUser.userId !== myId &&
+                        list.chatList === '' &&
+                        list.joinUser.userId === '',
+                    )
                     .map(list => (
                       <BattleSlide
-                        key={list.key}
-                        id={list.key}
+                        statusText={''}
+                        roomKey={list.key}
+                        id={list.makeUser.userId}
                         profile={list.makeUser.userProfile}
                         name={list.makeUser.userName}
                         level={list.level}

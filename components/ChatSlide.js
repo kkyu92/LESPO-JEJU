@@ -99,12 +99,13 @@ const ChatSlide = ({
   reader,
   name,
   profile,
+  myId,
   myName,
   myProfile,
   navigation,
 }) =>
   // 내가 보낸 메시지
-  myName === user ? (
+  myId === user ? (
     <RightContainer>
       <RightTextContainer>
         <ReadText>

@@ -3,6 +3,9 @@ import {Platform} from 'react-native';
 import SportsPresenter from './SportsPresenter';
 import {tv, movie} from '../../api/Api';
 import firebase from 'firebase';
+import AsyncStorage from '@react-native-community/async-storage';
+
+var M_ID, M_NAME, M_PROFILE;
 
 export default class extends React.Component {
   constructor(props) {
@@ -12,6 +15,9 @@ export default class extends React.Component {
       listName: null,
       listChanged: null,
       chatRoomList: [],
+      myId: null,
+      myName: null,
+      myProfile: null,
       error: null,
     };
     console.log('constructor ----');
@@ -34,20 +40,32 @@ export default class extends React.Component {
     }
   };
 
-  // Read Data [ once / on = 변화가 있다면 ]
-  readUserData() {
-    firebase
-      .database()
-      .ref('UsersList/')
-      .on('value', function(snapshot) {
-        console.log('readUserData: ' + JSON.stringify(snapshot.val()));
-      });
-  }
+  getData = async () => {
+    console.log('getData');
+    try {
+      M_ID = await AsyncStorage.getItem('@USER_ID');
+      M_NAME = await AsyncStorage.getItem('@USER_NAME');
+      M_PROFILE = await AsyncStorage.getItem('@USER_PROFILE');
+      if (M_PROFILE !== null || M_PROFILE !== '') {
+        this.setState({
+          myId: M_ID,
+          myName: M_NAME,
+          myProfile: M_PROFILE,
+        });
+      } else {
+        console.log('Login profile image null');
+      }
+    } catch (e) {
+      // error reading value
+      console.log('getData ERROR ::: ' + e);
+    }
+  };
 
   // 시작시 불러옴
   async componentDidMount() {
     let {listChanged, chatRoomList, error} = this.state;
     try {
+      this.getData();
       // get ChatRoomList
       let list = [];
       var userRef = firebase.database().ref('chatRoomList/');
@@ -79,6 +97,9 @@ export default class extends React.Component {
             loading: false,
           });
         });
+        this.setState({
+          loading: false,
+        });
         console.log('Firebase on Finish----------');
       });
       //console.log('chatList Data[finally 1]: ' + JSON.stringify(list));
@@ -88,18 +109,7 @@ export default class extends React.Component {
     } catch (error) {
       console.log(error);
       error = "Cnat't get TV";
-    } finally {
-      // this.setState({
-      //   loading: false,
-      //   listChanged,
-      //   chatRoomList,
-      //   error,
-      // });
-      console.log(
-        'chatList Data[finally 2]: ' + JSON.stringify(this.state.chatRoomList),
-      );
     }
-
     // 화면 돌아왔을 때 reload !
     // this.subs = [
     //   this.props.navigation.addListener('willFocus', () => {
@@ -177,9 +187,10 @@ export default class extends React.Component {
   };
 
   render() {
-    const {loading, listName, listChanged, chatRoomList} = this.state;
+    const {loading, listName, listChanged, myId, chatRoomList} = this.state;
     return (
       <SportsPresenter
+        myId={myId}
         loading={loading}
         listName={listName}
         // listChanged={listChanged}

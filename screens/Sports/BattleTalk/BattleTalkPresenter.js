@@ -14,6 +14,7 @@ import PhotoUri from '../../../api/PhotoUri';
 import ProfileUri from '../../../api/ProfileUri';
 import ChatSlide from '../../../components/ChatSlide';
 import Section from '../../../components/Section';
+import moment from 'moment';
 
 var scrollViewRef = React.createRef();
 
@@ -177,6 +178,7 @@ const BattleTalkPresenter = ({
   msgHandler,
   profile,
   name,
+  myId,
   myProfile,
   myName,
   navigation,
@@ -260,6 +262,7 @@ const BattleTalkPresenter = ({
                       reader={list[index].read}
                       name={name}
                       profile={profile}
+                      myId={myId}
                       myName={myName}
                       myProfile={myProfile}
                     />
@@ -276,6 +279,7 @@ const BattleTalkPresenter = ({
                       name={name}
                       profile={profile}
                       myName={myName}
+                      myId={myId}
                       myProfile={myProfile}
                     />
                   ) : index === 0 ? (
@@ -291,6 +295,7 @@ const BattleTalkPresenter = ({
                       name={name}
                       profile={profile}
                       myName={myName}
+                      myId={myId}
                       myProfile={myProfile}
                     />
                   ) : (
@@ -306,6 +311,7 @@ const BattleTalkPresenter = ({
                       name={name}
                       profile={profile}
                       myName={myName}
+                      myId={myId}
                       myProfile={myProfile}
                     />
                   ),

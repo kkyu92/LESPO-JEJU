@@ -22,8 +22,8 @@ const Container = styled.ScrollView`
   margin-top: 20;
   flex: 1;
 `;
-
-const MyBattlePresenter = ({loading, listChanged}) =>
+let itemCount = [];
+const MyBattlePresenter = ({loading, chatRoomList, myId}) =>
   loading ? (
     <Loader />
   ) : (
@@ -33,35 +33,56 @@ const MyBattlePresenter = ({loading, listChanged}) =>
           <Loader />
         ) : (
           <>
-            {listChanged ? (
-              listChanged.length > 0 ? (
+            {chatRoomList ? (
+              chatRoomList.length > 0 ? (
                 <Section horizontal={false} title="">
-                  {listChanged
-                    .filter(list => list.backdrop_path !== null)
-                    .map(list => (
-                      <BattleSlide
-                        myBattleList={true}
-                        key={list.id}
-                        id={list.id}
-                        profile={list.backdrop_path}
-                        name={'박명수'}
-                        level={'초고수'}
-                        rate={list.vote_average}
-                        sport={list.title}
-                        type={'개인전'}
-                        date={'2020-01-22'}
-                        area={'제주시 연동'}
-                        memo={list.overview}
-                        statusText={'배틀종료'}
-                      />
-                    ))}
+                  {chatRoomList
+                    .filter(
+                      list =>
+                        list.makeUser.userId === myId ||
+                        list.joinUser.userId === myId,
+                    )
+                    .map(
+                      list => (
+                        itemCount.push(list),
+                        (
+                          <BattleSlide
+                            roomKey={list.key}
+                            id={
+                              list.makeUser.userId === myId
+                                ? list.joinUser.userId
+                                : list.makeUser.userId
+                            }
+                            profile={
+                              list.makeUser.userId === myId
+                                ? list.joinUser.userProfile
+                                : list.makeUser.userProfile
+                            }
+                            name={
+                              list.makeUser.userId === myId
+                                ? list.joinUser.userName
+                                : list.makeUser.userName
+                            }
+                            level={list.level}
+                            rate={list.vote_average}
+                            sport={list.sports}
+                            type={list.battleStyle}
+                            date={list.battleDate}
+                            area={list.area}
+                            memo={list.memo}
+                            statusText={list.battleState}
+                          />
+                        )
+                      ),
+                    )}
                 </Section>
               ) : (
-                <SearchNo handleGetSearchText={searchTerm} />
+                <SearchNo />
               )
             ) : (
               console.log('null')
             )}
+            {itemCount.length > 0 ? console.log('리스트 있음') : <SearchNo />}
           </>
         )}
       </Container>

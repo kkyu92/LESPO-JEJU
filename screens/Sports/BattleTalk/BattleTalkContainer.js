@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import BattleTalkPresenter from './BattleTalkPresenter';
 import {Alert} from 'react-native';
 
+var M_ID = '';
 var M_NAME = '';
 var M_PROFILE = '';
 
@@ -14,16 +15,19 @@ export default class extends React.Component {
     const {
       navigation: {
         state: {
-          params: {id, profile, name},
+          params: {roomKey, id, profile, name},
         },
       },
     } = props;
     this.state = {
+      roomKey,
       id,
       profile,
       name,
+      myId: '',
       myName: '',
       myProfile: '',
+      myRating: 5,
       loading: true,
       getChatList: [],
       insertChatList: null,
@@ -63,14 +67,14 @@ export default class extends React.Component {
 
   // chatting add
   insertChatList = async msg => {
-    await console.log('insertChatList: ' + msg);
+    console.log('insertChatList: ' + msg);
     if (msg !== null && msg !== '') {
       let reader = {};
-      reader[this.state.myName] = this.state.myName;
+      reader[this.state.myId] = this.state.myId;
       try {
         await this.writeChattingAdd(
-          this.state.id,
-          this.state.myName,
+          this.state.roomKey,
+          this.state.myId,
           this.state.msg,
           moment()
             .local()
@@ -90,14 +94,14 @@ export default class extends React.Component {
 
   // 체팅방 들어와있는지 상태 체크
   updateSingleData(room, chatList) {
-    const {myName} = this.state;
+    const {myId} = this.state;
     let i;
     if (typeof chatList.length !== 'undefined' && chatList.length > 0) {
       let list = {};
       chatList.forEach(child => {
         let key = child.key;
         let reader = child.read;
-        reader[myName] = myName;
+        reader[myId] = myId;
         list[key] = {
           user: child.user,
           msg: child.msg,
@@ -118,16 +122,41 @@ export default class extends React.Component {
   getData = async (id, getChatList) => {
     console.log('getData');
     try {
+      M_ID = await AsyncStorage.getItem('@USER_ID');
       M_NAME = await AsyncStorage.getItem('@USER_NAME');
       M_PROFILE = await AsyncStorage.getItem('@USER_PROFILE');
       if (M_PROFILE !== null || M_PROFILE !== '') {
         this.setState({
+          myId: M_ID,
           myName: M_NAME,
           myProfile: M_PROFILE,
         });
+        if (this.state.myProfile === null) {
+          this.setState({myProfile: ''});
+        }
         console.log('myName : ' + this.state.myName);
         console.log('myProfile : ' + this.state.myProfile);
         this.updateSingleData(id, getChatList);
+        let joinUser = {
+          userId: this.state.myId,
+          userName: this.state.myName,
+          userProfile: this.state.myProfile,
+          userRating: this.state.myRating,
+        };
+        firebase
+          .database()
+          .ref('chatRoomList/' + this.state.roomKey)
+          .update({
+            joinUser,
+          })
+          .then(data => {
+            //success callback
+            console.log('joinUser Add: ', data);
+          })
+          .catch(error => {
+            //error callback
+            console.log('error ', error);
+          });
       } else {
         console.log('Login profile image null');
       }
@@ -139,12 +168,12 @@ export default class extends React.Component {
 
   // init 초기값
   async componentDidMount() {
-    let {id, getChatList} = this.state;
+    let {roomKey, getChatList} = this.state;
     try {
       // get ChattingList
       var userRef = firebase
         .database()
-        .ref('chatRoomList/' + id + '/chatList/');
+        .ref('chatRoomList/' + roomKey + '/chatList/');
       // .orderByChild('key');
       userRef.on('value', dataSnapshot => {
         getChatList = [];
@@ -166,7 +195,8 @@ export default class extends React.Component {
             JSON.stringify(dataSnapshot),
         );
         // 내 로그인 정보 불러오ß기
-        this.getData(id, getChatList);
+        this.getData(roomKey, getChatList);
+        //
       });
       // this.updateSingleData(id, getChatList);
       console.log(
@@ -187,9 +217,37 @@ export default class extends React.Component {
   // Screen OUT
   componentWillUnmount() {
     console.log('componentWillUnmount ::: ');
+    let checkSendMsg = [];
+    checkSendMsg = this.state.getChatList.filter(
+      list => list.user === this.state.myId,
+    );
+    console.log('check send msg ? :: ' + checkSendMsg.length);
+    if (checkSendMsg.length === 0) {
+      let joinUser = {
+        userId: '',
+        userName: '',
+        userProfile: '',
+        userRating: '',
+      };
+      firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey)
+        .update({
+          joinUser,
+        })
+        .then(data => {
+          //success callback
+          console.log('outUser Add: ', data);
+        })
+        .catch(error => {
+          //error callback
+          console.log('error ', error);
+        });
+    }
+
     firebase
       .database()
-      .ref('chatRoomList/' + this.state.id + '/chatList/')
+      .ref('chatRoomList/' + this.state.roomKey + '/chatList/')
       .off('value');
   }
 
@@ -202,6 +260,7 @@ export default class extends React.Component {
       name,
       myProfile,
       myName,
+      myId,
     } = this.state;
     return (
       <BattleTalkPresenter
@@ -215,6 +274,7 @@ export default class extends React.Component {
         profile={profile}
         name={name}
         // 내 정보
+        myId={myId}
         myName={myName}
         myProfile={myProfile}
       />

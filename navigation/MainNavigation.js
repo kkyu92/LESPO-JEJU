@@ -18,6 +18,7 @@ import SettingScreen from '../screens/Add/Setting/SettingContainer';
 import AddBattleScreen from '../screens/Sports/AddBattle/BattleContainer';
 import BattleTalkScreen from '../screens/Sports/BattleTalk/BattleTalkContainer';
 import MyBattleScreen from '../screens/My/MyBattle/MyBattleContainer';
+import MyBattleDetailScreen from '../screens/My/MyBattleDetail/MyBattleDetailContainer';
 import MyBattleTalkScreen from '../screens/My/BattleTalk/BattleTalkContainer';
 import ChatScreen from '../screens/Sports/BattleTalk/Chat';
 import MyWishListScreen from '../screens/My/WishList/WishListContainer';
@@ -128,6 +129,13 @@ const HomeNavigation = createStackNavigator(
       navigationOptions: {
         ...tapsHeaderStyles,
         headerTitle: '나의 배틀',
+      },
+    },
+    MyBattleDetail: {
+      screen: MyBattleDetailScreen,
+      navigationOptions: {
+        ...tapsHeaderStyles,
+        headerTitle: '배틀 신청내용',
       },
     },
     MyBattleTalk: {

@@ -219,6 +219,8 @@ const MyBattleDetailPresenter = ({
   name,
   profile,
   roomKey,
+  roomMaker,
+  changeModalVisiblity,
   navigation,
 }) =>
   loading ? (
@@ -227,27 +229,50 @@ const MyBattleDetailPresenter = ({
     <View>
       <Container>
         <TopContainer>
-          <TopText>배틀종료</TopText>
-          <LevelText>{level}</LevelText>
-          <Touchable
-            onPress={() =>
-              navigation.navigate({
-                routeName: 'BattleTalk',
-                // routeName: 'Chat',
-                params: {
-                  roomKey,
-                  id,
-                  profile,
-                  name,
-                },
-              })
-            }>
-            <Ionicons
-              size={30}
-              name={Platform.OS === 'ios' ? 'ios-send' : 'md-send'}
-              color={`${BG_COLOR}`}
-            />
-          </Touchable>
+          <TopText>{statusText}</TopText>
+          {name !== '' && name !== null ? (
+            statusText === '배틀종료' ? (
+              <>
+                <LevelText>{level}</LevelText>
+                <Ionicons
+                  size={30}
+                  name={Platform.OS === 'ios' ? 'ios-send' : 'md-send'}
+                  color={`${TINT_COLOR}`}
+                />
+              </>
+            ) : (
+              <>
+                <LevelText>{level}</LevelText>
+                <Touchable
+                  onPress={() =>
+                    navigation.navigate({
+                      routeName: 'BattleTalk',
+                      params: {
+                        roomKey,
+                        id,
+                        profile,
+                        name,
+                      },
+                    })
+                  }>
+                  <Ionicons
+                    size={30}
+                    name={Platform.OS === 'ios' ? 'ios-send' : 'md-send'}
+                    color={`${BG_COLOR}`}
+                  />
+                </Touchable>
+              </>
+            )
+          ) : (
+            <>
+              <LevelText>{level}</LevelText>
+              <Ionicons
+                size={30}
+                name={Platform.OS === 'ios' ? 'ios-send' : 'md-send'}
+                color={`${TINT_COLOR}`}
+              />
+            </>
+          )}
         </TopContainer>
 
         <ProfileContainer>
@@ -323,14 +348,17 @@ const MyBattleDetailPresenter = ({
         </BattleContainer>
 
         {statusText === '배틀신청중' ? (
-          <Btn>
+          <Btn onPress={() => changeModalVisiblity(true)}>
             <BtnText>배틀취소</BtnText>
           </Btn>
         ) : statusText === '배틀진행중' ? (
           <Btn>
-            <BtnText>배틀이 진행중입니다.</BtnText>
+            <BtnText>평가하기</BtnText>
           </Btn>
         ) : (
+          // <Btn>
+          //   <BtnText>배틀이 진행중입니다.</BtnText>
+          // </Btn>
           <Btn>
             <BtnText>평가하기</BtnText>
           </Btn>

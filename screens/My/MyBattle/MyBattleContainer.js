@@ -86,7 +86,7 @@ export default class extends React.Component {
       );
     } catch (error) {
       console.log(error);
-      error = "Cnat't get TV";
+      error = "Cnat't get ChatRoomList";
     }
   }
 

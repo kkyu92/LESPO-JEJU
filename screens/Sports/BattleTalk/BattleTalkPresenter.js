@@ -82,7 +82,7 @@ const BtnContainer = styled.View`
   width: 63%;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
 `;
 const Btn = styled.TouchableOpacity`
   border-radius: 5px;
@@ -100,6 +100,7 @@ const RevBtn = styled.TouchableOpacity`
   padding: 8px;
   align-items: center;
   justify-content: center;
+  margin-left: 20px;
 `;
 const BtnText = styled.Text`
   color: ${TINT_COLOR};
@@ -171,7 +172,6 @@ const styles = StyleSheet.create({
 // show DATA
 const BattleTalkPresenter = ({
   loading,
-  handleScroll,
   getChatList,
   insertChatList,
   msg,
@@ -181,6 +181,8 @@ const BattleTalkPresenter = ({
   myId,
   myProfile,
   myName,
+  changeModalVisiblity,
+  battleState,
   navigation,
 }) =>
   loading ? (
@@ -222,12 +224,18 @@ const BattleTalkPresenter = ({
             <Btn>
               <BtnText>시설보기</BtnText>
             </Btn>
-            <Btn>
+            {/* <Btn>
               <BtnText>이용안내</BtnText>
-            </Btn>
-            <RevBtn>
-              <RevBtnText>배틀시작</RevBtnText>
-            </RevBtn>
+            </Btn> */}
+            {battleState === '배틀신청중' ? (
+              <RevBtn onPress={() => changeModalVisiblity(true)}>
+                <RevBtnText>배틀시작</RevBtnText>
+              </RevBtn>
+            ) : (
+              <RevBtn>
+                <RevBtnText>신청완료</RevBtnText>
+              </RevBtn>
+            )}
           </BtnContainer>
         </HeaderContainer>
         <ChatListContainer

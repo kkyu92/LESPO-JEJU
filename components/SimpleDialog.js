@@ -29,7 +29,7 @@ export default class SimpleDialog extends Component {
   };
 
   render() {
-    return (
+    return this.props.battleState === null ? (
       <TouchableOpacity
         activeOpacity={1}
         disabled={true}
@@ -57,6 +57,68 @@ export default class SimpleDialog extends Component {
           </View>
         </View>
       </TouchableOpacity>
+    ) : this.props.battleState === '배틀시작' ? (
+      <TouchableOpacity
+        activeOpacity={1}
+        disabled={true}
+        style={styles.contentContainer}>
+        <View style={[styles.battleStartModal, {width: this.state.width - 80}]}>
+          <View style={styles.textView}>
+            <Text style={[styles.text, {color: 'black'}, {fontSize: 20}]}>
+              배틀신청
+            </Text>
+            <Text style={styles.text}>
+              배틀을 신청 하시겠습니까?
+              {'\n'}
+              배틀코인 1개가 차감 됩니다.
+            </Text>
+          </View>
+          <View style={styles.buttonView}>
+            <TouchableHighlight
+              onPress={() => this.closeModal('Cancel')}
+              style={styles.touchableHighlight}
+              underlayColor={'#f1f1f1'}>
+              <Text style={[styles.text, {color: 'red'}]}> 아니요 </Text>
+            </TouchableHighlight>
+            <TouchableHighlight
+              onPress={() => this.closeModal('battleStart')}
+              style={styles.touchableHighlight}
+              underlayColor={'#f1f1f1'}>
+              <Text style={[styles.text, {color: 'orange'}]}> 예 </Text>
+            </TouchableHighlight>
+          </View>
+        </View>
+      </TouchableOpacity>
+    ) : this.props.battleState === '배틀신청중' ? (
+      <TouchableOpacity
+        activeOpacity={1}
+        disabled={true}
+        style={styles.contentContainer}>
+        <View style={[styles.battleModal, {width: this.state.width - 80}]}>
+          <View style={styles.textView}>
+            <Text style={[styles.text, {color: 'black'}, {fontSize: 20}]}>
+              배틀신청 취소
+            </Text>
+            <Text style={styles.text}> 배틀신청을 취소 하시겠습니까? </Text>
+          </View>
+          <View style={styles.buttonView}>
+            <TouchableHighlight
+              onPress={() => this.closeModal('Cancel')}
+              style={styles.touchableHighlight}
+              underlayColor={'#f1f1f1'}>
+              <Text style={[styles.text, {color: 'red'}]}> 아니요 </Text>
+            </TouchableHighlight>
+            <TouchableHighlight
+              onPress={() => this.closeModal('battleCancel')}
+              style={styles.touchableHighlight}
+              underlayColor={'#f1f1f1'}>
+              <Text style={[styles.text, {color: 'orange'}]}> 예 </Text>
+            </TouchableHighlight>
+          </View>
+        </View>
+      </TouchableOpacity>
+    ) : (
+      console.log('this.props.battleState: ' + this.props.battleState)
     );
   }
 }
@@ -69,6 +131,28 @@ const styles = StyleSheet.create({
   },
   modal: {
     height: Layout.height / 6,
+    paddingTop: 10,
+    alignSelf: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+    backgroundColor: 'white',
+    borderColor: 'orange',
+    borderWidth: 1,
+    borderRadius: 10,
+  },
+  battleModal: {
+    height: Layout.height / 5,
+    paddingTop: 10,
+    alignSelf: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+    backgroundColor: 'white',
+    borderColor: 'orange',
+    borderWidth: 1,
+    borderRadius: 10,
+  },
+  battleStartModal: {
+    height: Layout.height / 4.5,
     paddingTop: 10,
     alignSelf: 'center',
     alignItems: 'center',

@@ -3,7 +3,8 @@ import moment from 'moment';
 import firebase from 'firebase';
 import AsyncStorage from '@react-native-community/async-storage';
 import BattleTalkPresenter from './BattleTalkPresenter';
-import {Alert} from 'react-native';
+import {Modal, Alert} from 'react-native';
+import SimpleDialog from '../../../components/SimpleDialog';
 
 var M_ID = '';
 var M_NAME = '';
@@ -32,13 +33,21 @@ export default class extends React.Component {
       getChatList: [],
       insertChatList: null,
       msg: null,
+      makeUser: '',
+      isModalVisible: false,
+      battleState: '',
       error: null,
     };
+    console.log('@@@@@@@: ' + this.state.maker);
   }
 
-  handleScroll = event => {
-    // console.log('handleScroll 1 : ' + event.nativeEvent.contentOffset.y);
-    console.log('handleScroll 1 : ' + event);
+  updateState = () => {
+    firebase
+      .database()
+      .ref('chatRoomList/' + this.state.roomKey + '/')
+      .update({
+        battleState: '배틀진행중',
+      });
   };
 
   // msg handler
@@ -137,26 +146,28 @@ export default class extends React.Component {
         console.log('myName : ' + this.state.myName);
         console.log('myProfile : ' + this.state.myProfile);
         this.updateSingleData(id, getChatList);
-        let joinUser = {
-          userId: this.state.myId,
-          userName: this.state.myName,
-          userProfile: this.state.myProfile,
-          userRating: this.state.myRating,
-        };
-        firebase
-          .database()
-          .ref('chatRoomList/' + this.state.roomKey)
-          .update({
-            joinUser,
-          })
-          .then(data => {
-            //success callback
-            console.log('joinUser Add: ', data);
-          })
-          .catch(error => {
-            //error callback
-            console.log('error ', error);
-          });
+        if (this.state.makeUser !== JSON.stringify(this.state.myId)) {
+          let joinUser = {
+            userId: this.state.myId,
+            userName: this.state.myName,
+            userProfile: this.state.myProfile,
+            userRating: this.state.myRating,
+          };
+          firebase
+            .database()
+            .ref('chatRoomList/' + this.state.roomKey)
+            .update({
+              joinUser,
+            })
+            .then(data => {
+              //success callback
+              console.log('joinUser Add: ', data);
+            })
+            .catch(error => {
+              //error callback
+              console.log('error ', error);
+            });
+        }
       } else {
         console.log('Login profile image null');
       }
@@ -170,6 +181,24 @@ export default class extends React.Component {
   async componentDidMount() {
     let {roomKey, getChatList} = this.state;
     try {
+      // get battleState
+      firebase
+        .database()
+        .ref('chatRoomList/' + roomKey + '/battleState/')
+        .once('value', dataSnapshot => {
+          this.setState({
+            battleState: JSON.stringify(dataSnapshot),
+          });
+        });
+      // get makeUser
+      var maker = firebase
+        .database()
+        .ref('chatRoomList/' + roomKey + '/makeUser/userId');
+      maker.once('value', dataSnapshot => {
+        this.setState({
+          makeUser: JSON.stringify(dataSnapshot),
+        });
+      });
       // get ChattingList
       var userRef = firebase
         .database()
@@ -214,15 +243,28 @@ export default class extends React.Component {
     }
   }
 
+  setData = data => {
+    const {myId, roomMaker} = this.state;
+    console.log('setData::: ', data);
+    if (data === 'battleStart') {
+      // 배틀 시작
+      this.updateState();
+    }
+  };
+
+  changeModalVisiblity = bool => {
+    this.setState({isModalVisible: bool});
+  };
+
   // Screen OUT
   componentWillUnmount() {
     console.log('componentWillUnmount ::: ');
-    let checkSendMsg = [];
-    checkSendMsg = this.state.getChatList.filter(
-      list => list.user === this.state.myId,
-    );
-    console.log('check send msg ? :: ' + checkSendMsg.length);
-    if (checkSendMsg.length === 0) {
+    // let checkSendMsg = [];
+    // checkSendMsg = this.state.getChatList.filter(
+    //   list => list.user === this.state.myId,
+    // );
+    // console.log('check send msg ? :: ' + checkSendMsg.length);
+    if (this.state.getChatList.length === 0) {
       let joinUser = {
         userId: '',
         userName: '',
@@ -261,23 +303,38 @@ export default class extends React.Component {
       myProfile,
       myName,
       myId,
+      battleState,
     } = this.state;
     return (
-      <BattleTalkPresenter
-        loading={loading}
-        handleScroll={this.handleScroll}
-        getChatList={getChatList}
-        insertChatList={this.insertChatList}
-        msgHandler={this.msgHandler}
-        msg={msg}
-        // 상대 정보
-        profile={profile}
-        name={name}
-        // 내 정보
-        myId={myId}
-        myName={myName}
-        myProfile={myProfile}
-      />
+      <>
+        <BattleTalkPresenter
+          loading={loading}
+          getChatList={getChatList}
+          insertChatList={this.insertChatList}
+          msgHandler={this.msgHandler}
+          msg={msg}
+          // 상대 정보
+          profile={profile}
+          name={name}
+          // 내 정보
+          myId={myId}
+          myName={myName}
+          myProfile={myProfile}
+          battleState={battleState}
+          changeModalVisiblity={this.changeModalVisiblity}
+        />
+        <Modal
+          transparent={true}
+          visible={this.state.isModalVisible}
+          onRequestClose={() => this.changeModalVisiblity(false)}
+          animationType="fade">
+          <SimpleDialog
+            battleState={battleState}
+            changeModalVisiblity={this.changeModalVisiblity}
+            setData={this.setData}
+          />
+        </Modal>
+      </>
     );
   }
 }

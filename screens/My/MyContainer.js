@@ -1,7 +1,7 @@
 import React from 'react';
 import {Modal} from 'react-native';
-import MyPresenter from './MyPresenter';
 import SimpleDialog from '../../components/SimpleDialog';
+import MyPresenter from './MyPresenter';
 import AsyncStorage from '@react-native-community/async-storage';
 import {NavigationActions} from 'react-navigation';
 
@@ -83,6 +83,7 @@ export default class extends React.Component {
           onRequestClose={() => this.changeModalVisiblity(false)}
           animationType="fade">
           <SimpleDialog
+            battleState={null}
             changeModalVisiblity={this.changeModalVisiblity}
             setData={this.setData}
           />

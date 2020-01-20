@@ -11,6 +11,7 @@ import {
 } from '../constants/Colors';
 import PhotoUri from '../api/PhotoUri';
 import Layout from '../constants/Layout';
+import GetPhoto from '../api/GetPhoto';
 
 function ChangeColor() {
   let ColorCode =
@@ -173,10 +174,12 @@ const SubSlide = ({
   id,
   backgroundPoster,
   title,
-  avg,
   overview,
+  detail,
+  avg,
   horizontal = true,
   tag = 'tag',
+  markerOn,
   navigation,
 }) =>
   horizontal ? (
@@ -255,9 +258,14 @@ const SubSlide = ({
     </VerticalContainer>
   ) : tag === 'recommend' ? (
     // 추천관광 - [ 상세보기 ]
-    <VerticalContainer>
+    <VerticalContainer onPress={() => markerOn(id)}>
       <RecommendImgContainer>
-        <RecommendImg source={{uri: PhotoUri(backgroundPoster)}} />
+        <RecommendImg
+          source={{
+            uri: GetPhoto(backgroundPoster),
+          }}
+          // source={{uri: JPG.getImage(backgroundPoster.full_filename)}}
+        />
       </RecommendImgContainer>
       <VerticalColum>
         <VerticalTitle numberOfLines={1}>{title}</VerticalTitle>
@@ -271,7 +279,7 @@ const SubSlide = ({
         onPress={() =>
           navigation.navigate({
             routeName: 'Detail',
-            params: {id, backgroundPoster, title, avg, overview, tag},
+            params: {id, backgroundPoster, title, avg, overview, tag, detail},
           })
         }>
         <DetailText>상세보기</DetailText>

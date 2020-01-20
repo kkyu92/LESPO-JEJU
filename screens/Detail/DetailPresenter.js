@@ -2,18 +2,35 @@ import React from 'react';
 import {KeyboardAvoidingView, StyleSheet} from 'react-native';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import {BG_COLOR, GREY_COLOR, GREY_COLOR2} from '../../constants/Colors';
+import {
+  BG_COLOR,
+  GREY_COLOR,
+  GREY_COLOR2,
+  RED_COLOR,
+  TINT_COLOR,
+} from '../../constants/Colors';
 import Layout from '../../constants/Layout';
 import makePhotoUrl from '../../api/PhotoUri';
+import Swiper from 'react-native-swiper';
+import MainSlide from '../../components/MainSlide';
+import Icon from 'react-native-vector-icons/Ionicons';
+import IconLike from 'react-native-vector-icons/AntDesign';
+import GetPhoto from '../../api/GetPhoto';
 
 // keybord
 // const KeyboardAvoidingView = styled.KeyboardAvoidingView`
 //   flex: 1;
 // `;
 
+var scrollViewRef = React.createRef();
+const _scrollToBottom = () => {
+  setTimeout(() => {
+    scrollViewRef.current.scrollToEnd({animated: true});
+  }, 500);
+};
 // 전체
 const Container = styled.ScrollView`
-  background-color: ${BG_COLOR};
+  background-color: ${TINT_COLOR};
   flex: 1;
 `;
 
@@ -59,15 +76,18 @@ const HeaderText = styled.Text`
 const IconContainer = styled.View`
   flex-direction: row;
   align-items: center;
+  align-content: center;
   justify-content: space-between;
   margin-right: 5px;
   margin-top: 50px;
 `;
-const TouchableOpacity = styled.TouchableOpacity``;
+const TouchableOpacity = styled.TouchableOpacity`
+  margin-right: 8px;
+`;
 const ShareIcon = styled.Image`
   width: 24;
   height: 25;
-  margin-right: 15px;
+  /* margin-right: 15px; */
 `;
 const WishIcon = styled.Image`
   width: 25;
@@ -167,15 +187,48 @@ const styles = StyleSheet.create({
   },
 });
 
-const DetailPresenter = ({id, backgroundPoster, title, avg, overview}) => (
+const DetailPresenter = ({
+  id,
+  backgroundPoster,
+  title,
+  avg,
+  overview,
+  msg,
+  handleMsgUpdate,
+  insertCommentList,
+  like,
+  likeUp,
+  likeDown,
+  wish,
+  wishListIn,
+  wishListOut,
+  detail,
+}) => (
   <KeyboardAvoidingView
     style={styles.container}
     behavior={Platform.OS === 'ios' ? 'padding' : null}
     enabled>
     {/* <> */}
     <Container>
+      {/* <Swiper
+        marginBottom={20}
+        showsPagination={true}
+        autoplay={false}
+        autoplayTimeout={3}
+        style={{width: Layout.width, height: Layout.height / 3}}>
+        {images
+          .map(image => (
+            <ImageContainer>
+        <Image source={{uri: makePhotoUrl(image)}} />
+      </ImageContainer> 
+          ))}
+      </Swiper> */}
       <ImageContainer>
-        <Image source={{uri: makePhotoUrl(backgroundPoster)}} />
+        {backgroundPoster.includes('/contents/') ? (
+          <Image source={{uri: GetPhoto(backgroundPoster)}} />
+        ) : (
+          <Image source={{uri: makePhotoUrl(backgroundPoster)}} />
+        )}
       </ImageContainer>
       <ContextContainer>
         <HeaderContainer>
@@ -186,26 +239,64 @@ const DetailPresenter = ({id, backgroundPoster, title, avg, overview}) => (
                 source={require(`../../assets/drawable-xxhdpi/icon_share_copy.png`)}
               />
             </TouchableOpacity>
-            <TouchableOpacity>
-              <WishIcon
-                source={require(`../../assets/drawable-xxhdpi/icon_heart_bk.png`)}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity>
+            {/* <WishIcon
+                  source={require(`../../assets/drawable-xxhdpi/icon_heart_bk.png`)}
+                /> */}
+            {/* <TouchableOpacity>
               <LikeIcon
                 source={require(`../../assets/drawable-xxhdpi/icon_like_or.png`)}
               />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
+            {wish ? (
+              <TouchableOpacity onPress={() => wishListOut()}>
+                <Icon
+                  size={Platform.OS === 'ios' ? 30 : 30}
+                  name={Platform.OS === 'ios' ? 'ios-heart' : 'md-heart'}
+                  color={`${BG_COLOR}`}
+                />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity onPress={() => wishListIn()}>
+                <Icon
+                  size={Platform.OS === 'ios' ? 30 : 30}
+                  name={
+                    Platform.OS === 'ios' ? 'ios-heart-empty' : 'md-heart-empty'
+                  }
+                  color={`${BG_COLOR}`}
+                />
+              </TouchableOpacity>
+            )}
+            {like ? (
+              <TouchableOpacity onPress={() => likeDown()}>
+                <IconLike
+                  size={Platform.OS === 'ios' ? 25 : 25}
+                  name={'like1'}
+                  color={`${BG_COLOR}`}
+                />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity onPress={() => likeUp()}>
+                <IconLike
+                  size={Platform.OS === 'ios' ? 25 : 25}
+                  name={'like2'}
+                  color={`${BG_COLOR}`}
+                />
+              </TouchableOpacity>
+            )}
             <LikeCount>{avg}</LikeCount>
           </IconContainer>
         </HeaderContainer>
         <TitleText>매장소개</TitleText>
         <ContextText>{overview}</ContextText>
         <TitleText>영업시간</TitleText>
-        <ContextText>{overview}</ContextText>
-        <TitleText>대표매뉴</TitleText>
-        <ContextText>{overview}</ContextText>
-        <CommentContainer>
+        <ContextText>주소: {detail.address_name}</ContextText>
+        <ContextText>시간: {detail.operating_hours}</ContextText>
+        <ContextText>휴무일: {detail.holidays}</ContextText>
+        <ContextText>이벤트: {detail.events}</ContextText>
+        <ContextText>전화번호: {detail.tel_number}</ContextText>
+        {/* <TitleText>대표매뉴</TitleText>
+        <ContextText>{overview}</ContextText> */}
+        <CommentContainer ref={scrollViewRef}>
           <ContextText>댓글({avg})</ContextText>
         </CommentContainer>
       </ContextContainer>
@@ -216,9 +307,9 @@ const DetailPresenter = ({id, backgroundPoster, title, avg, overview}) => (
         source={require(`../../assets/drawable-xxhdpi/icon_profile.png`)}
       />
       <Input
-        //   onChangeText={handleSearchUpdate}
-        // value={searchTerm}
-        // autoFocus
+        onChangeText={handleMsgUpdate}
+        value={msg}
+        onFocus={_scrollToBottom()}
         returnKeyType={'next'}
         placeholder="댓글 달기..."
         placeholderTextColor={GREY_COLOR2}
@@ -226,7 +317,7 @@ const DetailPresenter = ({id, backgroundPoster, title, avg, overview}) => (
         autoCorrect={false}
         multiline={true}
       />
-      <SendContainer>
+      <SendContainer onPress={() => insertCommentList(msg)}>
         <SendText>게시</SendText>
       </SendContainer>
     </InputContainer>

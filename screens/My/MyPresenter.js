@@ -144,7 +144,14 @@ const HeaderText = styled.Text`
 `;
 
 // show DATA
-const MyPresenter = ({loading, changeModalVisiblity, setData, navigation}) =>
+const MyPresenter = ({
+  loading,
+  name,
+  profile,
+  changeModalVisiblity,
+  setData,
+  navigation,
+}) =>
   loading ? (
     <Loader />
   ) : (
@@ -154,12 +161,16 @@ const MyPresenter = ({loading, changeModalVisiblity, setData, navigation}) =>
       </HeaderContainer>
       <ProfileContainer>
         <LeftContainer>
-          <Profile
-            source={require(`../../assets/drawable-xxxhdpi/icon_profile_wh.png`)}
-          />
+          {profile === null || profile === '' ? (
+            <Profile
+              source={require(`../../assets/drawable-xxxhdpi/icon_profile_wh.png`)}
+            />
+          ) : (
+            <Profile source={{uri: profile}} />
+          )}
           <ProfileTextContainer>
             <ProfileNameContainer>
-              <NameText>홍길동</NameText>
+              <NameText>{name}</NameText>
               <Rating
                 // type="custom"
                 // ratingImage={STAR_IMAGE}

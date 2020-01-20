@@ -6,6 +6,7 @@ export const GREY_COLOR = '#bdc3c7';
 export const GREY_COLOR2 = '#999999';
 export const GREY_COLOR3 = '#555555';
 export const INACTIVE_COLOR = '#7f8c8d';
+export const RED_COLOR = 'red';
 export const ACTIVE_COLOR = BG_COLOR;
 
 export const _COLOR = '';

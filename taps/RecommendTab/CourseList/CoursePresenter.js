@@ -32,28 +32,25 @@ const Container = styled.ScrollView`
   flex: 1;
 `;
 
+// setMarkerRef = ref => {
+//   this.marker = ref;
+// };
+
 //FIXME: 더미 데이터 수정해야함
-const loactions = {
-  markers: [
-    {
-      key: 1,
-      name: 'Rixos The Palm Dubai',
-      text: 'Text tttt::: Rixos The Palm Dubai',
-      location: {latitude: 25.1212, longitude: 55.1535},
-    },
-    {
-      key: 2,
-      name: 'Shangri-La Hotel',
-      text: 'Text tttt::: Shangri-La Hotel',
-      location: {latitude: 25.2084, longitude: 55.2719},
-    },
-    {
-      key: 3,
-      name: 'Grand Hyatt',
-      text: 'Text tttt::: Grand Hyatt',
-      location: {latitude: 25.2285, longitude: 55.3273},
-    },
-  ],
+const onMarkerPressed = location => {
+  console.log('locations ::: ' + JSON.stringify(location));
+  if (this.map !== null) {
+    this.map.animateToRegion({
+      latitude: location.location.latitude,
+      longitude: location.location.longitude,
+      latitudeDelta: 0.09,
+      longitudeDelta: 0.035,
+    });
+    // location.showCallout();
+    // location[0].showCallout();
+  } else {
+    console.log('map: null');
+  }
 };
 
 const MyLocation = styled.TouchableOpacity`
@@ -83,6 +80,9 @@ const CoursePresenter = ({
   latitude,
   longitude,
   listChanged,
+  markerOn,
+  locations,
+  clickID,
   navigation,
 }) =>
   loading ? (
@@ -101,15 +101,30 @@ const CoursePresenter = ({
             longitude: longitude,
             latitudeDelta: 0.09,
             longitudeDelta: 0.035,
-          }}>
-          {loactions.markers.map(list => (
+          }}
+          onRegionChangeComplete={() => this.marker.showCallout()}>
+          {/* {locations.map(list => (
             <Marker
-              key={list.key}
+              key={list.id}
               coordinate={list.location}
-              title={list.name}
-              description={list.text}
+              title={list.title}
+              description={list.address}
             />
-          ))}
+          ))} */}
+          {locations
+            .filter(list => list.id === clickID)
+            .map(list => (
+              <Marker
+                ref={marker => (this.marker = marker)}
+                key={list.id}
+                coordinate={list.location}
+                title={list.title}
+                description={list.address}
+              />
+            ))}
+          {locations
+            .filter(list => list.id === clickID)
+            .map(list => onMarkerPressed(list))}
         </MapView>
         <MyLocation onPress={() => _getLocation(latitude, longitude)}>
           <Icon size={30} name={'my-location'} color={`${GREY_COLOR3}`} />
@@ -124,17 +139,21 @@ const CoursePresenter = ({
               listChanged.length > 0 ? (
                 <Section horizontal={false} title="">
                   {listChanged
-                    .filter(list => list.backdrop_path !== null)
+                    .filter(list => list.id !== null)
                     .map(list => (
                       <SubSlide
                         tag={'recommend'}
                         horizontal={false}
                         key={list.id}
                         id={list.id}
-                        backgroundPoster={list.backdrop_path}
+                        backgroundPoster={
+                          list.matched_content_image.full_filename
+                        }
                         title={list.title}
-                        avg={list.vote_average}
-                        overview={list.overview}
+                        overview={list.description}
+                        detail={list.detail}
+                        markerOn={markerOn}
+                        // avg={list.vote_average}
                       />
                     ))}
                 </Section>

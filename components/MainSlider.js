@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Swiper from 'react-native-swiper';
-import Layout from '../constants/Layout';
 import MainSlide from './MainSlide';
+import Layout from '../constants/Layout';
 
 const SWIPER_HEIGHT = Layout.height / 4;
 

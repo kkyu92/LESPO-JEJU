@@ -30,8 +30,8 @@ export default class extends React.Component {
       let M_NAME = await AsyncStorage.getItem('@USER_NAME');
       let M_PROFILE = await AsyncStorage.getItem('@USER_PROFILE');
       this.setState({
-        email: M_NAME,
-        password: M_PROFILE,
+        name: M_NAME,
+        profile: M_PROFILE,
       });
       if (M_PROFILE !== null || M_PROFILE !== '') {
         console.log('프로필 있다.');
@@ -69,11 +69,13 @@ export default class extends React.Component {
   };
 
   render() {
-    const {loading, email, profile} = this.state;
+    const {loading, name, profile} = this.state;
     return (
       <>
         <MyPresenter
           loading={loading}
+          name={name}
+          profile={profile}
           changeModalVisiblity={this.changeModalVisiblity}
           setData={this.setData}
         />

@@ -37,7 +37,7 @@ const Container = styled.ScrollView`
   flex: 1;
 `;
 
-const JejuPresenter = ({loading, getJejuSound}) =>
+const JejuPresenter = ({loading, listChanged}) =>
   loading ? (
     <Loader />
   ) : (
@@ -46,24 +46,32 @@ const JejuPresenter = ({loading, getJejuSound}) =>
         <AdApplyText>광고신청</AdApplyText>
       </AdApplyContainer>
       <Container showsVerticalScrollIndicator={false}>
-        {getJejuSound ? (
-          <Section horizontal={false} title="제주의 소리">
-            {getJejuSound
-              .filter(list => list.backdrop_path !== null)
-              .map(list => (
-                <SubSlide
-                  tag={'image'}
-                  horizontal={false}
-                  key={list.id}
-                  id={list.id}
-                  backgroundPoster={list.backdrop_path}
-                  title={list.name}
-                  avg={list.vote_average}
-                  overview={list.overview}
-                />
-              ))}
-          </Section>
-        ) : null}
+        {listChanged ? (
+          listChanged.length > 0 ? (
+            <Section horizontal={false} title="제주의 소리">
+              {listChanged
+                .filter(list => list.id !== null)
+                .map(list => (
+                  <SubSlide
+                    tag={'image'}
+                    horizontal={false}
+                    key={list.id}
+                    id={list.id}
+                    backgroundPoster={list.banner.full_filename}
+                    poster={list.matched_content_images}
+                    title={list.title}
+                    overview={list.description}
+                    detail={list.detail}
+                    // avg={list.vote_average}
+                  />
+                ))}
+            </Section>
+          ) : (
+            <SearchNo />
+          )
+        ) : (
+          console.log('null')
+        )}
       </Container>
     </View>
   );

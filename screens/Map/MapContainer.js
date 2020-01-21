@@ -5,13 +5,6 @@ import Geolocation from 'react-native-geolocation-service';
 import {View, Text, Platform} from 'react-native';
 
 export default class extends React.Component {
-  state = {
-    loading: true,
-    latitude: null,
-    longitude: null,
-    listChanged: null,
-    error: null,
-  };
   static navigationOptions = () => {
     // return {
     //   title: navigation.getParam("title")
@@ -24,12 +17,24 @@ export default class extends React.Component {
       navigation: {
         state: {
           //   params: { id, backgroundPoster, title, avg, overview }
-          params: {listChanged},
+          params: {listChanged, locations},
         },
       },
     } = props;
-    this.state.listChanged = listChanged;
-    this.state.loading = false;
+    this.state = {
+      loading: true,
+      latitude: null,
+      longitude: null,
+      listChanged,
+      locations,
+      error: null,
+    };
+    console.log('locations ========= ' + JSON.stringify(locations));
+    console.log(
+      'locations.locations ========= ' + JSON.stringify(locations.locations),
+    );
+    // this.state.listChanged = listChanged;
+    // this.state.loading = false;
   }
 
   // 사용자 위치
@@ -57,6 +62,7 @@ export default class extends React.Component {
           this.setState({
             latitude: latitude,
             longitude: longitude,
+            loading: false,
           });
         } catch (error) {
           console.log(error);
@@ -76,7 +82,7 @@ export default class extends React.Component {
     this.requestLocationPermission();
   }
   render() {
-    const {loading, latitude, longitude, listChanged} = this.state;
+    const {loading, latitude, longitude, listChanged, locations} = this.state;
     // 위치정보 받기 전
     if (latitude) {
       return (
@@ -85,6 +91,7 @@ export default class extends React.Component {
           latitude={latitude}
           longitude={longitude}
           listChanged={listChanged}
+          locations={locations}
         />
       );
     } else {

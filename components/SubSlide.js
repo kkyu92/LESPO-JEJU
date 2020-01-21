@@ -173,6 +173,7 @@ const DetailText = styled.Text`
 const SubSlide = ({
   id,
   backgroundPoster,
+  poster,
   title,
   overview,
   detail,
@@ -240,11 +241,20 @@ const SubSlide = ({
       onPress={() =>
         navigation.navigate({
           routeName: 'Detail',
-          params: {id, backgroundPoster, title, avg, overview, tag},
+          params: {
+            id,
+            backgroundPoster,
+            poster,
+            title,
+            avg,
+            overview,
+            tag,
+            detail,
+          },
         })
       }>
       <VerticalImgContainer>
-        <VerticalImg source={{uri: PhotoUri(backgroundPoster)}} />
+        <VerticalImg source={{uri: GetPhoto(backgroundPoster)}} />
       </VerticalImgContainer>
       <VerticalColum>
         <VerticalTitle numberOfLines={1}>{title}</VerticalTitle>
@@ -291,11 +301,20 @@ const SubSlide = ({
       onPress={() =>
         navigation.navigate({
           routeName: 'Detail',
-          params: {id, backgroundPoster, title, avg, overview, tag},
+          params: {
+            id,
+            backgroundPoster,
+            poster,
+            title,
+            avg,
+            overview,
+            tag,
+            detail,
+          },
         })
       }>
       <ADContainer>
-        <ADImg source={{uri: PhotoUri(backgroundPoster)}} />
+        <ADImg source={{uri: GetPhoto(backgroundPoster)}} />
       </ADContainer>
     </VerticalContainer>
   );

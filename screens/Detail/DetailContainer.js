@@ -14,13 +14,14 @@ export default class extends React.Component {
     const {
       navigation: {
         state: {
-          params: {id, backgroundPoster, title, avg, overview, detail},
+          params: {id, poster, backgroundPoster, title, avg, overview, detail},
         },
       },
     } = props;
     this.state = {
       id,
       backgroundPoster,
+      poster,
       title,
       avg,
       overview,
@@ -33,7 +34,7 @@ export default class extends React.Component {
 
   async componentDidMount() {
     console.log(this.state.backgroundPoster);
-    console.log(JSON.stringify(this.state.backgroundPoster));
+    console.log(JSON.stringify(this.state.poster));
   }
 
   handleMsgUpdate = text => {
@@ -85,6 +86,7 @@ export default class extends React.Component {
     const {
       id,
       backgroundPoster,
+      poster,
       title,
       avg,
       overview,
@@ -97,6 +99,7 @@ export default class extends React.Component {
       <DetailPresenter
         id={id}
         backgroundPoster={backgroundPoster}
+        poster={poster}
         title={title}
         avg={avg}
         overview={overview}

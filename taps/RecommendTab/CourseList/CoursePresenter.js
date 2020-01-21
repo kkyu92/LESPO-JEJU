@@ -39,7 +39,7 @@ const Container = styled.ScrollView`
 //FIXME: 더미 데이터 수정해야함
 const onMarkerPressed = location => {
   console.log('locations ::: ' + JSON.stringify(location));
-  if (this.map !== null) {
+  if (this.map) {
     this.map.animateToRegion({
       latitude: location.location.latitude,
       longitude: location.location.longitude,
@@ -147,7 +147,7 @@ const CoursePresenter = ({
                         key={list.id}
                         id={list.id}
                         backgroundPoster={
-                          list.matched_content_image.full_filename
+                          list.matched_content_images[0].full_filename
                         }
                         title={list.title}
                         overview={list.description}
@@ -158,7 +158,7 @@ const CoursePresenter = ({
                     ))}
                 </Section>
               ) : (
-                <SearchNo handleGetSearchText={searchTerm} />
+                <SearchNo />
               )
             ) : (
               console.log('null')

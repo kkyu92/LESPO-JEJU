@@ -12,6 +12,7 @@ import {
   BG_COLOR,
 } from '../constants/Colors';
 import Like from './Like';
+import GetPhoto from '../api/GetPhoto';
 
 // 메인슬라이드 - 컨테이너
 const Container = styled.TouchableOpacity`
@@ -149,6 +150,7 @@ const MainSlide = ({
   title,
   avg,
   overview,
+  detail,
   navigation,
 }) =>
   map ? (
@@ -159,13 +161,15 @@ const MainSlide = ({
           params: {
             id,
             backgroundPoster,
+            poster,
             title,
             avg,
             overview,
+            detail,
           },
         })
       }>
-      <ItemImg source={{uri: PhotoUri(poster)}} />
+      <ItemImg source={{uri: GetPhoto(backgroundPoster)}} />
       <ItemTextContainer>
         <ItemTitle numberOfLines={1}>{title}</ItemTitle>
         <ItemContents numberOfLines={5}>{overview}</ItemContents>

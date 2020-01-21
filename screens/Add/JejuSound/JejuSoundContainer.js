@@ -1,46 +1,54 @@
-import React from "react";
-import Text from "react-native";
-import styled from "styled-components";
-import { tv } from "../../../api/Api";
-import JejuSoundPresenter from "./JejuSoundPresenter";
+import React from 'react';
+import {Text, View} from 'react-native';
+import styled from 'styled-components';
+import {LESPO_API} from '../../../api/Api';
+import JejuSoundPresenter from './JejuSoundPresenter';
 
 export default class extends React.Component {
   // Title setting
   static navigationOptions = () => {
     return {
-      title: "제주의 소리"
+      title: '제주의 소리',
     };
   };
 
   // init 초기상태 값 설정
   state = {
     loading: true,
-    getJejuSound: null,
-    error: null
+    listChanged: null,
+    error: null,
   };
 
   async componentDidMount() {
-    // let : 변할 수 있는 변수
-    let getJejuSound, error;
-
+    let listChanged = [];
+    let error;
     try {
       ({
-        data: { results: getJejuSound }
-      } = await tv.getPopular());
+        data: {data: listChanged},
+      } = await LESPO_API.getJejuSound());
+      // console.log('Reco Food List : ' + JSON.stringify(listChanged));
     } catch (error) {
-      console.log("JejuSound get api ::: " + error);
+      console.log('JejuSound get api ::: ' + error);
       error = "Cant't get Movies.";
     } finally {
       this.setState({
         loading: false,
+        listChanged: listChanged,
         error,
-        getJejuSound
       });
     }
   }
 
   render() {
-    const { loading, getJejuSound } = this.state;
-    return <JejuSoundPresenter loading={loading} getJejuSound={getJejuSound} />;
+    const {loading, listChanged} = this.state;
+    if (listChanged) {
+      return <JejuSoundPresenter loading={loading} listChanged={listChanged} />;
+    } else {
+      return (
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <Text>위치정보를 불러오는중입니다....</Text>
+        </View>
+      );
+    }
   }
 }

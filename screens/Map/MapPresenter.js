@@ -8,6 +8,7 @@ import Layout from '../../constants/Layout';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Swiper from 'react-native-swiper';
 import MainSlide from '../../components/MainSlide';
+import {GameRequestDialog} from 'react-native-fbsdk';
 
 const MapContainer = styled.View`
   width: ${Layout.width};
@@ -116,31 +117,31 @@ const coordinates = {
   ],
 };
 
-const onSwiperItemChange = (index, list) => {
+const onSwiperItemChange = (index, locations) => {
   INDEX = index;
+  console.log(JSON.stringify(locations.locations));
   console.log(INDEX + ' :::onSwiperItemChange::: ' + index);
-  let location = coordinates.markers[index];
-  console.log(
-    'latlng ::: ' + location.latlng.latitude + ', ' + location.latlng.longitude,
-  );
+  // let location = coordinates.markers[index];
+  let location = locations.locations[index].location;
+  console.log('latlng ::: ' + location.latitude + ', ' + location.longitude);
   this.map.animateToRegion({
-    latitude: location.latlng.latitude,
-    longitude: location.latlng.longitude,
+    latitude: location.latitude,
+    longitude: location.longitude,
     latitudeDelta: 0.09,
     longitudeDelta: 0.035,
   });
-  coordinates.mark[index].showCallout();
+  locations.mark[index].showCallout();
 };
 
-const onMarkerPressed = location => {
+const onMarkerPressed = locations => {
   this.map.animateToRegion({
-    latitude: location.latlng.latitude,
-    longitude: location.latlng.longitude,
+    latitude: locations.location.latitude,
+    longitude: locations.location.longitude,
     latitudeDelta: 0.09,
     longitudeDelta: 0.035,
   });
-  let moveIndex = location.key - INDEX;
-  console.log('index::: ' + location.key);
+  let moveIndex = locations.key - INDEX;
+  console.log('index::: ' + locations.key);
   console.log('INDEX::: ' + moveIndex);
   this.swiper.scrollBy(moveIndex, true);
 };
@@ -150,6 +151,7 @@ const MapPresenter = ({
   latitude,
   longitude,
   listChanged,
+  locations,
   navigation,
 }) =>
   loading ? (
@@ -172,16 +174,20 @@ const MapPresenter = ({
           latitudeDelta: 0.09,
           longitudeDelta: 0.035,
         }}>
-        {coordinates.markers.map((list, index) => (
-          <Marker
-            key={list.key}
-            ref={marker => (coordinates.mark[index] = marker)}
-            onPress={() => onMarkerPressed(list)}
-            coordinate={list.latlng}
-            title={list.name}
-            description={list.text}
-          />
-        ))}
+        {locations
+          ? locations.locations
+              .filter(list => list.key !== null)
+              .map((list, index) => (
+                <Marker
+                  key={list.key}
+                  ref={marker => (locations.mark[index] = marker)}
+                  onPress={() => onMarkerPressed(list)}
+                  coordinate={list.location}
+                  title={list.title}
+                  description={list.address}
+                />
+              ))
+          : console.log('locations null ????? ' + JSON.stringify(locations))}
       </MapView>
       <MyLocation onPress={() => _getLocation(latitude, longitude)}>
         <Icon size={30} name={'my-location'} color={`${GREY_COLOR3}`} />
@@ -195,24 +201,27 @@ const MapPresenter = ({
           showsPagination={true}
           autoplay={false}
           autoplayTimeout={3}
-          onIndexChanged={index => onSwiperItemChange(index, listChanged)}
+          onIndexChanged={index => onSwiperItemChange(index, locations)}
           style={{
             height: (Layout.width / 5) * 3,
             position: 'absolute',
             bottom: 20,
           }}>
           {listChanged
-            .filter(movie => movie.backdrop_path !== null)
-            .map(movie => (
-              <View key={movie.id}>
+            .filter(list => list.id !== null)
+            .map((list, index) => (
+              <View key={index}>
                 <MainSlide
                   map={true}
-                  overview={movie.overview}
-                  avg={movie.vote_average}
-                  title={movie.title}
-                  id={movie.id}
-                  backgroundPoster={movie.backdrop_path}
-                  poster={movie.poster_path}
+                  overview={list.description}
+                  avg={list.vote_average}
+                  title={list.title}
+                  id={list.id}
+                  backgroundPoster={
+                    list.matched_content_images[0].full_filename
+                  }
+                  poster={list.matched_content_images}
+                  detail={list.detail}
                 />
               </View>
             ))}

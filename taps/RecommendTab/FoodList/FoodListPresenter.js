@@ -46,7 +46,7 @@ const Container = styled.ScrollView`
 `;
 
 // show DATA
-const FoodListPresenter = ({loading, listChanged, navigation}) =>
+const FoodListPresenter = ({loading, listChanged, locations, navigation}) =>
   loading ? (
     <Loader />
   ) : (
@@ -55,7 +55,7 @@ const FoodListPresenter = ({loading, listChanged, navigation}) =>
         onPress={() =>
           navigation.navigate({
             routeName: 'Map',
-            params: {listChanged},
+            params: {listChanged, locations},
           })
         }>
         <MapText>지도로 보기</MapText>
@@ -70,22 +70,26 @@ const FoodListPresenter = ({loading, listChanged, navigation}) =>
               listChanged.length > 0 ? (
                 <Section horizontal={false} title="">
                   {listChanged
-                    .filter(list => list.backdrop_path !== null)
+                    .filter(list => list.id !== null)
                     .map(list => (
                       <SubSlide
                         tag={'notag'}
                         horizontal={false}
                         key={list.id}
                         id={list.id}
-                        backgroundPoster={list.backdrop_path}
+                        backgroundPoster={
+                          list.matched_content_images[0].full_filename
+                        }
+                        poster={list.matched_content_images}
                         title={list.title}
-                        avg={list.vote_average}
-                        overview={list.overview}
+                        overview={list.description}
+                        detail={list.detail}
+                        // avg={list.vote_average}
                       />
                     ))}
                 </Section>
               ) : (
-                <SearchNo handleGetSearchText={searchTerm} />
+                <SearchNo />
               )
             ) : (
               console.log('null')

@@ -144,15 +144,17 @@ const ADImg = styled.Image`
 `;
 
 // TODO: Search 부분에서 사용 TAG
-const TagImg = styled.Text`
+const TagContainer = styled.View`
   background-color: ${TINT_COLOR};
-  color: ${BG_COLOR};
-  border-radius: 10;
+  border-radius: 15;
   border-color: ${BG_COLOR};
   border-width: 1;
+  margin: 4px;
+`;
+const TagImg = styled.Text`
+  color: ${BG_COLOR};
   text-align: center;
-  padding-vertical: 2px;
-  padding-horizontal: 6px;
+  padding: 2px;
   margin: 4px;
 `;
 
@@ -194,7 +196,7 @@ const SubSlide = ({
       }>
       {/* <Poster path={poster} /> */}
       <BackColor backgroundColor={ChangeColor()}>
-        <FoodImg source={{uri: PhotoUri(backgroundPoster)}} />
+        <FoodImg source={{uri: GetPhoto(backgroundPoster)}} />
       </BackColor>
       <LikeConatiner>
         <Like votes={avg} inSlide={true} />
@@ -218,12 +220,23 @@ const SubSlide = ({
       onPress={() =>
         navigation.navigate({
           routeName: 'Detail',
-          params: {id, backgroundPoster, title, avg, overview, tag},
+          params: {
+            id,
+            backgroundPoster,
+            poster,
+            title,
+            avg,
+            overview,
+            tag,
+            detail,
+          },
         })
       }>
       <VerticalImgContainer>
-        <VerticalImg source={{uri: PhotoUri(backgroundPoster)}} />
-        <TagImg>먹거리</TagImg>
+        <VerticalImg source={{uri: GetPhoto(backgroundPoster)}} />
+        <TagContainer>
+          <TagImg>먹거리</TagImg>
+        </TagContainer>
       </VerticalImgContainer>
       <VerticalColum>
         <VerticalTitle numberOfLines={1}>{title}</VerticalTitle>

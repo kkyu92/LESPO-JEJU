@@ -24,71 +24,53 @@ const Container = styled.TouchableOpacity`
 
 // 메인슬라이드 - 배경
 const BGImage = styled.Image`
+  background-color: ${TINT_COLOR};
   border-radius: 15;
   width: ${Layout.width - 40};
   height: ${Layout.height / 4};
-  /* opacity: 0.4; */
-  position: absolute;
-`;
-
-// blank
-const Blank = styled.View`
-  flex: 2;
-`;
-
-// opacity
-const Opacity = styled.View`
-  border-bottom-left-radius: 15;
-  border-bottom-right-radius: 15;
-  align-items: flex-start;
-  width: ${Layout.width - 40};
-  height: 80px;
-  justify-content: flex-start;
-  background-color: black;
-  opacity: 0.5;
-`;
-
-// 먹거리슬라이드 - 이미지
-const Content = styled.View`
-  flex: 1;
-  border-radius: 15;
-  align-items: flex-start;
-  /* padding-left: 20px;
-  padding-right: 20px; */
-  justify-content: center;
-  /* background-color: black;
-  opacity: 0.5; */
 `;
 
 // 메인슬라이드 - 문자 컨테이너
 const Column = styled.View`
-  flex: 5;
-  align-items: flex-start;
-  padding-left: 20px;
-  padding-right: 20px;
+  flex: 1;
+  justify-content: center;
+  padding-right: 10px;
 `;
 
 // 메인슬라이드 - 제목 텍스트
 const Title = styled.Text`
   color: ${TINT_COLOR};
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 800;
+  justify-content: center;
 `;
 
 // 메인슬라이드 - 내용 텍스트
 const Overview = styled.Text`
   color: ${TINT_COLOR};
   font-size: 12px;
+  justify-content: center;
 `;
 
 const TextContainer = styled.View`
+  height: 40%;
+  background-color: red;
+  border-bottom-left-radius: 15;
+  border-bottom-right-radius: 15;
   flex-direction: row;
+  align-items: stretch;
+  justify-content: center;
   position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  align-self: stretch;
+  background-color: rgba(0, 0, 0, 0.5);
   padding-right: 20px;
+  padding-left: 20px;
 `;
 
 const LikeContainer = styled.View`
-  flex: 1;
   justify-content: center;
   align-items: center;
 `;
@@ -189,37 +171,30 @@ const MainSlide = ({
           params: {
             id,
             backgroundPoster,
+            poster,
             title,
             avg,
             overview,
+            detail,
           },
         })
       }>
-      <BGImage source={{uri: PhotoUri(backgroundPoster)}} />
-      <Blank />
-      <Content>
-        <Opacity />
-        {/* <Poster path={poster} /> */}
-        <TextContainer>
-          <Column>
-            <Title numberOfLines={1}>{title}</Title>
-            {overview ? (
-              <Overview numberOfLines={2}>
-                {overview}
-                {/* {overview.length > 57
-              ? `${overview.substring(0, 60)}...`
-              : overview} */}
-              </Overview>
-            ) : null}
-            {/* <Btn text={"MORE DETAIL"} /> */}
-          </Column>
-          {avg ? (
-            <LikeContainer>
-              <Like votes={avg} inSlide={true} />
-            </LikeContainer>
-          ) : null}
-        </TextContainer>
-      </Content>
+      <BGImage source={{uri: GetPhoto(backgroundPoster)}} />
+      <TextContainer>
+        <Column>
+          <Title numberOfLines={1}>{title}</Title>
+          {overview ? <Overview numberOfLines={2}>{overview}</Overview> : null}
+        </Column>
+        {avg ? (
+          <LikeContainer>
+            <Like votes={avg} inSlide={true} />
+          </LikeContainer>
+        ) : (
+          <LikeContainer>
+            <Like votes={0} inSlide={true} />
+          </LikeContainer>
+        )}
+      </TextContainer>
     </Container>
   );
 

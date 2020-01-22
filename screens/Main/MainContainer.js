@@ -1,6 +1,6 @@
 import React from 'react';
 import MainPresenter from './MainPresenter';
-import {movie} from '../../api/Api';
+import {movie, LESPO_API} from '../../api/Api';
 import styled from 'styled-components';
 
 const RightButtonContainer = styled.View`
@@ -26,73 +26,77 @@ const MapBtn = styled.TouchableOpacity``;
 
 // set DATA = Container
 export default class extends React.Component {
-  // static navigationOptions = ({navigation} = {
-  //   header: 'null',
-  //   headerBackTitle: 'null',
-  //   //TODO: 헤더 좌우로 아이콘 만들기 가능
-  //   headerRight: (
-  //     <RightButtonContainer>
-  //       <WishListBtn onPress={() => navigation.navigate('MyWishList')}>
-  //         <WishList
-  //           source={require(`../../assets/drawable-xxxhdpi/icon_wish_wh.png`)}
-  //         />
-  //       </WishListBtn>
+  constructor(props) {
+    super(props);
+    this.state = {
+      loading: true,
+      mainList: [],
+      foodList: [],
+      playList: [],
+      viewList: [],
+      error: null,
+    };
+    console.log('constructor');
+    this.getData();
+  }
 
-  //       <MapBtn onPress={() => alert('지도 페이지 만들어야 함')}>
-  //         <Map
-  //           source={require(`../../assets/drawable-xxxhdpi/icon_map_wh.png`)}
-  //         />
-  //       </MapBtn>
-  //     </RightButtonContainer>
-  //   ),
-  // });
-  // init 초기상태 값 설정
-  state = {
-    loading: true,
-    upComing: null,
-    popular: null,
-    nowPlaying: null,
-    error: null,
+  getData = async () => {
+    let {mainList, foodList} = this.state;
+    let error;
+    try {
+      ({
+        data: {data: mainList},
+      } = await LESPO_API.getMainList())(
+        ({
+          data: {data: foodList},
+        } = await LESPO_API.getMainFoodList()),
+      );
+    } catch (error) {
+      console.log(error);
+      error = "Cant't get MainList.";
+    } finally {
+      this.setState({
+        mainList: mainList,
+        foodList: foodList,
+      });
+      // console.log('foodList: ' + JSON.stringify(foodList));
+    }
   };
 
   async componentDidMount() {
     // let : 변할 수 있는 변수
-    let upComing, popular, nowPlaying, error;
+    let {playList, viewList} = this.state;
+    let error;
     try {
       ({
-        data: {results: upComing},
-      } = await movie.getUpComing())(
+        data: {data: playList},
+      } = await LESPO_API.getMainPlayList()),
         ({
-          data: {results: popular},
-        } = await movie.getPopular()),
-      )(
-        ({
-          data: {results: nowPlaying},
-        } = await movie.getNowPlaying()),
-      );
+          data: {data: viewList},
+        } = await LESPO_API.getMainViewList());
     } catch (error) {
       console.log(error);
-      error = "Cant't get Movies.";
+      error = "Cant't get MainList.";
     } finally {
       this.setState({
         loading: false,
-        error,
-        upComing,
-        popular,
-        nowPlaying,
+        playList: playList,
+        viewList: viewList,
       });
+      // console.log('viewList: ' + JSON.stringify(viewList));
     }
   }
 
   render() {
-    const {loading, upComing, popular, nowPlaying} = this.state;
+    const {loading, mainList, foodList, playList, viewList} = this.state;
     // console.log(nowPlaying);
     return (
       <MainPresenter
         loading={loading}
-        upComing={upComing}
-        popular={popular}
-        nowPlaying={nowPlaying}
+        mainList={mainList}
+        foodList={foodList}
+        playList={playList}
+        viewList={viewList}
       />
     );
   }

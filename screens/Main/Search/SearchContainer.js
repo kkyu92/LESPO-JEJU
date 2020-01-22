@@ -1,74 +1,81 @@
-import React from "react";
-import SearchPresenter from "./SearchPresenter";
-import { movie } from "../../../api/Api";
+import React from 'react';
+import SearchPresenter from './SearchPresenter';
+import {movie, LESPO_API} from '../../../api/Api';
 
 export default class extends React.Component {
   // Title setting
   static navigationOptions = () => {
     return {
-      title: "여행하기 검색"
+      title: '여행하기 검색',
     };
   };
 
   state = {
     loading: false,
     jejuResult: null,
-    foodResult: null,
-    playResult: null,
-    seeResult: null,
-    searchTerm: "",
-    error: null
+    searchTerm: '',
+    error: null,
   };
+
+  // async componentDidMount() {
+  //   let {jejuResult, searchTerm, error} = this.state;
+  //   try {
+  //     ({
+  //       data: {data: jejuResult},
+  //     } = await LESPO_API.getSearchList(searchTerm));
+  //     this.setState({
+  //       loading: false,
+  //       jejuResult: jejuResult,
+  //       error,
+  //     });
+  //     console.log(JSON.stringify(jejuResult));
+  //   } catch (error) {
+  //     // error = "Can't Search";
+  //   } finally {
+  //     console.log('finally: ' + jejuResult);
+  //   }
+  // }
 
   // text 입력값 받아온다
   handleSearchUpdate = text => {
     this.setState({
-      searchTerm: text
+      searchTerm: text,
     });
+    console.log(this.state.searchTerm);
   };
 
   // 검색한 결과값
   onSubmitEditing = async () => {
-    const { searchTerm } = this.state;
-    if (searchTerm !== "") {
+    const {searchTerm} = this.state;
+    console.log(searchTerm);
+    if (searchTerm !== '') {
       let loading, jejuResult, error;
       this.setState({
-        loading: true
+        loading: true,
       });
       try {
         ({
-          data: { results: jejuResult }
-        } = await movie.getSearchMovie(searchTerm));
-      } catch {
-        error = "Can't Search";
-      } finally {
+          data: {data: jejuResult},
+        } = await LESPO_API.getSearchList(searchTerm));
         this.setState({
           loading: false,
           jejuResult,
-          error
+          error,
         });
+        console.log(JSON.stringify(jejuResult));
+      } catch {
+        error = "Can't Search";
       }
-
       return;
     }
   };
 
   render() {
-    const {
-      loading,
-      jejuResult,
-      foodResult,
-      playResult,
-      seeResult,
-      searchTerm
-    } = this.state;
+    const {loading, jejuResult, searchTerm} = this.state;
     return (
       <SearchPresenter
         loading={loading}
         jejuResult={jejuResult}
-        foodResult={foodResult}
-        playResult={playResult}
-        seeResult={seeResult}
         searchTerm={searchTerm}
         onSubmitEditing={this.onSubmitEditing}
         handleSearchUpdate={this.handleSearchUpdate}

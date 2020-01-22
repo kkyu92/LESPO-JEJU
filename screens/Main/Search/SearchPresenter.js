@@ -59,9 +59,6 @@ const Input = styled.TextInput`
 const SearchPresenter = ({
   loading,
   jejuResult,
-  foodResult,
-  playResult,
-  seeResult,
   searchTerm,
   onSubmitEditing,
   handleSearchUpdate,
@@ -96,22 +93,26 @@ const SearchPresenter = ({
             jejuResult.length > 0 ? (
               <Section horizontal={false} title="">
                 {jejuResult
-                  .filter(list => list.backdrop_path !== null)
+                  .filter(list => list.id !== null)
                   .map(list => (
                     <SubSlide
-                      tag={true}
+                      tag={'tag'}
                       horizontal={false}
                       key={list.id}
                       id={list.id}
-                      backgroundPoster={list.backdrop_path}
+                      backgroundPoster={
+                        list.matched_content_images[0].full_filename
+                      }
+                      poster={list.matched_content_images}
                       title={list.title}
-                      avg={list.vote_average}
-                      overview={list.overview}
+                      overview={list.description}
+                      detail={list.detail}
+                      // avg={list.vote_average}
                     />
                   ))}
               </Section>
             ) : (
-              <SearchNo handleGetSearchText={searchTerm} />
+              <SearchNo />
             )
           ) : null}
         </>

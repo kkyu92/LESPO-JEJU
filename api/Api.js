@@ -25,8 +25,31 @@ export const CONFIG = {
 export const LESPO_API = {
   // Notice
   getNotice: () => API.get('notices'),
+
   // Jeju-sound
   getJejuSound: () => API.get('contents/jeju-ads'),
+  // Jeju-ad
+  getJejuAd: () => API.get('contents/tour-products'),
+
+  // Main
+  getMainList: () => API.get('main-list?type=1'),
+  getMainFoodList: () => API.get('main-list?type=2'),
+  getMainViewList: () => API.get('main-list?type=3'),
+  getMainPlayList: () => API.get('main-list?type=4'),
+
+  // Search
+  getSearchList: term =>
+    API.get('search', {
+      params: {
+        query: decodeURIComponent(term),
+      },
+    }),
+
+  // Contents List
+  getFoodList: () => API.get('contents/foods'),
+  getViewList: () => API.get('contents/attractions'),
+  getPlayList: () => API.get('contents/leisure-sports'),
+
   // Reco
   getRecommends: () => API.get('contents/recommends?category=8'),
   getRecoFood: () => API.get('contents/recommends?category=9'),
@@ -47,21 +70,21 @@ export const LESPO_API = {
   getViewMountain: () => API.get('contents/attractions?category=22'),
   getViewOther: () => API.get('contents/attractions?category=23'),
   // Leisure
-  getLeisureExtreme: () => API.get('contents/leisure-sports?category=24'),
-  getLeisureWaterPark: () => API.get('contents/leisure-sports?category=25'),
-  getLeisureThemePark: () => API.get('contents/leisure-sports?category=26'),
-  getLeisureFishing: () => API.get('contents/leisure-sports?category=27'),
-  getLeisureExperience: () => API.get('contents/leisure-sports?category=28'),
-  getLeisureCamping: () => API.get('contents/leisure-sports?category=29'),
-  getLeisureOther: () => API.get('contents/leisure-sports?category=30'),
+  getLeisureExtreme: () => API.get('contents/leisure-sports?category=26'),
+  getLeisureWaterPark: () => API.get('contents/leisure-sports?category=27'),
+  getLeisureThemePark: () => API.get('contents/leisure-sports?category=28'),
+  getLeisureFishing: () => API.get('contents/leisure-sports?category=29'),
+  getLeisureExperience: () => API.get('contents/leisure-sports?category=30'),
+  getLeisureCamping: () => API.get('contents/leisure-sports?category=32'),
+  getLeisureOther: () => API.get('contents/leisure-sports?category=33'),
   // Sports
-  getSportsBall: () => API.get('contents/battle-facilities?category=31'),
-  getSportsBilliards: () => API.get('contents/battle-facilities?category=32'),
-  getSportsBowling: () => API.get('contents/battle-facilities?category=33'),
-  getSportsHealth: () => API.get('contents/battle-facilities?category=34'),
-  getSportsYoga: () => API.get('contents/battle-facilities?category=35'),
-  getSportsFight: () => API.get('contents/battle-facilities?category=36'),
-  getSportsOther: () => API.get('contents/battle-facilities?category=37'),
+  getSportsBall: () => API.get('contents/sports-facilities?category=34'),
+  getSportsBilliards: () => API.get('contents/sports-facilities?category=35'),
+  getSportsBowling: () => API.get('contents/sports-facilities?category=36'),
+  getSportsHealth: () => API.get('contents/sports-facilities?category=37'),
+  getSportsYoga: () => API.get('contents/sports-facilities?category=38'),
+  getSportsFight: () => API.get('contents/sports-facilities?category=39'),
+  getSportsOther: () => API.get('contents/sports-facilities?category=40'),
 };
 
 // FIXME: 이름 그대로 불러다 쓰인다 api 이름 그대로 만들어 쓰면 된다

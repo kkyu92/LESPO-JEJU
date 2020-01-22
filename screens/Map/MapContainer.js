@@ -17,7 +17,7 @@ export default class extends React.Component {
       navigation: {
         state: {
           //   params: { id, backgroundPoster, title, avg, overview }
-          params: {listChanged, locations},
+          params: {listChanged, locations, mainState},
         },
       },
     } = props;
@@ -27,6 +27,7 @@ export default class extends React.Component {
       longitude: null,
       listChanged,
       locations,
+      mainState,
       error: null,
     };
     console.log('locations ========= ' + JSON.stringify(locations));
@@ -79,10 +80,25 @@ export default class extends React.Component {
 
   // 시작시 불러옴
   async componentDidMount() {
+    const {mainState} = this.state;
     this.requestLocationPermission();
+    if (mainState) {
+      console.log('mainState: ' + mainState);
+      // map = Main Map Btn
+      // wish = Main Wish Btn
+    } else {
+      console.log('mainState: null');
+    }
   }
   render() {
-    const {loading, latitude, longitude, listChanged, locations} = this.state;
+    const {
+      loading,
+      latitude,
+      longitude,
+      listChanged,
+      locations,
+      mainState,
+    } = this.state;
     // 위치정보 받기 전
     if (latitude) {
       return (
@@ -92,6 +108,7 @@ export default class extends React.Component {
           longitude={longitude}
           listChanged={listChanged}
           locations={locations}
+          mainState={mainState}
         />
       );
     } else {

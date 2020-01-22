@@ -11,7 +11,7 @@ import SearchNo from '../../Main/Search/SearchNo';
 import Layout from '../../../constants/Layout';
 
 const View = styled.View`
-  background-color: orange;
+  background-color: ${BG_COLOR};
   flex: 1;
 `;
 

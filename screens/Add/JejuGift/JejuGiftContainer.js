@@ -1,7 +1,7 @@
 import React from 'react';
 import Text from 'react-native';
 import styled from 'styled-components';
-import {tv, movie} from '../../../api/Api';
+import {tv, movie, LESPO_API} from '../../../api/Api';
 import JejuGiftPresenter from './JejuGiftPresenter';
 
 export default class extends React.Component {
@@ -25,8 +25,8 @@ export default class extends React.Component {
     let listChanged, error;
     try {
       ({
-        data: {results: listChanged},
-      } = await movie.getSearchMovie('new'));
+        data: {data: listChanged},
+      } = await LESPO_API.getJejuAd());
     } catch (error) {
       console.log(error);
       error = "Cnat't get TV";

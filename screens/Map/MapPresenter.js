@@ -3,18 +3,59 @@ import {withNavigation} from 'react-navigation';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import styled from 'styled-components';
 import Loader from '../../components/Loader';
-import {TINT_COLOR, GREY_COLOR3} from '../../constants/Colors';
+import {
+  TINT_COLOR,
+  GREY_COLOR3,
+  GREY_COLOR2,
+  BG_COLOR,
+} from '../../constants/Colors';
 import Layout from '../../constants/Layout';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import IconF from 'react-native-vector-icons/Fontisto';
 import Swiper from 'react-native-swiper';
 import MainSlide from '../../components/MainSlide';
-import {GameRequestDialog} from 'react-native-fbsdk';
 
 const MapContainer = styled.View`
   width: ${Layout.width};
   height: ${Layout.height};
   background-color: ${TINT_COLOR};
   position: absolute;
+`;
+const ListContainer = styled.View`
+  flex-direction: row;
+  position: absolute;
+  background-color: ${TINT_COLOR};
+  width: 80%;
+  height: ${Layout.height / 5};
+  top: 50px;
+  margin: 20px;
+  border-radius: 25px;
+  align-items: center;
+  justify-content: center;
+`;
+const ListBtn = styled.TouchableOpacity`
+  width: ${Layout.width / 5};
+  height: ${Layout.width / 5};
+  border-radius: ${Layout.width / 10};
+  border-width: 1px;
+  border-color: ${GREY_COLOR2};
+  margin: 10px;
+`;
+const ListText = styled.Text`
+  text-align: center;
+  color: ${GREY_COLOR2};
+`;
+
+const ListBtnCheck = styled.TouchableOpacity`
+  width: ${Layout.width / 5};
+  height: ${Layout.width / 5};
+  border-radius: ${Layout.width / 10};
+  border-width: 1px;
+  border-color: ${BG_COLOR};
+`;
+const ListTextCheck = styled.Text`
+  text-align: center;
+  color: ${BG_COLOR};
 `;
 
 const MyLocation = styled.TouchableOpacity`
@@ -152,10 +193,102 @@ const MapPresenter = ({
   longitude,
   listChanged,
   locations,
+  mainState,
   navigation,
 }) =>
   loading ? (
     <Loader />
+  ) : mainState === 'map' ? (
+    <MapContainer>
+      <MapView
+        provider={PROVIDER_GOOGLE}
+        ref={map => (this.map = map)}
+        // showsMyLocationButton
+        showsUserLocation
+        style={{
+          width: Layout.width,
+          height: Layout.height,
+          position: 'absolute',
+        }}
+        initialRegion={{
+          latitude: latitude,
+          longitude: longitude,
+          latitudeDelta: 0.09,
+          longitudeDelta: 0.035,
+        }}>
+        {locations
+          ? locations.locations
+              .filter(list => list.key !== null)
+              .map((list, index) => (
+                <Marker
+                  key={list.key}
+                  ref={marker => (locations.mark[index] = marker)}
+                  onPress={() => onMarkerPressed(list)}
+                  coordinate={list.location}
+                  title={list.title}
+                  description={list.address}
+                />
+              ))
+          : console.log('locations null ????? ' + JSON.stringify(locations))}
+      </MapView>
+      <MyLocation onPress={() => _getLocation(latitude, longitude)}>
+        <Icon size={30} name={'my-location'} color={`${GREY_COLOR3}`} />
+        {/* silverware-fork-knife / eye / IconF[hot-air-balloon] */}
+      </MyLocation>
+      <ListContainer>
+        <ListBtnCheck>
+          <Icon
+            size={30}
+            name={'silverware-fork-knife'}
+            color={`${BG_COLOR}`}
+          />
+          <ListTextCheck>먹거리</ListTextCheck>
+        </ListBtnCheck>
+        <ListBtn>
+          <Icon size={30} name={'eye'} color={`${GREY_COLOR3}`} />
+          <ListTextCheck>볼거리</ListTextCheck>
+        </ListBtn>
+        <ListBtn>
+          <IconF size={30} name={'hot-air-balloon'} color={`${GREY_COLOR3}`} />
+          <ListTextCheck>놀거리</ListTextCheck>
+        </ListBtn>
+      </ListContainer>
+      {/* {listChanged.map(list => console.log(list.backdrop_path))} */}
+      <MView>
+        <Swiper
+          ref={swiper => {
+            this.swiper = swiper;
+          }}
+          showsPagination={true}
+          autoplay={false}
+          autoplayTimeout={3}
+          onIndexChanged={index => onSwiperItemChange(index, locations)}
+          style={{
+            height: (Layout.width / 5) * 3,
+            position: 'absolute',
+            bottom: 20,
+          }}>
+          {listChanged
+            .filter(list => list.id !== null)
+            .map((list, index) => (
+              <View key={index}>
+                <MainSlide
+                  map={true}
+                  overview={list.description}
+                  avg={list.vote_average}
+                  title={list.title}
+                  id={list.id}
+                  backgroundPoster={
+                    list.matched_content_images[0].full_filename
+                  }
+                  poster={list.matched_content_images}
+                  detail={list.detail}
+                />
+              </View>
+            ))}
+        </Swiper>
+      </MView>
+    </MapContainer>
   ) : (
     <MapContainer>
       <MapView

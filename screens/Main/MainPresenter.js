@@ -140,7 +140,14 @@ const MapBtn = styled.TouchableOpacity`
 `;
 
 // show DATA
-const MainPresenter = ({loading, upComing, popular, nowPlaying, navigation}) =>
+const MainPresenter = ({
+  loading,
+  mainList,
+  foodList,
+  playList,
+  viewList,
+  navigation,
+}) =>
   loading ? (
     <Loader />
   ) : (
@@ -219,59 +226,59 @@ const MainPresenter = ({loading, upComing, popular, nowPlaying, navigation}) =>
         <Text style={{color: 'black', fontSize: 20, fontWeight: 'bold'}}>
           레스포가 추천하는 제주맛집
         </Text>
-        {popular ? <MainSlider movies={popular} /> : null}
+        {mainList ? <MainSlider mainList={mainList} /> : null}
 
         {/*TODO: 먹거리 */}
-        {upComing ? (
+        {foodList ? (
           <Section title="먹거리">
-            {upComing
-              .filter(list => list.poster_path !== null)
-              .map(list => (
-                <SubSlide
-                  key={list.id}
-                  id={list.id}
-                  backgroundPoster={list.poster_path}
-                  title={list.title}
-                  avg={list.vote_average}
-                  overview={list.overview}
-                />
-              ))}
+            {foodList.map(list => (
+              <SubSlide
+                key={list.id}
+                id={list.id}
+                backgroundPoster={list.matched_content_images[0].full_filename}
+                poster={list.matched_content_images}
+                title={list.title}
+                overview={list.description}
+                detail={list.detail}
+                // avg={list.vote_average}
+              />
+            ))}
           </Section>
         ) : null}
 
         {/*TODO: 놀거리 */}
-        {upComing ? (
+        {playList ? (
           <Section title="놀거리">
-            {upComing
-              .filter(list => list.poster_path !== null)
-              .map(list => (
-                <SubSlide
-                  key={list.id}
-                  id={list.id}
-                  backgroundPoster={list.poster_path}
-                  title={list.title}
-                  avg={list.vote_average}
-                  overview={list.overview}
-                />
-              ))}
+            {playList.map(list => (
+              <SubSlide
+                key={list.id}
+                id={list.id}
+                backgroundPoster={list.matched_content_images[0].full_filename}
+                poster={list.matched_content_images}
+                title={list.title}
+                overview={list.description}
+                detail={list.detail}
+                // avg={list.vote_average}
+              />
+            ))}
           </Section>
         ) : null}
 
         {/*TODO: 볼거리 */}
-        {upComing ? (
+        {viewList ? (
           <Section title="볼거리">
-            {upComing
-              .filter(list => list.poster_path !== null)
-              .map(list => (
-                <SubSlide
-                  key={list.id}
-                  id={list.id}
-                  backgroundPoster={list.poster_path}
-                  title={list.title}
-                  avg={list.vote_average}
-                  overview={list.overview}
-                />
-              ))}
+            {viewList.map(list => (
+              <SubSlide
+                key={list.id}
+                id={list.id}
+                backgroundPoster={list.matched_content_images[0].full_filename}
+                poster={list.matched_content_images}
+                title={list.title}
+                overview={list.description}
+                detail={list.detail}
+                // avg={list.vote_average}
+              />
+            ))}
           </Section>
         ) : null}
         {/* <Text

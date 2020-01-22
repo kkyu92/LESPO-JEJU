@@ -15,25 +15,26 @@ const View = styled.View`
 
 const Text = styled.Text``;
 
-const MainSlider = ({movies}) =>
-  movies ? (
+const MainSlider = ({mainList}) =>
+  mainList ? (
     <Swiper
       marginBottom={20}
       showsPagination={false}
       autoplay={true}
       autoplayTimeout={3}
       style={{height: Layout.height / 4, marginTop: 15}}>
-      {movies
-        .filter(movie => movie.backdrop_path !== null)
-        .map(movie => (
-          <View key={movie.id}>
+      {mainList
+        .filter(list => list.id !== null)
+        .map(list => (
+          <View key={list.id}>
             <MainSlide
-              overview={movie.overview}
-              avg={movie.vote_average}
-              title={movie.title}
-              id={movie.id}
-              backgroundPoster={movie.backdrop_path}
-              poster={movie.poster_path}
+              id={list.id}
+              backgroundPoster={list.matched_content_images[0].full_filename}
+              poster={list.matched_content_images}
+              title={list.title}
+              overview={list.description}
+              detail={list.detail}
+              // avg={list.vote_average}
             />
           </View>
         ))}

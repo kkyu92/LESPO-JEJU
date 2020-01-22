@@ -136,25 +136,28 @@ const JejuGiftPresenter = ({
           listChanged.length > 0 ? (
             <Section horizontal={false} title="">
               {listChanged
-                .filter(list => list.backdrop_path !== null)
+                .filter(list => list.id !== null)
                 .map(list => (
                   <SubSlide
-                    tag={'tag'}
                     horizontal={false}
                     key={list.id}
                     id={list.id}
-                    backgroundPoster={list.backdrop_path}
+                    backgroundPoster={
+                      list.matched_content_images[0].full_filename
+                    }
+                    poster={list.matched_content_images}
                     title={list.title}
-                    avg={list.vote_average}
-                    overview={list.overview}
+                    overview={list.description}
+                    detail={list.detail}
+                    // avg={list.vote_average}
                   />
                 ))}
             </Section>
           ) : (
-            <SearchNo handleGetSearchText={'리스트 없음'} />
+            <SearchNo />
           )
         ) : (
-          <SearchNo handleGetSearchText={'등록된 결과물 없음'} />
+          <SearchNo />
         )}
       </Container>
     </View>

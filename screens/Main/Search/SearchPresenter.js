@@ -107,6 +107,7 @@ const SearchPresenter = ({
                       title={list.title}
                       overview={list.description}
                       detail={list.detail}
+                      tagName={list.category.category_name}
                       // avg={list.vote_average}
                     />
                   ))}

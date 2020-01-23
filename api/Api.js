@@ -16,7 +16,8 @@ const API = axios.create({
 export const BASEURL = 'https://www.jejubattle.com/api/';
 export const CONFIG = {
   headers: {
-    'Content-Type': 'application/json',
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'Access-Control-Allow-Origin': '*',
     // x-www-form-urlencoded
   },
 };

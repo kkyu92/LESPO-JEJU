@@ -139,6 +139,7 @@ const JejuGiftPresenter = ({
                 .filter(list => list.id !== null)
                 .map(list => (
                   <SubSlide
+                    tag={'tag'}
                     horizontal={false}
                     key={list.id}
                     id={list.id}

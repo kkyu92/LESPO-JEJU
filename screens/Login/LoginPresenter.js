@@ -112,6 +112,7 @@ const LoginPresenter = ({
   handleEmailUpdate,
   handlePasswordUpdate,
   kakaoLogin,
+  onSNSLogin,
   onLogin,
   navigation,
 }) =>
@@ -196,13 +197,7 @@ const LoginPresenter = ({
                           console.log(error);
                           alert('Error fetching data: ' + error.toString());
                         } else {
-                          // console.log(
-                          //   result.id,
-                          //   result.name,
-                          //   result.email,
-                          //   result.picture.data.url,
-                          // );
-                          storeData(result);
+                          onSNSLogin('facebook', result);
                           alert(
                             'Success fetching data: ' + JSON.stringify(result),
                           );

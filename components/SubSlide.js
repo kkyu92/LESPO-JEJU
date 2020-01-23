@@ -8,6 +8,9 @@ import {
   TINT_COLOR,
   GREY_COLOR,
   BLACK_COLOR,
+  PURPLE_COLOR,
+  GREEN_COLOR,
+  GREY_COLOR3,
 } from '../constants/Colors';
 import PhotoUri from '../api/PhotoUri';
 import Layout from '../constants/Layout';
@@ -157,6 +160,45 @@ const TagImg = styled.Text`
   padding: 2px;
   margin: 4px;
 `;
+const TagViewContainer = styled.View`
+  background-color: ${TINT_COLOR};
+  border-radius: 15;
+  border-color: ${PURPLE_COLOR};
+  border-width: 1;
+  margin: 4px;
+`;
+const TagViewImg = styled.Text`
+  color: ${PURPLE_COLOR};
+  text-align: center;
+  padding: 2px;
+  margin: 4px;
+`;
+const TagPlayContainer = styled.View`
+  background-color: ${TINT_COLOR};
+  border-radius: 15;
+  border-color: ${GREEN_COLOR};
+  border-width: 1;
+  margin: 4px;
+`;
+const TagPlayImg = styled.Text`
+  color: ${GREEN_COLOR};
+  text-align: center;
+  padding: 2px;
+  margin: 4px;
+`;
+const TagOtherContainer = styled.View`
+  background-color: ${TINT_COLOR};
+  border-radius: 15;
+  border-color: ${GREY_COLOR3};
+  border-width: 1;
+  margin: 4px;
+`;
+const TagOtherImg = styled.Text`
+  color: ${GREY_COLOR3};
+  text-align: center;
+  padding: 2px;
+  margin: 4px;
+`;
 
 // 상세보기 버튼
 const DetailBtn = styled.TouchableOpacity`
@@ -182,6 +224,7 @@ const SubSlide = ({
   avg,
   horizontal = true,
   tag = 'tag',
+  tagName,
   markerOn,
   navigation,
 }) =>
@@ -234,9 +277,23 @@ const SubSlide = ({
       }>
       <VerticalImgContainer>
         <VerticalImg source={{uri: GetPhoto(backgroundPoster)}} />
-        <TagContainer>
-          <TagImg>먹거리</TagImg>
-        </TagContainer>
+        {tagName === '먹거리추천' ? (
+          <TagContainer>
+            <TagImg>먹거리</TagImg>
+          </TagContainer>
+        ) : tagName === '놀거리추천' ? (
+          <TagPlayContainer>
+            <TagPlayImg>놀거리</TagPlayImg>
+          </TagPlayContainer>
+        ) : tagName === '볼거리추천' ? (
+          <TagViewContainer>
+            <TagViewImg>볼거리</TagViewImg>
+          </TagViewContainer>
+        ) : (
+          <TagOtherContainer>
+            <TagOtherImg>기타</TagOtherImg>
+          </TagOtherContainer>
+        )}
       </VerticalImgContainer>
       <VerticalColum>
         <VerticalTitle numberOfLines={1}>{title}</VerticalTitle>

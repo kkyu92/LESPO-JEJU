@@ -30,8 +30,9 @@ const LeftContainer = styled.View`
 `;
 
 const Profile = styled.Image`
-  width: 60;
-  height: 60;
+  border-radius: 30px;
+  width: 60px;
+  height: 60px;
   margin-right: 10px;
 `;
 

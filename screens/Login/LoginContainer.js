@@ -10,113 +10,6 @@ if (!KakaoLogins) {
   console.error('Module is Not Linked');
 }
 
-const logCallback = (log, callback) => {
-  console.log(log);
-  callback;
-};
-
-const setLoginLoading = () => {};
-const setProfileLoading = () => {};
-// const setLogoutLoading = () => {};
-const setToken = () => {};
-const setProfile = () => {};
-const TOKEN_EMPTY = 'token has not fetched';
-const PROFILE_EMPTY = {
-  id: 'profile has not fetched',
-  email: 'profile has not fetched',
-  profile_image_url: '',
-  nickname: '',
-};
-
-const kakaoLogin = () => {
-  console.log('     kakaoLogin      ');
-  logCallback('Login Start', setLoginLoading(true));
-
-  KakaoLogins.login()
-    .then(result => {
-      setToken(result.accessToken);
-      logCallback(
-        `Login Finished:${JSON.stringify(result)}`,
-        setLoginLoading(false),
-        getProfile(),
-      );
-    })
-    .catch(err => {
-      if (err.code === 'E_CANCELLED_OPERATION') {
-        logCallback(`Login Cancelled:${err.message}`, setLoginLoading(false));
-      } else {
-        logCallback(
-          `Login Failed:${err.code} ${err.message}`,
-          setLoginLoading(false),
-        );
-      }
-    });
-};
-
-// const kakaoLogout = () => {
-//   console.log('     kakaoLogout      ');
-//   logCallback('Logout Start', setLogoutLoading(true));
-
-//   KakaoLogins.logout()
-//     .then(result => {
-//       setToken(TOKEN_EMPTY);
-//       setProfile(PROFILE_EMPTY);
-//       logCallback(`Logout Finished:${result}`, setLogoutLoading(false));
-//     })
-//     .catch(err => {
-//       logCallback(
-//         `Logout Failed:${err.code} ${err.message}`,
-//         setLogoutLoading(false),
-//       );
-//     });
-// };
-
-// 로그인 정보 저장 SNS
-const storeSNS = async result => {
-  try {
-    await AsyncStorage.setItem('@USER_ID', result.id);
-    await AsyncStorage.setItem('@USER_NAME', result.nickname);
-    await AsyncStorage.setItem('@USER_PROFILE', result.profile_image_url);
-  } catch (e) {
-    console.log('saving error: ' + e);
-  }
-};
-// 로그인 정보 저장 일반
-const storeAPI = async (result, email, password) => {
-  try {
-    await AsyncStorage.setItem('@TOKEN', result.data.data.token);
-    await AsyncStorage.setItem('@USER_ID', '' + result.data.data.id);
-    await AsyncStorage.setItem('@USER_NAME', result.data.data.nickname);
-    await AsyncStorage.setItem('@USER_PASSWORD', password);
-    await AsyncStorage.setItem('@USER_PROFILE', '');
-    console.log('saving id: ' + result.data.data.id);
-  } catch (error) {
-    console.log('saving error: ' + error);
-  }
-};
-
-const getProfile = () => {
-  console.log('     getProfile      ');
-  logCallback('Get Profile Start', setProfileLoading(true));
-
-  KakaoLogins.getProfile()
-    .then(result => {
-      setProfile(result);
-      logCallback(
-        alert('Success fetching data: ' + JSON.stringify(result)),
-        // `Get Profile Finished:${JSON.stringify(result)}`,
-        setProfileLoading(false),
-        storeSNS(result),
-      );
-    })
-    .catch(err => {
-      logCallback(
-        `Get Profile Failed:${err.code} ${err.message}`,
-        setProfileLoading(false),
-      );
-    });
-};
-
 export default class extends React.Component {
   constructor(props) {
     super(props);
@@ -153,6 +46,181 @@ export default class extends React.Component {
     }
   }
 
+  logCallback = (log, callback) => {
+    console.log(log);
+    console.log(JSON.stringify(callback));
+  };
+
+  setLoginLoading = () => {};
+  setProfileLoading = () => {};
+  // const setLogoutLoading = () => {};
+  setToken = () => {};
+  setProfile = () => {};
+  TOKEN_EMPTY = 'token has not fetched';
+  PROFILE_EMPTY = {
+    id: 'profile has not fetched',
+    email: 'profile has not fetched',
+    profile_image_url: '',
+    nickname: '',
+  };
+
+  kakaoLogin = () => {
+    console.log('     kakaoLogin      ');
+    this.logCallback('Login Start', this.setLoginLoading(true));
+
+    KakaoLogins.login()
+      .then(result => {
+        this.setToken(result.accessToken);
+        this.logCallback(
+          `Login Finished:${JSON.stringify(result)}`,
+          this.setLoginLoading(false),
+          this.getProfile(),
+        );
+      })
+      .catch(err => {
+        if (err.code === 'E_CANCELLED_OPERATION') {
+          this.logCallback(
+            `Login Cancelled:${err.message}`,
+            this.setLoginLoading(false),
+          );
+        } else {
+          this.logCallback(
+            `Login Failed:${err.code} ${err.message}`,
+            this.setLoginLoading(false),
+          );
+        }
+      });
+  };
+
+  // const kakaoLogout = () => {
+  //   console.log('     kakaoLogout      ');
+  //   this.logCallback('Logout Start', setLogoutLoading(true));
+
+  //   KakaoLogins.logout()
+  //     .then(result => {
+  //       this.setToken(TOKEN_EMPTY);
+  //       this.setProfile(PROFILE_EMPTY);
+  //       this.logCallback(`Logout Finished:${result}`, setLogoutLoading(false));
+  //     })
+  //     .catch(err => {
+  //       this.logCallback(
+  //         `Logout Failed:${err.code} ${err.message}`,
+  //         this.setLogoutLoading(false),
+  //       );
+  //     });
+  // };
+
+  // SNS 회원가입 + 로그인
+  onSNSLogin = async (sns, result) => {
+    console.log('onSNSLogin');
+    if (sns === 'kakao') {
+      const params = new URLSearchParams();
+      params.append('provider', sns);
+      params.append('id', result.id);
+      params.append('name', result.nickname);
+      Axios.post(BASEURL + 'login/callback', params)
+        .then(response => {
+          if (response.data.status === 'success') {
+            console.log('== kakao login success ==');
+            console.log(
+              response.data.data.id.toString(),
+              result.nickname,
+              result.profile_image_url,
+              sns,
+            );
+            this.storeSNS(
+              response.data.data.token,
+              response.data.data.id.toString(),
+              result.nickname,
+              result.profile_image_url,
+              sns,
+            );
+          }
+        })
+        .catch(error => {
+          console.log('kakao login fail: ' + error);
+        });
+    } else if (sns === 'facebook') {
+      const params = new URLSearchParams();
+      params.append('provider', sns);
+      params.append('id', result.id);
+      params.append('name', result.name);
+      Axios.post(BASEURL + 'login/callback', params)
+        .then(response => {
+          if (response.data.status === 'success') {
+            console.log('== facebook login success ==');
+            console.log(
+              response.data.data.id.toString(),
+              result.name,
+              result.picture.data.url,
+              sns,
+            );
+            this.storeSNS(
+              response.data.data.token,
+              response.data.data.id.toString(),
+              result.name,
+              result.picture.data.url,
+              sns,
+            );
+          }
+        })
+        .catch(error => {
+          console.log('facebook login fail: ' + error);
+        });
+    } else {
+    }
+    this.state.navigation.replace({
+      routeName: 'Tabs',
+    });
+  };
+  // 로그인 정보 저장 SNS
+  storeSNS = async (token, id, name, profile, provider) => {
+    try {
+      await AsyncStorage.setItem('@TOKEN', token);
+      await AsyncStorage.setItem('@USER_ID', id);
+      await AsyncStorage.setItem('@USER_NAME', name);
+      await AsyncStorage.setItem('@USER_PROFILE', profile);
+      await AsyncStorage.setItem('@USER_PROVIDER', provider);
+    } catch (e) {
+      console.log('saving error: ' + e);
+    }
+  };
+  // 로그인 정보 저장 일반
+  storeAPI = async (result, email, password) => {
+    try {
+      await AsyncStorage.setItem('@TOKEN', result.data.data.token);
+      await AsyncStorage.setItem('@USER_ID', '' + result.data.data.id);
+      await AsyncStorage.setItem('@USER_NAME', result.data.data.nickname);
+      await AsyncStorage.setItem('@USER_PASSWORD', password);
+      await AsyncStorage.setItem('@USER_PROFILE', '');
+      console.log('saving id: ' + result.data.data.id);
+    } catch (error) {
+      console.log('saving error: ' + error);
+    }
+  };
+
+  getProfile = () => {
+    console.log('     getProfile      ');
+    this.logCallback('Get Profile Start', this.setProfileLoading(true));
+
+    KakaoLogins.getProfile()
+      .then(result => {
+        this.setProfile(result);
+        this.logCallback(
+          this.onSNSLogin('kakao', result),
+          alert('Success fetching data: ' + JSON.stringify(result)),
+          // `Get Profile Finished:${JSON.stringify(result)}`,
+          this.setProfileLoading(false),
+        );
+      })
+      .catch(err => {
+        this.logCallback(
+          `Get Profile Failed:${err.code} ${err.message}`,
+          this.setProfileLoading(false),
+        );
+      });
+  };
+
   // 회원가입 || 로그인했던 정보 가져오기
   getData = async () => {
     console.log('getData');
@@ -188,33 +256,10 @@ export default class extends React.Component {
     });
   };
 
-  // SNS 회원가입 + 로그인
-  onSNSLogin = async () => {
-    const {email, password} = this.state;
-    if (email === '' || password === '') {
-      alert.toString('아이디와 비밀번호를 정확하게 입력해주세요.');
-    } else {
-      this.setState({
-        loading: true,
-      });
-      const params = new URLSearchParams();
-      params.append('email', email);
-      params.append('password', password);
-      Axios.post(BASEURL + 'register', params)
-        .then(response => {
-          console.log(JSON.stringify(response.data.messages.email));
-        })
-        .catch(error => {
-          console.log('register ' + error);
-        });
-      this.setState({
-        loading: false,
-      });
-    }
-  };
   // login Btn --> api(login) check
   onLogin = async () => {
-    const {email, password} = this.state;
+    console.log('login');
+    const {email, name, password} = this.state;
     if (email === '' || password === '') {
       Alert.alert('', '아이디와 비밀번호를 정확하게 입력해주세요.');
     } else {
@@ -224,10 +269,11 @@ export default class extends React.Component {
       const params = new URLSearchParams();
       params.append('email', email);
       params.append('password', password);
+      params.append('name', name);
       Axios.post(BASEURL + 'login', params)
         .then(response => {
           console.log(JSON.stringify(response.data.data));
-          storeAPI(response, email, password);
+          this.storeAPI(response, email, password);
           if (response.data.status !== 'error') {
             this.state.navigation.replace({
               routeName: 'Tabs',
@@ -256,7 +302,8 @@ export default class extends React.Component {
         signPassword={password}
         handleEmailUpdate={this.handleEmailText}
         handlePasswordUpdate={this.handlePasswordText}
-        kakaoLogin={kakaoLogin}
+        kakaoLogin={this.kakaoLogin}
+        onSNSLogin={this.onSNSLogin}
         onLogin={this.onLogin}
         // kakaoLogout={kakaoLogout}
       />

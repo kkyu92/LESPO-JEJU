@@ -37,7 +37,7 @@ export default class extends React.Component {
       error: null,
     };
     console.log('constructor');
-    this.getData();
+    // this.getData();
   }
 
   getData = async () => {
@@ -62,6 +62,9 @@ export default class extends React.Component {
       // console.log('foodList: ' + JSON.stringify(foodList));
     }
   };
+  async componentWillMount() {
+    this.getData();
+  }
 
   async componentDidMount() {
     // let : 변할 수 있는 변수

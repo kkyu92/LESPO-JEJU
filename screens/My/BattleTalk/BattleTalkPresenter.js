@@ -7,6 +7,7 @@ import {Platform} from 'react-native';
 import Section from '../../../components/Section';
 import SearchNo from '../../Main/Search/SearchNo';
 import TalkListSlide from '../../../components/TalkListSlide';
+import moment from 'moment';
 
 const View = styled.View`
   background-color: ${BG_COLOR};
@@ -34,7 +35,7 @@ const Container = styled.ScrollView`
   flex: 1;
 `;
 
-const BattleTalkPresenter = ({loading, listChanged}) =>
+const BattleTalkPresenter = ({loading, chatRoomList, myId}) =>
   loading ? (
     <Loader />
   ) : (
@@ -47,25 +48,43 @@ const BattleTalkPresenter = ({loading, listChanged}) =>
           <Loader />
         ) : (
           <>
-            {listChanged ? (
-              listChanged.length > 0 ? (
+            {chatRoomList ? (
+              chatRoomList.length > 0 ? (
                 <Section horizontal={false} title="">
-                  {listChanged
-                    .filter(list => list.backdrop_path !== null)
+                  {chatRoomList
+                    .filter(
+                      list =>
+                        list.makeUser.userId === myId ||
+                        list.joinUser.userId === myId,
+                    )
                     .map(list => (
                       <TalkListSlide
-                        key={list.id}
-                        id={list.id}
-                        profile={list.backdrop_path}
-                        name={list.title}
-                        date={'2020/01/22'}
-                        time={'14:00'}
-                        msg={list.overview}
+                        key={list.key}
+                        id={
+                          list.makeUser.userId === myId
+                            ? list.joinUser.userId
+                            : list.makeUser.userId
+                        }
+                        profile={
+                          list.makeUser.userId === myId
+                            ? list.joinUser.userProfile
+                            : list.makeUser.userProfile
+                        }
+                        name={
+                          list.makeUser.userId === myId
+                            ? list.joinUser.userName
+                            : list.makeUser.userName
+                        }
+                        date={moment(list.lastRealTime).format('YYYY-MM-DD')}
+                        time={moment(list.lastTime)
+                          .local()
+                          .format('LT')}
+                        msg={'dsklfjsfoihehioehitroiebtwboibwe'}
                       />
                     ))}
                 </Section>
               ) : (
-                <SearchNo handleGetSearchText={searchTerm} />
+                <SearchNo />
               )
             ) : (
               console.log('null')

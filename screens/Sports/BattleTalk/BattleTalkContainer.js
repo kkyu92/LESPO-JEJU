@@ -72,6 +72,23 @@ export default class extends React.Component {
         //error callback
         console.log('error ', error);
       });
+    firebase
+      .database()
+      .ref('chatRoomList/' + key + '/')
+      .update({
+        lastTime: date,
+        lastRealTime: moment()
+          .local()
+          .format(),
+      })
+      .then(data => {
+        //success callback
+        console.log('writeChatting Add: ', data);
+      })
+      .catch(error => {
+        //error callback
+        console.log('error ', error);
+      });
   }
 
   // chatting add

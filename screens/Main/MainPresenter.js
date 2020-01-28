@@ -139,6 +139,8 @@ const MapBtn = styled.TouchableOpacity`
   justify-content: center;
 `;
 
+const state = 'map';
+
 // show DATA
 const MainPresenter = ({
   loading,
@@ -169,7 +171,10 @@ const MainPresenter = ({
         <MapBtn
           onPress={() =>
             navigation.navigate({
-              routeName: 'MyWishList',
+              routeName: 'Map',
+              params: {
+                mainState: 'map',
+              },
             })
           }>
           <Map

@@ -12,6 +12,7 @@ import {
 } from '../constants/Colors';
 import PhotoUri from '../api/PhotoUri';
 import Layout from '../constants/Layout';
+import GetPhoto from '../api/GetPhoto';
 
 const BattleTalkContainer = styled.TouchableOpacity`
   padding-top: 5px;
@@ -26,19 +27,17 @@ const BattleTalkContainer = styled.TouchableOpacity`
 `;
 
 const BattleProfileContainer = styled.View`
-  flex: 1;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  width: 75%;
-  align-items: center;
+  width: 80%;
   /* background-color: red; */
 `;
 
 const BattleTalkNameConatiner = styled.View`
-  width: 80%;
+  width: 75%;
   justify-content: center;
-  /* align-items: center; */
+  align-items: flex-start;
   /* background-color: green; */
 `;
 
@@ -64,7 +63,7 @@ const MsgText = styled.Text`
 `;
 
 const DateText = styled.Text`
-  font-size: 14px;
+  font-size: 12px;
   color: ${GREY_COLOR};
 `;
 
@@ -72,7 +71,11 @@ const ProfileImg = styled.Image`
   width: 60px;
   height: 60px;
   border-radius: 30;
-  margin-right: 10px;
+`;
+const NullImg = styled.Image`
+  width: 60px;
+  height: 60px;
+  border-radius: 30;
 `;
 
 // 리스트 기본틀
@@ -80,7 +83,13 @@ const TalkListSlide = ({id, profile, name, msg, date, time}) => (
   // 나의 배틀톡 리스트
   <BattleTalkContainer>
     <BattleProfileContainer>
-      <ProfileImg source={{uri: PhotoUri(profile)}} />
+      {profile ? (
+        <ProfileImg source={{uri: profile}} />
+      ) : (
+        <NullImg
+          source={require(`../assets/drawable-xxhdpi/icon_profile.png`)}
+        />
+      )}
       <BattleTalkNameConatiner>
         <NameText>{name}</NameText>
         <MsgText numberOfLines={1}>{msg}</MsgText>

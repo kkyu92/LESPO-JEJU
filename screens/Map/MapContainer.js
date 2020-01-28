@@ -3,6 +3,7 @@ import {request, PERMISSIONS} from 'react-native-permissions';
 import MapPresenter from './MapPresenter';
 import Geolocation from 'react-native-geolocation-service';
 import {View, Text, Platform} from 'react-native';
+import {LESPO_API} from '../../api/Api';
 
 export default class extends React.Component {
   static navigationOptions = () => {
@@ -16,7 +17,6 @@ export default class extends React.Component {
     const {
       navigation: {
         state: {
-          //   params: { id, backgroundPoster, title, avg, overview }
           params: {listChanged, locations, mainState},
         },
       },
@@ -28,12 +28,13 @@ export default class extends React.Component {
       listChanged,
       locations,
       mainState,
+      listName: '',
       error: null,
     };
-    console.log('locations ========= ' + JSON.stringify(locations));
-    console.log(
-      'locations.locations ========= ' + JSON.stringify(locations.locations),
-    );
+    // console.log('locations ========= ' + JSON.stringify(locations));
+    // console.log(
+    //   'locations.locations ========= ' + JSON.stringify(locations.locations),
+    // );
     // this.state.listChanged = listChanged;
     // this.state.loading = false;
   }
@@ -63,7 +64,6 @@ export default class extends React.Component {
           this.setState({
             latitude: latitude,
             longitude: longitude,
-            loading: false,
           });
         } catch (error) {
           console.log(error);
@@ -80,16 +80,187 @@ export default class extends React.Component {
 
   // 시작시 불러옴
   async componentDidMount() {
-    const {mainState} = this.state;
+    let {mainState, listChanged, locations} = this.state;
     this.requestLocationPermission();
-    if (mainState) {
-      console.log('mainState: ' + mainState);
+    if (mainState === 'map') {
       // map = Main Map Btn
+      try {
+        console.log('mainState: ' + mainState);
+        await LESPO_API.getFoodList()
+          .then(response => {
+            listChanged = response.data.data;
+            locations = {
+              mark: [],
+              locations: [],
+            };
+            let count = 0;
+            listChanged.forEach(child => {
+              let num = child.id;
+              child.detail.marker_address.forEach(child => {
+                locations.locations.push({
+                  id: num,
+                  key: count,
+                  location: {
+                    latitude: window.parseFloat(child.lat),
+                    longitude: window.parseFloat(child.lng),
+                  },
+                  title: child.title,
+                  address: child.address,
+                });
+                count++;
+              });
+            });
+            this.setState({
+              listChanged: listChanged,
+              locations: locations,
+            });
+            console.log(JSON.stringify(this.state.locations));
+          })
+          .catch(error => {
+            console.log('getFoodList fail: ' + error);
+          });
+      } catch (error) {
+        console.log("Cant't get mapList marker. : " + error);
+      } finally {
+        console.log('finally');
+        this.setState({
+          loading: false,
+        });
+      }
+    } else if (mainState === 'wish') {
       // wish = Main Wish Btn
     } else {
       console.log('mainState: null');
+      try {
+        this.setState({
+          loading: false,
+        });
+      } catch (error) {}
+      console.log(this.state.loading);
     }
   }
+
+  onListChanging = async listName => {
+    let {listChanged, locations} = this.state;
+    console.log('listChanging ::: ' + listName);
+    this.setState({
+      loading: true,
+    });
+    try {
+      if (listName === 'view') {
+        await LESPO_API.getViewList()
+          .then(response => {
+            listChanged = response.data.data;
+            locations = {
+              mark: [],
+              locations: [],
+            };
+            let count = 0;
+            listChanged.forEach(child => {
+              let num = child.id;
+              child.detail.marker_address.forEach(child => {
+                locations.locations.push({
+                  id: num,
+                  key: count,
+                  location: {
+                    latitude: window.parseFloat(child.lat),
+                    longitude: window.parseFloat(child.lng),
+                  },
+                  title: child.title,
+                  address: child.address,
+                });
+                count++;
+              });
+            });
+            this.setState({
+              listChanged: listChanged,
+              locations: locations,
+            });
+          })
+          .catch(error => {
+            console.log('getViewList fail: ' + error);
+          });
+      } else if (listName === 'play') {
+        await LESPO_API.getPlayList()
+          .then(response => {
+            listChanged = response.data.data;
+            locations = {
+              mark: [],
+              locations: [],
+            };
+            let count = 0;
+            listChanged.forEach(child => {
+              let num = child.id;
+              child.detail.marker_address.forEach(child => {
+                locations.locations.push({
+                  id: num,
+                  key: count,
+                  location: {
+                    latitude: window.parseFloat(child.lat),
+                    longitude: window.parseFloat(child.lng),
+                  },
+                  title: child.title,
+                  address: child.address,
+                });
+                count++;
+              });
+            });
+            this.setState({
+              listChanged: listChanged,
+              locations: locations,
+            });
+          })
+          .catch(error => {
+            console.log('getPlayList fail: ' + error);
+          });
+      } else {
+        await LESPO_API.getFoodList()
+          .then(response => {
+            listChanged = response.data.data;
+            locations = {
+              mark: [],
+              locations: [],
+            };
+            let count = 0;
+            listChanged.forEach(child => {
+              let num = child.id;
+              child.detail.marker_address.forEach(child => {
+                locations.locations.push({
+                  id: num,
+                  key: count,
+                  location: {
+                    latitude: window.parseFloat(child.lat),
+                    longitude: window.parseFloat(child.lng),
+                  },
+                  title: child.title,
+                  address: child.address,
+                });
+                count++;
+              });
+            });
+            this.setState({
+              listChanged: listChanged,
+              locations: locations,
+            });
+            // console.log(JSON.stringify(this.state.locations));
+          })
+          .catch(error => {
+            console.log('getFoodList fail: ' + error);
+          });
+      }
+    } catch (error) {
+      console.log('changeList error : ' + error);
+    } finally {
+      this.setState({
+        loading: false,
+        listChanged,
+        locations,
+        listName,
+      });
+    }
+    // return;
+  };
+
   render() {
     const {
       loading,
@@ -98,6 +269,7 @@ export default class extends React.Component {
       listChanged,
       locations,
       mainState,
+      listName,
     } = this.state;
     // 위치정보 받기 전
     if (latitude) {
@@ -109,6 +281,8 @@ export default class extends React.Component {
           listChanged={listChanged}
           locations={locations}
           mainState={mainState}
+          listName={listName}
+          onListChanging={this.onListChanging}
         />
       );
     } else {

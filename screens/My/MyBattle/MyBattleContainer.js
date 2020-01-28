@@ -1,7 +1,6 @@
 import React from 'react';
 import {Platform} from 'react-native';
 import MyBattlePresenter from './MyBattlePresenter';
-import {tv, movie} from '../../../api/Api';
 import firebase from 'firebase';
 import AsyncStorage from '@react-native-community/async-storage';
 

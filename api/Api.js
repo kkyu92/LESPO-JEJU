@@ -17,13 +17,14 @@ export const BASEURL = 'https://www.jejubattle.com/api/';
 export const CONFIG = {
   headers: {
     'Content-Type': 'application/x-www-form-urlencoded',
-    'Access-Control-Allow-Origin': '*',
+    // 'Access-Control-Allow-Origin': '*',
     // x-www-form-urlencoded
   },
 };
 
 // TODO: LESPO API
 export const LESPO_API = {
+  login: params => API.post('login/callback', params),
   // Notice
   getNotice: () => API.get('notices'),
 

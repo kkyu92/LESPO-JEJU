@@ -153,7 +153,7 @@ const CoursePresenter = ({
                         overview={list.description}
                         detail={list.detail}
                         markerOn={markerOn}
-                        // avg={list.vote_average}
+                        avg={list.like_count}
                       />
                     ))}
                 </Section>

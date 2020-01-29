@@ -359,7 +359,16 @@ const SubSlide = ({
         onPress={() =>
           navigation.navigate({
             routeName: 'Detail',
-            params: {id, backgroundPoster, title, avg, overview, tag, detail},
+            params: {
+              id,
+              backgroundPoster,
+              title,
+              avg,
+              overview,
+              tag,
+              detail,
+              reco: true,
+            },
           })
         }>
         <DetailText>상세보기</DetailText>

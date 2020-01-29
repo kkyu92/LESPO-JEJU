@@ -227,7 +227,7 @@ const BattleTalkPresenter = ({
             {/* <Btn>
               <BtnText>이용안내</BtnText>
             </Btn> */}
-            {battleState === '배틀신청중' ? (
+            {battleState === '"배틀신청중"' || battleState === '' ? (
               <RevBtn onPress={() => changeModalVisiblity(true)}>
                 <RevBtnText>배틀시작</RevBtnText>
               </RevBtn>

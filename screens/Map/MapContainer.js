@@ -4,6 +4,7 @@ import MapPresenter from './MapPresenter';
 import Geolocation from 'react-native-geolocation-service';
 import {View, Text, Platform} from 'react-native';
 import {LESPO_API} from '../../api/Api';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default class extends React.Component {
   static navigationOptions = () => {
@@ -29,14 +30,9 @@ export default class extends React.Component {
       locations,
       mainState,
       listName: '',
+      token: null,
       error: null,
     };
-    // console.log('locations ========= ' + JSON.stringify(locations));
-    // console.log(
-    //   'locations.locations ========= ' + JSON.stringify(locations.locations),
-    // );
-    // this.state.listChanged = listChanged;
-    // this.state.loading = false;
   }
 
   // 사용자 위치
@@ -80,13 +76,31 @@ export default class extends React.Component {
 
   // 시작시 불러옴
   async componentDidMount() {
-    let {mainState, listChanged, locations} = this.state;
+    try {
+      let M_ID = await AsyncStorage.getItem('@USER_ID');
+      let M_NAME = await AsyncStorage.getItem('@USER_NAME');
+      let M_PROFILE = await AsyncStorage.getItem('@USER_PROFILE');
+      let M_TOKEN = await AsyncStorage.getItem('@TOKEN');
+      let TOKEN = await AsyncStorage.getItem('@API_TOKEN');
+      this.setState({
+        token: TOKEN,
+      });
+    } catch (e) {
+      // error reading value
+      console.log('getData ERROR ::: ' + e);
+    }
+    let {mainState, listChanged, locations, token} = this.state;
+    const config = {
+      headers: {
+        Authorization: token,
+      },
+    };
     this.requestLocationPermission();
     if (mainState === 'map') {
       // map = Main Map Btn
       try {
         console.log('mainState: ' + mainState);
-        await LESPO_API.getFoodList()
+        await LESPO_API.getFoodList(config)
           .then(response => {
             listChanged = response.data.data;
             locations = {
@@ -114,7 +128,8 @@ export default class extends React.Component {
               listChanged: listChanged,
               locations: locations,
             });
-            console.log(JSON.stringify(this.state.locations));
+            console.log('check ====== ' + JSON.stringify(listChanged));
+            // console.log('Token ====== ' + this.state.token);
           })
           .catch(error => {
             console.log('getFoodList fail: ' + error);
@@ -141,14 +156,19 @@ export default class extends React.Component {
   }
 
   onListChanging = async listName => {
-    let {listChanged, locations} = this.state;
+    let {listChanged, locations, token} = this.state;
+    const config = {
+      headers: {
+        Authorization: token,
+      },
+    };
     console.log('listChanging ::: ' + listName);
     this.setState({
       loading: true,
     });
     try {
       if (listName === 'view') {
-        await LESPO_API.getViewList()
+        await LESPO_API.getViewList(config)
           .then(response => {
             listChanged = response.data.data;
             locations = {
@@ -181,7 +201,7 @@ export default class extends React.Component {
             console.log('getViewList fail: ' + error);
           });
       } else if (listName === 'play') {
-        await LESPO_API.getPlayList()
+        await LESPO_API.getPlayList(config)
           .then(response => {
             listChanged = response.data.data;
             locations = {
@@ -214,7 +234,7 @@ export default class extends React.Component {
             console.log('getPlayList fail: ' + error);
           });
       } else {
-        await LESPO_API.getFoodList()
+        await LESPO_API.getFoodList(config)
           .then(response => {
             listChanged = response.data.data;
             locations = {

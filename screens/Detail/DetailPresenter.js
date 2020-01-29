@@ -16,6 +16,7 @@ import MainSlide from '../../components/MainSlide';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconLike from 'react-native-vector-icons/AntDesign';
 import GetPhoto from '../../api/GetPhoto';
+import Loader from '../../components/Loader';
 
 // keybord
 // const KeyboardAvoidingView = styled.KeyboardAvoidingView`
@@ -194,6 +195,7 @@ const styles = StyleSheet.create({
 });
 
 const DetailPresenter = ({
+  loading,
   id,
   backgroundPoster,
   poster,
@@ -203,147 +205,194 @@ const DetailPresenter = ({
   msg,
   handleMsgUpdate,
   insertCommentList,
-  like,
   likeUp,
   likeDown,
-  wish,
   wishListIn,
   wishListOut,
   detail,
-}) => (
-  <>
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : null}
-      enabled>
-      <Container>
-        {backgroundPoster.includes('/contents/') ? (
-          <Swiper
-            marginBottom={20}
-            showsPagination={true}
-            autoplay={false}
-            autoplayTimeout={3}
-            onIndexChanged={index => console.log('change: ' + index)}
-            style={{
-              height: Layout.height / 3,
-            }}>
-            {poster ? (
-              poster.map(image => (
-                <View>
-                  <Image source={{uri: GetPhoto(image.full_filename)}} />
-                </View>
-              ))
-            ) : (
-              <ImageContainer>
-                <Image source={{uri: GetPhoto(backgroundPoster)}} />
-              </ImageContainer>
-            )}
-          </Swiper>
-        ) : (
-          <ImageContainer>
-            <Image source={{uri: makePhotoUrl(backgroundPoster)}} />
-          </ImageContainer>
-        )}
-        {/* <ImageContainer>
+  isLike,
+  isWish,
+  comments,
+  reco,
+}) =>
+  loading ? (
+    <Loader />
+  ) : reco ? (
+    <Container>
+      {backgroundPoster.includes('/contents/') ? (
+        <Swiper
+          marginBottom={20}
+          showsPagination={true}
+          autoplay={false}
+          autoplayTimeout={3}
+          onIndexChanged={index => console.log('change: ' + index)}
+          style={{
+            height: Layout.height / 3,
+          }}>
+          {poster ? (
+            poster.map(image => (
+              <View>
+                <Image source={{uri: GetPhoto(image.full_filename)}} />
+              </View>
+            ))
+          ) : (
+            <ImageContainer>
+              <Image source={{uri: GetPhoto(backgroundPoster)}} />
+            </ImageContainer>
+          )}
+        </Swiper>
+      ) : (
+        <ImageContainer>
+          <Image source={{uri: makePhotoUrl(backgroundPoster)}} />
+        </ImageContainer>
+      )}
+      <ContextContainer>
+        <HeaderContainer>
+          <HeaderText>{title}</HeaderText>
+        </HeaderContainer>
+        <TitleText>매장소개</TitleText>
+        <ContextText>{overview}</ContextText>
+        <TitleText>영업시간</TitleText>
+        <ContextText>주소: {detail.address_name}</ContextText>
+        <ContextText>시간: {detail.operating_hours}</ContextText>
+        <ContextText>휴무일: {detail.holidays}</ContextText>
+        <ContextText>이벤트: {detail.events}</ContextText>
+        <ContextText>전화번호: {detail.tel_number}</ContextText>
+      </ContextContainer>
+    </Container>
+  ) : (
+    <>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : null}
+        enabled>
+        <Container>
+          {backgroundPoster.includes('/contents/') ? (
+            <Swiper
+              marginBottom={20}
+              showsPagination={true}
+              autoplay={false}
+              autoplayTimeout={3}
+              onIndexChanged={index => console.log('change: ' + index)}
+              style={{
+                height: Layout.height / 3,
+              }}>
+              {poster ? (
+                poster.map(image => (
+                  <View>
+                    <Image source={{uri: GetPhoto(image.full_filename)}} />
+                  </View>
+                ))
+              ) : (
+                <ImageContainer>
+                  <Image source={{uri: GetPhoto(backgroundPoster)}} />
+                </ImageContainer>
+              )}
+            </Swiper>
+          ) : (
+            <ImageContainer>
+              <Image source={{uri: makePhotoUrl(backgroundPoster)}} />
+            </ImageContainer>
+          )}
+          {/* <ImageContainer>
         {backgroundPoster.includes('/contents/') ? (
           <Image source={{uri: GetPhoto(backgroundPoster)}} />
         ) : (
           <Image source={{uri: makePhotoUrl(backgroundPoster)}} />
         )}
       </ImageContainer> */}
-        <ContextContainer>
-          <HeaderContainer>
-            <HeaderText>{title}</HeaderText>
-            <IconContainer>
-              <TouchableOpacity>
-                <ShareIcon
-                  source={require(`../../assets/drawable-xxhdpi/icon_share_copy.png`)}
-                />
-              </TouchableOpacity>
-              {wish ? (
-                <TouchableOpacity onPress={() => wishListOut()}>
-                  <Icon
-                    size={Platform.OS === 'ios' ? 30 : 30}
-                    name={Platform.OS === 'ios' ? 'ios-heart' : 'md-heart'}
-                    color={`${BG_COLOR}`}
+          <ContextContainer>
+            <HeaderContainer>
+              <HeaderText>{title}</HeaderText>
+              <IconContainer>
+                <TouchableOpacity>
+                  <ShareIcon
+                    source={require(`../../assets/drawable-xxhdpi/icon_share_copy.png`)}
                   />
                 </TouchableOpacity>
-              ) : (
-                <TouchableOpacity onPress={() => wishListIn()}>
-                  <Icon
-                    size={Platform.OS === 'ios' ? 30 : 30}
-                    name={
-                      Platform.OS === 'ios'
-                        ? 'ios-heart-empty'
-                        : 'md-heart-empty'
-                    }
-                    color={`${BG_COLOR}`}
-                  />
-                </TouchableOpacity>
-              )}
-              {like ? (
-                <TouchableOpacity onPress={() => likeDown()}>
-                  <IconLike
-                    size={Platform.OS === 'ios' ? 25 : 25}
-                    name={'like1'}
-                    color={`${BG_COLOR}`}
-                  />
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity onPress={() => likeUp()}>
-                  <IconLike
-                    size={Platform.OS === 'ios' ? 25 : 25}
-                    name={'like2'}
-                    color={`${BG_COLOR}`}
-                  />
-                </TouchableOpacity>
-              )}
-              <LikeCount>{avg}</LikeCount>
-            </IconContainer>
-          </HeaderContainer>
-          <TitleText>매장소개</TitleText>
-          <ContextText>{overview}</ContextText>
-          <TitleText>영업시간</TitleText>
-          <ContextText>주소: {detail.address_name}</ContextText>
-          <ContextText>시간: {detail.operating_hours}</ContextText>
-          <ContextText>휴무일: {detail.holidays}</ContextText>
-          <ContextText>이벤트: {detail.events}</ContextText>
-          <ContextText>전화번호: {detail.tel_number}</ContextText>
-          <CommentContainer ref={scrollViewRef}>
-            <ContextText>댓글({avg})</ContextText>
-          </CommentContainer>
-        </ContextContainer>
-      </Container>
+                {isWish === 1 ? (
+                  <TouchableOpacity onPress={() => wishListOut()}>
+                    <Icon
+                      size={Platform.OS === 'ios' ? 30 : 30}
+                      name={Platform.OS === 'ios' ? 'ios-heart' : 'md-heart'}
+                      color={`${BG_COLOR}`}
+                    />
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity onPress={() => wishListIn()}>
+                    <Icon
+                      size={Platform.OS === 'ios' ? 30 : 30}
+                      name={
+                        Platform.OS === 'ios'
+                          ? 'ios-heart-empty'
+                          : 'md-heart-empty'
+                      }
+                      color={`${BG_COLOR}`}
+                    />
+                  </TouchableOpacity>
+                )}
+                {isLike === 1 ? (
+                  <TouchableOpacity onPress={() => likeDown()}>
+                    <IconLike
+                      size={Platform.OS === 'ios' ? 25 : 25}
+                      name={'like1'}
+                      color={`${BG_COLOR}`}
+                    />
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity onPress={() => likeUp()}>
+                    <IconLike
+                      size={Platform.OS === 'ios' ? 25 : 25}
+                      name={'like2'}
+                      color={`${BG_COLOR}`}
+                    />
+                  </TouchableOpacity>
+                )}
+                <LikeCount>{avg}</LikeCount>
+              </IconContainer>
+            </HeaderContainer>
+            <TitleText>매장소개</TitleText>
+            <ContextText>{overview}</ContextText>
+            <TitleText>영업시간</TitleText>
+            <ContextText>주소: {detail.address_name}</ContextText>
+            <ContextText>시간: {detail.operating_hours}</ContextText>
+            <ContextText>휴무일: {detail.holidays}</ContextText>
+            <ContextText>이벤트: {detail.events}</ContextText>
+            <ContextText>전화번호: {detail.tel_number}</ContextText>
+            <CommentContainer ref={scrollViewRef}>
+              <ContextText>댓글 ( {comments.length} )</ContextText>
+            </CommentContainer>
+          </ContextContainer>
+        </Container>
 
-      <InputContainer>
-        <Profile
-          source={require(`../../assets/drawable-xxhdpi/icon_profile.png`)}
-        />
-        <Input
-          onChangeText={handleMsgUpdate}
-          value={msg}
-          onFocus={_scrollToBottom()}
-          returnKeyType={'next'}
-          placeholder="댓글 달기..."
-          placeholderTextColor={GREY_COLOR2}
-          // onSubmitEditing={onSubmitEditing}
-          autoCorrect={false}
-          multiline={true}
-        />
-        <SendContainer onPress={() => insertCommentList(msg)}>
-          <SendText>게시</SendText>
-        </SendContainer>
-      </InputContainer>
-    </KeyboardAvoidingView>
-  </>
-);
-
-DetailPresenter.prototypes = {
-  id: PropTypes.number.isRequired,
-  backgroundPoster: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
-  avg: PropTypes.number,
-  overview: PropTypes.string,
-};
+        <InputContainer>
+          <Profile
+            source={require(`../../assets/drawable-xxhdpi/icon_profile.png`)}
+          />
+          <Input
+            onChangeText={handleMsgUpdate}
+            value={msg}
+            onFocus={_scrollToBottom()}
+            returnKeyType={'next'}
+            placeholder="댓글 달기..."
+            placeholderTextColor={GREY_COLOR2}
+            // onSubmitEditing={onSubmitEditing}
+            autoCorrect={false}
+            multiline={true}
+          />
+          <SendContainer onPress={() => insertCommentList(msg)}>
+            <SendText>게시</SendText>
+          </SendContainer>
+        </InputContainer>
+      </KeyboardAvoidingView>
+    </>
+  );
+// DetailPresenter.prototypes = {
+//   id: PropTypes.number.isRequired,
+//   backgroundPoster: PropTypes.string.isRequired,
+//   title: PropTypes.string.isRequired,
+//   avg: PropTypes.number,
+//   overview: PropTypes.string,
+// };
 
 export default DetailPresenter;

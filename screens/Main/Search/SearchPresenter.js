@@ -108,7 +108,7 @@ const SearchPresenter = ({
                       overview={list.description}
                       detail={list.detail}
                       tagName={list.category.category_name}
-                      // avg={list.vote_average}
+                      avg={list.like_count}
                     />
                   ))}
               </Section>

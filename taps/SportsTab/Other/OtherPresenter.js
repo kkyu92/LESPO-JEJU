@@ -83,7 +83,7 @@ const OtherPresenter = ({loading, listChanged, locations, navigation}) =>
                         title={list.title}
                         overview={list.description}
                         detail={list.detail}
-                        // avg={list.vote_average}
+                        avg={list.like_count}
                       />
                     ))}
                 </Section>

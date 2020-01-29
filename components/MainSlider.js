@@ -34,7 +34,7 @@ const MainSlider = ({mainList}) =>
               title={list.title}
               overview={list.description}
               detail={list.detail}
-              // avg={list.vote_average}
+              avg={list.like_count}
             />
           </View>
         ))}

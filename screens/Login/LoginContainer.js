@@ -13,6 +13,7 @@ if (!KakaoLogins) {
 // 로그인 정보 저장 SNS
 const storeSNS = async (token, id, name, profile, provider) => {
   try {
+    await AsyncStorage.setItem('@API_TOKEN', 'Bearer ' + token);
     await AsyncStorage.setItem('@TOKEN', token);
     await AsyncStorage.setItem('@USER_ID', id);
     await AsyncStorage.setItem('@USER_NAME', name);
@@ -25,6 +26,10 @@ const storeSNS = async (token, id, name, profile, provider) => {
 // 로그인 정보 저장 일반
 const storeAPI = async (result, email, password) => {
   try {
+    await AsyncStorage.setItem(
+      '@API_TOKEN',
+      'Bearer ' + result.data.data.token,
+    );
     await AsyncStorage.setItem('@TOKEN', result.data.data.token);
     await AsyncStorage.setItem('@USER_ID', '' + result.data.data.id);
     await AsyncStorage.setItem('@USER_NAME', result.data.data.nickname);

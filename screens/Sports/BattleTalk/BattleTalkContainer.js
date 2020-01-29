@@ -246,7 +246,7 @@ export default class extends React.Component {
       });
       // this.updateSingleData(id, getChatList);
       console.log(
-        'chatList Data[try 1]: ' + JSON.stringify(this.state.getChatList),
+        'chatList Data[try 1]: ' + JSON.stringify(this.state.battleState),
       );
     } catch (error) {
       console.log('get chattingList error ::: ' + error);
@@ -264,6 +264,9 @@ export default class extends React.Component {
     const {myId, roomMaker} = this.state;
     console.log('setData::: ', data);
     if (data === 'battleStart') {
+      this.setData({
+        battleState: '배틀진행중',
+      });
       // 배틀 시작
       this.updateState();
     }
@@ -346,7 +349,7 @@ export default class extends React.Component {
           onRequestClose={() => this.changeModalVisiblity(false)}
           animationType="fade">
           <SimpleDialog
-            battleState={battleState}
+            battleState={'배틀시작'}
             changeModalVisiblity={this.changeModalVisiblity}
             setData={this.setData}
           />

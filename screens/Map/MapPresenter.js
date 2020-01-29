@@ -207,9 +207,15 @@ const onCalloutPress = (listChanged, key, navigation) => {
     listChanged[key].matched_content_images[0].full_filename;
   let poster = listChanged[key].matched_content_images;
   let title = listChanged[key].title;
-  let avg; //= listChanged[key].average;
+  let avg = listChanged[key].like_count;
   let overview = listChanged[key].description;
   let detail = listChanged[key].detail;
+  let isLike = listChanged[key].is_liked_count;
+  let isWish = listChanged[key].is_wishlist_added_count;
+  let comments = listChanged[key].comments;
+  let likeId = listChanged[key].like_id;
+  let wishId = listChanged[key].wishlist_id;
+
   navigation.navigate({
     routeName: 'Detail',
     params: {
@@ -220,6 +226,11 @@ const onCalloutPress = (listChanged, key, navigation) => {
       avg,
       overview,
       detail,
+      isWish,
+      isLike,
+      comments,
+      wishId,
+      likeId,
     },
   });
 };

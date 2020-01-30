@@ -17,24 +17,33 @@ export default class extends React.Component {
     error: null,
   };
 
-  // async componentDidMount() {
-  //   let {jejuResult, searchTerm, error} = this.state;
-  //   try {
-  //     ({
-  //       data: {data: jejuResult},
-  //     } = await LESPO_API.getSearchList(searchTerm));
-  //     this.setState({
-  //       loading: false,
-  //       jejuResult: jejuResult,
-  //       error,
-  //     });
-  //     console.log(JSON.stringify(jejuResult));
-  //   } catch (error) {
-  //     // error = "Can't Search";
-  //   } finally {
-  //     console.log('finally: ' + jejuResult);
-  //   }
-  // }
+  async componentDidMount() {
+    // let {jejuResult, searchTerm, error} = this.state;
+    // try {
+    //   ({
+    //     data: {data: jejuResult},
+    //   } = await LESPO_API.getSearchList(searchTerm));
+    //   this.setState({
+    //     loading: false,
+    //     jejuResult: jejuResult,
+    //     error,
+    //   });
+    //   console.log(JSON.stringify(jejuResult));
+    // } catch (error) {
+    //   // error = "Can't Search";
+    // } finally {
+    //   console.log('finally: ' + jejuResult);
+    // }
+    this.subs = [
+      this.props.navigation.addListener('willFocus', () => {
+        this.onSubmitEditing();
+      }),
+    ];
+  }
+
+  componentWillUnmount() {
+    this.subs.forEach(sub => sub.remove());
+  }
 
   // text 입력값 받아온다
   handleSearchUpdate = text => {

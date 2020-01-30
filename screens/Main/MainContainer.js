@@ -20,7 +20,19 @@ export default class extends React.Component {
 
   async componentDidMount() {
     this._isMounted = true;
-    console.log('componentDidMount');
+    this.onListChanging();
+    this.subs = [
+      this.props.navigation.addListener('willFocus', () => {
+        console.log('willFocus ::: reload');
+        this.onListChanging();
+      }),
+    ];
+  }
+
+  onListChanging = async () => {
+    // this.setState({
+    //   loading: true,
+    // });
     try {
       await LESPO_API.getMainList()
         .then(response => {
@@ -69,11 +81,12 @@ export default class extends React.Component {
     } catch (error) {
       console.log("Cant't get MainList. : " + error);
     }
-  }
+  };
 
   componentWillUnmount() {
     console.log('componentWillUnmount');
     this._isMounted = false;
+    this.subs.forEach(sub => sub.remove());
   }
 
   render() {

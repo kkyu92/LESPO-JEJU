@@ -40,7 +40,6 @@ export default class extends React.Component {
 
   // 시작시 불러옴
   async componentDidMount() {
-    let {chatRoomList} = this.state;
     try {
       this.getData();
       // get ChatRoomList
@@ -48,7 +47,7 @@ export default class extends React.Component {
       var userRef = firebase.database().ref('chatRoomList/');
       // .orderByChild('key');
       userRef.on('value', dataSnapshot => {
-        chatRoomList = [];
+        let chatRoomList = [];
         dataSnapshot.forEach(child => {
           chatRoomList.push({
             key: child.key,
@@ -65,7 +64,11 @@ export default class extends React.Component {
             battleState: child.val().battleState,
             battleResult: child.val().battleResult,
             lastRealTime: child.val().lastRealTime,
+            lastMsg: child.val().lastMsg,
           });
+          chatRoomList = chatRoomList.filter(
+            list => list.joinUser.userId !== '',
+          );
           chatRoomList.sort(function(a, b) {
             return new Date(b.lastRealTime) - new Date(a.lastRealTime);
           });
@@ -74,11 +77,11 @@ export default class extends React.Component {
             chatRoomList: chatRoomList,
             loading: false,
           });
+          // console.log(
+          //   'chatList : ' + JSON.stringify(this.state.chatRoomList),
+          // );
         });
       });
-      console.log(
-        'chatList Data[try 1]: ' + JSON.stringify(this.state.chatRoomList),
-      );
     } catch (error) {
       console.log(error);
       error = "Cnat't get ChatRoomList";

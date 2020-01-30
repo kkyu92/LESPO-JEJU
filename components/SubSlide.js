@@ -17,7 +17,7 @@ import Layout from '../constants/Layout';
 import GetPhoto from '../api/GetPhoto';
 
 function ChangeColor() {
-  let ColorCode =
+  const ColorCode =
     'rgb(' +
     Math.floor(Math.random() * 256) +
     ',' +
@@ -277,21 +277,23 @@ const SubSlide = ({
       }>
       <VerticalImgContainer>
         <VerticalImg source={{uri: GetPhoto(backgroundPoster)}} />
-        {tagName === '먹거리추천' ? (
+        {tagName === '먹거리' ? (
           <TagContainer>
             <TagImg>먹거리</TagImg>
           </TagContainer>
-        ) : tagName === '놀거리추천' ? (
+        ) : tagName === '놀거리' ||
+          tagName === '운동시설' ||
+          tagName === '레저스포츠' ? (
           <TagPlayContainer>
             <TagPlayImg>놀거리</TagPlayImg>
           </TagPlayContainer>
-        ) : tagName === '볼거리추천' ? (
+        ) : tagName === '볼거리' ? (
           <TagViewContainer>
             <TagViewImg>볼거리</TagViewImg>
           </TagViewContainer>
         ) : (
           <TagOtherContainer>
-            <TagOtherImg>기타</TagOtherImg>
+            <TagOtherImg>추 천</TagOtherImg>
           </TagOtherContainer>
         )}
       </VerticalImgContainer>

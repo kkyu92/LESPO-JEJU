@@ -33,6 +33,7 @@ export default class extends React.Component {
       getChatList: [],
       insertChatList: null,
       msg: null,
+      battlePlace: '',
       makeUser: '',
       isModalVisible: false,
       battleState: '',
@@ -80,6 +81,7 @@ export default class extends React.Component {
         lastRealTime: moment()
           .local()
           .format(),
+        lastMsg: msg,
       })
       .then(data => {
         //success callback
@@ -89,6 +91,9 @@ export default class extends React.Component {
         //error callback
         console.log('error ', error);
       });
+    this.setState({
+      msg: '',
+    });
   }
 
   // chatting add
@@ -107,9 +112,6 @@ export default class extends React.Component {
             .format('LT'),
           reader,
         );
-        this.setState({
-          msg: '',
-        });
       } catch (error) {
         console.log('insert Chatting message error ::: ' + error);
       }
@@ -313,6 +315,27 @@ export default class extends React.Component {
       .off('value');
   }
 
+  onSavePlace = async (place, navigation) => {
+    console.log('onSavePlace::: ' + place);
+    navigation.goBack();
+
+    let reader = {};
+    reader[this.state.myId] = this.state.myId;
+    try {
+      await this.writeChattingAdd(
+        this.state.roomKey,
+        this.state.myId,
+        place,
+        moment()
+          .local()
+          .format('LT'),
+        reader,
+      );
+    } catch (error) {
+      console.log('insert Chatting message error ::: ' + error);
+    }
+  };
+
   render() {
     const {
       loading,
@@ -342,6 +365,7 @@ export default class extends React.Component {
           myProfile={myProfile}
           battleState={battleState}
           changeModalVisiblity={this.changeModalVisiblity}
+          onSavePlace={this.onSavePlace}
         />
         <Modal
           transparent={true}

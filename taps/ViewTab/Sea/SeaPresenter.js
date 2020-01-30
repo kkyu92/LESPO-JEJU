@@ -43,7 +43,7 @@ const Container = styled.ScrollView`
   padding-left: 20;
   flex: 1;
 `;
-
+const mainState = 20;
 // show DATA
 const SeaPresenter = ({loading, listChanged, locations, navigation}) =>
   loading ? (
@@ -54,7 +54,7 @@ const SeaPresenter = ({loading, listChanged, locations, navigation}) =>
         onPress={() =>
           navigation.navigate({
             routeName: 'Map',
-            params: {listChanged, locations},
+            params: {listChanged, locations, mainState},
           })
         }>
         <MapText>지도로 보기</MapText>

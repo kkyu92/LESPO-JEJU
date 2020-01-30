@@ -57,9 +57,9 @@ const BattleTalkPresenter = ({loading, chatRoomList, myId}) =>
                         list.makeUser.userId === myId ||
                         list.joinUser.userId === myId,
                     )
-                    .map(list => (
+                    .map((list, index, array) => (
                       <TalkListSlide
-                        key={list.key}
+                        roomKey={list.key}
                         id={
                           list.makeUser.userId === myId
                             ? list.joinUser.userId
@@ -76,10 +76,8 @@ const BattleTalkPresenter = ({loading, chatRoomList, myId}) =>
                             : list.makeUser.userName
                         }
                         date={moment(list.lastRealTime).format('YYYY-MM-DD')}
-                        time={moment(list.lastTime)
-                          .local()
-                          .format('LT')}
-                        msg={'dsklfjsfoihehioehitroiebtwboibwe'}
+                        time={moment(list.lastRealTime).format('LT')}
+                        msg={list.lastMsg}
                       />
                     ))}
                 </Section>

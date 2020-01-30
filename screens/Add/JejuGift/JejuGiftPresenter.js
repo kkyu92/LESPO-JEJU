@@ -139,7 +139,7 @@ const JejuGiftPresenter = ({
                 .filter(list => list.id !== null)
                 .map(list => (
                   <SubSlide
-                    tag={'tag'}
+                    tag={'notag'}
                     horizontal={false}
                     key={list.id}
                     id={list.id}
@@ -150,7 +150,6 @@ const JejuGiftPresenter = ({
                     title={list.title}
                     overview={list.description}
                     detail={list.detail}
-                    tagName={list.category.category_name}
                     avg={list.like_count}
                   />
                 ))}

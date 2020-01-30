@@ -183,6 +183,7 @@ const BattleTalkPresenter = ({
   myName,
   changeModalVisiblity,
   battleState,
+  onSavePlace,
   navigation,
 }) =>
   loading ? (
@@ -221,7 +222,16 @@ const BattleTalkPresenter = ({
             <Name>{name}</Name>
           </ProfileContainer>
           <BtnContainer>
-            <Btn>
+            <Btn
+              onPress={() =>
+                navigation.navigate({
+                  routeName: 'Map',
+                  params: {
+                    mainState: 'battle',
+                    onSavePlace: onSavePlace,
+                  },
+                })
+              }>
               <BtnText>시설보기</BtnText>
             </Btn>
             {/* <Btn>

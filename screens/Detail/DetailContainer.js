@@ -120,7 +120,6 @@ export default class extends React.Component {
   };
 
   insertCommentList = async msg => {
-    let commentList = this.state.comments;
     let TOKEN = await AsyncStorage.getItem('@API_TOKEN');
     const config = {
       headers: {
@@ -135,16 +134,23 @@ export default class extends React.Component {
       params.append('comment', msg);
       await LESPO_API.addComment(params, config)
         .then(response => {
-          console.log(JSON.stringify(response.data.data));
-          commentList.push(response.data.data);
+          console.log('SUCCESS: ' + JSON.stringify(response.data.data));
           this.setState({
-            comments: commentList,
             msg: '',
           });
-          console.log('comments::::: ' + JSON.stringify(this.state.comments));
         })
         .catch(error => {
-          console.log('addLike fail: ' + error);
+          console.log('add Comment fail: ' + error);
+        });
+      await LESPO_API.getDetailItem(this.state.id, config)
+        .then(response => {
+          let listChanged = response.data.data;
+          this.setState({
+            comments: listChanged.comments,
+          });
+        })
+        .catch(error => {
+          console.log('update comments fail: ' + error);
         });
     }
   };

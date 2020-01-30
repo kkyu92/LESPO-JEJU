@@ -65,6 +65,7 @@ export const LESPO_API = {
   deleteComment: (config, id) => API.delete('contents/comments/' + id, config),
 
   // Contents List
+  getReco: config => API.get('contents/recommends', config),
   getFoodList: config => API.get('contents/foods', config),
   getViewList: config => API.get('contents/attractions', config),
   getPlayList: config => API.get('contents/leisure-sports', config),

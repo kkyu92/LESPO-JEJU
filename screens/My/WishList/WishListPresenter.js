@@ -43,7 +43,9 @@ const MapText = styled.Text`
   font-size: 14px;
 `;
 
-const WishListPresenter = ({loading, listChanged, navigation}) =>
+const mainState = 'wish';
+
+const WishListPresenter = ({loading, listChanged, locations, navigation}) =>
   loading ? (
     <Loader />
   ) : listChanged ? (
@@ -53,7 +55,7 @@ const WishListPresenter = ({loading, listChanged, navigation}) =>
           onPress={() =>
             navigation.navigate({
               routeName: 'Map',
-              params: {listChanged},
+              params: {listChanged, locations, mainState},
             })
           }>
           <MapText>지도로 보기</MapText>
@@ -68,17 +70,20 @@ const WishListPresenter = ({loading, listChanged, navigation}) =>
                 horizontal={false}
                 key={list.id}
                 id={list.id}
-                backgroundPoster={list.backdrop_path}
+                backgroundPoster={list.matched_content_images[0].full_filename}
+                poster={list.matched_content_images}
                 title={list.title}
-                avg={list.vote_average}
-                overview={list.overview}
+                overview={list.description}
+                detail={list.detail}
+                avg={list.like_count}
+                tagName={list.category.parent.category_name}
               />
             ))}
         </Section>
       </Container>
     </View>
   ) : (
-    <SearchNo handleGetSearchText={'등록된 위시리스트가 없습니다.'} />
+    <SearchNo />
   );
 
 export default withNavigation(WishListPresenter);

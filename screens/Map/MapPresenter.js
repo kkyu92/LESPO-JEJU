@@ -243,6 +243,7 @@ const MapPresenter = ({
   locations,
   mainState,
   onListChanging,
+  onSavePlace,
   listName,
   navigation,
 }) =>
@@ -362,6 +363,51 @@ const MapPresenter = ({
       </ListContainer>
       {/* {listChanged.map(list => console.log(list.backdrop_path))} */}
     </MapContainer>
+  ) : mainState === 'battle' ? (
+    <MapContainer>
+      <MapView
+        provider={PROVIDER_GOOGLE}
+        ref={map => (this.map = map)}
+        // showsMyLocationButton
+        showsUserLocation
+        style={{
+          width: Layout.width,
+          height: Layout.height,
+          position: 'absolute',
+        }}
+        initialRegion={{
+          latitude: latitude,
+          longitude: longitude,
+          latitudeDelta: 0.09,
+          longitudeDelta: 0.035,
+        }}>
+        {locations
+          ? locations.locations
+              .filter(list => list.key !== null)
+              .map((list, index) => (
+                <Marker
+                  key={list.key}
+                  ref={marker => (this.marker = marker)}
+                  onPress={() => onMarkerPressed(list)}
+                  onCalloutPress={() =>
+                    onSavePlace(list.title + '\n' + list.address, navigation)
+                  }
+                  coordinate={list.location}
+                  title={list.title}
+                  description={list.address}
+                  show
+                />
+              ))
+          : console.log('locations null ????? ' + JSON.stringify(locations))}
+      </MapView>
+      <MyLocation onPress={() => _getLocation(latitude, longitude)}>
+        <MyLocationIcon
+          size={30}
+          name={'my-location'}
+          color={`${GREY_COLOR3}`}
+        />
+      </MyLocation>
+    </MapContainer>
   ) : (
     <MapContainer>
       <MapView
@@ -424,7 +470,7 @@ const MapPresenter = ({
                 <MainSlide
                   map={true}
                   overview={list.description}
-                  avg={list.vote_average}
+                  avg={list.like_count}
                   title={list.title}
                   id={list.id}
                   backgroundPoster={

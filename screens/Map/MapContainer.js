@@ -5,6 +5,7 @@ import Geolocation from 'react-native-geolocation-service';
 import {View, Text, Platform} from 'react-native';
 import {LESPO_API} from '../../api/Api';
 import AsyncStorage from '@react-native-community/async-storage';
+import moment from 'moment';
 
 export default class extends React.Component {
   static navigationOptions = () => {
@@ -18,7 +19,7 @@ export default class extends React.Component {
     const {
       navigation: {
         state: {
-          params: {listChanged, locations, mainState},
+          params: {listChanged, locations, mainState, onSavePlace},
         },
       },
     } = props;
@@ -29,6 +30,7 @@ export default class extends React.Component {
       listChanged,
       locations,
       mainState,
+      onSavePlace,
       listName: '',
       token: null,
       error: null,
@@ -142,19 +144,346 @@ export default class extends React.Component {
           loading: false,
         });
       }
+    } else if (mainState === 'battle') {
+      try {
+        console.log('mainState: ' + mainState);
+        await LESPO_API.getPlayList(config)
+          .then(response => {
+            listChanged = response.data.data;
+            locations = {
+              mark: [],
+              locations: [],
+            };
+            let count = 0;
+            listChanged.forEach(child => {
+              let num = child.id;
+              child.detail.marker_address.forEach(child => {
+                locations.locations.push({
+                  id: num,
+                  key: count,
+                  location: {
+                    latitude: window.parseFloat(child.lat),
+                    longitude: window.parseFloat(child.lng),
+                  },
+                  title: child.title,
+                  address: child.address,
+                });
+                count++;
+              });
+            });
+            this.setState({
+              listChanged: listChanged,
+              locations: locations,
+            });
+            // console.log('check ====== ' + JSON.stringify(listChanged));
+          })
+          .catch(error => {
+            console.log('get BattlePlaceList fail: ' + error);
+          });
+      } catch (error) {
+        console.log("Cant't get Battle place marker. : " + error);
+      } finally {
+        console.log('finally');
+        this.setState({
+          loading: false,
+        });
+      }
     } else if (mainState === 'wish') {
       // wish = Main Wish Btn
-    } else {
-      console.log('mainState: null');
+      console.log('mainState: ' + mainState);
       try {
         this.setState({
           loading: false,
         });
       } catch (error) {}
-      console.log(this.state.loading);
+      this.subs = [
+        this.props.navigation.addListener('willFocus', () => {
+          console.log('willFocus ::: reload');
+          this.onWishListChanging();
+        }),
+      ];
+    } else {
+      console.log('mainState: ' + mainState);
+      try {
+        this.setState({
+          loading: false,
+        });
+      } catch (error) {}
+      this.subs = [
+        this.props.navigation.addListener('willFocus', () => {
+          console.log('willFocus ::: reload');
+          this.onContentsListChanging(mainState);
+        }),
+      ];
     }
+    console.log(mainState, 3);
   }
 
+  // Contents List
+  onContentsListChanging = async num => {
+    this.setState({
+      loading: true,
+    });
+    let listChanged = [];
+    let locations = {
+      mark: [],
+      locations: [],
+    };
+    let count = 0;
+    let error;
+    try {
+      if (num === 9) {
+        ({
+          data: {data: listChanged},
+        } = await LESPO_API.getRecoFood());
+      } else if (num === 10) {
+        ({
+          data: {data: listChanged},
+        } = await LESPO_API.getRecoView());
+      } else if (num === 11) {
+        ({
+          data: {data: listChanged},
+        } = await LESPO_API.getRecoPlay());
+      } else if (num === 12) {
+        ({
+          data: {data: listChanged},
+        } = await LESPO_API.getFoodKorea());
+      } else if (num === 13) {
+        ({
+          data: {data: listChanged},
+        } = await LESPO_API.getFoodChina());
+      } else if (num === 14) {
+        ({
+          data: {data: listChanged},
+        } = await LESPO_API.getFoodAmerica());
+      } else if (num === 15) {
+        ({
+          data: {data: listChanged},
+        } = await LESPO_API.getFoodJapan());
+      } else if (num === 16) {
+        ({
+          data: {data: listChanged},
+        } = await LESPO_API.getFoodJeju());
+      } else if (num === 17) {
+        ({
+          data: {data: listChanged},
+        } = await LESPO_API.getFoodOther());
+      } else if (num === 18) {
+        ({
+          data: {data: listChanged},
+        } = await LESPO_API.getViewFamous());
+      } else if (num === 19) {
+        ({
+          data: {data: listChanged},
+        } = await LESPO_API.getViewTour());
+      } else if (num === 20) {
+        ({
+          data: {data: listChanged},
+        } = await LESPO_API.getViewSea());
+      } else if (num === 21) {
+        ({
+          data: {data: listChanged},
+        } = await LESPO_API.getViewOlleGill());
+      } else if (num === 22) {
+        ({
+          data: {data: listChanged},
+        } = await LESPO_API.getViewMountain());
+      } else if (num === 23) {
+        ({
+          data: {data: listChanged},
+        } = await LESPO_API.getViewOther());
+      } else if (num === 26) {
+        ({
+          data: {data: listChanged},
+        } = await LESPO_API.getLeisureExtreme());
+      } else if (num === 27) {
+        ({
+          data: {data: listChanged},
+        } = await LESPO_API.getLeisureWaterPark());
+      } else if (num === 28) {
+        ({
+          data: {data: listChanged},
+        } = await LESPO_API.getLeisureThemePark());
+      } else if (num === 29) {
+        ({
+          data: {data: listChanged},
+        } = await LESPO_API.getLeisureFishing());
+      } else if (num === 30) {
+        ({
+          data: {data: listChanged},
+        } = await LESPO_API.getLeisureExperience());
+      } else if (num === 32) {
+        ({
+          data: {data: listChanged},
+        } = await LESPO_API.getLeisureCamping());
+      } else if (num === 33) {
+        ({
+          data: {data: listChanged},
+        } = await LESPO_API.getLeisureOther());
+      } else if (num === 34) {
+        ({
+          data: {data: listChanged},
+        } = await LESPO_API.getSportsBall());
+      } else if (num === 35) {
+        ({
+          data: {data: listChanged},
+        } = await LESPO_API.getSportsBilliards());
+      } else if (num === 36) {
+        ({
+          data: {data: listChanged},
+        } = await LESPO_API.getSportsBowling());
+      } else if (num === 37) {
+        ({
+          data: {data: listChanged},
+        } = await LESPO_API.getSportsHealth());
+      } else if (num === 38) {
+        ({
+          data: {data: listChanged},
+        } = await LESPO_API.getSportsYoga());
+      } else if (num === 39) {
+        ({
+          data: {data: listChanged},
+        } = await LESPO_API.getSportsFight());
+      } else if (num === 40) {
+        ({
+          data: {data: listChanged},
+        } = await LESPO_API.getSportsOther());
+      }
+
+      listChanged.forEach(child => {
+        let num = child.id;
+        child.detail.marker_address.forEach(child => {
+          locations.locations.push({
+            id: num,
+            key: count,
+            location: {
+              latitude: window.parseFloat(child.lat),
+              longitude: window.parseFloat(child.lng),
+            },
+            title: child.title,
+            address: child.address,
+          });
+          count++;
+        });
+      });
+      this.setState({
+        loading: false,
+        listChanged: listChanged,
+        locations: locations,
+        error,
+      });
+    } catch (error) {
+      console.log(error);
+      error = "Cnat't get Contents List Update";
+    }
+  };
+
+  // WishList
+  onWishListChanging = async () => {
+    this.setState({
+      loading: true,
+    });
+    let TOKEN = await AsyncStorage.getItem('@API_TOKEN');
+    const config = {
+      headers: {
+        Authorization: TOKEN,
+      },
+    };
+    let allList = [];
+    let listChanged = [];
+    let locations = {
+      mark: [],
+      locations: [],
+    };
+    let count = 0;
+    let error;
+    try {
+      ({
+        data: {data: listChanged},
+      } = await LESPO_API.getReco(config));
+      listChanged
+        .filter(list => list.is_wishlist_added_count === 1)
+        .forEach(list => {
+          allList.push(list);
+        });
+
+      ({
+        data: {data: listChanged},
+      } = await LESPO_API.getFoodList(config));
+      listChanged
+        .filter(list => list.is_wishlist_added_count === 1)
+        .forEach(list => {
+          allList.push(list);
+        });
+
+      ({
+        data: {data: listChanged},
+      } = await LESPO_API.getViewList(config));
+      listChanged
+        .filter(list => list.is_wishlist_added_count === 1)
+        .forEach(list => {
+          allList.push(list);
+        });
+
+      ({
+        data: {data: listChanged},
+      } = await LESPO_API.getPlayList(config));
+      listChanged
+        .filter(list => list.is_wishlist_added_count === 1)
+        .forEach(list => {
+          allList.push(list);
+        });
+
+      ({
+        data: {data: listChanged},
+      } = await LESPO_API.getSportsList(config));
+      listChanged
+        .filter(list => list.is_wishlist_added_count === 1)
+        .forEach(list => {
+          allList.push(list);
+        });
+
+      // latest sorting
+      allList = allList.sort(function(a, b) {
+        return (
+          new Date(moment(b.wishlist_id.updated_at).format()) -
+          new Date(moment(a.wishlist_id.updated_at).format())
+        );
+      });
+
+      // markers push all
+      allList.forEach(child => {
+        let num = child.id;
+        child.detail.marker_address.forEach(child => {
+          locations.locations.push({
+            id: num,
+            key: count,
+            location: {
+              latitude: window.parseFloat(child.lat),
+              longitude: window.parseFloat(child.lng),
+            },
+            title: child.title,
+            address: child.address,
+          });
+          count++;
+        });
+      });
+      // console.log('wish List : ' + JSON.stringify(allList));
+      // console.log('wish List Locatoins : ' + JSON.stringify(locations));
+    } catch (error) {
+      console.log(error);
+      error = "Cnat't get WishList";
+    } finally {
+      this.setState({
+        loading: false,
+        listChanged: allList,
+        locations: locations,
+        error,
+      });
+    }
+  };
+
+  // Main map btn
   onListChanging = async listName => {
     let {listChanged, locations, token} = this.state;
     const config = {
@@ -163,9 +492,6 @@ export default class extends React.Component {
       },
     };
     console.log('listChanging ::: ' + listName);
-    this.setState({
-      loading: true,
-    });
     try {
       if (listName === 'view') {
         await LESPO_API.getViewList(config)
@@ -281,6 +607,13 @@ export default class extends React.Component {
     // return;
   };
 
+  componentWillUnmount() {
+    console.log('componentWillUnmount ::: ');
+    if (this.state.mainState !== 'battle') {
+      this.subs.forEach(sub => sub.remove());
+    }
+  }
+
   render() {
     const {
       loading,
@@ -289,6 +622,7 @@ export default class extends React.Component {
       listChanged,
       locations,
       mainState,
+      onSavePlace,
       listName,
     } = this.state;
     // 위치정보 받기 전
@@ -302,6 +636,7 @@ export default class extends React.Component {
           locations={locations}
           mainState={mainState}
           listName={listName}
+          onSavePlace={onSavePlace}
           onListChanging={this.onListChanging}
         />
       );

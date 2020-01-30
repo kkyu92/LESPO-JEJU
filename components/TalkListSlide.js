@@ -79,9 +79,29 @@ const NullImg = styled.Image`
 `;
 
 // 리스트 기본틀
-const TalkListSlide = ({id, profile, name, msg, date, time}) => (
+const TalkListSlide = ({
+  roomKey,
+  id,
+  profile,
+  name,
+  msg,
+  date,
+  time,
+  navigation,
+}) => (
   // 나의 배틀톡 리스트
-  <BattleTalkContainer>
+  <BattleTalkContainer
+    onPress={() =>
+      navigation.navigate({
+        routeName: 'BattleTalk',
+        params: {
+          roomKey,
+          id,
+          profile,
+          name,
+        },
+      })
+    }>
     <BattleProfileContainer>
       {profile ? (
         <ProfileImg source={{uri: profile}} />

@@ -44,7 +44,7 @@ const Container = styled.ScrollView`
   padding-left: 20;
   flex: 1;
 `;
-
+const mainState = 9;
 // show DATA
 const FoodListPresenter = ({loading, listChanged, locations, navigation}) =>
   loading ? (
@@ -55,7 +55,7 @@ const FoodListPresenter = ({loading, listChanged, locations, navigation}) =>
         onPress={() =>
           navigation.navigate({
             routeName: 'Map',
-            params: {listChanged, locations},
+            params: {listChanged, locations, mainState},
           })
         }>
         <MapText>지도로 보기</MapText>

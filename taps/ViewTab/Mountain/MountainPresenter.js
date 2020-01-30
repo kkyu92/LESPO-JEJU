@@ -43,7 +43,7 @@ const Container = styled.ScrollView`
   padding-left: 20;
   flex: 1;
 `;
-
+const mainState = 22;
 // show DATA
 const MountainPresenter = ({loading, listChanged, locations, navigation}) =>
   loading ? (
@@ -54,7 +54,7 @@ const MountainPresenter = ({loading, listChanged, locations, navigation}) =>
         onPress={() =>
           navigation.navigate({
             routeName: 'Map',
-            params: {listChanged, locations},
+            params: {listChanged, locations, mainState},
           })
         }>
         <MapText>지도로 보기</MapText>

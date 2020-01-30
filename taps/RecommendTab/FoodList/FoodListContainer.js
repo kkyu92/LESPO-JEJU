@@ -13,6 +13,18 @@ export default class extends React.Component {
 
   // 시작시 불러옴
   async componentDidMount() {
+    this.onListChanging();
+    this.subs = [
+      this.props.navigation.addListener('willFocus', () => {
+        this.onListChanging();
+      }),
+    ];
+  }
+
+  onListChanging = async () => {
+    this.setState({
+      loading: true,
+    });
     let listChanged = [];
     let locations = {
       mark: [],
@@ -44,7 +56,7 @@ export default class extends React.Component {
       // console.log('Roec Food Locatoins : ' + JSON.stringify(locations));
     } catch (error) {
       console.log(error);
-      error = "Cnat't get recoPlay";
+      error = "Cnat't get reco FoodList";
     } finally {
       this.setState({
         loading: false,
@@ -53,7 +65,12 @@ export default class extends React.Component {
         error,
       });
     }
+  };
+
+  componentWillUnmount() {
+    this.subs.forEach(sub => sub.remove());
   }
+
   render() {
     const {loading, listChanged, locations} = this.state;
     // 위치정보 받기 전

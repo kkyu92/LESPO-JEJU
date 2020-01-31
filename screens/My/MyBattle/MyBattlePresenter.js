@@ -82,7 +82,7 @@ const MyBattlePresenter = ({loading, chatRoomList, myId}) =>
             ) : (
               console.log('null')
             )}
-            {itemCount.length > 0 ? console.log('리스트 있음') : <SearchNo />}
+            {itemCount.length > 0 ? null : <SearchNo />}
           </>
         )}
       </Container>

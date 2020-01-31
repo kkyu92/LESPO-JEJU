@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import DetailPresenter from './DetailPresenter';
 import {LESPO_API} from '../../api/Api';
 import AsyncStorage from '@react-native-community/async-storage';
+import {Keyboard} from 'react-native';
 
 export default class extends React.Component {
   static navigationOptions = () => {
@@ -120,6 +121,7 @@ export default class extends React.Component {
   };
 
   insertCommentList = async msg => {
+    Keyboard.dismiss();
     let TOKEN = await AsyncStorage.getItem('@API_TOKEN');
     const config = {
       headers: {

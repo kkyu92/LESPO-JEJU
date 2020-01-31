@@ -39,15 +39,39 @@ export default class extends React.Component {
       battleState: '',
       error: null,
     };
-    console.log('@@@@@@@: ' + this.state.maker);
+    console.log('@@@@@@@: ' + this.state.makeUser);
   }
 
-  updateState = () => {
+  updateState = async () => {
+    let endUser = {};
+    endUser[this.state.id] = this.state.id;
+    endUser[this.state.myId] = this.state.myId;
+
     firebase
       .database()
       .ref('chatRoomList/' + this.state.roomKey + '/')
       .update({
         battleState: '배틀진행중',
+        endUser,
+      });
+    let reader = {};
+    reader[this.state.myId] = this.state.myId;
+    let user = this.state.myId;
+    let msg = '배틀을 시작합니다';
+    let date = moment()
+      .local()
+      .format('LT');
+    firebase
+      .database()
+      .ref('chatRoomList/' + this.state.roomKey + '/chatList/')
+      .push({user, msg, date, read: reader})
+      .then(data => {
+        //success callback
+        console.log('battle start notice Add: ', data);
+      })
+      .catch(error => {
+        //error callback
+        console.log('error ', error);
       });
   };
 
@@ -204,7 +228,7 @@ export default class extends React.Component {
       firebase
         .database()
         .ref('chatRoomList/' + roomKey + '/battleState/')
-        .once('value', dataSnapshot => {
+        .on('value', dataSnapshot => {
           this.setState({
             battleState: JSON.stringify(dataSnapshot),
           });
@@ -263,7 +287,6 @@ export default class extends React.Component {
   }
 
   setData = data => {
-    const {myId, roomMaker} = this.state;
     console.log('setData::: ', data);
     if (data === 'battleStart') {
       this.setData({
@@ -281,6 +304,7 @@ export default class extends React.Component {
   // Screen OUT
   componentWillUnmount() {
     console.log('componentWillUnmount ::: ');
+    console.log(this.state.roomKey);
     // let checkSendMsg = [];
     // checkSendMsg = this.state.getChatList.filter(
     //   list => list.user === this.state.myId,
@@ -312,6 +336,10 @@ export default class extends React.Component {
     firebase
       .database()
       .ref('chatRoomList/' + this.state.roomKey + '/chatList/')
+      .off('value');
+    firebase
+      .database()
+      .ref('chatRoomList/' + this.state.roomKey + '/battleState/')
       .off('value');
   }
 

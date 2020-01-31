@@ -3,13 +3,15 @@ import {
   StyleSheet,
   View,
   Text,
+  Image,
   TouchableHighlight,
   TouchableOpacity,
   Modal,
   Dimensions,
 } from 'react-native';
 import Layout from '../constants/Layout';
-import {GREY_COLOR} from '../constants/Colors';
+import {GREY_COLOR, BG_COLOR, TINT_COLOR} from '../constants/Colors';
+import Toast, {DURATION} from 'react-native-easy-toast';
 
 export default class SimpleDialog extends Component {
   constructor(props) {
@@ -17,6 +19,8 @@ export default class SimpleDialog extends Component {
     this.state = {
       width: Layout.width,
       height: Layout.height,
+      battleResult: '',
+      rating: 5,
     };
     Dimensions.addEventListener('change', e => {
       this.setState(e.window);
@@ -24,6 +28,7 @@ export default class SimpleDialog extends Component {
   }
 
   closeModal = data => {
+    this.props.changeModalVisiblity(false);
     this.props.changeModalVisiblity(false);
     this.props.setData(data);
   };
@@ -117,8 +122,186 @@ export default class SimpleDialog extends Component {
           </View>
         </View>
       </TouchableOpacity>
+    ) : this.props.battleState === '배틀종료' ? ( // 평가하기
+      <TouchableOpacity
+        activeOpacity={1}
+        disabled={true}
+        style={styles.contentContainer}>
+        <View style={[styles.ratingModal, {width: this.state.width - 80}]}>
+          <View style={styles.titleView}>
+            <Text style={[styles.ratingText, {color: 'black'}, {fontSize: 30}]}>
+              배틀결과
+            </Text>
+            <Text style={styles.ratingText}> 1. 승패를 선택해주세요. </Text>
+            <View style={styles.imageContainer}>
+              <TouchableOpacity
+                onPress={() => this.setState({battleResult: 'win'})}
+                style={
+                  this.state.battleResult === 'win'
+                    ? styles.imageBtnSelect
+                    : styles.imageBtnUnSelect
+                }>
+                <Image
+                  style={styles.image}
+                  source={
+                    this.state.battleResult === 'win'
+                      ? require(`../assets/drawable-xxhdpi/icon_winner_wh.png`)
+                      : require(`../assets/drawable-xxhdpi/icon_winner_or.png`)
+                  }
+                />
+                <Text
+                  style={
+                    this.state.battleResult === 'win'
+                      ? styles.textSelect
+                      : styles.textUnSelect
+                  }>
+                  승
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => this.setState({battleResult: 'lose'})}
+                style={
+                  this.state.battleResult === 'lose'
+                    ? styles.imageBtnSelect
+                    : styles.imageBtnUnSelect
+                }>
+                <Image
+                  style={styles.image}
+                  source={
+                    this.state.battleResult === 'lose'
+                      ? require(`../assets/drawable-xxhdpi/icon_loser_wh.png`)
+                      : require(`../assets/drawable-xxhdpi/icon_loser_or.png`)
+                  }
+                />
+                <Text
+                  style={
+                    this.state.battleResult === 'lose'
+                      ? styles.textSelect
+                      : styles.textUnSelect
+                  }>
+                  패
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.ratingText}>
+              {' '}
+              2. 상대방 별점을 선택해주세요.{' '}
+            </Text>
+
+            <View style={styles.ratingContainer}>
+              <TouchableOpacity onPress={() => this.setState({rating: 1})}>
+                <Image
+                  style={styles.image}
+                  source={require(`../assets/drawable-xxhdpi/icon_star_copy_4.png`)}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => this.setState({rating: 2})}>
+                {this.state.rating < 2 ? (
+                  <Image
+                    style={styles.image}
+                    source={require(`../assets/drawable-xxhdpi/icon_star_copy_8.png`)}
+                  />
+                ) : (
+                  <Image
+                    style={styles.image}
+                    source={require(`../assets/drawable-xxhdpi/icon_star_copy_4.png`)}
+                  />
+                )}
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => this.setState({rating: 3})}>
+                {this.state.rating < 3 ? (
+                  <Image
+                    style={styles.image}
+                    source={require(`../assets/drawable-xxhdpi/icon_star_copy_8.png`)}
+                  />
+                ) : (
+                  <Image
+                    style={styles.image}
+                    source={require(`../assets/drawable-xxhdpi/icon_star_copy_4.png`)}
+                  />
+                )}
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => this.setState({rating: 4})}>
+                {this.state.rating < 4 ? (
+                  <Image
+                    style={styles.image}
+                    source={require(`../assets/drawable-xxhdpi/icon_star_copy_8.png`)}
+                  />
+                ) : (
+                  <Image
+                    style={styles.image}
+                    source={require(`../assets/drawable-xxhdpi/icon_star_copy_4.png`)}
+                  />
+                )}
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => this.setState({rating: 5})}>
+                {this.state.rating < 5 ? (
+                  <Image
+                    style={styles.image}
+                    source={require(`../assets/drawable-xxhdpi/icon_star_copy_8.png`)}
+                  />
+                ) : (
+                  <Image
+                    style={styles.image}
+                    source={require(`../assets/drawable-xxhdpi/icon_star_copy_4.png`)}
+                  />
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={styles.ratingBtnView}>
+            <TouchableHighlight
+              onPress={() => {
+                this.state.battleResult === ''
+                  ? this.refs.toast.show('승패를 선택해주세요!')
+                  : this.closeModal('rating');
+              }}
+              style={styles.ratingBtn}
+              underlayColor={'#f1f1f1'}>
+              <Text style={[styles.text, {color: TINT_COLOR}]}> 평가하기 </Text>
+            </TouchableHighlight>
+          </View>
+        </View>
+        <Toast
+          ref="toast"
+          style={{backgroundColor: BG_COLOR}}
+          position="bottom"
+          positionValue={100}
+          fadeInDuration={750}
+          fadeOutDuration={1500}
+          opacity={1}
+          textStyle={{color: TINT_COLOR}}
+        />
+      </TouchableOpacity>
     ) : (
-      console.log('this.props.battleState: ' + this.props.battleState)
+      // 배틀 종료
+      <TouchableOpacity
+        activeOpacity={1}
+        disabled={true}
+        style={styles.contentContainer}>
+        <View style={[styles.battleModal, {width: this.state.width - 80}]}>
+          <View style={styles.textView}>
+            <Text style={[styles.text, {color: 'black'}, {fontSize: 20}]}>
+              배틀종료 및 평가
+            </Text>
+            <Text style={styles.text}> 배틀을 종료하고 평가하시겠습니까? </Text>
+          </View>
+          <View style={styles.buttonView}>
+            <TouchableHighlight
+              onPress={() => this.closeModal('Cancel')}
+              style={styles.touchableHighlight}
+              underlayColor={'#f1f1f1'}>
+              <Text style={[styles.text, {color: 'red'}]}> 아니요 </Text>
+            </TouchableHighlight>
+            <TouchableHighlight
+              onPress={() => this.closeModal('battleEnd')}
+              style={styles.touchableHighlight}
+              underlayColor={'#f1f1f1'}>
+              <Text style={[styles.text, {color: 'orange'}]}> 예 </Text>
+            </TouchableHighlight>
+          </View>
+        </View>
+      </TouchableOpacity>
     );
   }
 }
@@ -160,6 +343,102 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderColor: 'orange',
     borderWidth: 1,
+    borderRadius: 10,
+  },
+  ratingModal: {
+    height: (Layout.height * 2) / 3,
+    paddingTop: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
+    alignSelf: 'center',
+    alignItems: 'flex-start',
+    textAlign: 'center',
+    backgroundColor: 'white',
+    borderColor: 'orange',
+    borderWidth: 2,
+    borderRadius: 10,
+  },
+  titleView: {
+    flex: 1,
+    alignSelf: 'stretch',
+    alignItems: 'flex-start',
+    marginTop: 10,
+  },
+  ratingText: {
+    marginTop: 10,
+    marginLeft: 5,
+    marginRight: 5,
+    marginBottom: 15,
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  imageContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    marginBottom: 20,
+    // backgroundColor: 'royalblue',
+  },
+  imageBtnSelect: {
+    width: 120,
+    height: 120,
+    backgroundColor: BG_COLOR,
+    padding: 10,
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 60,
+  },
+  imageBtnUnSelect: {
+    width: 120,
+    height: 120,
+    backgroundColor: TINT_COLOR,
+    borderColor: BG_COLOR,
+    borderWidth: 1,
+    padding: 10,
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 60,
+  },
+  image: {
+    width: 43,
+    height: 40,
+  },
+  textSelect: {
+    color: TINT_COLOR,
+    fontSize: 25,
+    fontWeight: 'bold',
+    paddingTop: 10,
+  },
+  textUnSelect: {
+    color: BG_COLOR,
+    fontSize: 25,
+    fontWeight: 'bold',
+    paddingTop: 10,
+  },
+  ratingBtnView: {
+    width: '100%',
+    flexDirection: 'row',
+    marginBottom: 20,
+  },
+  ratingContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    marginTop: 10,
+    // backgroundColor: 'royalblue',
+  },
+  ratingBtn: {
+    flex: 1,
+    backgroundColor: BG_COLOR,
+    paddingVertical: 10,
+    alignSelf: 'stretch',
+    alignItems: 'center',
     borderRadius: 10,
   },
   text: {

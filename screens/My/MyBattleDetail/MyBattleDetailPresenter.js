@@ -220,6 +220,7 @@ const MyBattleDetailPresenter = ({
   profile,
   roomKey,
   roomMaker,
+  endCheck,
   changeModalVisiblity,
   navigation,
 }) =>
@@ -352,15 +353,16 @@ const MyBattleDetailPresenter = ({
             <BtnText>배틀취소</BtnText>
           </Btn>
         ) : statusText === '배틀진행중' ? (
-          <Btn>
+          <Btn onPress={() => changeModalVisiblity(true)}>
+            <BtnText>배틀종료 및 평가하기</BtnText>
+          </Btn>
+        ) : endCheck === JSON.stringify(myId) ? (
+          <Btn onPress={() => changeModalVisiblity(true)}>
             <BtnText>평가하기</BtnText>
           </Btn>
         ) : (
-          // <Btn>
-          //   <BtnText>배틀이 진행중입니다.</BtnText>
-          // </Btn>
           <Btn>
-            <BtnText>평가하기</BtnText>
+            <BtnText>종료된 배틀입니다.</BtnText>
           </Btn>
         )}
       </Container>

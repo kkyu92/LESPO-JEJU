@@ -241,9 +241,13 @@ const BattleTalkPresenter = ({
               <RevBtn onPress={() => changeModalVisiblity(true)}>
                 <RevBtnText>배틀시작</RevBtnText>
               </RevBtn>
-            ) : (
+            ) : battleState === '"배틀진행중"' ? (
               <RevBtn>
                 <RevBtnText>신청완료</RevBtnText>
+              </RevBtn>
+            ) : (
+              <RevBtn>
+                <RevBtnText>배틀종료</RevBtnText>
               </RevBtn>
             )}
           </BtnContainer>

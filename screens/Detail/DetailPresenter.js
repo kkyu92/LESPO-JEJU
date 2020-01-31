@@ -379,7 +379,8 @@ const DetailPresenter = ({
           source={require(`../../assets/drawable-xxhdpi/icon_profile.png`)}
         />
         <Input
-          onFocus={_scrollToBottom()}
+          onEndEditing={() => _scrollToBottom()}
+          // onFocus={() => _scrollToBottom()}
           onChangeText={handleMsgUpdate}
           value={msg}
           returnKeyType={'next'}

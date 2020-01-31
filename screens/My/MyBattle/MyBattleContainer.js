@@ -73,11 +73,11 @@ export default class extends React.Component {
             loading: false,
           });
         });
-        console.log(
-          'Firebase on Finish----------' +
-            JSON.stringify(this.state.chatRoomList) +
-            this.state.myId,
-        );
+        // console.log(
+        //   'Firebase on Finish----------' +
+        //     JSON.stringify(this.state.chatRoomList) +
+        //     this.state.myId,
+        // );
       });
       //console.log('chatList Data[finally 1]: ' + JSON.stringify(list));
       console.log(

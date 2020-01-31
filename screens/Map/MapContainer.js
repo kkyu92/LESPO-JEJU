@@ -145,49 +145,14 @@ export default class extends React.Component {
         });
       }
     } else if (mainState === 'battle') {
-      try {
-        console.log('mainState: ' + mainState);
-        await LESPO_API.getPlayList(config)
-          .then(response => {
-            listChanged = response.data.data;
-            locations = {
-              mark: [],
-              locations: [],
-            };
-            let count = 0;
-            listChanged.forEach(child => {
-              let num = child.id;
-              child.detail.marker_address.forEach(child => {
-                locations.locations.push({
-                  id: num,
-                  key: count,
-                  location: {
-                    latitude: window.parseFloat(child.lat),
-                    longitude: window.parseFloat(child.lng),
-                  },
-                  title: child.title,
-                  address: child.address,
-                });
-                count++;
-              });
-            });
-            this.setState({
-              listChanged: listChanged,
-              locations: locations,
-            });
-            // console.log('check ====== ' + JSON.stringify(listChanged));
-          })
-          .catch(error => {
-            console.log('get BattlePlaceList fail: ' + error);
-          });
-      } catch (error) {
-        console.log("Cant't get Battle place marker. : " + error);
-      } finally {
-        console.log('finally');
-        this.setState({
-          loading: false,
-        });
-      }
+      console.log('mainState: ' + mainState);
+      this.onBattlePlaceListChanging();
+      this.subs = [
+        this.props.navigation.addListener('willFocus', () => {
+          console.log('willFocus ::: reload');
+          this.onBattlePlaceListChanging();
+        }),
+      ];
     } else if (mainState === 'wish') {
       // wish = Main Wish Btn
       console.log('mainState: ' + mainState);
@@ -219,11 +184,68 @@ export default class extends React.Component {
     console.log(mainState, 3);
   }
 
+  // BattlePlace List
+  onBattlePlaceListChanging = async () => {
+    let TOKEN = await AsyncStorage.getItem('@API_TOKEN');
+    const config = {
+      headers: {
+        Authorization: TOKEN,
+      },
+    };
+    let listChanged = [];
+    let locations = {
+      mark: [],
+      locations: [],
+    };
+    try {
+      await LESPO_API.getBattlePlaceList(config)
+        .then(response => {
+          listChanged = response.data.data;
+          locations = {
+            mark: [],
+            locations: [],
+          };
+          let count = 0;
+          listChanged.forEach(child => {
+            let num = child.id;
+            child.detail.marker_address.forEach(child => {
+              locations.locations.push({
+                id: num,
+                key: count,
+                location: {
+                  latitude: window.parseFloat(child.lat),
+                  longitude: window.parseFloat(child.lng),
+                },
+                title: child.title,
+                address: child.address,
+              });
+              count++;
+            });
+          });
+          this.setState({
+            listChanged: listChanged,
+            locations: locations,
+          });
+          // console.log('check ====== ' + JSON.stringify(listChanged));
+        })
+        .catch(error => {
+          console.log('get BattlePlaceList fail: ' + error);
+        });
+    } catch (error) {
+      console.log("Cant't get Battle place marker. : " + error);
+    } finally {
+      console.log('finally');
+      this.setState({
+        loading: false,
+      });
+    }
+  };
+
   // Contents List
   onContentsListChanging = async num => {
-    this.setState({
-      loading: true,
-    });
+    // this.setState({
+    //   loading: true,
+    // });
     let listChanged = [];
     let locations = {
       mark: [],
@@ -380,9 +402,9 @@ export default class extends React.Component {
 
   // WishList
   onWishListChanging = async () => {
-    this.setState({
-      loading: true,
-    });
+    // this.setState({
+    //   loading: true,
+    // });
     let TOKEN = await AsyncStorage.getItem('@API_TOKEN');
     const config = {
       headers: {
@@ -609,7 +631,7 @@ export default class extends React.Component {
 
   componentWillUnmount() {
     console.log('componentWillUnmount ::: ');
-    if (this.state.mainState !== 'battle') {
+    if (this.state.mainState !== 'map') {
       this.subs.forEach(sub => sub.remove());
     }
   }

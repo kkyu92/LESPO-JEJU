@@ -48,6 +48,7 @@ export default class extends React.Component {
       myName: '',
       myProfile: '',
       isModalVisible: false,
+      endCheck: '',
       roomMaker: '',
       error: null,
       navigation,
@@ -56,46 +57,73 @@ export default class extends React.Component {
     console.log('user ID :' + JSON.stringify(id));
   }
 
-  getData = async () => {
-    console.log('getData');
-    try {
-      M_ID = await AsyncStorage.getItem('@USER_ID');
-      M_NAME = await AsyncStorage.getItem('@USER_NAME');
-      M_PROFILE = await AsyncStorage.getItem('@USER_PROFILE');
-      if (M_PROFILE !== null || M_PROFILE !== '') {
-        this.setState({
-          myId: M_ID,
-          myName: M_NAME,
-          myProfile: M_PROFILE,
-        });
-      } else {
-        console.log('Login profile image null');
-      }
-    } catch (e) {
-      // error reading value
-      console.log('getData ERROR ::: ' + e);
-    }
-  };
-
   // 시작시 불러옴
   async componentDidMount() {
-    let {roomKey} = this.state;
+    let {roomKey, myId} = this.state;
     let maker;
     try {
-      this.getData();
+      try {
+        M_ID = await AsyncStorage.getItem('@USER_ID');
+        M_NAME = await AsyncStorage.getItem('@USER_NAME');
+        M_PROFILE = await AsyncStorage.getItem('@USER_PROFILE');
+        if (M_PROFILE !== null || M_PROFILE !== '') {
+          this.setState({
+            myId: M_ID,
+            myName: M_NAME,
+            myProfile: M_PROFILE,
+          });
+        } else {
+          console.log('Login profile image null');
+        }
+      } catch (e) {
+        // error reading value
+        console.log('getData ERROR ::: ' + e);
+      }
+
       var userRef = firebase
         .database()
-        .ref('chatRoomList/' + roomKey + '/makeUser/userId/');
+        .ref('chatRoomList/' + this.state.roomKey + '/makeUser/userId/');
       userRef.once('value', dataSnapshot => {
         maker = JSON.stringify(dataSnapshot);
         this.setState({
           roomMaker: maker,
+        });
+      });
+
+      var checkEnd = firebase
+        .database()
+        .ref(
+          'chatRoomList/' + this.state.roomKey + '/endUser/' + this.state.myId,
+        );
+      checkEnd.on('value', dataSnapshot => {
+        let check = JSON.stringify(dataSnapshot);
+        this.setState({
+          endCheck: check,
+        });
+        console.log(this.state.endCheck);
+      });
+
+      var battleState = firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey + '/battleState');
+      battleState.on('value', dataSnapshot => {
+        let state = JSON.stringify(dataSnapshot);
+        if (state === '"배틀신청중"') {
+          state = '배틀신청중';
+        } else if (state === '"배틀진행중"') {
+          state = '배틀진행중';
+        } else {
+          state = '배틀종료';
+        }
+        console.log('######### battleState: ' + state);
+        this.setState({
+          statusText: state,
           loading: false,
         });
       });
     } catch (error) {
       console.log(error);
-      error = "Cnat't get TV";
+      error = "Cnat't get chatRoom makeUserId";
     }
   }
 
@@ -120,11 +148,51 @@ export default class extends React.Component {
         console.log('i am joinUser');
         this.outChatRoom();
       }
-    } else if (data === 'battleRating') {
-      // 배틀 평가하기
+    } else if (data === 'battleEnd') {
+      // 배틀 종료 및 평가하기
+      this.checkEndUser();
+      this.changeModalVisiblity(true);
+    } else if (data === 'rating') {
+      console.log('rating start');
+      this.checkEndUser();
     } else {
       // Dialog 취소
+      console.log('cancel dialog');
     }
+  };
+
+  // battleState === end => endUser Check
+  checkEndUser = async () => {
+    let endUser = {};
+    endUser[this.state.myId] = true;
+    firebase
+      .database()
+      .ref('chatRoomList/' + this.state.roomKey + '/endUser')
+      .update({
+        [this.state.myId]: true,
+      })
+      .then(data => {
+        //success callback
+        console.log('endUser Check: ', JSON.stringify(data));
+        this.setState({
+          endCheck: true,
+        });
+      })
+      .catch(error => {
+        //error callback
+        console.log('error ', error);
+      });
+    firebase
+      .database()
+      .ref('chatRoomList/' + this.state.roomKey)
+      .update({
+        battleState: '배틀종료',
+      })
+      .then(
+        this.setState({
+          statusText: '배틀종료',
+        }),
+      );
   };
 
   // 방장이 나간다
@@ -173,10 +241,16 @@ export default class extends React.Component {
   };
 
   componentWillUnmount() {
-    // firebase
-    //   .database()
-    //   .ref('chatRoomList/')
-    //   .off();
+    const {roomKey, myId} = this.state;
+    firebase
+      .database()
+      .ref('chatRoomList/' + roomKey + '/endUser/' + myId)
+      .off();
+
+    firebase
+      .database()
+      .ref('chatRoomList/' + roomKey + '/battleState')
+      .off();
   }
 
   render() {
@@ -198,6 +272,7 @@ export default class extends React.Component {
       profile,
       roomKey,
       roomMaker,
+      endCheck,
     } = this.state;
     return (
       <>
@@ -219,6 +294,7 @@ export default class extends React.Component {
           name={name}
           roomKey={roomKey}
           roomMaker={roomMaker}
+          endCheck={endCheck}
           changeModalVisiblity={this.changeModalVisiblity}
         />
         <Modal

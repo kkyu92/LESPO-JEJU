@@ -96,6 +96,26 @@ const View = styled.View`
   height: ${VIEW_HEIGHT};
   position: absolute;
 `;
+const NoticeContainer = styled.View`
+  position: absolute;
+  width: 100%;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border-color: ${BG_COLOR};
+  border-width: 1px;
+  background-color: ${TINT_COLOR};
+  padding-top: 10px;
+  padding-bottom: 10px;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
+`;
+const NoticeText = styled.Text`
+  color: ${BG_COLOR};
+  font-size: 15px;
+  font-weight: 800;
+  text-align: center;
+`;
 
 const _getLocation = async (latitude, longitude) => {
   this.map.animateToRegion(
@@ -106,71 +126,6 @@ const _getLocation = async (latitude, longitude) => {
 };
 
 let INDEX = 0;
-const coordinates = {
-  mark: [],
-  markers: [
-    {
-      key: 0,
-      name: '제주공항',
-      text: '제주공항 설명',
-      latlng: {latitude: 33.5104135, longitude: 126.4891594},
-    },
-    {
-      key: 1,
-      name: '한라산',
-      text: '한라산 설명',
-      latlng: {latitude: 33.3616649, longitude: 126.5116141},
-    },
-    {
-      key: 2,
-      name: '라마다프라자 제주호텔',
-      text: '제주특별자치도 제주시 삼도2동 탑동로 66',
-      latlng: {latitude: 33.5185371, longitude: 126.5169538},
-    },
-    {
-      key: 3,
-      name: '문강사',
-      text: '제주특별자치도 제주시 삼양일동',
-      latlng: {latitude: 33.526218, longitude: 126.596241},
-    },
-    {
-      key: 4,
-      name: '세화 해수욕장',
-      text: '제주시 구좌읍',
-      latlng: {latitude: 33.5185371, longitude: 126.8435592},
-    },
-    {
-      key: 5,
-      name: '서귀포해양도립공원',
-      text: '제주특별자치도 서귀포시 서홍동 707',
-      latlng: {latitude: 33.246336, longitude: 126.2788065},
-    },
-    {
-      key: 6,
-      name: '제주동백수목원',
-      text: '제주특별자치도 서귀포시 남원읍 위미리 929 제주특별자치도',
-      latlng: {latitude: 33.2752541, longitude: 126.6758166},
-    },
-    {
-      key: 7,
-      name: '도두봉',
-      text: '제주시 도두일동',
-      latlng: {latitude: 33.5080933, longitude: 126.4510405},
-    },
-    {
-      key: 8,
-      name: '제주도 민속자연사박물관',
-      text: '제주특별자치도 제주시 일도2동 삼성로 40',
-      latlng: {latitude: 33.5064642, longitude: 126.5294241},
-    },
-    {
-      key: 9,
-      name: '제주특별자치도립미술관',
-      text: '제주특별자치도 제주시 특별자치도, 1100로 2894-78 KR',
-      latlng: {latitude: 33.4526324, longitude: 126.4874133},
-    },
-  ],
-};
 
 const onSwiperItemChange = (index, locations) => {
   INDEX = index;
@@ -188,7 +143,7 @@ const onSwiperItemChange = (index, locations) => {
   locations.mark[index].showCallout();
 };
 
-const onMarkerPressed = locations => {
+const onMarkerPressed = (locations, mainState) => {
   this.map.animateToRegion({
     latitude: locations.location.latitude,
     longitude: locations.location.longitude,
@@ -198,7 +153,9 @@ const onMarkerPressed = locations => {
   let moveIndex = locations.key - INDEX;
   console.log('index::: ' + locations.key);
   console.log('INDEX::: ' + moveIndex);
-  // this.swiper.scrollBy(moveIndex, true);
+  if (mainState !== 'map') {
+    this.swiper.scrollBy(moveIndex, true);
+  }
 };
 
 const onCalloutPress = (listChanged, key, navigation) => {
@@ -274,7 +231,7 @@ const MapPresenter = ({
                 <Marker
                   key={list.key}
                   ref={marker => (this.marker = marker)}
-                  onPress={() => onMarkerPressed(list)}
+                  onPress={() => onMarkerPressed(list, mainState)}
                   onCalloutPress={() =>
                     onCalloutPress(listChanged, list.key, navigation)
                   }
@@ -387,7 +344,8 @@ const MapPresenter = ({
               .map((list, index) => (
                 <Marker
                   key={list.key}
-                  ref={marker => (this.marker = marker)}
+                  ref={marker => (locations.mark[index] = marker)}
+                  // ref={marker => (this.marker = marker)}
                   onPress={() => onMarkerPressed(list)}
                   onCalloutPress={() =>
                     onSavePlace(list.title + '\n' + list.address, navigation)
@@ -407,6 +365,45 @@ const MapPresenter = ({
           color={`${GREY_COLOR3}`}
         />
       </MyLocation>
+      <NoticeContainer>
+        <NoticeText>
+          배틀장소의 주소를 클릭해{'\n'}상대방에게 장소를 알려주세요!
+        </NoticeText>
+      </NoticeContainer>
+      <MView>
+        <Swiper
+          ref={swiper => {
+            this.swiper = swiper;
+          }}
+          showsPagination={true}
+          autoplay={false}
+          autoplayTimeout={3}
+          onIndexChanged={index => onSwiperItemChange(index, locations)}
+          style={{
+            height: (Layout.width / 5) * 3,
+            position: 'absolute',
+            bottom: 20,
+          }}>
+          {listChanged
+            .filter(list => list.id !== null)
+            .map((list, index) => (
+              <View key={index}>
+                <MainSlide
+                  map={true}
+                  overview={list.description}
+                  avg={list.like_count}
+                  title={list.title}
+                  id={list.id}
+                  backgroundPoster={
+                    list.matched_content_images[0].full_filename
+                  }
+                  poster={list.matched_content_images}
+                  detail={list.detail}
+                />
+              </View>
+            ))}
+        </Swiper>
+      </MView>
     </MapContainer>
   ) : (
     <MapContainer>

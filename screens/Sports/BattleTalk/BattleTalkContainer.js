@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import BattleTalkPresenter from './BattleTalkPresenter';
 import {Modal, Alert} from 'react-native';
 import SimpleDialog from '../../../components/SimpleDialog';
+import Firebase from 'react-native-firebase';
 
 var M_ID = '';
 var M_NAME = '';
@@ -73,6 +74,16 @@ export default class extends React.Component {
         //error callback
         console.log('error ', error);
       });
+    // fcm
+    let otherToken;
+    firebase
+      .database()
+      .ref('FcmTokenList/' + this.state.id)
+      .once('value', dataSnapshot => {
+        otherToken = dataSnapshot;
+        console.log(otherToken);
+        this.sendToServer(this.state.myName, '배틀을 시작합니다.', otherToken);
+      });
   };
 
   // msg handler
@@ -114,6 +125,16 @@ export default class extends React.Component {
       .catch(error => {
         //error callback
         console.log('error ', error);
+      });
+    // fcm
+    let otherToken;
+    firebase
+      .database()
+      .ref('FcmTokenList/' + this.state.id)
+      .once('value', dataSnapshot => {
+        otherToken = dataSnapshot;
+        console.log(otherToken);
+        this.sendToServer(this.state.myName, msg, otherToken);
       });
     this.setState({
       msg: '',
@@ -220,8 +241,62 @@ export default class extends React.Component {
     }
   };
 
+  sendToServer = async (sender, msg, token) => {
+    const firebase_server_key =
+      'AAAABOeF95E:APA91bGCKfJwCOUeYC8QypsS7yCAtR8ZOZf_rAj1iRK_OvIB3mYXYnva4DAY28XmUZA1GpXsdp1eRf9rPeuIedr7eX_7yFWbL-C_4JfVGSFGorCdzjOA0AyYPxB83M8TTAfUj62tUZhH';
+    console.log('sendToFcm');
+
+    fetch('https://fcm.googleapis.com/fcm/send', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'key=' + firebase_server_key,
+      },
+      body: JSON.stringify({
+        registration_ids: [token],
+        notification: {
+          title: sender,
+          body: msg,
+        },
+        data: {
+          roomKey: this.state.roomKey,
+          sender: sender,
+          msg: msg,
+          key4: true,
+        },
+      }),
+    })
+      .then(response => {
+        console.log('FCM msg sent!');
+        // console.log(response);
+        // console.log('FCM Token: ' + token);
+        console.log('Message: ' + msg);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  };
+
   // init 초기값
   async componentDidMount() {
+    // fcm setting
+    const enable = await Firebase.messaging().hasPermission();
+    if (enable) {
+      // const FcmToken = await Firebase.messaging().getToken();
+      // console.log('FcmToken: ' + JSON.stringify(FcmToken));
+      Firebase.notifications().onNotification(notification => {
+        // alert('notification._android');
+        console.log(
+          'get FCM msg : ' + notification.android._notification._data,
+        );
+      });
+    } else {
+      try {
+        Firebase.messaging().requestPermission();
+      } catch (error) {
+        alert('user reject permission');
+      }
+    }
     let {roomKey, getChatList} = this.state;
     try {
       // get battleState

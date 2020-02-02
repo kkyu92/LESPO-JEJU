@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "21064185745",
+    "firebase_url": "https://lespo-261906.firebaseio.com",
+    "project_id": "lespo-261906",
+    "storage_bucket": "lespo-261906.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:21064185745:android:1c22bd402edb9101e00c30",
+        "android_client_info": {
+          "package_name": "com.lespojeju"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "21064185745-laehhgl4pn214rc1ocka9dv9p513tmgb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZKwAcy_03vYPVhmJmgiPfW_57jhNq4Cc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "21064185745-laehhgl4pn214rc1ocka9dv9p513tmgb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

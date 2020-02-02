@@ -1,6 +1,11 @@
 import React from 'react';
 import MainPresenter from './MainPresenter';
 import {LESPO_API} from '../../api/Api';
+import Firebase from 'react-native-firebase';
+import firebase from 'firebase';
+import AsyncStorage from '@react-native-community/async-storage';
+import Toast from 'react-native-easy-toast';
+import {BG_COLOR, TINT_COLOR} from '../../constants/Colors';
 
 // set DATA = Container
 export default class extends React.Component {
@@ -19,6 +24,48 @@ export default class extends React.Component {
   }
 
   async componentDidMount() {
+    let userId = await AsyncStorage.getItem('@USER_ID');
+    console.log(userId);
+    const FcmToken = await Firebase.messaging().getToken();
+    await AsyncStorage.setItem('@FCM', FcmToken);
+    await firebase
+      .database()
+      .ref('FcmTokenList')
+      .update({
+        [userId]: FcmToken,
+      })
+      .then(data => {
+        //success callback
+        console.log('update my FcmToken: ', JSON.stringify(data));
+        // AsyncStorage save
+      })
+      .catch(error => {
+        //error callback
+        console.log('error ', error);
+      });
+    // fcm setting
+    const enable = await Firebase.messaging().hasPermission();
+    if (enable) {
+      // 화면에 들어와있을 때
+      Firebase.notifications().onNotification(notification => {
+        // alert('notification._android');
+        console.log(
+          'get FCM msg : ' + notification.android._notification._data,
+        );
+        this.refs.toast.show(
+          notification.android._notification._data.sender +
+            ' : ' +
+            notification.android._notification._data.msg,
+        );
+      });
+    } else {
+      try {
+        Firebase.messaging().requestPermission();
+      } catch (error) {
+        alert('user reject permission');
+      }
+    }
+
     this._isMounted = true;
     this.onListChanging();
     this.subs = [
@@ -89,16 +136,36 @@ export default class extends React.Component {
     this.subs.forEach(sub => sub.remove());
   }
 
+  componentWillUnmount() {
+    firebase
+      .database()
+      .ref('FcmTokenList')
+      .off();
+  }
+
   render() {
     const {loading, mainList, foodList, playList, viewList} = this.state;
     return (
-      <MainPresenter
-        loading={loading}
-        mainList={mainList}
-        foodList={foodList}
-        playList={playList}
-        viewList={viewList}
-      />
+      <>
+        <MainPresenter
+          loading={loading}
+          mainList={mainList}
+          foodList={foodList}
+          playList={playList}
+          viewList={viewList}
+        />
+
+        <Toast
+          ref="toast"
+          style={{backgroundColor: BG_COLOR}}
+          position="top"
+          positionValue={100}
+          fadeInDuration={750}
+          fadeOutDuration={1500}
+          opacity={1}
+          textStyle={{color: TINT_COLOR}}
+        />
+      </>
     );
   }
 }

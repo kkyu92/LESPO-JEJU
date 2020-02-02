@@ -5,6 +5,7 @@ import MyBattleDetailPresenter from './MyBattleDetailPresenter';
 import firebase from 'firebase';
 import AsyncStorage from '@react-native-community/async-storage';
 import moment from 'moment';
+import {LESPO_API} from '../../../api/Api';
 
 var M_ID, M_NAME, M_PROFILE;
 
@@ -48,6 +49,7 @@ export default class extends React.Component {
       myName: '',
       myProfile: '',
       isModalVisible: false,
+      isRandomBox: '',
       endCheck: '',
       roomMaker: '',
       error: null,
@@ -135,7 +137,7 @@ export default class extends React.Component {
     this.setState({isModalVisible: bool});
   };
 
-  setData = data => {
+  setData = (data, rating) => {
     const {myId, roomMaker} = this.state;
     console.log('setData::: ', data);
     if (data === 'battleCancel') {
@@ -152,13 +154,42 @@ export default class extends React.Component {
       // 배틀 종료 및 평가하기
       this.checkEndUser();
       this.changeModalVisiblity(true);
-    } else if (data === 'rating') {
-      console.log('rating start');
+    } else if (data === 'start') {
       this.checkEndUser();
+      this.addRating(rating);
+      this.setState({isRandomBox: 'start'});
+      this.changeModalVisiblity(true);
+    } else if (data === 'success') {
+      this.setState({isRandomBox: 'success'});
+      this.changeModalVisiblity(true);
+    } else if (data === 'fail') {
+      this.setState({isRandomBox: 'fail'});
+      this.changeModalVisiblity(true);
     } else {
       // Dialog 취소
       console.log('cancel dialog');
     }
+  };
+
+  // rating save to server
+  addRating = async rating => {
+    let TOKEN = await AsyncStorage.getItem('@API_TOKEN');
+    const config = {
+      headers: {
+        Authorization: TOKEN,
+      },
+    };
+    const params = new URLSearchParams();
+    params.append('chat-uuid', this.state.roomKey);
+    params.append('target-userId', this.state.id);
+    params.append('rating', rating);
+    await LESPO_API.addRating(params, config)
+      .then(response => {
+        console.log(JSON.stringify(response.data.data));
+      })
+      .catch(error => {
+        console.log('addRating fail: ' + error);
+      });
   };
 
   // battleState === end => endUser Check
@@ -273,6 +304,7 @@ export default class extends React.Component {
       roomKey,
       roomMaker,
       endCheck,
+      isRandomBox,
     } = this.state;
     return (
       <>
@@ -303,6 +335,7 @@ export default class extends React.Component {
           onRequestClose={() => this.changeModalVisiblity(false)}
           animationType="fade">
           <SimpleDialog
+            isRandomBox={isRandomBox}
             battleState={statusText}
             changeModalVisiblity={this.changeModalVisiblity}
             setData={this.setData}

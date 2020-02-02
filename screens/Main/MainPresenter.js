@@ -15,6 +15,7 @@ import {
   BG_COLOR,
 } from '../../constants/Colors';
 import Layout from '../../constants/Layout';
+import Toast from 'react-native-easy-toast';
 
 const View = styled.View`
   background-color: ${BG_COLOR};
@@ -148,6 +149,7 @@ const MainPresenter = ({
   foodList,
   playList,
   viewList,
+  toast,
   navigation,
 }) =>
   loading ? (

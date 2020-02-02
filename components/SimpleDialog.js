@@ -10,7 +10,12 @@ import {
   Dimensions,
 } from 'react-native';
 import Layout from '../constants/Layout';
-import {GREY_COLOR, BG_COLOR, TINT_COLOR} from '../constants/Colors';
+import {
+  GREY_COLOR,
+  BG_COLOR,
+  TINT_COLOR,
+  GREY_COLOR3,
+} from '../constants/Colors';
 import Toast, {DURATION} from 'react-native-easy-toast';
 
 export default class SimpleDialog extends Component {
@@ -21,6 +26,7 @@ export default class SimpleDialog extends Component {
       height: Layout.height,
       battleResult: '',
       rating: 5,
+      randomNum: '',
     };
     Dimensions.addEventListener('change', e => {
       this.setState(e.window);
@@ -29,8 +35,23 @@ export default class SimpleDialog extends Component {
 
   closeModal = data => {
     this.props.changeModalVisiblity(false);
-    this.props.changeModalVisiblity(false);
-    this.props.setData(data);
+    if (data === 'random') {
+      this.createRandomNumber();
+    } else {
+      this.props.setData(data, this.state.rating);
+    }
+  };
+
+  createRandomNumber = () => {
+    let RandomNumber = Math.floor(Math.random() * 100) + 1;
+    console.log('random number: ' + RandomNumber);
+    if (RandomNumber < 51) {
+      this.setState({randomNum: 'fail'});
+      this.props.setData('fail', this.state.rating);
+    } else {
+      this.setState({randomNum: 'success'});
+      this.props.setData('success', this.state.rating);
+    }
   };
 
   render() {
@@ -122,7 +143,8 @@ export default class SimpleDialog extends Component {
           </View>
         </View>
       </TouchableOpacity>
-    ) : this.props.battleState === '배틀종료' ? ( // 평가하기
+    ) : this.props.battleState === '배틀종료' &&
+      this.props.isRandomBox === '' ? ( // 평가하기
       <TouchableOpacity
         activeOpacity={1}
         disabled={true}
@@ -254,7 +276,7 @@ export default class SimpleDialog extends Component {
               onPress={() => {
                 this.state.battleResult === ''
                   ? this.refs.toast.show('승패를 선택해주세요!')
-                  : this.closeModal('rating');
+                  : this.closeModal('start');
               }}
               style={styles.ratingBtn}
               underlayColor={'#f1f1f1'}>
@@ -272,6 +294,102 @@ export default class SimpleDialog extends Component {
           opacity={1}
           textStyle={{color: TINT_COLOR}}
         />
+      </TouchableOpacity>
+    ) : this.props.battleState === '배틀종료' &&
+      this.props.isRandomBox === 'start' ? (
+      <TouchableOpacity
+        activeOpacity={1}
+        disabled={true}
+        style={styles.contentContainer}>
+        <View style={[styles.imgModal, {width: this.state.width - 80}]}>
+          <View style={styles.imgTitleView}>
+            <Text style={[styles.ratingText, {color: 'black'}, {fontSize: 30}]}>
+              배틀완료
+            </Text>
+            <Text style={styles.ratingText}> 랜덤 박스를 오픈하세요. </Text>
+            <View style={styles.imageContainer}>
+              <TouchableOpacity onPress={() => this.closeModal('random')}>
+                <Image
+                  style={styles.imgRandomBox}
+                  source={require(`../assets/drawable-xxhdpi/img_randombox.png`)}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </TouchableOpacity>
+    ) : this.props.battleState === '배틀종료' &&
+      this.props.isRandomBox === 'success' ? (
+      <TouchableOpacity
+        activeOpacity={1}
+        disabled={true}
+        style={styles.contentContainer}>
+        <View style={[styles.ratingModal, {width: this.state.width - 80}]}>
+          <View style={styles.imgTitleView}>
+            <Text style={[styles.ratingText, {color: 'black'}, {fontSize: 30}]}>
+              배틀완료
+            </Text>
+            <Text style={styles.ratingText}> 바나나 우유 당첨! </Text>
+            <View style={styles.imageContainer}>
+              <TouchableOpacity>
+                <Image
+                  style={styles.img}
+                  source={require(`../assets/drawable-xxhdpi/img_banana.png`)}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={styles.ratingBtnView}>
+            <TouchableHighlight
+              onPress={() => {
+                this.closeModal('Cancel');
+              }}
+              style={styles.ratingBtn}
+              underlayColor={'#f1f1f1'}>
+              <Text style={[styles.text, {color: TINT_COLOR}]}> 받기 </Text>
+            </TouchableHighlight>
+          </View>
+          <Text style={styles.imgMiniText}>
+            {' '}
+            관리자 카카오톡으로 연결됩니다.{' '}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    ) : this.props.battleState === '배틀종료' &&
+      this.props.isRandomBox === 'fail' ? (
+      <TouchableOpacity
+        activeOpacity={1}
+        disabled={true}
+        style={styles.contentContainer}>
+        <View style={[styles.ratingModal, {width: this.state.width - 80}]}>
+          <View style={styles.imgTitleView}>
+            <Text style={[styles.ratingText, {color: 'black'}, {fontSize: 30}]}>
+              배틀완료
+            </Text>
+            <Text style={styles.ratingText}>
+              {' '}
+              아쉬워요 ㅜㅜ{'\n'}다음에는 화이팅!{' '}
+            </Text>
+            <View style={styles.imageContainer}>
+              <TouchableOpacity>
+                <Image
+                  style={styles.img}
+                  source={require(`../assets/drawable-xxhdpi/img_loseorange.png`)}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={styles.ratingBtnView}>
+            <TouchableHighlight
+              onPress={() => {
+                this.closeModal('Cancel');
+              }}
+              style={styles.ratingBtn}
+              underlayColor={'#f1f1f1'}>
+              <Text style={[styles.text, {color: TINT_COLOR}]}> 확인 </Text>
+            </TouchableHighlight>
+          </View>
+        </View>
       </TouchableOpacity>
     ) : (
       // 배틀 종료
@@ -307,6 +425,42 @@ export default class SimpleDialog extends Component {
 }
 
 const styles = StyleSheet.create({
+  img: {
+    marginTop: 20,
+    width: 200,
+    height: 200,
+  },
+  imgMiniText: {
+    color: GREY_COLOR3,
+    fontSize: 12,
+    alignItems: 'center',
+    alignSelf: 'center',
+    margin: 10,
+  },
+  imgModal: {
+    height: (Layout.height * 2) / 3.5,
+    paddingTop: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
+    alignSelf: 'center',
+    alignItems: 'flex-start',
+    textAlign: 'center',
+    backgroundColor: 'white',
+    borderColor: 'orange',
+    borderWidth: 2,
+    borderRadius: 10,
+  },
+  imgTitleView: {
+    flex: 1,
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  imgRandomBox: {
+    marginTop: 20,
+    width: 160,
+    height: 244,
+  },
   contentContainer: {
     flex: 1,
     alignItems: 'center',

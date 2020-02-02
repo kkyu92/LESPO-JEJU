@@ -5,6 +5,8 @@ import KakaoLogins from '@react-native-seoul/kakao-login';
 import AsyncStorage from '@react-native-community/async-storage';
 import Axios from 'axios';
 import {Alert} from 'react-native';
+import Firebase from 'react-native-firebase';
+// import firebase from 'firebase';
 
 if (!KakaoLogins) {
   console.error('Module is Not Linked');

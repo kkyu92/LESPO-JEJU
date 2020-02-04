@@ -208,7 +208,7 @@ const SportsPresenter = ({
                     ))}
                 </Section>
               ) : (
-                <SearchNo />
+                <SearchNo text={'등록된 배틀이 없습니다.'} />
               )
             ) : (
               console.log('null')

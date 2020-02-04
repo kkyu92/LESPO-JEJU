@@ -6,6 +6,8 @@ import {View, Text, Platform} from 'react-native';
 import {LESPO_API} from '../../api/Api';
 import AsyncStorage from '@react-native-community/async-storage';
 import moment from 'moment';
+import Firebase from 'react-native-firebase';
+import Toast from 'react-native-easy-toast';
 
 export default class extends React.Component {
   static navigationOptions = () => {
@@ -16,6 +18,7 @@ export default class extends React.Component {
 
   constructor(props) {
     super(props);
+    const {navigation} = this.props;
     const {
       navigation: {
         state: {
@@ -33,6 +36,7 @@ export default class extends React.Component {
       onSavePlace,
       listName: '',
       token: null,
+      navigation,
       error: null,
     };
   }
@@ -78,6 +82,40 @@ export default class extends React.Component {
 
   // 시작시 불러옴
   async componentDidMount() {
+    // fcm setting
+    const enable = await Firebase.messaging().hasPermission();
+    if (enable) {
+      // 화면에 들어와있을 때 알림
+      Firebase.notifications().onNotification(notification => {
+        this.refs.toast.show(
+          notification.android._notification._data.name +
+            ' : ' +
+            notification.android._notification._data.msg,
+        );
+      });
+    } else {
+      try {
+        Firebase.messaging().requestPermission();
+      } catch (error) {
+        alert('user reject permission');
+      }
+    }
+    // 최소화에서 들어옴
+    this.removeNotificationOpenedListener = Firebase.notifications().onNotificationOpened(
+      notificationOpen => {
+        const notification = notificationOpen.notification.data;
+        console.log('onNotificationOpened : ' + JSON.stringify(notification));
+        this.state.navigation.navigate({
+          routeName: 'BattleTalk',
+          params: {
+            roomKey: notification.roomKey,
+            id: notification.id,
+            profile: notification.profile,
+            name: notification.name,
+          },
+        });
+      },
+    );
     try {
       let M_ID = await AsyncStorage.getItem('@USER_ID');
       let M_NAME = await AsyncStorage.getItem('@USER_NAME');
@@ -631,6 +669,7 @@ export default class extends React.Component {
 
   componentWillUnmount() {
     console.log('componentWillUnmount ::: ');
+    this.removeNotificationOpenedListener();
     if (this.state.mainState !== 'map') {
       this.subs.forEach(sub => sub.remove());
     }
@@ -650,23 +689,48 @@ export default class extends React.Component {
     // 위치정보 받기 전
     if (latitude) {
       return (
-        <MapPresenter
-          loading={loading}
-          latitude={latitude}
-          longitude={longitude}
-          listChanged={listChanged}
-          locations={locations}
-          mainState={mainState}
-          listName={listName}
-          onSavePlace={onSavePlace}
-          onListChanging={this.onListChanging}
-        />
+        <>
+          <MapPresenter
+            loading={loading}
+            latitude={latitude}
+            longitude={longitude}
+            listChanged={listChanged}
+            locations={locations}
+            mainState={mainState}
+            listName={listName}
+            onSavePlace={onSavePlace}
+            onListChanging={this.onListChanging}
+          />
+          <Toast
+            ref="toast"
+            style={{backgroundColor: '#fee6d0'}}
+            position="top"
+            positionValue={100}
+            fadeInDuration={750}
+            fadeOutDuration={1500}
+            opacity={1}
+            textStyle={{color: '#000000'}}
+          />
+        </>
       );
     } else {
       return (
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <Text>위치정보를 불러오는중입니다....</Text>
-        </View>
+        <>
+          <View
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <Text>위치정보를 불러오는중입니다....</Text>
+          </View>
+          <Toast
+            ref="toast"
+            style={{backgroundColor: '#fee6d0'}}
+            position="top"
+            positionValue={100}
+            fadeInDuration={750}
+            fadeOutDuration={1500}
+            opacity={1}
+            textStyle={{color: '#000000'}}
+          />
+        </>
       );
     }
   }

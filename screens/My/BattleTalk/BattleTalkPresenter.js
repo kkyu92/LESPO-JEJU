@@ -82,7 +82,7 @@ const BattleTalkPresenter = ({loading, chatRoomList, myId}) =>
                     ))}
                 </Section>
               ) : (
-                <SearchNo />
+                <SearchNo text={'배틀톡 리스트가 없습니다.'} />
               )
             ) : (
               console.log('null')

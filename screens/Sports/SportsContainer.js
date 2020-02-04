@@ -4,12 +4,15 @@ import SportsPresenter from './SportsPresenter';
 import {tv, movie} from '../../api/Api';
 import firebase from 'firebase';
 import AsyncStorage from '@react-native-community/async-storage';
+import Toast from 'react-native-easy-toast';
+import Firebase from 'react-native-firebase';
 
 var M_ID, M_NAME, M_PROFILE;
 
 export default class extends React.Component {
   constructor(props) {
     super(props);
+    const {navigation} = this.props;
     this.state = {
       loading: true,
       listName: null,
@@ -18,6 +21,7 @@ export default class extends React.Component {
       myId: null,
       myName: null,
       myProfile: null,
+      navigation,
       error: null,
     };
     console.log('constructor ----');
@@ -63,6 +67,40 @@ export default class extends React.Component {
 
   // 시작시 불러옴
   async componentDidMount() {
+    // fcm setting
+    const enable = await Firebase.messaging().hasPermission();
+    if (enable) {
+      // 화면에 들어와있을 때 알림
+      Firebase.notifications().onNotification(notification => {
+        this.refs.toast.show(
+          notification.android._notification._data.name +
+            ' : ' +
+            notification.android._notification._data.msg,
+        );
+      });
+    } else {
+      try {
+        Firebase.messaging().requestPermission();
+      } catch (error) {
+        alert('user reject permission');
+      }
+    }
+    // 최소화에서 들어옴
+    this.removeNotificationOpenedListener = Firebase.notifications().onNotificationOpened(
+      notificationOpen => {
+        const notification = notificationOpen.notification.data;
+        console.log('onNotificationOpened : ' + JSON.stringify(notification));
+        this.state.navigation.navigate({
+          routeName: 'BattleTalk',
+          params: {
+            roomKey: notification.roomKey,
+            id: notification.id,
+            profile: notification.profile,
+            name: notification.name,
+          },
+        });
+      },
+    );
     let {listChanged, chatRoomList, error} = this.state;
     try {
       this.getData();
@@ -100,15 +138,10 @@ export default class extends React.Component {
         this.setState({
           loading: false,
         });
-        console.log('Firebase on Finish----------');
       });
-      //console.log('chatList Data[finally 1]: ' + JSON.stringify(list));
-      console.log(
-        'chatList Data[try 1]: ' + JSON.stringify(this.state.chatRoomList),
-      );
     } catch (error) {
       console.log(error);
-      error = "Cnat't get TV";
+      error = "Cnat't get sportsBattle list";
     }
     // 화면 돌아왔을 때 reload !
     // this.subs = [
@@ -124,7 +157,7 @@ export default class extends React.Component {
 
   // 나갔을때
   componentWillUnmount() {
-    console.log('componentWillUnmount ::: ');
+    this.removeNotificationOpenedListener();
     firebase
       .database()
       .ref('chatRoomList/')
@@ -189,15 +222,27 @@ export default class extends React.Component {
   render() {
     const {loading, listName, listChanged, myId, chatRoomList} = this.state;
     return (
-      <SportsPresenter
-        myId={myId}
-        loading={loading}
-        listName={listName}
-        // listChanged={listChanged}
-        chatRoomList={chatRoomList}
-        // onListChanging={this.onListChanging}
-        // handleListUpdate={this.handleListUpdate}
-      />
+      <>
+        <SportsPresenter
+          myId={myId}
+          loading={loading}
+          listName={listName}
+          // listChanged={listChanged}
+          chatRoomList={chatRoomList}
+          // onListChanging={this.onListChanging}
+          // handleListUpdate={this.handleListUpdate}
+        />
+        <Toast
+          ref="toast"
+          style={{backgroundColor: '#fee6d0'}}
+          position="top"
+          positionValue={100}
+          fadeInDuration={750}
+          fadeOutDuration={1500}
+          opacity={1}
+          textStyle={{color: '#000000'}}
+        />
+      </>
     );
   }
 }

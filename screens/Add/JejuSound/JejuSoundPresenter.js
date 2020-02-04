@@ -67,7 +67,7 @@ const JejuPresenter = ({loading, listChanged}) =>
                 ))}
             </Section>
           ) : (
-            <SearchNo />
+            <SearchNo text={'등록된 광고가 없습니다.'} />
           )
         ) : (
           console.log('null')

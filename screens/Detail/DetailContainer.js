@@ -4,6 +4,8 @@ import DetailPresenter from './DetailPresenter';
 import {LESPO_API} from '../../api/Api';
 import AsyncStorage from '@react-native-community/async-storage';
 import {Keyboard} from 'react-native';
+import Toast from 'react-native-easy-toast';
+import Firebase from 'react-native-firebase';
 
 export default class extends React.Component {
   static navigationOptions = () => {
@@ -14,6 +16,7 @@ export default class extends React.Component {
 
   constructor(props) {
     super(props);
+    const {navigation} = this.props;
     const {
       navigation: {
         state: {
@@ -50,11 +53,46 @@ export default class extends React.Component {
       wishId,
       likeId,
       reco,
+      navigation,
       msg: '',
     };
   }
 
   async componentDidMount() {
+    // fcm setting
+    const enable = await Firebase.messaging().hasPermission();
+    if (enable) {
+      // 화면에 들어와있을 때 알림
+      Firebase.notifications().onNotification(notification => {
+        this.refs.toast.show(
+          notification.android._notification._data.name +
+            ' : ' +
+            notification.android._notification._data.msg,
+        );
+      });
+    } else {
+      try {
+        Firebase.messaging().requestPermission();
+      } catch (error) {
+        alert('user reject permission');
+      }
+    }
+    // 최소화에서 들어옴
+    this.removeNotificationOpenedListener = Firebase.notifications().onNotificationOpened(
+      notificationOpen => {
+        const notification = notificationOpen.notification.data;
+        console.log('onNotificationOpened : ' + JSON.stringify(notification));
+        this.state.navigation.navigate({
+          routeName: 'BattleTalk',
+          params: {
+            roomKey: notification.roomKey,
+            id: notification.id,
+            profile: notification.profile,
+            name: notification.name,
+          },
+        });
+      },
+    );
     let listChanged;
     let TOKEN = await AsyncStorage.getItem('@API_TOKEN');
     const config = {
@@ -263,6 +301,10 @@ export default class extends React.Component {
       });
   };
 
+  componentWillUnmount() {
+    this.removeNotificationOpenedListener();
+  }
+
   render() {
     const {
       loading,
@@ -280,27 +322,39 @@ export default class extends React.Component {
       reco,
     } = this.state;
     return (
-      <DetailPresenter
-        loading={loading}
-        id={id}
-        backgroundPoster={backgroundPoster}
-        poster={poster}
-        title={title}
-        avg={avg}
-        overview={overview}
-        msg={msg}
-        handleMsgUpdate={this.handleMsgUpdate}
-        insertCommentList={this.insertCommentList}
-        isLike={isLike}
-        likeUp={this.likeUp}
-        likeDown={this.likeDown}
-        isWish={isWish}
-        wishListIn={this.wishListIn}
-        wishListOut={this.wishListOut}
-        detail={detail}
-        comments={comments}
-        reco={reco}
-      />
+      <>
+        <DetailPresenter
+          loading={loading}
+          id={id}
+          backgroundPoster={backgroundPoster}
+          poster={poster}
+          title={title}
+          avg={avg}
+          overview={overview}
+          msg={msg}
+          handleMsgUpdate={this.handleMsgUpdate}
+          insertCommentList={this.insertCommentList}
+          isLike={isLike}
+          likeUp={this.likeUp}
+          likeDown={this.likeDown}
+          isWish={isWish}
+          wishListIn={this.wishListIn}
+          wishListOut={this.wishListOut}
+          detail={detail}
+          comments={comments}
+          reco={reco}
+        />
+        <Toast
+          ref="toast"
+          style={{backgroundColor: '#fee6d0'}}
+          position="top"
+          positionValue={100}
+          fadeInDuration={750}
+          fadeOutDuration={1500}
+          opacity={1}
+          textStyle={{color: '#000000'}}
+        />
+      </>
     );
   }
 }

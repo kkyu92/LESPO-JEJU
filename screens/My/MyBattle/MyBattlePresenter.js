@@ -76,13 +76,13 @@ const MyBattlePresenter = ({loading, chatRoomList, myId}) =>
                       ),
                     )}
                 </Section>
-              ) : (
-                <SearchNo />
-              )
+              ) : null
             ) : (
               console.log('null')
             )}
-            {itemCount.length > 0 ? null : <SearchNo />}
+            {itemCount.length > 0 ? null : (
+              <SearchNo text={'나의 배틀 리스트가 없습니다.'} />
+            )}
           </>
         )}
       </Container>

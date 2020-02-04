@@ -88,7 +88,7 @@ const BowlingPresenter = ({loading, listChanged, locations, navigation}) =>
                     ))}
                 </Section>
               ) : (
-                <SearchNo />
+                <SearchNo text={'등록된 리스트가 없습니다.'} />
               )
             ) : (
               console.log('null')

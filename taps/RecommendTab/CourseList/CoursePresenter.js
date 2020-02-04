@@ -158,7 +158,7 @@ const CoursePresenter = ({
                     ))}
                 </Section>
               ) : (
-                <SearchNo />
+                <SearchNo text={'등록된 추천경로가 없습니다.'} />
               )
             ) : (
               console.log('null')

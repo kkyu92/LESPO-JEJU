@@ -3,18 +3,25 @@ import {Platform} from 'react-native';
 import MyBattlePresenter from './MyBattlePresenter';
 import firebase from 'firebase';
 import AsyncStorage from '@react-native-community/async-storage';
+import Toast from 'react-native-easy-toast';
+import Firebase from 'react-native-firebase';
 
 var M_ID, M_NAME, M_PROFILE;
 
 export default class extends React.Component {
-  state = {
-    loading: true,
-    chatRoomList: [],
-    myId: '',
-    myName: '',
-    myProfile: '',
-    error: null,
-  };
+  constructor(props) {
+    super(props);
+    const {navigation} = this.props;
+    this.state = {
+      loading: true,
+      chatRoomList: [],
+      myId: '',
+      myName: '',
+      myProfile: '',
+      navigation,
+      error: null,
+    };
+  }
 
   getData = async () => {
     console.log('getData');
@@ -39,6 +46,40 @@ export default class extends React.Component {
 
   // 시작시 불러옴
   async componentDidMount() {
+    // fcm setting
+    const enable = await Firebase.messaging().hasPermission();
+    if (enable) {
+      // 화면에 들어와있을 때 알림
+      Firebase.notifications().onNotification(notification => {
+        this.refs.toast.show(
+          notification.android._notification._data.name +
+            ' : ' +
+            notification.android._notification._data.msg,
+        );
+      });
+    } else {
+      try {
+        Firebase.messaging().requestPermission();
+      } catch (error) {
+        alert('user reject permission');
+      }
+    }
+    // 최소화에서 들어옴
+    this.removeNotificationOpenedListener = Firebase.notifications().onNotificationOpened(
+      notificationOpen => {
+        const notification = notificationOpen.notification.data;
+        console.log('onNotificationOpened : ' + JSON.stringify(notification));
+        this.state.navigation.navigate({
+          routeName: 'BattleTalk',
+          params: {
+            roomKey: notification.roomKey,
+            id: notification.id,
+            profile: notification.profile,
+            name: notification.name,
+          },
+        });
+      },
+    );
     let {chatRoomList} = this.state;
     try {
       this.getData();
@@ -70,26 +111,21 @@ export default class extends React.Component {
           // chatRoomList.reverse();
           this.setState({
             chatRoomList: chatRoomList,
-            loading: false,
           });
         });
-        // console.log(
-        //   'Firebase on Finish----------' +
-        //     JSON.stringify(this.state.chatRoomList) +
-        //     this.state.myId,
-        // );
       });
-      //console.log('chatList Data[finally 1]: ' + JSON.stringify(list));
-      console.log(
-        'chatList Data[try 1]: ' + JSON.stringify(this.state.chatRoomList),
-      );
     } catch (error) {
       console.log(error);
       error = "Cnat't get ChatRoomList";
+    } finally {
+      this.setState({
+        loading: false,
+      });
     }
   }
 
   componentWillUnmount() {
+    this.removeNotificationOpenedListener();
     firebase
       .database()
       .ref('chatRoomList/')
@@ -99,11 +135,23 @@ export default class extends React.Component {
   render() {
     const {loading, chatRoomList, myId} = this.state;
     return (
-      <MyBattlePresenter
-        loading={loading}
-        chatRoomList={chatRoomList}
-        myId={myId}
-      />
+      <>
+        <MyBattlePresenter
+          loading={loading}
+          chatRoomList={chatRoomList}
+          myId={myId}
+        />
+        <Toast
+          ref="toast"
+          style={{backgroundColor: '#fee6d0'}}
+          position="top"
+          positionValue={100}
+          fadeInDuration={750}
+          fadeOutDuration={1500}
+          opacity={1}
+          textStyle={{color: '#000000'}}
+        />
+      </>
     );
   }
 }

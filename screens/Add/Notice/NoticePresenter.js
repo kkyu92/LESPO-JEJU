@@ -7,6 +7,7 @@ import SubSlide from '../../../components/SubSlide';
 import {TINT_COLOR} from '../../../constants/Colors';
 import {Platform} from 'react-native';
 import Notice from '../../../components/Notice';
+import SearchNo from '../../Main/Search/SearchNo';
 
 const View = styled.View`
   margin-left: 20px;
@@ -29,21 +30,23 @@ const NoticePresenter = ({loading, noticeList, index, handleClickIndex}) =>
   ) : (
     <View>
       <Container showsVerticalScrollIndicator={false}>
-        {noticeList
-          ? noticeList
-              .filter(list => list.title !== null)
-              .map(list => (
-                <Notice
-                  key={list.id}
-                  id={list.id}
-                  title={list.title}
-                  date={list.updated_at}
-                  contents={list.description}
-                  index={index}
-                  handleClickIndex={handleClickIndex}
-                />
-              ))
-          : console.log('No Notice')}
+        {noticeList ? (
+          noticeList
+            .filter(list => list.title !== null)
+            .map(list => (
+              <Notice
+                key={list.id}
+                id={list.id}
+                title={list.title}
+                date={list.updated_at}
+                contents={list.description}
+                index={index}
+                handleClickIndex={handleClickIndex}
+              />
+            ))
+        ) : (
+          <SearchNo text={'등록된 공지사항이 없습니다.'} />
+        )}
       </Container>
     </View>
   );

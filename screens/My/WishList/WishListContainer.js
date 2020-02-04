@@ -3,6 +3,8 @@ import WishListPresenter from './WishListPresenter';
 import {tv, movie, LESPO_API} from '../../../api/Api';
 import AsyncStorage from '@react-native-community/async-storage';
 import moment from 'moment';
+import Firebase from 'react-native-firebase';
+import Toast from 'react-native-easy-toast';
 
 export default class extends React.Component {
   static navigationOptions = () => {
@@ -10,15 +12,53 @@ export default class extends React.Component {
       title: '위시리스트',
     };
   };
-
-  state = {
-    loading: true,
-    listChanged: null,
-    locations: null,
-    error: null,
-  };
+  constructor(props) {
+    super(props);
+    const {navigation} = this.props;
+    this.sstate = {
+      loading: true,
+      listChanged: null,
+      locations: null,
+      navigation,
+      error: null,
+    };
+  }
 
   async componentDidMount() {
+    // fcm setting
+    const enable = await Firebase.messaging().hasPermission();
+    if (enable) {
+      // 화면에 들어와있을 때 알림
+      Firebase.notifications().onNotification(notification => {
+        this.refs.toast.show(
+          notification.android._notification._data.name +
+            ' : ' +
+            notification.android._notification._data.msg,
+        );
+      });
+    } else {
+      try {
+        Firebase.messaging().requestPermission();
+      } catch (error) {
+        alert('user reject permission');
+      }
+    }
+    // 최소화에서 들어옴
+    this.removeNotificationOpenedListener = Firebase.notifications().onNotificationOpened(
+      notificationOpen => {
+        const notification = notificationOpen.notification.data;
+        console.log('onNotificationOpened : ' + JSON.stringify(notification));
+        this.state.navigation.navigate({
+          routeName: 'BattleTalk',
+          params: {
+            roomKey: notification.roomKey,
+            id: notification.id,
+            profile: notification.profile,
+            name: notification.name,
+          },
+        });
+      },
+    );
     this.onListChanging();
     // 화면 돌아왔을 때 reload !
     this.subs = [
@@ -135,6 +175,7 @@ export default class extends React.Component {
 
   // 나갔을때
   componentWillUnmount() {
+    this.removeNotificationOpenedListener();
     console.log('componentWillUnmount ::: ');
     this.subs.forEach(sub => sub.remove());
   }
@@ -142,11 +183,23 @@ export default class extends React.Component {
   render() {
     const {loading, listChanged, locations} = this.state;
     return (
-      <WishListPresenter
-        loading={loading}
-        listChanged={listChanged}
-        locations={locations}
-      />
+      <>
+        <WishListPresenter
+          loading={loading}
+          listChanged={listChanged}
+          locations={locations}
+        />
+        <Toast
+          ref="toast"
+          style={{backgroundColor: '#fee6d0'}}
+          position="top"
+          positionValue={100}
+          fadeInDuration={750}
+          fadeOutDuration={1500}
+          opacity={1}
+          textStyle={{color: '#000000'}}
+        />
+      </>
     );
   }
 }

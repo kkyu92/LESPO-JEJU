@@ -5,6 +5,9 @@ import BattlePresenter from './BattlePresenter';
 import AsyncStorage from '@react-native-community/async-storage';
 import {Alert} from 'react-native';
 import {NavigationActions} from 'react-navigation';
+import Toast from 'react-native-easy-toast';
+import Firebase from 'react-native-firebase';
+import {LESPO_API} from '../../../api/Api';
 
 var nowDate = moment().format('YYYY-MM-DD');
 var makeDate;
@@ -27,6 +30,7 @@ export default class extends React.Component {
       date: nowDate,
       level: '실력',
       memo: '',
+      rating: 5,
       error: null,
       navigation: navigation,
     };
@@ -152,14 +156,58 @@ export default class extends React.Component {
 
   // init 초기값
   async componentDidMount() {
-    // let : 변할 수 있는 변수
+    // fcm setting
+    const enable = await Firebase.messaging().hasPermission();
+    if (enable) {
+      // 화면에 들어와있을 때 알림
+      Firebase.notifications().onNotification(notification => {
+        this.refs.toast.show(
+          notification.android._notification._data.name +
+            ' : ' +
+            notification.android._notification._data.msg,
+        );
+      });
+    } else {
+      try {
+        Firebase.messaging().requestPermission();
+      } catch (error) {
+        alert('user reject permission');
+      }
+    }
+    // 최소화에서 들어옴
+    this.removeNotificationOpenedListener = Firebase.notifications().onNotificationOpened(
+      notificationOpen => {
+        const notification = notificationOpen.notification.data;
+        console.log('onNotificationOpened : ' + JSON.stringify(notification));
+        this.state.navigation.navigate({
+          routeName: 'BattleTalk',
+          params: {
+            roomKey: notification.roomKey,
+            id: notification.id,
+            profile: notification.profile,
+            name: notification.name,
+          },
+        });
+      },
+    );
     let insertBattle, error;
     try {
       this.getData();
-      // 배틀 리스트 불러오기
-      //   ({
-      //     data: { results: insertBattle }
-      //   } = await tv.getPopular());
+      let API_TOKEN = await AsyncStorage.getItem('@API_TOKEN');
+      const config = {
+        headers: {
+          Authorization: API_TOKEN,
+        },
+      };
+      await LESPO_API.getRating(config)
+        .then(response => {
+          this.setState({
+            rating: response.data.data.rating,
+          });
+        })
+        .catch(error => {
+          console.log('getRating fail: ' + error);
+        });
     } catch (error) {
       console.log('insert Battle api error ::: ' + error);
       error = "Cant't insert Battle.";
@@ -174,6 +222,7 @@ export default class extends React.Component {
 
   // Screen out
   componentWillUnmount() {
+    this.removeNotificationOpenedListener();
     firebase
       .database()
       .ref('chatRoomList/')
@@ -197,7 +246,7 @@ export default class extends React.Component {
       userId: this.state.myId,
       userName: this.state.myName,
       userProfile: this.state.myProfile ? this.state.myProfile : '',
-      userRating: 5,
+      userRating: this.state.rating,
     };
     let joinUser = {
       userId: '',
@@ -272,18 +321,30 @@ export default class extends React.Component {
   render() {
     const {loading, insertBattle, date} = this.state;
     return (
-      <BattlePresenter
-        loading={loading}
-        insertBattle={insertBattle}
-        date={date}
-        setSportChange={this.setSportChange}
-        setAreaChange={this.setAreaChange}
-        setTypeChange={this.setTypeChange}
-        setDateChange={this.setDateChange}
-        setLevelChange={this.setLevelChange}
-        setMemoChange={this.setMemoChange}
-        updateBattle={this.updateBattle}
-      />
+      <>
+        <BattlePresenter
+          loading={loading}
+          insertBattle={insertBattle}
+          date={date}
+          setSportChange={this.setSportChange}
+          setAreaChange={this.setAreaChange}
+          setTypeChange={this.setTypeChange}
+          setDateChange={this.setDateChange}
+          setLevelChange={this.setLevelChange}
+          setMemoChange={this.setMemoChange}
+          updateBattle={this.updateBattle}
+        />
+        <Toast
+          ref="toast"
+          style={{backgroundColor: '#fee6d0'}}
+          position="top"
+          positionValue={100}
+          fadeInDuration={750}
+          fadeOutDuration={1500}
+          opacity={1}
+          textStyle={{color: '#000000'}}
+        />
+      </>
     );
   }
 }

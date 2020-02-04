@@ -13,10 +13,17 @@
 #import <KakaoOpenSDK/KakaoOpenSDK.h>
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <GoogleMaps/GoogleMaps.h>
+#import <Firebase.h> //Add This Line
+#import "RNFirebaseNotifications.h" //Add This Line
+#import "RNFirebaseMessaging.h"
 
 @implementation AppDelegate
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  // Firebase
+  [FIRApp configure]; //Add This Line
+  [RNFirebaseNotifications configure];  //Add This Line
+
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
                                                    moduleName:@"LespoJeju"
@@ -32,7 +39,21 @@
   [[FBSDKApplicationDelegate sharedInstance] application:application
     didFinishLaunchingWithOptions:launchOptions];
   [GMSServices provideAPIKey:@"AIzaSyDHUfqOG16BIZHBzD7JY8oBgCTzMWSldmk"]; // add this line using the api key obtained from Google Console
+  [[UNUserNotificationCenter currentNotificationCenter] setDelegate:self]; //Add This Line
   return YES;
+}
+
+// Firebase Notifications
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+  [[RNFirebaseNotifications instance] didReceiveLocalNotification:notification];
+}
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(nonnull NSDictionary *)userInfo
+                                                       fetchCompletionHandler:(nonnull void (^)(UIBackgroundFetchResult))completionHandler{
+  [[RNFirebaseNotifications instance] didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
+}
+
+- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
+  [[RNFirebaseMessaging instance] didRegisterUserNotificationSettings:notificationSettings];
 }
 
 - (BOOL)application:(UIApplication *)application 

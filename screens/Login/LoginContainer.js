@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Axios from 'axios';
 import {Alert} from 'react-native';
 import Firebase from 'react-native-firebase';
+import {NavigationActions} from 'react-navigation';
 // import firebase from 'firebase';
 
 if (!KakaoLogins) {
@@ -58,6 +59,7 @@ export default class extends React.Component {
       password: '',
       signEmail: '',
       signPassword: '',
+      noti: false,
       res: null,
       loginCode: 1,
       error: null,
@@ -65,6 +67,36 @@ export default class extends React.Component {
   }
 
   async componentDidMount() {
+    //TODO:  App was opened by a notification
+    Firebase.notifications()
+      .getInitialNotification()
+      .then(notificationOpen => {
+        if (notificationOpen) {
+          const notification = notificationOpen.notification.data;
+          let roomKey = notification.roomKey;
+          let id = notification.id;
+          let name = notification.name;
+          let profile = notification.profile;
+          this.saveNotiData(roomKey, id, name, profile);
+          // this.props.navigation.navigation({routeName: 'Tabs'});
+          this.props.navigation.replace({
+            routeName: 'Tabs',
+            action: NavigationActions.navigate({routeName: '내정보'}),
+            // this.props.navigation.replace({
+            //   routeName: 'MyBattleTalk',
+            //   params: {
+            //     roomKey,
+            //     id,
+            //     profile,
+            //     name,
+            //   },
+            // }),
+          });
+        } else {
+          console.log('not noti open');
+        }
+      });
+
     this._isMounted = true;
     this.getData();
     try {
@@ -78,6 +110,13 @@ export default class extends React.Component {
       });
     }
   }
+
+  saveNotiData = async (roomKey, id, name, profile) => {
+    await AsyncStorage.setItem('@NOTI_ROOMKEY', roomKey);
+    await AsyncStorage.setItem('@NOTI_ID', id);
+    await AsyncStorage.setItem('@NOTI_NAME', name);
+    await AsyncStorage.setItem('@NOTI_PROFILE', profile);
+  };
 
   componentWillUnmount() {
     console.log('componentWillUnmount');

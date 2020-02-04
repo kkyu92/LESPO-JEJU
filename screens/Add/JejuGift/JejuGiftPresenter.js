@@ -155,10 +155,10 @@ const JejuGiftPresenter = ({
                 ))}
             </Section>
           ) : (
-            <SearchNo />
+            <SearchNo text={'등록된 관광상품이 없습니다.'} />
           )
         ) : (
-          <SearchNo />
+          <SearchNo text={'등록된 관광상품이 없습니다.'} />
         )}
       </Container>
     </View>

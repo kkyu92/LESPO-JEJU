@@ -83,7 +83,7 @@ const WishListPresenter = ({loading, listChanged, locations, navigation}) =>
       </Container>
     </View>
   ) : (
-    <SearchNo />
+    <SearchNo text={'등록된 위시리스트가 없습니다.'} />
   );
 
 export default withNavigation(WishListPresenter);

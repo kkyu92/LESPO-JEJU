@@ -3,18 +3,25 @@ import {Platform} from 'react-native';
 import BattleTalkPresenter from './BattleTalkPresenter';
 import firebase from 'firebase';
 import AsyncStorage from '@react-native-community/async-storage';
+import Toast from 'react-native-easy-toast';
+import Firebase from 'react-native-firebase';
 
 var M_ID, M_NAME, M_PROFILE;
 
 export default class extends React.Component {
-  state = {
-    loading: true,
-    chatRoomList: [],
-    myId: '',
-    myName: '',
-    myProfile: '',
-    error: null,
-  };
+  constructor(props) {
+    super(props);
+    const {navigation} = this.props;
+    this.state = {
+      loading: true,
+      chatRoomList: [],
+      myId: '',
+      myName: '',
+      myProfile: '',
+      error: null,
+      navigation,
+    };
+  }
 
   getData = async () => {
     console.log('getData');
@@ -40,6 +47,56 @@ export default class extends React.Component {
 
   // 시작시 불러옴
   async componentDidMount() {
+    // fcm setting
+    const enable = await Firebase.messaging().hasPermission();
+    if (enable) {
+      // 화면에 들어와있을 때 알림
+      Firebase.notifications().onNotification(notification => {
+        this.refs.toast.show(
+          notification.android._notification._data.name +
+            ' : ' +
+            notification.android._notification._data.msg,
+        );
+      });
+    } else {
+      try {
+        Firebase.messaging().requestPermission();
+      } catch (error) {
+        alert('user reject permission');
+      }
+    }
+    // 최소화에서 들어옴
+    this.removeNotificationOpenedListener = Firebase.notifications().onNotificationOpened(
+      notificationOpen => {
+        const notification = notificationOpen.notification.data;
+        console.log('onNotificationOpened : ' + JSON.stringify(notification));
+        this.state.navigation.navigate({
+          routeName: 'BattleTalk',
+          params: {
+            roomKey: notification.roomKey,
+            id: notification.id,
+            profile: notification.profile,
+            name: notification.name,
+          },
+        });
+      },
+    );
+    let roomKey = await AsyncStorage.getItem('@NOTI_ROOMKEY');
+    let id = await AsyncStorage.getItem('@NOTI_ID');
+    let name = await AsyncStorage.getItem('@NOTI_NAME');
+    let profile = await AsyncStorage.getItem('@NOTI_PROFILE');
+    if (roomKey !== '' && roomKey !== null) {
+      this.state.navigation.navigate({
+        routeName: 'BattleTalk',
+        params: {
+          roomKey,
+          id,
+          profile,
+          name,
+        },
+      });
+      this.resetNotiData();
+    }
     try {
       this.getData();
       // get ChatRoomList
@@ -75,7 +132,6 @@ export default class extends React.Component {
           // chatRoomList.reverse();
           this.setState({
             chatRoomList: chatRoomList,
-            loading: false,
           });
           // console.log(
           //   'chatList : ' + JSON.stringify(this.state.chatRoomList),
@@ -85,10 +141,22 @@ export default class extends React.Component {
     } catch (error) {
       console.log(error);
       error = "Cnat't get ChatRoomList";
+    } finally {
+      this.setState({
+        loading: false,
+      });
     }
   }
 
+  resetNotiData = async () => {
+    await AsyncStorage.setItem('@NOTI_ROOMKEY', '');
+    await AsyncStorage.setItem('@NOTI_ID', '');
+    await AsyncStorage.setItem('@NOTI_NAME', '');
+    await AsyncStorage.setItem('@NOTI_PROFILE', '');
+  };
+
   componentWillUnmount() {
+    this.removeNotificationOpenedListener();
     firebase
       .database()
       .ref('chatRoomList/')
@@ -98,11 +166,23 @@ export default class extends React.Component {
   render() {
     const {loading, chatRoomList, myId} = this.state;
     return (
-      <BattleTalkPresenter
-        loading={loading}
-        chatRoomList={chatRoomList}
-        myId={myId}
-      />
+      <>
+        <BattleTalkPresenter
+          loading={loading}
+          chatRoomList={chatRoomList}
+          myId={myId}
+        />
+        <Toast
+          ref="toast"
+          style={{backgroundColor: '#fee6d0'}}
+          position="top"
+          positionValue={100}
+          fadeInDuration={750}
+          fadeOutDuration={1500}
+          opacity={1}
+          textStyle={{color: '#000000'}}
+        />
+      </>
     );
   }
 }

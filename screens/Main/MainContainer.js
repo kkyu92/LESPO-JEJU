@@ -5,22 +5,24 @@ import Firebase from 'react-native-firebase';
 import firebase from 'firebase';
 import AsyncStorage from '@react-native-community/async-storage';
 import Toast from 'react-native-easy-toast';
-import {BG_COLOR, TINT_COLOR} from '../../constants/Colors';
+import {BG_COLOR, TINT_COLOR, BLACK_COLOR} from '../../constants/Colors';
 
 // set DATA = Container
 export default class extends React.Component {
   _isMounted = false;
   constructor(props) {
+    console.log('constructor');
     super(props);
+    const {navigation} = this.props;
     this.state = {
       loading: true,
       mainList: [],
       foodList: [],
       playList: [],
       viewList: [],
+      navigation,
       error: null,
     };
-    console.log('constructor');
   }
 
   async componentDidMount() {
@@ -36,7 +38,25 @@ export default class extends React.Component {
       })
       .then(data => {
         //success callback
-        console.log('update my FcmToken: ', JSON.stringify(data));
+        console.log(data);
+        console.log('update my FcmToken: ', FcmToken);
+        // AsyncStorage save
+      })
+      .catch(error => {
+        //error callback
+        console.log('error ', error);
+      });
+    const API_TOKEN = await AsyncStorage.getItem('@API_TOKEN');
+    await firebase
+      .database()
+      .ref('APITokenList')
+      .update({
+        [userId]: API_TOKEN,
+      })
+      .then(data => {
+        //success callback
+        console.log(data);
+        console.log('update my FcmToken: ', FcmToken);
         // AsyncStorage save
       })
       .catch(error => {
@@ -46,14 +66,10 @@ export default class extends React.Component {
     // fcm setting
     const enable = await Firebase.messaging().hasPermission();
     if (enable) {
-      // 화면에 들어와있을 때
+      // 화면에 들어와있을 때 알림
       Firebase.notifications().onNotification(notification => {
-        // alert('notification._android');
-        console.log(
-          'get FCM msg : ' + notification.android._notification._data,
-        );
         this.refs.toast.show(
-          notification.android._notification._data.sender +
+          notification.android._notification._data.name +
             ' : ' +
             notification.android._notification._data.msg,
         );
@@ -65,6 +81,22 @@ export default class extends React.Component {
         alert('user reject permission');
       }
     }
+    // 최소화에서 들어옴
+    this.removeNotificationOpenedListener = Firebase.notifications().onNotificationOpened(
+      notificationOpen => {
+        const notification = notificationOpen.notification.data;
+        console.log('onNotificationOpened : ' + JSON.stringify(notification));
+        this.state.navigation.navigate({
+          routeName: 'BattleTalk',
+          params: {
+            roomKey: notification.roomKey,
+            id: notification.id,
+            profile: notification.profile,
+            name: notification.name,
+          },
+        });
+      },
+    );
 
     this._isMounted = true;
     this.onListChanging();
@@ -137,6 +169,7 @@ export default class extends React.Component {
   }
 
   componentWillUnmount() {
+    this.removeNotificationOpenedListener();
     firebase
       .database()
       .ref('FcmTokenList')
@@ -157,13 +190,13 @@ export default class extends React.Component {
 
         <Toast
           ref="toast"
-          style={{backgroundColor: BG_COLOR}}
+          style={{backgroundColor: '#fee6d0'}}
           position="top"
           positionValue={100}
           fadeInDuration={750}
           fadeOutDuration={1500}
           opacity={1}
-          textStyle={{color: TINT_COLOR}}
+          textStyle={{color: '#000000'}}
         />
       </>
     );

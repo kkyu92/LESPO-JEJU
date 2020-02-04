@@ -42,8 +42,15 @@ export const LESPO_API = {
 
   // Battle PlaceList
   getBattlePlaceList: config => API.get('contents/battle-facilities', config),
-  // Add Rating
+
+  // Rating
+  getRating: config => API.get('ratings', config),
   addRating: (params, config) => API.post('ratings', params, config),
+
+  // Coin
+  getCoin: config => API.get('credits', config),
+  insertCoin: (params, config) => API.post('credits/create', params, config),
+  deleteCoin: (params, config) => API.post('credits', params, config),
 
   // Detail
   getDetailItem: (id, config) => API.get('contents/' + id, config),

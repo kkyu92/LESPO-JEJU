@@ -32,6 +32,7 @@
 		7D54AA2691A048BF97425AB4 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C76793EA7172425AA2502B6F /* Zocial.ttf */; };
 		8F5C36F357FB4104B92544F6 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4CA1DD3C04824382A3376475 /* EvilIcons.ttf */; };
 		9A7F788495C5476BB4BB7779 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B56EB26383AB4A90B025F3D9 /* Entypo.ttf */; };
+		A8C2F7DA23E7BF9600AABA26 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A8C2F7D923E7BF9600AABA26 /* GoogleService-Info.plist */; };
 		D0CABB9EE2984C40B34DB234 /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E67245DB2A5B40B9A1AC2270 /* Fontisto.ttf */; };
 		D41A42E4264D34DE624CD939 /* libPods-LespoJeju-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D99B2078CD8BBC8A2EA5A073 /* libPods-LespoJeju-tvOS.a */; };
 		E1102E900A1042EC8D01CEFC /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A702A8663CA145E09B84DD41 /* MaterialCommunityIcons.ttf */; };
@@ -104,6 +105,8 @@
 		9F6AD06D17F1DFDABF4C9362 /* libPods-LespoJeju-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LespoJeju-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A69A9B45B449D9FAAF289206 /* Pods-LespoJeju-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LespoJeju-tvOS.release.xcconfig"; path = "Target Support Files/Pods-LespoJeju-tvOS/Pods-LespoJeju-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		A702A8663CA145E09B84DD41 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
+		A8C2F7D923E7BF9600AABA26 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		A8FAF4BE23E9312300A17036 /* LespoJeju.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = LespoJeju.entitlements; path = LespoJeju/LespoJeju.entitlements; sourceTree = "<group>"; };
 		B56EB26383AB4A90B025F3D9 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		B7DCC39C826D49099FFFF188 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		C2345589FB3EC557A8090DCE /* Pods-LespoJeju.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LespoJeju.release.xcconfig"; path = "Target Support Files/Pods-LespoJeju/Pods-LespoJeju.release.xcconfig"; sourceTree = "<group>"; };
@@ -173,6 +176,8 @@
 		13B07FAE1A68108700A75B9A /* LespoJeju */ = {
 			isa = PBXGroup;
 			children = (
+				A8FAF4BE23E9312300A17036 /* LespoJeju.entitlements */,
+				A8C2F7D923E7BF9600AABA26 /* GoogleService-Info.plist */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -372,6 +377,7 @@
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
+						DevelopmentTeam = NPFVFKD4UG;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
@@ -434,6 +440,7 @@
 				1115F65153FD41EF86D527F0 /* FontAwesome5_Regular.ttf in Resources */,
 				0E911F6EADBD42739957197B /* FontAwesome5_Solid.ttf in Resources */,
 				D0CABB9EE2984C40B34DB234 /* Fontisto.ttf in Resources */,
+				A8C2F7DA23E7BF9600AABA26 /* GoogleService-Info.plist in Resources */,
 				38D2DCEF7A1F42A0BF93763A /* Foundation.ttf in Resources */,
 				0F1875F31E574E77850EC959 /* Ionicons.ttf in Resources */,
 				E1102E900A1042EC8D01CEFC /* MaterialCommunityIcons.ttf in Resources */,
@@ -738,6 +745,7 @@
 			baseConfigurationReference = 2D0B8875E594E7D76E70A39A /* Pods-LespoJejuTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = NPFVFKD4UG;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -764,6 +772,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = NPFVFKD4UG;
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = LespoJejuTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -786,6 +795,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_OBJC_ARC = NO;
+				CODE_SIGN_ENTITLEMENTS = LespoJeju/LespoJeju.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -814,6 +824,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_OBJC_ARC = NO;
+				CODE_SIGN_ENTITLEMENTS = LespoJeju/LespoJeju.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;

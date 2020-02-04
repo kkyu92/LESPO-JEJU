@@ -113,7 +113,7 @@ const SearchPresenter = ({
                   ))}
               </Section>
             ) : (
-              <SearchNo />
+              <SearchNo text={'검색결과가 없습니다.'} />
             )
           ) : null}
         </>

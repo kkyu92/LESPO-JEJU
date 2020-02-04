@@ -6,6 +6,8 @@ import BattleTalkPresenter from './BattleTalkPresenter';
 import {Modal, Alert} from 'react-native';
 import SimpleDialog from '../../../components/SimpleDialog';
 import Firebase from 'react-native-firebase';
+import Toast from 'react-native-easy-toast';
+import {LESPO_API} from '../../../api/Api';
 
 var M_ID = '';
 var M_NAME = '';
@@ -26,6 +28,8 @@ export default class extends React.Component {
       id,
       profile,
       name,
+      otherCoin: 0,
+      coin: 0,
       myId: '',
       myName: '',
       myProfile: '',
@@ -40,7 +44,7 @@ export default class extends React.Component {
       battleState: '',
       error: null,
     };
-    console.log('@@@@@@@: ' + this.state.makeUser);
+    console.log('@@@@@@@: battleTalk' + this.state.makeUser);
   }
 
   updateState = async () => {
@@ -82,7 +86,53 @@ export default class extends React.Component {
       .once('value', dataSnapshot => {
         otherToken = dataSnapshot;
         console.log(otherToken);
-        this.sendToServer(this.state.myName, '배틀을 시작합니다.', otherToken);
+        this.sendToServer(
+          this.state.myId,
+          this.state.myName,
+          this.state.myProfile,
+          '배틀을 시작합니다.',
+          otherToken,
+        );
+      });
+    this.coinCheck();
+  };
+
+  coinCheck = async () => {
+    // 코인차감
+    let API_TOKEN = await AsyncStorage.getItem('@API_TOKEN');
+    const config = {
+      headers: {
+        Authorization: API_TOKEN,
+      },
+    };
+
+    await LESPO_API.deleteCoin(config)
+      .then(response => {
+        console.log('delete my coin');
+      })
+      .catch(error => {
+        console.log('getCoin fail: ' + error);
+      });
+
+    let otherApiToken;
+    firebase
+      .database()
+      .ref('APITokenList/' + this.state.id)
+      .once('value', dataSnapshot => {
+        otherApiToken = dataSnapshot;
+      });
+    const coinConfig = {
+      headers: {
+        Authorization: otherApiToken,
+      },
+    };
+    let params = {a: 0};
+    await LESPO_API.deleteCoin(params, coinConfig)
+      .then(response => {
+        console.log('delete other coin');
+      })
+      .catch(error => {
+        console.log('getCoin fail: ' + error);
       });
   };
 
@@ -134,7 +184,13 @@ export default class extends React.Component {
       .once('value', dataSnapshot => {
         otherToken = dataSnapshot;
         console.log(otherToken);
-        this.sendToServer(this.state.myName, msg, otherToken);
+        this.sendToServer(
+          this.state.myId,
+          this.state.myName,
+          this.state.myProfile,
+          msg,
+          otherToken,
+        );
       });
     this.setState({
       msg: '',
@@ -241,7 +297,7 @@ export default class extends React.Component {
     }
   };
 
-  sendToServer = async (sender, msg, token) => {
+  sendToServer = async (senderId, senderName, senderProfile, msg, token) => {
     const firebase_server_key =
       'AAAABOeF95E:APA91bGCKfJwCOUeYC8QypsS7yCAtR8ZOZf_rAj1iRK_OvIB3mYXYnva4DAY28XmUZA1GpXsdp1eRf9rPeuIedr7eX_7yFWbL-C_4JfVGSFGorCdzjOA0AyYPxB83M8TTAfUj62tUZhH';
     console.log('sendToFcm');
@@ -255,14 +311,15 @@ export default class extends React.Component {
       body: JSON.stringify({
         registration_ids: [token],
         notification: {
-          title: sender,
+          title: senderName,
           body: msg,
         },
         data: {
           roomKey: this.state.roomKey,
-          sender: sender,
+          id: senderId,
+          name: senderName,
+          profile: senderProfile,
           msg: msg,
-          key4: true,
         },
       }),
     })
@@ -337,10 +394,10 @@ export default class extends React.Component {
             loading: false,
           });
         });
-        console.log(
-          'Firebase get chattingList Finish----------     ' +
-            JSON.stringify(dataSnapshot),
-        );
+        // console.log(
+        //   'Firebase get chattingList Finish----------     ' +
+        //     JSON.stringify(dataSnapshot),
+        // );
         // 내 로그인 정보 불러오ß기
         this.getData(roomKey, getChatList);
         //
@@ -361,14 +418,62 @@ export default class extends React.Component {
     }
   }
 
-  setData = data => {
+  setData = async data => {
     console.log('setData::: ', data);
     if (data === 'battleStart') {
-      this.setData({
-        battleState: '배틀진행중',
-      });
-      // 배틀 시작
-      this.updateState();
+      let API_TOKEN = await AsyncStorage.getItem('@API_TOKEN');
+      const config = {
+        headers: {
+          Authorization: API_TOKEN,
+        },
+      };
+      await LESPO_API.getCoin(config)
+        .then(response => {
+          this.setState({
+            coin: response.data.data.credit,
+          });
+        })
+        .catch(error => {
+          console.log('getCoin fail: ' + error);
+        });
+
+      let otherToken;
+      firebase
+        .database()
+        .ref('APITokenList/' + this.state.id)
+        .once('value', dataSnapshot => {
+          otherToken = dataSnapshot;
+        });
+      const coinConfig = {
+        headers: {
+          Authorization: otherToken,
+        },
+      };
+      await LESPO_API.getCoin(coinConfig)
+        .then(response => {
+          this.setState({
+            otherCoin: response.data.data.credit,
+          });
+        })
+        .catch(error => {
+          console.log('getOtherCoin fail: ' + error);
+        });
+      // 코인 검사
+      if (this.state.coin > 0) {
+        if (this.state.otherCoin > 0) {
+          // 배틀 시작
+          this.setData({
+            battleState: '배틀진행중',
+          });
+          this.updateState();
+        } else {
+          // 상대 코인 부족
+          this.refs.toast.show('상대방의 코인이 부족합니다.');
+        }
+      } else {
+        // 내 코인 부족
+        this.refs.toast.show('사용가능한 코인이 부족합니다.');
+      }
     }
   };
 
@@ -481,6 +586,16 @@ export default class extends React.Component {
             setData={this.setData}
           />
         </Modal>
+        <Toast
+          ref="toast"
+          style={{backgroundColor: '#fee6d0'}}
+          position="top"
+          positionValue={100}
+          fadeInDuration={750}
+          fadeOutDuration={1500}
+          opacity={1}
+          textStyle={{color: '#000000'}}
+        />
       </>
     );
   }

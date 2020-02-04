@@ -88,7 +88,7 @@ const ViewListPresenter = ({loading, listChanged, locations, navigation}) =>
                     ))}
                 </Section>
               ) : (
-                <SearchNo />
+                <SearchNo text={'등록된 추천 볼거리가 없습니다.'} />
               )
             ) : (
               console.log('null')

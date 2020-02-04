@@ -149,6 +149,8 @@ const MyPresenter = ({
   loading,
   name,
   profile,
+  rating,
+  coin,
   changeModalVisiblity,
   setData,
   navigation,
@@ -178,7 +180,7 @@ const MyPresenter = ({
                 tintColor={BG_COLOR}
                 // ratingColor={TINT_COLOR}
                 // ratingBackgroundColor={BG_COLOR}
-                startingValue={3.5}
+                startingValue={rating}
                 ratingCount={5}
                 imageSize={15}
                 readonly
@@ -191,7 +193,7 @@ const MyPresenter = ({
             </ProfileNameContainer>
             <BattleCoinList>
               <BattleText>배틀코인 </BattleText>
-              <CoinText> 30coin</CoinText>
+              <CoinText> {coin} coin</CoinText>
             </BattleCoinList>
           </ProfileTextContainer>
         </LeftContainer>

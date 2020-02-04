@@ -40,7 +40,7 @@ export default class extends React.Component {
   render() {
     return (
       <Container>
-        <Text>검색결과가 없습니다...</Text>
+        <Text>{this.props.text}</Text>
         <Image
           width={Layout.width / 2}
           height={Layout.height / 2}

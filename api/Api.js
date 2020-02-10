@@ -18,6 +18,7 @@ export const BASEURL = 'https://www.jejubattle.com/api/';
 // TODO: LESPO API
 export const LESPO_API = {
   login: params => API.post('login/callback', params),
+  userDelete: config => API.delete('user/delete', config),
   // Notice
   getNotice: () => API.get('notices'),
 
@@ -33,8 +34,11 @@ export const LESPO_API = {
   getMainPlayList: () => API.get('main-list?type=4'),
 
   // Search
-  getSearchList: term =>
+  getSearchList: (token, term) =>
     API.get('search', {
+      headers: {
+        Authorization: token,
+      },
       params: {
         query: decodeURIComponent(term),
       },

@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Linking} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import styled from 'styled-components';
 import {BG_COLOR, TINT_COLOR, GREY_COLOR2} from '../../constants/Colors';
@@ -187,7 +187,10 @@ const SignupPresenter = ({
               onChecked={item => handleCheckBox(item[0].RNchecked)}
             />
 
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() =>
+                Linking.openURL('https://www.jejubattle.com/privacy')
+              }>
               <SubTitle>이용약관 및 개인정보보호</SubTitle>
             </TouchableOpacity>
             <Blank />

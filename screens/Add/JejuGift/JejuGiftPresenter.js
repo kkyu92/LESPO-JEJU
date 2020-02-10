@@ -74,7 +74,7 @@ const AdApplyText = styled.Text`
   padding: 5px;
 `;
 
-const PickerContainer = styled.TouchableOpacity`
+const PickerContainer = styled.View`
   flex: 1;
   background-color: ${BG_COLOR};
   border-radius: 5px;

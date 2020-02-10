@@ -153,6 +153,7 @@ const MyPresenter = ({
   coin,
   changeModalVisiblity,
   setData,
+  requestPurchase,
   navigation,
 }) =>
   loading ? (
@@ -197,7 +198,7 @@ const MyPresenter = ({
             </BattleCoinList>
           </ProfileTextContainer>
         </LeftContainer>
-        <CoinCharge>
+        <CoinCharge onPress={() => requestPurchase()}>
           <OrangeText>코인충전</OrangeText>
         </CoinCharge>
       </ProfileContainer>

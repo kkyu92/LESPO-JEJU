@@ -5,7 +5,6 @@ import Firebase from 'react-native-firebase';
 import firebase from 'firebase';
 import AsyncStorage from '@react-native-community/async-storage';
 import Toast from 'react-native-easy-toast';
-import {BG_COLOR, TINT_COLOR, BLACK_COLOR} from '../../constants/Colors';
 
 // set DATA = Container
 export default class extends React.Component {
@@ -109,9 +108,9 @@ export default class extends React.Component {
   }
 
   onListChanging = async () => {
-    // this.setState({
-    //   loading: true,
-    // });
+    this.setState({
+      loading: true,
+    });
     try {
       await LESPO_API.getMainList()
         .then(response => {
@@ -166,9 +165,6 @@ export default class extends React.Component {
     console.log('componentWillUnmount');
     this._isMounted = false;
     this.subs.forEach(sub => sub.remove());
-  }
-
-  componentWillUnmount() {
     this.removeNotificationOpenedListener();
     firebase
       .database()

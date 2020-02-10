@@ -1,12 +1,21 @@
 import React from 'react';
-import {Modal} from 'react-native';
+import {Modal, Platform} from 'react-native';
 import SimpleDialog from '../../components/SimpleDialog';
 import MyPresenter from './MyPresenter';
 import AsyncStorage from '@react-native-community/async-storage';
-import {NavigationActions} from 'react-navigation';
+import {NavigationActions, StackActions} from 'react-navigation';
 import Firebase, {config} from 'react-native-firebase';
 import Toast from 'react-native-easy-toast';
 import {LESPO_API} from '../../api/Api';
+import * as RNIap from 'react-native-iap';
+
+const itemSkus = Platform.select({
+  ios: ['battleCoin10', 'battleCoin20'],
+  android: ['battlecoin10', 'battlecoin20'],
+  // android: ['com.lespojeju'],
+});
+purchaseUpdateSubscription = null;
+purchaseErrorSubscription = null;
 
 export default class extends React.Component {
   constructor(props) {
@@ -20,11 +29,42 @@ export default class extends React.Component {
       profile: '',
       rating: '',
       coin: '',
+      products: [],
       navigation: navigation,
     };
   }
 
+  requestPurchase = async () => {
+    console.log('requestPurchase : ' + this.state.products[0].productId);
+    try {
+      await RNIap.requestPurchase(this.state.products[0].productId, false);
+    } catch (err) {
+      console.warn(err.code, err.message);
+    }
+  };
+
   async componentDidMount() {
+    // RNIap.getProducts(itemSkus)
+    //   .then(success => {
+    //     let product = success[0];
+    //     RNIap.buyProduct(product.productId)
+    //       .then(ok => {})
+    //       .catch(error => {
+    //         alert(error);
+    //       });
+    //   })
+    //   .catch(error => {
+    //     alert(error);
+    //   });
+    // get Products [ inApp ]
+    try {
+      const products = await RNIap.getProducts(itemSkus);
+      console.log('getProducts: ' + JSON.stringify(products));
+      this.setState({products: products});
+    } catch (err) {
+      console.warn(err); // standardized err.code and err.message available
+    }
+
     // fcm setting
     const enable = await Firebase.messaging().hasPermission();
     if (enable) {
@@ -131,21 +171,15 @@ export default class extends React.Component {
   };
 
   //TODO: Logout
-  setData = data => {
+  setData = async data => {
     console.log('setData::: ', data);
     if (data === 'OK') {
-      this.props.navigation.navigate({routeName: 'Login'});
-      // const resetAction = NavigationActions.reset({
-      //   index: 0,
-      //   actions: [NavigationActions.navigate({routeName: 'Login'})],
-      // });
-      // this.props.navigation.dispatch(resetAction);
-      // this.props.navigation.dispatch(
-      //   NavigationActions.reset({
-      //     index: 0,
-      //     actions: [NavigationActions.navigate({routeName: 'Login'})],
-      //   }),
-      // );
+      await AsyncStorage.setItem('@AUTO_LOGIN', 'false');
+      const resetAction = StackActions.reset({
+        index: 0,
+        actions: [NavigationActions.navigate({routeName: 'Login'})],
+      });
+      this.props.navigation.dispatch(resetAction);
     }
   };
 
@@ -165,6 +199,7 @@ export default class extends React.Component {
           coin={coin}
           changeModalVisiblity={this.changeModalVisiblity}
           setData={this.setData}
+          requestPurchase={this.requestPurchase}
         />
         <Modal
           transparent={true}

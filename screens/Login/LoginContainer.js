@@ -22,6 +22,7 @@ const storeSNS = async (token, id, name, profile, provider) => {
     await AsyncStorage.setItem('@USER_NAME', name);
     await AsyncStorage.setItem('@USER_PROFILE', profile);
     await AsyncStorage.setItem('@USER_PROVIDER', provider);
+    await AsyncStorage.setItem('@AUTO_LOGIN', 'true');
   } catch (e) {
     console.log('saving error: ' + e);
   }
@@ -38,6 +39,7 @@ const storeAPI = async (result, email, password) => {
     await AsyncStorage.setItem('@USER_NAME', result.data.data.nickname);
     await AsyncStorage.setItem('@USER_PASSWORD', password);
     await AsyncStorage.setItem('@USER_PROFILE', '');
+    await AsyncStorage.setItem('@AUTO_LOGIN', 'true');
     console.log('saving id: ' + result.data.data.id);
   } catch (error) {
     console.log('saving error: ' + error);
@@ -96,6 +98,16 @@ export default class extends React.Component {
           console.log('not noti open');
         }
       });
+
+    // AUTO_LOGIN
+    let AUTO_LOGIN = await AsyncStorage.getItem('@AUTO_LOGIN');
+    if (AUTO_LOGIN === 'true') {
+      this.state.navigation.replace({
+        routeName: 'Tabs',
+      });
+    } else {
+      console.log('log-out한 상태');
+    }
 
     this._isMounted = true;
     this.getData();

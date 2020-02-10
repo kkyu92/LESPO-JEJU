@@ -11,6 +11,7 @@ import {
   PURPLE_COLOR,
   GREEN_COLOR,
   GREY_COLOR3,
+  BLUE,
 } from '../constants/Colors';
 import PhotoUri from '../api/PhotoUri';
 import Layout from '../constants/Layout';
@@ -186,6 +187,19 @@ const TagPlayImg = styled.Text`
   padding: 2px;
   margin: 4px;
 `;
+const TagRecoContainer = styled.View`
+  background-color: ${TINT_COLOR};
+  border-radius: 15;
+  border-color: ${BLUE};
+  border-width: 1;
+  margin: 4px;
+`;
+const TagRecoImg = styled.Text`
+  color: ${BLUE};
+  text-align: center;
+  padding: 2px;
+  margin: 4px;
+`;
 const TagOtherContainer = styled.View`
   background-color: ${TINT_COLOR};
   border-radius: 15;
@@ -291,10 +305,14 @@ const SubSlide = ({
           <TagViewContainer>
             <TagViewImg>볼거리</TagViewImg>
           </TagViewContainer>
-        ) : (
+        ) : tagName === '시설' ? (
           <TagOtherContainer>
             <TagOtherImg>추 천</TagOtherImg>
           </TagOtherContainer>
+        ) : (
+          <TagRecoContainer>
+            <TagRecoImg>추 천</TagRecoImg>
+          </TagRecoContainer>
         )}
       </VerticalImgContainer>
       <VerticalColum>

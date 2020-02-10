@@ -3,6 +3,7 @@ import SearchPresenter from './SearchPresenter';
 import {movie, LESPO_API} from '../../../api/Api';
 import Toast from 'react-native-easy-toast';
 import Firebase from 'react-native-firebase';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default class extends React.Component {
   // Title setting
@@ -89,9 +90,10 @@ export default class extends React.Component {
         loading: true,
       });
       try {
+        let token = await AsyncStorage.getItem('@API_TOKEN');
         ({
           data: {data: jejuResult},
-        } = await LESPO_API.getSearchList(searchTerm));
+        } = await LESPO_API.getSearchList(token, searchTerm));
         this.setState({
           loading: false,
           jejuResult,

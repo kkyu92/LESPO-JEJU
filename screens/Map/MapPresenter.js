@@ -17,9 +17,34 @@ import IconF from 'react-native-vector-icons/Fontisto';
 import Swiper from 'react-native-swiper';
 import MainSlide from '../../components/MainSlide';
 import {Callout} from 'react-native-maps';
+import {Text, StyleSheet, Platform} from 'react-native';
 
 // var map = React.createRef();
 // var swiper = React.createRef();
+const styles = StyleSheet.create({
+  callout: {
+    backgroundColor: 'white',
+    borderRadius: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 4,
+  },
+  title: {
+    color: 'black',
+    fontSize: 14,
+    lineHeight: 18,
+    flex: 1,
+    // fontFamily: fonts.spoqaHanSansRegular,
+  },
+  description: {
+    color: '#707070',
+    fontSize: 12,
+    lineHeight: 16,
+    flex: 1,
+    maxWidth: (Layout.width / 3) * 2,
+    // fontFamily: fonts.spoqaHanSansRegular,
+  },
+});
 
 const MapContainer = styled.View`
   width: ${Layout.width};
@@ -104,8 +129,8 @@ const NoticeContainer = styled.View`
   border-color: ${BG_COLOR};
   border-width: 1px;
   background-color: ${TINT_COLOR};
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: ${Platform.OS === 'ios' ? 15 : 10};
+  padding-bottom: ${Platform.OS === 'ios' ? 15 : 10};
   justify-content: center;
   align-items: center;
   align-self: center;
@@ -238,8 +263,19 @@ const MapPresenter = ({
                   coordinate={list.location}
                   title={list.title}
                   description={list.address}
-                  show
-                />
+                  show>
+                  {Platform.OS === 'ios' ? (
+                    <Callout
+                      tooltip={true}
+                      style={styles.callout}
+                      onPress={() =>
+                        onCalloutPress(listChanged, list.key, navigation)
+                      }>
+                      <Text style={styles.title}>{list.title}</Text>
+                      <Text style={styles.description}>{list.address}</Text>
+                    </Callout>
+                  ) : null}
+                </Marker>
               ))
           : console.log('locations null ????? ' + JSON.stringify(locations))}
       </MapView>
@@ -353,8 +389,22 @@ const MapPresenter = ({
                   coordinate={list.location}
                   title={list.title}
                   description={list.address}
-                  show
-                />
+                  show>
+                  {Platform.OS === 'ios' ? (
+                    <Callout
+                      tooltip={true}
+                      style={styles.callout}
+                      onPress={() =>
+                        onSavePlace(
+                          list.title + '\n' + list.address,
+                          navigation,
+                        )
+                      }>
+                      <Text style={styles.title}>{list.title}</Text>
+                      <Text style={styles.description}>{list.address}</Text>
+                    </Callout>
+                  ) : null}
+                </Marker>
               ))
           : console.log('locations null ????? ' + JSON.stringify(locations))}
       </MapView>

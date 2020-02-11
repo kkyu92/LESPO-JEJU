@@ -7,15 +7,18 @@ import {NavigationActions, StackActions} from 'react-navigation';
 import Firebase, {config} from 'react-native-firebase';
 import Toast from 'react-native-easy-toast';
 import {LESPO_API} from '../../api/Api';
-import * as RNIap from 'react-native-iap';
+import RNIap, {
+  purchaseErrorListener,
+  purchaseUpdatedListener,
+  ProductPurchase,
+  PurchaseError,
+} from 'react-native-iap';
 
 const itemSkus = Platform.select({
-  ios: ['battleCoin10', 'battleCoin20'],
-  android: ['battlecoin10', 'battlecoin20'],
+  ios: ['battleCoin', 'battleCoin10'],
+  android: ['battlecoin', 'battlecoin1'],
   // android: ['com.lespojeju'],
 });
-purchaseUpdateSubscription = null;
-purchaseErrorSubscription = null;
 
 export default class extends React.Component {
   constructor(props) {
@@ -29,6 +32,7 @@ export default class extends React.Component {
       profile: '',
       rating: '',
       coin: '',
+      modal: null,
       products: [],
       navigation: navigation,
     };
@@ -43,20 +47,56 @@ export default class extends React.Component {
     }
   };
 
+  insertCoin = async () => {
+    console.log('insertCoin');
+    let API_TOKEN = await AsyncStorage.getItem('@API_TOKEN');
+    const params = new URLSearchParams();
+    params.append('credit', 1);
+    const config = {
+      headers: {
+        Authorization: API_TOKEN,
+      },
+    };
+    await LESPO_API.insertCoin(params, config);
+    // insert Coin
+    try {
+      this.refs.toast.show('코인 1개를 충전했습니다.');
+      await LESPO_API.getCoin(config)
+        .then(response => {
+          this.setState({
+            coin: response.data.data.credit,
+          });
+        })
+        .catch(error => {
+          console.log('getCoin fail: ' + error);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   async componentDidMount() {
-    // RNIap.getProducts(itemSkus)
-    //   .then(success => {
-    //     let product = success[0];
-    //     RNIap.buyProduct(product.productId)
-    //       .then(ok => {})
-    //       .catch(error => {
-    //         alert(error);
-    //       });
-    //   })
-    //   .catch(error => {
-    //     alert(error);
-    //   });
-    // get Products [ inApp ]
+    this.purchaseUpdateSubscription = purchaseUpdatedListener(
+      (purchase = ProductPurchase) => {
+        const receipt = purchase.transactionReceipt;
+        if (Platform.OS === 'ios') {
+          //   RNIap.finishTransactionIOS(purchase.transactionId);
+          console.log(
+            'receipt: ',
+            purchase.productId,
+            purchase.transactionDate,
+            purchase.transactionId,
+          );
+        } else if (Platform.OS === 'android') {
+          console.log('receipt: ', receipt);
+          //   RNIap.consumePurchaseAndroid(purchase.purchaseToken);
+          //   console.log('purchaseToken: ', purchase.purchaseToken);
+        }
+        RNIap.finishTransaction(purchase, true);
+        this.insertCoin();
+      },
+    );
+
     try {
       const products = await RNIap.getProducts(itemSkus);
       console.log('getProducts: ' + JSON.stringify(products));
@@ -166,14 +206,33 @@ export default class extends React.Component {
     }
   };
 
-  changeModalVisiblity = bool => {
-    this.setState({isModalVisible: bool});
+  changeModalVisiblity = modal => {
+    if (modal === false) {
+      this.setState({
+        isModalVisible: false,
+      });
+    } else {
+      this.setState({
+        isModalVisible: true,
+        modal: modal,
+      });
+    }
   };
 
   //TODO: Logout
   setData = async data => {
     console.log('setData::: ', data);
+    console.log('modal: ' + this.state.modal);
+    let API_TOKEN = await AsyncStorage.getItem('@API_TOKEN');
+    const config = {
+      headers: {
+        Authorization: API_TOKEN,
+      },
+    };
     if (data === 'OK') {
+      if (this.state.modal === '회원탈퇴') {
+        LESPO_API.userDelete(config);
+      }
       await AsyncStorage.setItem('@AUTO_LOGIN', 'false');
       const resetAction = StackActions.reset({
         index: 0,
@@ -188,7 +247,15 @@ export default class extends React.Component {
   }
 
   render() {
-    const {loading, name, profile, rating, coin} = this.state;
+    const {
+      loading,
+      name,
+      profile,
+      rating,
+      coin,
+      modal,
+      isModalVisible,
+    } = this.state;
     return (
       <>
         <MyPresenter
@@ -203,11 +270,11 @@ export default class extends React.Component {
         />
         <Modal
           transparent={true}
-          visible={this.state.isModalVisible}
+          visible={isModalVisible}
           onRequestClose={() => this.changeModalVisiblity(false)}
           animationType="fade">
           <SimpleDialog
-            battleState={null}
+            battleState={modal}
             changeModalVisiblity={this.changeModalVisiblity}
             setData={this.setData}
           />
@@ -215,7 +282,7 @@ export default class extends React.Component {
         <Toast
           ref="toast"
           style={{backgroundColor: '#fee6d0'}}
-          position="top"
+          position="bottom"
           positionValue={100}
           fadeInDuration={750}
           fadeOutDuration={1500}

@@ -15,7 +15,7 @@ export default class extends React.Component {
   constructor(props) {
     super(props);
     const {navigation} = this.props;
-    this.sstate = {
+    this.state = {
       loading: true,
       listChanged: null,
       locations: null,

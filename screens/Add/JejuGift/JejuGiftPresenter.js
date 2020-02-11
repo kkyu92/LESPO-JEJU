@@ -55,6 +55,7 @@ const View = styled.View`
 const HeaderConatiner = styled.View`
   flex-direction: row;
   justify-content: space-between;
+  align-content: center;
 `;
 
 const AdApplyContainer = styled.TouchableOpacity`

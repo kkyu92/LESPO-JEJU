@@ -305,6 +305,7 @@ const sports = [
 
 const areas = [
   {label: '지역 선택', value: '지역'},
+  {label: '전체', value: '전체'},
   {label: '서귀포시 남원읍', value: '서귀포시 남원읍'},
   {label: '서귀포시 대륜동', value: '서귀포시 대륜동'},
   {label: '서귀포시 대정읍/마라도', value: '서귀포시 대정읍/마라도'},

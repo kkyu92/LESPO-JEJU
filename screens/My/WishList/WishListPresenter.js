@@ -48,7 +48,7 @@ const mainState = 'wish';
 const WishListPresenter = ({loading, listChanged, locations, navigation}) =>
   loading ? (
     <Loader />
-  ) : listChanged ? (
+  ) : listChanged.length > 0 ? (
     <View>
       <Container>
         <MapBtn

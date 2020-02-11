@@ -16,17 +16,8 @@ import GetPhoto from '../../api/GetPhoto';
 import Loader from '../../components/Loader';
 import CommentSlide from '../../components/CommentSlide';
 
-// keybord
-// const KeyboardAvoidingView = styled.KeyboardAvoidingView`
-//   flex: 1;
-// `;
-
 var scrollViewRef = React.createRef();
-
-const Vview = styled.View`
-  flex: 1;
-`;
-
+const SwiperView = styled.View``;
 // 전체
 const Container = styled.ScrollView`
   background-color: ${TINT_COLOR};
@@ -132,6 +123,7 @@ const ContextText = styled.Text`
   margin-left: 25px;
   margin-right: 25px;
   margin-top: 15px;
+  margin-bottom: 15px;
   color: ${GREY_COLOR2};
   font-size: 14px;
 `;
@@ -212,6 +204,7 @@ const DetailPresenter = ({
   isLike,
   isWish,
   comments,
+  deleteComment,
   reco,
 }) =>
   loading ? (
@@ -360,13 +353,15 @@ const DetailPresenter = ({
           <CommentContainer>
             <ContextText>댓글 ( {comments.length} )</ContextText>
             {comments.length !== 0
-              ? comments.map(value => (
+              ? comments.map((value, index) => (
                   <CommentSlide
+                    index={index}
                     commentId={value.id}
                     commentText={value.comment_description}
                     userId={value.users_id}
                     userName={value.user.nickname}
                     time={value.created_at}
+                    onRightPress={deleteComment}
                   />
                 ))
               : null}

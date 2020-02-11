@@ -65,6 +65,7 @@ export default class extends React.Component {
       ({
         data: {data: listChanged},
       } = await LESPO_API.getJejuAd());
+      console.log(listChanged);
     } catch (error) {
       console.log(error);
       error = "Cnat't get TV";
@@ -119,20 +120,29 @@ export default class extends React.Component {
       try {
         if (listName === 'latest') {
           ({
-            data: {results: listChanged},
-          } = await movie.getSearchMovie('new'));
+            data: {data: listChanged},
+          } = await LESPO_API.getJejuAd());
+          listChanged.sort(function(a, b) {
+            return new Date(b.created_at) - new Date(a.created_at);
+          });
         } else if (listName === 'likes') {
           ({
-            data: {results: listChanged},
-          } = await movie.getSearchMovie('good'));
+            data: {data: listChanged},
+          } = await LESPO_API.getJejuAd());
+          listChanged.sort(function(a, b) {
+            return b.like_count - a.like_count;
+          });
         } else if (listName === 'nearest') {
           ({
-            data: {results: listChanged},
-          } = await movie.getSearchMovie('near'));
+            data: {data: listChanged},
+          } = await LESPO_API.getJejuAd());
         } else {
           ({
-            data: {results: listChanged},
-          } = await movie.getSearchMovie('new'));
+            data: {data: listChanged},
+          } = await LESPO_API.getJejuAd());
+          listChanged.sort(function(a, b) {
+            return new Date(b.created_at) - new Date(a.created_at);
+          });
         }
       } catch {
         error = "Can't Search";

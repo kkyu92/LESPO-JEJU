@@ -313,7 +313,8 @@ export default class extends React.Component {
         );
       }
     } else {
-      Alert.alert('선택 설정을 완료해주세요.');
+      // Alert.alert('선택 설정을 완료해주세요.');
+      this.refs.toast.show('선택 설정을 완료해주세요.');
     }
     return;
   };
@@ -337,10 +338,10 @@ export default class extends React.Component {
         <Toast
           ref="toast"
           style={{backgroundColor: '#fee6d0'}}
-          position="top"
-          positionValue={100}
+          position="bottom"
+          positionValue={200}
           fadeInDuration={750}
-          fadeOutDuration={1500}
+          fadeOutDuration={2000}
           opacity={1}
           textStyle={{color: '#000000'}}
         />

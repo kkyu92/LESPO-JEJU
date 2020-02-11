@@ -5,7 +5,6 @@ import Loader from '../../components/Loader';
 import {TINT_COLOR, BG_COLOR, GREY_COLOR} from '../../constants/Colors';
 import {Rating, AirbnbRating} from 'react-native-ratings';
 import {Platform, Alert} from 'react-native';
-import MyModal from '../../components/AlertProDialog';
 import {withNavigation} from 'react-navigation';
 
 const View = styled.View`
@@ -236,37 +235,10 @@ const MyPresenter = ({
             source={require(`../../assets/drawable-xxhdpi/icon_wishlist.png`)}
           />
         </BtnContainer>
-        <BtnContainer
-          onPress={
-            () => changeModalVisiblity(true)
-
-            // // Works on both Android and iOS
-            // Alert.alert(
-            //   '로그아웃 하시겠습니까?',
-            //   '',
-            //   [
-            //     // {
-            //     //   text: 'Ask me later',
-            //     //   onPress: () => console.log('Ask me later pressed'),
-            //     // },
-            //     {
-            //       text: '취소',
-            //       onPress: () => console.log('로그아웃 취소'),
-            //       style: 'destructive',
-            //     },
-            //     {text: '로그아웃', onPress: () => console.log('로그아웃')},
-            //   ],
-            //   {cancelable: false},
-            // )
-          }>
+        <BtnContainer onPress={() => changeModalVisiblity('로그아웃')}>
           <TextLogout>로그아웃</TextLogout>
         </BtnContainer>
-        <BtnContainer
-          onPress={() =>
-            navigation.navigate({
-              routeName: 'JejuSound',
-            })
-          }>
+        <BtnContainer onPress={() => changeModalVisiblity('회원탈퇴')}>
           <Text>회원탈퇴</Text>
         </BtnContainer>
       </Container>

@@ -6,7 +6,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Octicons from 'react-native-vector-icons/Octicons';
 
 import MainNavigation from './navigation/MainNavigation';
-import AlertProDialog from './components/AlertProDialog';
 import TestNavigation from './navigation/TestNavigation';
 
 //TODO: test
@@ -45,7 +44,6 @@ export default class App extends React.Component {
         <StatusBar barStyle={'light-content'} />
         <MainNavigation />
         {/* <TestNavigation /> */}
-        {/* <AlertProDialog /> */}
       </>
     );
     // } else {

@@ -95,12 +95,12 @@ const ImgView = styled.View`
 const ImgContainer = styled.TouchableOpacity`
   justify-content: center;
   align-items: center;
-  width: ${Layout.width / 4 + 15};
+  width: ${(Layout.width / 9) * 2.61};
 `;
 
 const Img = styled.Image`
-  width: ${Layout.width / 4 + 15};
-  height: 50px;
+  width: ${(Layout.width / 9) * 2.61};
+  height: ${Layout.width / 9};
   background-color: ${TINT_COLOR};
   border-radius: 10px;
 `;

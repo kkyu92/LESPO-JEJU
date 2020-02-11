@@ -55,7 +55,7 @@ export default class SimpleDialog extends Component {
   };
 
   render() {
-    return this.props.battleState === null ? (
+    return this.props.battleState === '로그아웃' ? (
       <TouchableOpacity
         activeOpacity={1}
         disabled={true}
@@ -79,6 +79,34 @@ export default class SimpleDialog extends Component {
               style={styles.touchableHighlight}
               underlayColor={'#f1f1f1'}>
               <Text style={[styles.text, {color: 'orange'}]}> 로그아웃 </Text>
+            </TouchableHighlight>
+          </View>
+        </View>
+      </TouchableOpacity>
+    ) : this.props.battleState === '회원탈퇴' ? (
+      <TouchableOpacity
+        activeOpacity={1}
+        disabled={true}
+        style={styles.contentContainer}>
+        <View style={[styles.modal, {width: this.state.width - 80}]}>
+          <View style={styles.textView}>
+            <Text style={[styles.text, {color: 'black'}, {fontSize: 20}]}>
+              회원탈퇴 하시겠습니까?
+            </Text>
+            {/* <Text style={styles.text}> Modal Text </Text> */}
+          </View>
+          <View style={styles.buttonView}>
+            <TouchableHighlight
+              onPress={() => this.closeModal('Cancel')}
+              style={styles.touchableHighlight}
+              underlayColor={'#f1f1f1'}>
+              <Text style={[styles.text, {color: 'red'}]}> 취소 </Text>
+            </TouchableHighlight>
+            <TouchableHighlight
+              onPress={() => this.closeModal('OK')}
+              style={styles.touchableHighlight}
+              underlayColor={'#f1f1f1'}>
+              <Text style={[styles.text, {color: 'orange'}]}> 탈퇴 </Text>
             </TouchableHighlight>
           </View>
         </View>

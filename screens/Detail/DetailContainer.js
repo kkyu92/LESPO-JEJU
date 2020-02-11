@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {Keyboard} from 'react-native';
 import Toast from 'react-native-easy-toast';
 import Firebase from 'react-native-firebase';
+import Animated from 'react-native-reanimated';
 
 export default class extends React.Component {
   static navigationOptions = () => {
@@ -56,6 +57,12 @@ export default class extends React.Component {
       navigation,
       msg: '',
     };
+    this.rowTranslateAnimatedValues = {};
+    Array(20)
+      .fill('')
+      .forEach((_, i) => {
+        this.rowTranslateAnimatedValues[`${i}`] = new Animated.Value(1);
+      });
   }
 
   async componentDidMount() {
@@ -93,6 +100,12 @@ export default class extends React.Component {
         });
       },
     );
+    this.onDetailChanging();
+    console.log('wishID :: ' + this.state.wishId);
+    console.log('likeID :: ' + this.state.likeId);
+  }
+
+  onDetailChanging = async () => {
     let listChanged;
     let TOKEN = await AsyncStorage.getItem('@API_TOKEN');
     const config = {
@@ -147,9 +160,7 @@ export default class extends React.Component {
         loading: false,
       });
     }
-    console.log('wishID :: ' + this.state.wishId);
-    console.log('likeID :: ' + this.state.likeId);
-  }
+  };
 
   handleMsgUpdate = text => {
     this.setState({
@@ -301,6 +312,26 @@ export default class extends React.Component {
       });
   };
 
+  //TODO: swiperDelete 사용자 본인인지 체크 후 삭제 아닐경우 불가 TOAST
+  deleteComment = async id => {
+    console.log('id:::: ' + JSON.stringify(id));
+    this.refs.toast.show('댓글을 삭제했습니다.');
+    let TOKEN = await AsyncStorage.getItem('@API_TOKEN');
+    const config = {
+      headers: {
+        Authorization: TOKEN,
+      },
+    };
+    await LESPO_API.deleteComment(config, id)
+      .then(response => {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch(error => {
+        console.log('deleteWishList fail: ' + error);
+      });
+    this.onDetailChanging();
+  };
+
   componentWillUnmount() {
     this.removeNotificationOpenedListener();
   }
@@ -342,12 +373,13 @@ export default class extends React.Component {
           wishListOut={this.wishListOut}
           detail={detail}
           comments={comments}
+          deleteComment={this.deleteComment}
           reco={reco}
         />
         <Toast
           ref="toast"
           style={{backgroundColor: '#fee6d0'}}
-          position="top"
+          position="bottom"
           positionValue={100}
           fadeInDuration={750}
           fadeOutDuration={1500}

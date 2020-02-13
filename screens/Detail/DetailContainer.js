@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import DetailPresenter from './DetailPresenter';
 import {LESPO_API} from '../../api/Api';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -7,6 +6,7 @@ import {Keyboard} from 'react-native';
 import Toast from 'react-native-easy-toast';
 import Firebase from 'react-native-firebase';
 import Animated from 'react-native-reanimated';
+import KakaoSDK from 'react-native-kakao-links';
 
 export default class extends React.Component {
   static navigationOptions = () => {
@@ -113,6 +113,7 @@ export default class extends React.Component {
         Authorization: TOKEN,
       },
     };
+
     try {
       console.log('get id : ' + this.state.id);
       await LESPO_API.getDetailItem(this.state.id, config)
@@ -203,6 +204,26 @@ export default class extends React.Component {
         .catch(error => {
           console.log('update comments fail: ' + error);
         });
+    }
+  };
+
+  kakaoLink = async (title, desc, img, id) => {
+    try {
+      const options = {
+        objectType: 'custom', //required
+        templateId: '20614', //required
+        templateArgs: {
+          title: title, //Your Param
+          desc: desc, //Your Param
+          img: img,
+          android: id,
+          ios: id,
+        },
+      };
+      const response = await KakaoSDK.link(options);
+      console.log(response);
+    } catch (error) {
+      console.log('kakaoLink error : ' + error);
     }
   };
 
@@ -313,23 +334,27 @@ export default class extends React.Component {
   };
 
   //TODO: swiperDelete 사용자 본인인지 체크 후 삭제 아닐경우 불가 TOAST
-  deleteComment = async id => {
-    console.log('id:::: ' + JSON.stringify(id));
-    this.refs.toast.show('댓글을 삭제했습니다.');
-    let TOKEN = await AsyncStorage.getItem('@API_TOKEN');
-    const config = {
-      headers: {
-        Authorization: TOKEN,
-      },
-    };
-    await LESPO_API.deleteComment(config, id)
-      .then(response => {
-        console.log(JSON.stringify(response.data));
-      })
-      .catch(error => {
-        console.log('deleteWishList fail: ' + error);
-      });
-    this.onDetailChanging();
+  deleteComment = async (id, userId) => {
+    let MY_ID = await AsyncStorage.getItem('@USER_ID');
+    if (userId == MY_ID) {
+      let TOKEN = await AsyncStorage.getItem('@API_TOKEN');
+      const config = {
+        headers: {
+          Authorization: TOKEN,
+        },
+      };
+      await LESPO_API.deleteComment(config, id)
+        .then(response => {
+          console.log(JSON.stringify(response.data));
+        })
+        .catch(error => {
+          console.log('deleteWishList fail: ' + error);
+        });
+      this.onDetailChanging();
+      this.refs.toast.show('댓글을 삭제했습니다.');
+    } else {
+      this.refs.toast.show('본인이 작성한 댓글만 삭제가 가능합니다.');
+    }
   };
 
   componentWillUnmount() {
@@ -365,6 +390,7 @@ export default class extends React.Component {
           msg={msg}
           handleMsgUpdate={this.handleMsgUpdate}
           insertCommentList={this.insertCommentList}
+          kakaoLink={this.kakaoLink}
           isLike={isLike}
           likeUp={this.likeUp}
           likeDown={this.likeDown}

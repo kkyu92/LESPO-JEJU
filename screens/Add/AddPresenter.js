@@ -85,7 +85,7 @@ const AddPresenter = ({loading, navigation}) =>
               routeName: 'JejuSound',
             })
           }>
-          <Text>제주의 소리</Text>
+          <Text>이벤트</Text>
           <BtnImg
             source={require(`../../assets/drawable-xxhdpi/icon_island.png`)}
           />
@@ -97,7 +97,7 @@ const AddPresenter = ({loading, navigation}) =>
               routeName: 'JejuGift',
             })
           }>
-          <Text>관광상품</Text>
+          <Text>쇼핑</Text>
           <BtnImg
             source={require(`../../assets/drawable-xxhdpi/icon_gift.png`)}
           />

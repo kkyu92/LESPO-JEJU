@@ -37,7 +37,9 @@ const Container = styled.View`
 const BigCard = styled.TouchableOpacity`
   width: ${Layout.width - 80};
   height: ${Layout.width / 2 - 50};
-  background-color: ${BG_COLOR};
+  background-color: ${TINT_COLOR};
+  border-color: ${BG_COLOR};
+  border-width: 2px;
   border-radius: 15px;
   align-items: center;
   justify-content: center;
@@ -47,7 +49,9 @@ const BigCard = styled.TouchableOpacity`
 const Card = styled.TouchableOpacity`
   width: ${Layout.width / 2 - 50};
   height: ${Layout.width / 2 - 50};
-  background-color: ${BG_COLOR};
+  background-color: ${TINT_COLOR};
+  border-color: ${BG_COLOR};
+  border-width: 2px;
   border-radius: 15px;
   align-items: center;
   justify-content: center;
@@ -70,7 +74,7 @@ const Img2 = styled.Image`
 
 const Text = styled.Text`
   margin-top: 10px;
-  color: ${TINT_COLOR};
+  color: ${BG_COLOR};
   align-self: center;
   font-size: 15px;
   font-weight: 600;
@@ -81,6 +85,7 @@ const HeaderContainer = styled.View`
   margin-top: ${Platform.OS === 'ios' ? '35px' : '15px'};
   margin-left: 20px;
   margin-right: 20px;
+  margin-bottom: 20px;
   justify-content: center;
   align-items: center;
   /* background-color: goldenrod; */
@@ -106,8 +111,7 @@ const TripPresenter = ({loading, navigation}) =>
         <HeaderContainer>
           <HeaderText>여행하기</HeaderText>
         </HeaderContainer>
-        <TitleText>좋아하는 여행을 찾아보세요!</TitleText>
-
+        {/* <TitleText>좋아하는 여행을 찾아보세요!</TitleText> */}
         <View>
           <Container>
             <BigCard

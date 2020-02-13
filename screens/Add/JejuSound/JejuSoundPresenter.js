@@ -43,7 +43,7 @@ const JejuPresenter = ({loading, listChanged}) =>
   ) : (
     <View>
       <AdApplyContainer>
-        <AdApplyText>광고신청</AdApplyText>
+        <AdApplyText>구매문의</AdApplyText>
       </AdApplyContainer>
       <Container showsVerticalScrollIndicator={false}>
         {listChanged ? (

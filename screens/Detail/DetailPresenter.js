@@ -196,6 +196,7 @@ const DetailPresenter = ({
   msg,
   handleMsgUpdate,
   insertCommentList,
+  kakaoLink,
   likeUp,
   likeDown,
   wishListIn,
@@ -296,7 +297,15 @@ const DetailPresenter = ({
           <HeaderContainer>
             <HeaderText>{title}</HeaderText>
             <IconContainer>
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() =>
+                  kakaoLink(
+                    title,
+                    overview,
+                    GetPhoto(backgroundPoster),
+                    'id=' + id,
+                  )
+                }>
                 <ShareIcon
                   source={require(`../../assets/drawable-xxhdpi/icon_share_copy.png`)}
                 />

@@ -135,7 +135,7 @@ const CommentSlide = ({
       <RightAction
         progress={progress}
         dragX={dragX}
-        onPress={() => onRightPress(commentId)}
+        onPress={() => onRightPress(commentId, userId)}
       />
     )}>
     <Container>

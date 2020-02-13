@@ -10,7 +10,7 @@ export default class extends React.Component {
   // Title setting
   static navigationOptions = () => {
     return {
-      title: '제주의 소리',
+      title: '이벤트',
     };
   };
   constructor(props) {

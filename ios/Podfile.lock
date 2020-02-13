@@ -379,6 +379,8 @@ PODS:
     - React
   - RNIap (4.4.0):
     - React
+  - RNKakaoLink (1.0.0):
+    - React
   - RNPermissions (2.0.8):
     - React
   - RNReanimated (1.4.0):
@@ -432,6 +434,7 @@ DEPENDENCIES:
   - RNFirebase (from `../node_modules/react-native-firebase/ios`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNIap (from `../node_modules/react-native-iap`)
+  - RNKakaoLink (from `../node_modules/react-native-kakao-links/ios`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
@@ -533,6 +536,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-gesture-handler"
   RNIap:
     :path: "../node_modules/react-native-iap"
+  RNKakaoLink:
+    :path: "../node_modules/react-native-kakao-links/ios"
   RNPermissions:
     :path: "../node_modules/react-native-permissions"
   RNReanimated:
@@ -598,6 +603,7 @@ SPEC CHECKSUMS:
   RNFirebase: 37daa9a346d070f9f6ee1f3b4aaf4c8e3b1d5d1c
   RNGestureHandler: 02905abe54e1f6e59c081a10b4bd689721e17aa6
   RNIap: 9b6e92869de716305ecc6cac8c413321210e33c7
+  RNKakaoLink: 1e1981118c364a06db596a22fe01a58ea8593ad5
   RNPermissions: 409e55ed060f7e35d4a3dfc3a336f94a5811dec1
   RNReanimated: b2ab0b693dddd2339bd2f300e770f6302d2e960c
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4

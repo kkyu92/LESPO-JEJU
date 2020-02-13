@@ -27,12 +27,6 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>fb2516363172019512</string>
-			</array>
-		</dict>
-		<dict>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
@@ -54,11 +48,8 @@
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>kakao4f9e332e4542802f6f7587f6294cff32</string>
-		<string>kakaokompassauth</string>
-		<string>storykompassauth</string>
 		<string>kakaolink</string>
 		<string>kakaotalk-5.9.7</string>
-		<string>storylink</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>

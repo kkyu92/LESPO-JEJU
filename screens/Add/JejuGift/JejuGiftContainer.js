@@ -10,7 +10,7 @@ export default class extends React.Component {
   // Title setting
   static navigationOptions = () => {
     return {
-      title: '관광상품',
+      title: '쇼핑',
     };
   };
   constructor(props) {
@@ -84,6 +84,10 @@ export default class extends React.Component {
     //   }),
     // ];
   }
+
+  addFriend = async () => {
+    console.log('구매문의');
+  };
 
   componentWillUnmount() {
     this.removeNotificationOpenedListener();
@@ -168,6 +172,7 @@ export default class extends React.Component {
           listChanged={listChanged}
           onListChanging={this.onListChanging}
           handleListUpdate={this.handleListUpdate}
+          addFriend={this.addFriend}
         />
         <Toast
           ref="toast"

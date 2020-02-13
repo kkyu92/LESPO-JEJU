@@ -5,6 +5,7 @@ import Firebase from 'react-native-firebase';
 import firebase from 'firebase';
 import AsyncStorage from '@react-native-community/async-storage';
 import Toast from 'react-native-easy-toast';
+import {Linking} from 'react-native';
 
 // set DATA = Container
 export default class extends React.Component {
@@ -96,6 +97,17 @@ export default class extends React.Component {
         });
       },
     );
+    // link
+    if (Platform.OS === 'android') {
+      //안드로이드는 아래와 같이 initialURL을 확인하고 navigate 합니다.
+      Linking.getInitialURL().then(url => {
+        if (url) this.navigate(url);
+        // console.log('into the link get url: ' + url);
+      });
+    } else {
+      //ios는 이벤트리스너를 mount/unmount 하여 url을 navigate 합니다.
+      Linking.addEventListener('url', this.handleOpenURL);
+    }
 
     this._isMounted = true;
     this.onListChanging();
@@ -106,6 +118,34 @@ export default class extends React.Component {
       }),
     ];
   }
+
+  navigate = url => {
+    console.log(url); // exampleapp://somepath?id=3
+    const paths = url.split('?'); // 쿼리스트링 관련한 패키지들을 활용하면 유용합니다.
+    if (paths.length > 1) {
+      //파라미터가 있다
+      const params = paths[1].split('&');
+      let id;
+      for (let i = 0; i < params.length; i++) {
+        let param = params[i].split('='); // [0]: key, [1]:value
+        if (param[0] === 'id') {
+          id = Number(param[1]); //id=3
+        }
+      }
+      this.props.navigation.navigate({
+        routeName: 'Detail',
+        params: {
+          id: id,
+        },
+      });
+    }
+  };
+
+  handleOpenURL = event => {
+    console.log(JSON.stringify(event));
+    //이벤트 리스너.
+    this.navigate(event.url);
+  };
 
   onListChanging = async () => {
     this.setState({
@@ -166,6 +206,7 @@ export default class extends React.Component {
     this._isMounted = false;
     this.subs.forEach(sub => sub.remove());
     this.removeNotificationOpenedListener();
+    Linking.removeEventListener('url', this.handleOpenURL);
     firebase
       .database()
       .ref('FcmTokenList')

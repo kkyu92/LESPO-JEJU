@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* LespoJejuTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* LespoJejuTests.m */; };
-		03343FF0F471651E6C060C1E /* libPods-LespoJejuTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BED9DD5EB1A59CA7D5CCF60 /* libPods-LespoJejuTests.a */; };
-		0B3B7B77ADF83F32348CF901 /* libPods-LespoJeju-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F6AD06D17F1DFDABF4C9362 /* libPods-LespoJeju-tvOSTests.a */; };
 		0E911F6EADBD42739957197B /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5C545688399E49788C611C24 /* FontAwesome5_Solid.ttf */; };
 		0F1875F31E574E77850EC959 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 627821489F9340ADA3E8D6CD /* Ionicons.ttf */; };
 		0F9B9D1F54B748E7977ABF2B /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B7DCC39C826D49099FFFF188 /* MaterialIcons.ttf */; };
@@ -30,14 +28,20 @@
 		53A4B64F23B1E47E000446CE /* KakaoOpenSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53A4B64E23B1E47E000446CE /* KakaoOpenSDK.framework */; };
 		57E04645A1EC4A7385739D51 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6DA189A1423D4AC3A86E6EA0 /* SimpleLineIcons.ttf */; };
 		7D54AA2691A048BF97425AB4 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C76793EA7172425AA2502B6F /* Zocial.ttf */; };
+		8A019777A6291C7E813D9E49 /* libPods-LespoJejuTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D5B2372BFB4FE2BDCAE184A3 /* libPods-LespoJejuTests.a */; };
 		8F5C36F357FB4104B92544F6 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4CA1DD3C04824382A3376475 /* EvilIcons.ttf */; };
 		9A7F788495C5476BB4BB7779 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B56EB26383AB4A90B025F3D9 /* Entypo.ttf */; };
 		A8D027C423EA4A5F003B06B4 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8D027C323EA4A5F003B06B4 /* StoreKit.framework */; };
 		A8D027C623EABF23003B06B4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A8D027C523EABF23003B06B4 /* GoogleService-Info.plist */; };
+		A8D4E9C023F4E4C400D92D11 /* KakaoLink.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8D4E9BD23F4E4C400D92D11 /* KakaoLink.framework */; };
+		A8D4E9D523F53BE000D92D11 /* KakaoCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8D4E9D323F53BE000D92D11 /* KakaoCommon.framework */; };
+		A8D4E9D623F53BE000D92D11 /* KakaoMessageTemplate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8D4E9D423F53BE000D92D11 /* KakaoMessageTemplate.framework */; };
+		A8D4E9D823F53CD500D92D11 /* KakaoPlusFriend.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8D4E9D723F53CD500D92D11 /* KakaoPlusFriend.framework */; };
+		A930071B5510A486E0B50324 /* libPods-LespoJeju-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 093D24EA89E5EA5DBED1AC72 /* libPods-LespoJeju-tvOS.a */; };
+		B5BD7E786D2A3FCA90BCB8E3 /* libPods-LespoJeju-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A5D08B74718EE0CA5506A49 /* libPods-LespoJeju-tvOSTests.a */; };
+		CDE3916B2CE85F294BC095FA /* libPods-LespoJeju.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EC6580B206A56302D75195B /* libPods-LespoJeju.a */; };
 		D0CABB9EE2984C40B34DB234 /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E67245DB2A5B40B9A1AC2270 /* Fontisto.ttf */; };
-		D41A42E4264D34DE624CD939 /* libPods-LespoJeju-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D99B2078CD8BBC8A2EA5A073 /* libPods-LespoJeju-tvOS.a */; };
 		E1102E900A1042EC8D01CEFC /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A702A8663CA145E09B84DD41 /* MaterialCommunityIcons.ttf */; };
-		F9F640F6FE064DF298E99CEA /* libPods-LespoJeju.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EE0CB2021786453ABE7A80AB /* libPods-LespoJeju.a */; };
 		FC70421ABB9A495EB975E6FA /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5EB16E6A087640ABA009FABE /* Octicons.ttf */; };
 /* End PBXBuildFile section */
 
@@ -58,25 +62,12 @@
 		};
 /* End PBXContainerItemProxy section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		A86E51F923BAD4230037E168 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		00E356EE1AD99517003FC87E /* LespoJejuTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LespoJejuTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* LespoJejuTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LespoJejuTests.m; sourceTree = "<group>"; };
-		1097938354FAFDD56788EF34 /* Pods-LespoJeju-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LespoJeju-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-LespoJeju-tvOS/Pods-LespoJeju-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
+		093D24EA89E5EA5DBED1AC72 /* libPods-LespoJeju-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LespoJeju-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07F961A680F5B00A75B9A /* LespoJeju.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LespoJeju.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = LespoJeju/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = LespoJeju/AppDelegate.m; sourceTree = "<group>"; };
@@ -84,41 +75,45 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = LespoJeju/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = LespoJeju/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = LespoJeju/main.m; sourceTree = "<group>"; };
-		193B487A257FDF699CA29E52 /* Pods-LespoJeju-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LespoJeju-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-LespoJeju-tvOSTests/Pods-LespoJeju-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* LespoJeju-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "LespoJeju-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* LespoJeju-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "LespoJeju-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		2D0B8875E594E7D76E70A39A /* Pods-LespoJejuTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LespoJejuTests.debug.xcconfig"; path = "Target Support Files/Pods-LespoJejuTests/Pods-LespoJejuTests.debug.xcconfig"; sourceTree = "<group>"; };
-		31623A69C3FDC1831955E1F0 /* Pods-LespoJeju-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LespoJeju-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-LespoJeju-tvOSTests/Pods-LespoJeju-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		335CB0FC233844DFABC186A1 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
+		3A5D08B74718EE0CA5506A49 /* libPods-LespoJeju-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LespoJeju-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3EC6580B206A56302D75195B /* libPods-LespoJeju.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LespoJeju.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		418AA912872F460C9CB8A134 /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Regular.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; };
 		4A10F73F3127431BB627A158 /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
 		4CA1DD3C04824382A3376475 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
+		5058ECFE43EDC4A52FBF29E0 /* Pods-LespoJeju-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LespoJeju-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-LespoJeju-tvOSTests/Pods-LespoJeju-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		51B3B61E079FB45A0C43DAE9 /* Pods-LespoJeju.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LespoJeju.release.xcconfig"; path = "Target Support Files/Pods-LespoJeju/Pods-LespoJeju.release.xcconfig"; sourceTree = "<group>"; };
 		53A4B64E23B1E47E000446CE /* KakaoOpenSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = KakaoOpenSDK.framework; path = "../../../../Downloads/kakao-ios-sdk-1.20.0/KakaoOpenSDK.framework"; sourceTree = "<group>"; };
+		53BCC398735459DCD71E1A64 /* Pods-LespoJeju-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LespoJeju-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-LespoJeju-tvOSTests/Pods-LespoJeju-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
+		5533625A45BF8CE1BA84EEF4 /* Pods-LespoJejuTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LespoJejuTests.release.xcconfig"; path = "Target Support Files/Pods-LespoJejuTests/Pods-LespoJejuTests.release.xcconfig"; sourceTree = "<group>"; };
 		5C545688399E49788C611C24 /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
-		5D26C9B32216482255967161 /* Pods-LespoJejuTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LespoJejuTests.release.xcconfig"; path = "Target Support Files/Pods-LespoJejuTests/Pods-LespoJejuTests.release.xcconfig"; sourceTree = "<group>"; };
 		5EB16E6A087640ABA009FABE /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		627821489F9340ADA3E8D6CD /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		6DA189A1423D4AC3A86E6EA0 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
+		7674C7467DC46FE4B238E9C5 /* Pods-LespoJeju-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LespoJeju-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-LespoJeju-tvOS/Pods-LespoJeju-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		7CB0277EC1C04DF1B22A8C7D /* AntDesign.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AntDesign.ttf; path = "../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf"; sourceTree = "<group>"; };
 		8775B53C098B43308E4DC820 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
-		8BED9DD5EB1A59CA7D5CCF60 /* libPods-LespoJejuTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LespoJejuTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		96BECA52645A245FBA63F9D9 /* Pods-LespoJeju.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LespoJeju.debug.xcconfig"; path = "Target Support Files/Pods-LespoJeju/Pods-LespoJeju.debug.xcconfig"; sourceTree = "<group>"; };
-		9F6AD06D17F1DFDABF4C9362 /* libPods-LespoJeju-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LespoJeju-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A69A9B45B449D9FAAF289206 /* Pods-LespoJeju-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LespoJeju-tvOS.release.xcconfig"; path = "Target Support Files/Pods-LespoJeju-tvOS/Pods-LespoJeju-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		A702A8663CA145E09B84DD41 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		A8D027C323EA4A5F003B06B4 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		A8D027C523EABF23003B06B4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		A8D4E9BD23F4E4C400D92D11 /* KakaoLink.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = KakaoLink.framework; path = "../../../Downloads/kakao-ios-sdk-1.21.0/KakaoLink.framework"; sourceTree = "<group>"; };
+		A8D4E9D323F53BE000D92D11 /* KakaoCommon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = KakaoCommon.framework; path = "../../../Downloads/kakao-ios-sdk-1.21.0/KakaoCommon.framework"; sourceTree = "<group>"; };
+		A8D4E9D423F53BE000D92D11 /* KakaoMessageTemplate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = KakaoMessageTemplate.framework; path = "../../../Downloads/kakao-ios-sdk-1.21.0/KakaoMessageTemplate.framework"; sourceTree = "<group>"; };
+		A8D4E9D723F53CD500D92D11 /* KakaoPlusFriend.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = KakaoPlusFriend.framework; path = "../../../Downloads/kakao-ios-sdk-1.21.0/KakaoPlusFriend.framework"; sourceTree = "<group>"; };
 		A8FAF4BE23E9312300A17036 /* LespoJeju.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = LespoJeju.entitlements; path = LespoJeju/LespoJeju.entitlements; sourceTree = "<group>"; };
 		B56EB26383AB4A90B025F3D9 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		B7DCC39C826D49099FFFF188 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
-		C2345589FB3EC557A8090DCE /* Pods-LespoJeju.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LespoJeju.release.xcconfig"; path = "Target Support Files/Pods-LespoJeju/Pods-LespoJeju.release.xcconfig"; sourceTree = "<group>"; };
 		C76793EA7172425AA2502B6F /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
-		D99B2078CD8BBC8A2EA5A073 /* libPods-LespoJeju-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LespoJeju-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA9F8BAA0F7FAF3C1E6956BA /* Pods-LespoJejuTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LespoJejuTests.debug.xcconfig"; path = "Target Support Files/Pods-LespoJejuTests/Pods-LespoJejuTests.debug.xcconfig"; sourceTree = "<group>"; };
+		D5B2372BFB4FE2BDCAE184A3 /* libPods-LespoJejuTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LespoJejuTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E67245DB2A5B40B9A1AC2270 /* Fontisto.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Fontisto.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
-		EE0CB2021786453ABE7A80AB /* libPods-LespoJeju.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LespoJeju.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EF38F26DB47384CE7FDDB9A9 /* Pods-LespoJeju-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LespoJeju-tvOS.release.xcconfig"; path = "Target Support Files/Pods-LespoJeju-tvOS/Pods-LespoJeju-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		FA9612D81CFB4E89BDF86855 /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Brands.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; };
+		FEEADC3443FC336A07498FD7 /* Pods-LespoJeju.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LespoJeju.debug.xcconfig"; path = "Target Support Files/Pods-LespoJeju/Pods-LespoJeju.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,7 +121,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				03343FF0F471651E6C060C1E /* libPods-LespoJejuTests.a in Frameworks */,
+				8A019777A6291C7E813D9E49 /* libPods-LespoJejuTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -135,8 +130,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				A8D027C423EA4A5F003B06B4 /* StoreKit.framework in Frameworks */,
-				F9F640F6FE064DF298E99CEA /* libPods-LespoJeju.a in Frameworks */,
+				A8D4E9D623F53BE000D92D11 /* KakaoMessageTemplate.framework in Frameworks */,
+				A8D4E9D823F53CD500D92D11 /* KakaoPlusFriend.framework in Frameworks */,
+				A8D4E9D523F53BE000D92D11 /* KakaoCommon.framework in Frameworks */,
+				A8D4E9C023F4E4C400D92D11 /* KakaoLink.framework in Frameworks */,
 				53A4B64F23B1E47E000446CE /* KakaoOpenSDK.framework in Frameworks */,
+				CDE3916B2CE85F294BC095FA /* libPods-LespoJeju.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -144,7 +143,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D41A42E4264D34DE624CD939 /* libPods-LespoJeju-tvOS.a in Frameworks */,
+				A930071B5510A486E0B50324 /* libPods-LespoJeju-tvOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -152,7 +151,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0B3B7B77ADF83F32348CF901 /* libPods-LespoJeju-tvOSTests.a in Frameworks */,
+				B5BD7E786D2A3FCA90BCB8E3 /* libPods-LespoJeju-tvOSTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -218,14 +217,18 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A8D4E9D723F53CD500D92D11 /* KakaoPlusFriend.framework */,
+				A8D4E9D323F53BE000D92D11 /* KakaoCommon.framework */,
+				A8D4E9D423F53BE000D92D11 /* KakaoMessageTemplate.framework */,
+				A8D4E9BD23F4E4C400D92D11 /* KakaoLink.framework */,
 				A8D027C323EA4A5F003B06B4 /* StoreKit.framework */,
 				53A4B64E23B1E47E000446CE /* KakaoOpenSDK.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
-				EE0CB2021786453ABE7A80AB /* libPods-LespoJeju.a */,
-				D99B2078CD8BBC8A2EA5A073 /* libPods-LespoJeju-tvOS.a */,
-				9F6AD06D17F1DFDABF4C9362 /* libPods-LespoJeju-tvOSTests.a */,
-				8BED9DD5EB1A59CA7D5CCF60 /* libPods-LespoJejuTests.a */,
+				3EC6580B206A56302D75195B /* libPods-LespoJeju.a */,
+				093D24EA89E5EA5DBED1AC72 /* libPods-LespoJeju-tvOS.a */,
+				3A5D08B74718EE0CA5506A49 /* libPods-LespoJeju-tvOSTests.a */,
+				D5B2372BFB4FE2BDCAE184A3 /* libPods-LespoJejuTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -275,14 +278,14 @@
 		BF89270EBFE7495DD01EA136 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				96BECA52645A245FBA63F9D9 /* Pods-LespoJeju.debug.xcconfig */,
-				C2345589FB3EC557A8090DCE /* Pods-LespoJeju.release.xcconfig */,
-				1097938354FAFDD56788EF34 /* Pods-LespoJeju-tvOS.debug.xcconfig */,
-				A69A9B45B449D9FAAF289206 /* Pods-LespoJeju-tvOS.release.xcconfig */,
-				193B487A257FDF699CA29E52 /* Pods-LespoJeju-tvOSTests.debug.xcconfig */,
-				31623A69C3FDC1831955E1F0 /* Pods-LespoJeju-tvOSTests.release.xcconfig */,
-				2D0B8875E594E7D76E70A39A /* Pods-LespoJejuTests.debug.xcconfig */,
-				5D26C9B32216482255967161 /* Pods-LespoJejuTests.release.xcconfig */,
+				FEEADC3443FC336A07498FD7 /* Pods-LespoJeju.debug.xcconfig */,
+				51B3B61E079FB45A0C43DAE9 /* Pods-LespoJeju.release.xcconfig */,
+				7674C7467DC46FE4B238E9C5 /* Pods-LespoJeju-tvOS.debug.xcconfig */,
+				EF38F26DB47384CE7FDDB9A9 /* Pods-LespoJeju-tvOS.release.xcconfig */,
+				5058ECFE43EDC4A52FBF29E0 /* Pods-LespoJeju-tvOSTests.debug.xcconfig */,
+				53BCC398735459DCD71E1A64 /* Pods-LespoJeju-tvOSTests.release.xcconfig */,
+				CA9F8BAA0F7FAF3C1E6956BA /* Pods-LespoJejuTests.debug.xcconfig */,
+				5533625A45BF8CE1BA84EEF4 /* Pods-LespoJejuTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -294,7 +297,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "LespoJejuTests" */;
 			buildPhases = (
-				560ED2CDEEF8F6ED2216A5ED /* [CP] Check Pods Manifest.lock */,
+				8D6C750558011E531ACC7980 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
@@ -313,14 +316,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "LespoJeju" */;
 			buildPhases = (
-				F95061AE85649CF17FF7341C /* [CP] Check Pods Manifest.lock */,
+				AD4442F1401BA577CA842BE4 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				E7AA8ECE244AC9CE8175FB8A /* [CP] Copy Pods Resources */,
-				A86E51F923BAD4230037E168 /* Embed Frameworks */,
+				DF25365D68F9F15390CF99EC /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -335,7 +337,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "LespoJeju-tvOS" */;
 			buildPhases = (
-				FFC3E7036150A12493E96869 /* [CP] Check Pods Manifest.lock */,
+				3281E5F197F6EA8216E86398 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F122414F3F0027D42C /* Start Packager */,
 				2D02E4771E0B4A5D006451C7 /* Sources */,
 				2D02E4781E0B4A5D006451C7 /* Frameworks */,
@@ -355,7 +357,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "LespoJeju-tvOSTests" */;
 			buildPhases = (
-				CD3DE8AA608773B2AD31AFE4 /* [CP] Check Pods Manifest.lock */,
+				E11D551B64B4F24964FED02C /* [CP] Check Pods Manifest.lock */,
 				2D02E48C1E0B4A5D006451C7 /* Sources */,
 				2D02E48D1E0B4A5D006451C7 /* Frameworks */,
 				2D02E48E1E0B4A5D006451C7 /* Resources */,
@@ -501,7 +503,29 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
 		};
-		560ED2CDEEF8F6ED2216A5ED /* [CP] Check Pods Manifest.lock */ = {
+		3281E5F197F6EA8216E86398 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-LespoJeju-tvOS-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8D6C750558011E531ACC7980 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -523,7 +547,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		CD3DE8AA608773B2AD31AFE4 /* [CP] Check Pods Manifest.lock */ = {
+		AD4442F1401BA577CA842BE4 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -538,14 +562,14 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-LespoJeju-tvOSTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-LespoJeju-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		E7AA8ECE244AC9CE8175FB8A /* [CP] Copy Pods Resources */ = {
+		DF25365D68F9F15390CF99EC /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -597,7 +621,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-LespoJeju/Pods-LespoJeju-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		F95061AE85649CF17FF7341C /* [CP] Check Pods Manifest.lock */ = {
+		E11D551B64B4F24964FED02C /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -612,7 +636,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-LespoJeju-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-LespoJeju-tvOSTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -655,28 +679,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "export RCT_METRO_PORT=\"${RCT_METRO_PORT:=8081}\"\necho \"export RCT_METRO_PORT=${RCT_METRO_PORT}\" > \"${SRCROOT}/../node_modules/react-native/scripts/.packager.env\"\nif [ -z \"${RCT_NO_LAUNCH_PACKAGER+xxx}\" ] ; then\n  if nc -w 5 -z localhost ${RCT_METRO_PORT} ; then\n    if ! curl -s \"http://localhost:${RCT_METRO_PORT}/status\" | grep -q \"packager-status:running\" ; then\n      echo \"Port ${RCT_METRO_PORT} already in use, packager is either not running or not running correctly\"\n      exit 2\n    fi\n  else\n    open \"$SRCROOT/../node_modules/react-native/scripts/launchPackager.command\" || echo \"Can't start packager automatically\"\n  fi\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		FFC3E7036150A12493E96869 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-LespoJeju-tvOS-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -746,7 +748,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2D0B8875E594E7D76E70A39A /* Pods-LespoJejuTests.debug.xcconfig */;
+			baseConfigurationReference = CA9F8BAA0F7FAF3C1E6956BA /* Pods-LespoJejuTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEVELOPMENT_TEAM = ZP3SF2A2ZT;
@@ -772,7 +774,7 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5D26C9B32216482255967161 /* Pods-LespoJejuTests.release.xcconfig */;
+			baseConfigurationReference = 5533625A45BF8CE1BA84EEF4 /* Pods-LespoJejuTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
@@ -795,27 +797,29 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 96BECA52645A245FBA63F9D9 /* Pods-LespoJeju.debug.xcconfig */;
+			baseConfigurationReference = FEEADC3443FC336A07498FD7 /* Pods-LespoJeju.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_OBJC_ARC = NO;
 				CODE_SIGN_ENTITLEMENTS = LespoJeju/LespoJeju.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 103;
-				DEAD_CODE_STRIPPING = NO;
+				CURRENT_PROJECT_VERSION = 104;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = ZP3SF2A2ZT;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/DaumMap.embeddedframework",
+					"$(PROJECT_DIR)/Pods/KakaoOpenSDK",
+					"$(PROJECT_DIR)/../../KakoOpenSDK",
 				);
 				INFOPLIST_FILE = LespoJeju/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.0.3;
-				OTHER_LDFLAGS = "$(inherited)";
+				MARKETING_VERSION = 1.0.4;
+				OTHER_LDFLAGS = "${inherited}";
 				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.JejuBattle;
 				PRODUCT_NAME = LespoJeju;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -825,7 +829,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C2345589FB3EC557A8090DCE /* Pods-LespoJeju.release.xcconfig */;
+			baseConfigurationReference = 51B3B61E079FB45A0C43DAE9 /* Pods-LespoJeju.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_OBJC_ARC = NO;
@@ -833,19 +837,21 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 103;
+				CURRENT_PROJECT_VERSION = 104;
 				DEVELOPMENT_TEAM = ZP3SF2A2ZT;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/DaumMap.embeddedframework",
+					"$(PROJECT_DIR)/Pods/KakaoOpenSDK",
+					"$(PROJECT_DIR)/../../KakoOpenSDK",
 				);
 				INFOPLIST_FILE = LespoJeju/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.0.3;
-				OTHER_LDFLAGS = "$(inherited)";
+				MARKETING_VERSION = 1.0.4;
+				OTHER_LDFLAGS = "${inherited}";
 				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.JejuBattle;
 				PRODUCT_NAME = LespoJeju;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -855,7 +861,7 @@
 		};
 		2D02E4971E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1097938354FAFDD56788EF34 /* Pods-LespoJeju-tvOS.debug.xcconfig */;
+			baseConfigurationReference = 7674C7467DC46FE4B238E9C5 /* Pods-LespoJeju-tvOS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -885,7 +891,7 @@
 		};
 		2D02E4981E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A69A9B45B449D9FAAF289206 /* Pods-LespoJeju-tvOS.release.xcconfig */;
+			baseConfigurationReference = EF38F26DB47384CE7FDDB9A9 /* Pods-LespoJeju-tvOS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -915,7 +921,7 @@
 		};
 		2D02E4991E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 193B487A257FDF699CA29E52 /* Pods-LespoJeju-tvOSTests.debug.xcconfig */;
+			baseConfigurationReference = 5058ECFE43EDC4A52FBF29E0 /* Pods-LespoJeju-tvOSTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -944,7 +950,7 @@
 		};
 		2D02E49A1E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 31623A69C3FDC1831955E1F0 /* Pods-LespoJeju-tvOSTests.release.xcconfig */;
+			baseConfigurationReference = 53BCC398735459DCD71E1A64 /* Pods-LespoJeju-tvOSTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;

@@ -9,9 +9,9 @@ import {Platform} from 'react-native';
 import SearchNo from '../../Main/Search/SearchNo';
 
 const data = [
-  {label: '등록일순', value: 'latest'},
-  {label: '가까운순', value: 'nearest'},
-  {label: '좋아요순', value: 'likes'},
+  {label: '최신순', value: 'latest'},
+  {label: '가격순', value: 'nearest'},
+  {label: '인기순', value: 'likes'},
 ];
 
 const pickerStyle = {
@@ -107,6 +107,7 @@ const JejuGiftPresenter = ({
   listChanged,
   onListChanging,
   handleListUpdate,
+  addFriend,
   navigation,
 }) =>
   loading ? (
@@ -128,8 +129,8 @@ const JejuGiftPresenter = ({
             value={listName}
           />
         </PickerContainer>
-        <AdApplyContainer>
-          <AdApplyText>광고신청</AdApplyText>
+        <AdApplyContainer onPress={() => addFriend()}>
+          <AdApplyText>구매문의</AdApplyText>
         </AdApplyContainer>
       </HeaderConatiner>
       <Container>

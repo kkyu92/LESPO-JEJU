@@ -3,13 +3,14 @@ import {Platform} from 'react-native';
 import {createAppContainer} from 'react-navigation';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
 
-import SportsScreen from '../screens/Sports/SportsContainer';
-import TripScreen from '../screens/Trip/TripContainer';
+// import SportsScreen from '../screens/Sports/SportsContainer';
+// import TripScreen from '../screens/Trip/TripContainer';
+import EventScreen from '../screens/Add/JejuSound/JejuSoundContainer';
+import ShopScreen from '../screens/Add/JejuGift/JejuGiftContainer';
 import MainScreen from '../screens/Main/MainContainer';
 import MyScreen from '../screens/My/MyContainer';
 import AddScreen from '../screens/Add/AddContainer';
 import {BG_COLOR, TINT_COLOR} from '../constants/Colors';
-import TabBarIcon from '../components/TabBarIcons';
 import {createStack, createStackMain} from './config';
 import styled from 'styled-components';
 
@@ -44,8 +45,8 @@ const TabNavigation = createBottomTabNavigator(
         },
       },
     },
-    스포츠배틀: {
-      screen: createStackMain(SportsScreen),
+    이벤트: {
+      screen: createStackMain(EventScreen),
       navigationOptions: {
         tabBarIcon: ({focused}) =>
           focused ? (
@@ -63,8 +64,8 @@ const TabNavigation = createBottomTabNavigator(
         },
       },
     },
-    여행하기: {
-      screen: createStackMain(TripScreen),
+    쇼핑: {
+      screen: createStackMain(ShopScreen),
       navigationOptions: {
         tabBarIcon: ({focused}) =>
           focused ? (

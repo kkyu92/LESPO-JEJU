@@ -13,7 +13,13 @@ export const headerStyles = {
   headerTintColor: TINT_COLOR,
 };
 
-export const mainHeaderStyles = {};
+export const nodapStyles = {
+  headerTransparent: true,
+  headerTitleStyle: {
+    color: BG_COLOR,
+  },
+  headerTintColor: TINT_COLOR,
+};
 
 // Detail header Styles
 export const detailHeaderStyles = {

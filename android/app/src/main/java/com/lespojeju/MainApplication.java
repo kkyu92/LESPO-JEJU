@@ -5,6 +5,7 @@ import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
 import co.jootopia.kakao.link.RNKakaoLinkPackage;
+import co.jootopia.kakao.plus.RNKakaoPlusFriendPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
@@ -32,6 +33,7 @@ public class MainApplication extends Application implements ReactApplication {
           // packages.add(new RNFirebasePackage());
           packages.add(new RNFirebaseNotificationsPackage());
           packages.add(new RNFirebaseMessagingPackage()); // <-- Add this line
+          // packages.add(new RNKakaoPlusFriendPackage()); // <-- Add this line
           return packages;
         }
 

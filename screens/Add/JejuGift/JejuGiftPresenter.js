@@ -7,10 +7,11 @@ import SubSlide from '../../../components/SubSlide';
 import {TINT_COLOR, BG_COLOR} from '../../../constants/Colors';
 import {Platform} from 'react-native';
 import SearchNo from '../../Main/Search/SearchNo';
+import Layout from '../../../constants/Layout';
 
 const data = [
   {label: '최신순', value: 'latest'},
-  {label: '가격순', value: 'nearest'},
+  // {label: '가격순', value: 'nearest'},
   {label: '인기순', value: 'likes'},
 ];
 
@@ -54,12 +55,14 @@ const View = styled.View`
 
 const HeaderConatiner = styled.View`
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: space-around;
   align-content: center;
 `;
 
 const AdApplyContainer = styled.TouchableOpacity`
-  flex: 1;
+  /* flex: 1; */
+  width: ${Layout.width / 2 - 40};
+  height: 40px;
   border-radius: 5;
   border-width: 2;
   border-color: ${TINT_COLOR};
@@ -76,7 +79,9 @@ const AdApplyText = styled.Text`
 `;
 
 const PickerContainer = styled.View`
-  flex: 1;
+  /* flex: 1; */
+  width: ${Layout.width / 2 - 40};
+  height: 40px;
   background-color: ${BG_COLOR};
   border-radius: 5px;
   border-width: 2px;
@@ -94,6 +99,26 @@ const Container = styled.ScrollView`
   padding-top: 20;
   padding-bottom: 20;
   flex: 1;
+`;
+
+const TitleContainer = styled.View`
+  flex-direction: row;
+  margin-top: ${Platform.OS === 'ios' ? '35px' : '15px'};
+  margin-left: 20px;
+  margin-right: 20px;
+  justify-content: center;
+  align-items: center;
+  /* background-color: goldenrod; */
+`;
+
+const TitleText = styled.Text`
+  /* width: 40%; */
+  color: ${TINT_COLOR};
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 600;
+  /* background-color: gainsboro; */
 `;
 
 onValueChange = selected => {
@@ -114,6 +139,9 @@ const JejuGiftPresenter = ({
     <Loader />
   ) : (
     <View>
+      <TitleContainer>
+        <TitleText>쇼핑</TitleText>
+      </TitleContainer>
       <HeaderConatiner>
         <PickerContainer>
           <PickerSelect

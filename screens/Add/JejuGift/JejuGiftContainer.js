@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import {tv, movie, LESPO_API} from '../../../api/Api';
 import JejuGiftPresenter from './JejuGiftPresenter';
 import Firebase from 'react-native-firebase';
+import RNKakaoPlusFriend from 'react-native-kakao-plus-friend';
 import Toast from 'react-native-easy-toast';
 
 export default class extends React.Component {
@@ -68,7 +69,7 @@ export default class extends React.Component {
       console.log(listChanged);
     } catch (error) {
       console.log(error);
-      error = "Cnat't get TV";
+      error = "Cnat't get Shopping";
     } finally {
       this.setState({
         loading: false,
@@ -85,8 +86,15 @@ export default class extends React.Component {
     // ];
   }
 
+  //친구 추가 하기로 링크
   addFriend = async () => {
     console.log('구매문의');
+    const add = await RNKakaoPlusFriend.addFriend('_xjXcmM');
+    console.log(add);
+  };
+  //바로 채팅하기로 링크
+  chat = async () => {
+    await RNKakaoPlusFriend.chat('_xjXcmM');
   };
 
   componentWillUnmount() {

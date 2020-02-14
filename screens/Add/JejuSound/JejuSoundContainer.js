@@ -5,6 +5,7 @@ import {LESPO_API} from '../../../api/Api';
 import JejuSoundPresenter from './JejuSoundPresenter';
 import Firebase from 'react-native-firebase';
 import Toast from 'react-native-easy-toast';
+import RNKakaoPlusFriend from 'react-native-kakao-plus-friend';
 
 export default class extends React.Component {
   // Title setting
@@ -18,6 +19,7 @@ export default class extends React.Component {
     const {navigation} = this.props;
     this.state = {
       loading: true,
+      listName: null,
       listChanged: null,
       navigation,
       error: null,
@@ -68,26 +70,107 @@ export default class extends React.Component {
       // console.log('Reco Food List : ' + JSON.stringify(listChanged));
     } catch (error) {
       console.log('JejuSound get api ::: ' + error);
-      error = "Cant't get Movies.";
+      error = "Cant't get Event.";
     } finally {
       this.setState({
         loading: false,
-        listChanged: listChanged,
+        listChanged,
         error,
       });
     }
   }
+
+  //친구 추가 하기로 링크
+  addFriend = async () => {
+    console.log('구매문의');
+    const add = await RNKakaoPlusFriend.addFriend('_xjXcmM');
+    console.log(add);
+  };
+  //바로 채팅하기로 링크
+  chat = async () => {
+    await RNKakaoPlusFriend.chat('_xjXcmM');
+  };
+
+  // List 입력값 받아온다
+  handleListUpdate = list => {
+    this.setState({
+      listName: list,
+    });
+    console.log('getListName ::: ' + list);
+    if (Platform.OS === 'android') {
+      console.log('go Android ::: ' + list);
+      this.state.listName = list;
+      this.onListChanging();
+    }
+  };
+
+  // 검색한 결과값
+  onListChanging = async () => {
+    const {listName} = this.state;
+    if (listName !== '') {
+      console.log('listChanging ::: ' + listName);
+      let listChanged, error;
+      this.setState({
+        loading: true,
+      });
+      try {
+        if (listName === 'latest') {
+          ({
+            data: {data: listChanged},
+          } = await LESPO_API.getJejuSound());
+          listChanged.sort(function(a, b) {
+            return new Date(b.created_at) - new Date(a.created_at);
+          });
+        } else if (listName === 'likes') {
+          ({
+            data: {data: listChanged},
+          } = await LESPO_API.getJejuSound());
+          listChanged.sort(function(a, b) {
+            return b.like_count - a.like_count;
+          });
+        } else if (listName === 'nearest') {
+          ({
+            data: {data: listChanged},
+          } = await LESPO_API.getJejuSound());
+        } else {
+          ({
+            data: {data: listChanged},
+          } = await LESPO_API.getJejuSound());
+          listChanged.sort(function(a, b) {
+            return new Date(b.created_at) - new Date(a.created_at);
+          });
+        }
+      } catch {
+        error = "Can't Search";
+      } finally {
+        this.setState({
+          loading: false,
+          listChanged,
+          listName,
+          error,
+        });
+      }
+      return;
+    }
+  };
 
   componentWillUnmount() {
     this.removeNotificationOpenedListener();
   }
 
   render() {
-    const {loading, listChanged} = this.state;
+    const {loading, listName, listChanged} = this.state;
     if (listChanged) {
       return (
         <>
-          <JejuSoundPresenter loading={loading} listChanged={listChanged} />
+          <JejuSoundPresenter
+            loading={loading}
+            listName={listName}
+            listChanged={listChanged}
+            onListChanging={this.onListChanging}
+            handleListUpdate={this.handleListUpdate}
+            addFriend={this.addFriend}
+          />
           <Toast
             ref="toast"
             style={{backgroundColor: '#fee6d0'}}

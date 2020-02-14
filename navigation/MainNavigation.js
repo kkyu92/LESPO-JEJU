@@ -11,8 +11,10 @@ import LoginScreen from '../screens/Login/LoginContainer';
 import SignupScreen from '../screens/Signup/SignupContainer';
 import SearchScreen from '../screens/Main/Search/SearchContainer';
 import DetailScreen from '../screens/Detail/DetailContainer';
-import JejuSoundScreen from '../screens/Add/JejuSound/JejuSoundContainer';
-import JejuGiftScreen from '../screens/Add/JejuGift/JejuGiftContainer';
+// import JejuSoundScreen from '../screens/Add/JejuSound/JejuSoundContainer';
+// import JejuGiftScreen from '../screens/Add/JejuGift/JejuGiftContainer';
+import SportsScreen from '../screens/Sports/SportsContainer';
+import TripScreen from '../screens/Trip/TripContainer';
 import NoticeScreen from '../screens/Add/Notice/NoticeContainer';
 import SettingScreen from '../screens/Add/Setting/SettingContainer';
 import AddBattleScreen from '../screens/Sports/AddBattle/BattleContainer';
@@ -23,7 +25,12 @@ import MyBattleTalkScreen from '../screens/My/BattleTalk/BattleTalkContainer';
 import ChatScreen from '../screens/Sports/BattleTalk/Chat';
 import MyWishListScreen from '../screens/My/WishList/WishListContainer';
 import MapScreen from '../screens/Map/MapContainer';
-import {headerStyles, detailHeaderStyles, tapsHeaderStyles} from './config';
+import {
+  headerStyles,
+  detailHeaderStyles,
+  tapsHeaderStyles,
+  nodapStyles,
+} from './config';
 import {TINT_COLOR} from '../constants/Colors';
 
 // 최상위 Nav [ Main tap4 + 검색 + 메인리스트 + 위시리스트... ]
@@ -70,18 +77,18 @@ const HomeNavigation = createStackNavigator(
         ...detailHeaderStyles,
       },
     },
-    // 제주의 소리
-    JejuSound: {
-      screen: JejuSoundScreen,
+    // 스포츠배틀
+    SportsBattle: {
+      screen: SportsScreen,
       navigationOptions: {
-        ...headerStyles,
+        ...nodapStyles,
       },
     },
-    // 관광상품
-    JejuGift: {
-      screen: JejuGiftScreen,
+    // 여행하기
+    Trip: {
+      screen: TripScreen,
       navigationOptions: {
-        ...headerStyles,
+        ...nodapStyles,
       },
     },
     // 공지사항

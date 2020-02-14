@@ -47,6 +47,7 @@ target 'LespoJeju' do
   pod 'Firebase/Core', '~> 6.3.0'
   pod 'Firebase/Messaging', '~> 6.3.0'
 
+
   target 'LespoJejuTests' do
     inherit! :search_paths
     # Pods for testing

@@ -208,7 +208,7 @@ const MainPresenter = ({
           <TouchableContainer
             onPress={() =>
               navigation.navigate({
-                routeName: '스포츠배틀',
+                routeName: 'SportsBattle',
               })
             }>
             <IconBattle
@@ -220,7 +220,7 @@ const MainPresenter = ({
           <TouchableContainer
             onPress={() =>
               navigation.navigate({
-                routeName: '여행하기',
+                routeName: 'Trip',
               })
             }>
             <IconTrip

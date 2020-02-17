@@ -7,7 +7,7 @@ import Axios from 'axios';
 import {Alert} from 'react-native';
 import Firebase from 'react-native-firebase';
 import {NavigationActions} from 'react-navigation';
-// import firebase from 'firebase';
+import Toast from 'react-native-easy-toast';
 
 if (!KakaoLogins) {
   console.error('Module is Not Linked');
@@ -122,6 +122,26 @@ export default class extends React.Component {
       });
     }
   }
+
+  resetSignUpCheck = async () => {
+    try {
+      this.setState({
+        loading: false,
+      });
+      // sign up check
+      let GET_SIGN_CHECK = await AsyncStorage.getItem('@SIGN_UP');
+      let GET_USER_NAME = await AsyncStorage.getItem('@USER_NAME');
+      console.log('signUpCheck: ' + GET_SIGN_CHECK);
+      if ((await AsyncStorage.getItem('@SIGN_UP')) === 'true') {
+        this.refs.toast.show(GET_USER_NAME + '님의 회원가입이 완료되었습니다.');
+        await AsyncStorage.setItem('@SIGN_UP', '');
+      } else {
+        console.log('not sign up check');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   saveNotiData = async (roomKey, id, name, profile) => {
     await AsyncStorage.setItem('@NOTI_ROOMKEY', roomKey);
@@ -269,7 +289,7 @@ export default class extends React.Component {
       params.append('provider', sns);
       params.append('id', result.id);
       params.append('name', result.name);
-      await Axios.post(BASEURL + 'login/callback', params)
+      await LESPO_API.login(params)
         .then(response => {
           if (response.data.status === 'success') {
             console.log('== facebook login success ==');
@@ -286,12 +306,16 @@ export default class extends React.Component {
               result.picture.data.url,
               sns,
             );
+            this.state.navigation.replace({
+              routeName: 'Tabs',
+            });
           }
         })
         .catch(error => {
           console.log('facebook login fail: ' + error);
         });
     } else {
+      console.log('Naver Login');
     }
   };
 
@@ -392,17 +416,30 @@ export default class extends React.Component {
   render() {
     const {loading, email, password} = this.state;
     return (
-      <LoginPresenter
-        loading={loading}
-        signEmail={email}
-        signPassword={password}
-        handleEmailUpdate={this.handleEmailText}
-        handlePasswordUpdate={this.handlePasswordText}
-        kakaoLogin={this.kakaoLogin}
-        onSNSLogin={this.onSNSLogin}
-        onLogin={this.onLogin}
-        // kakaoLogout={kakaoLogout}
-      />
+      <>
+        <LoginPresenter
+          loading={loading}
+          signEmail={email}
+          signPassword={password}
+          handleEmailUpdate={this.handleEmailText}
+          handlePasswordUpdate={this.handlePasswordText}
+          kakaoLogin={this.kakaoLogin}
+          onSNSLogin={this.onSNSLogin}
+          onLogin={this.onLogin}
+          resetSignUpCheck={this.resetSignUpCheck}
+          // kakaoLogout={kakaoLogout}
+        />
+        <Toast
+          ref="toast"
+          style={{backgroundColor: '#fee6d0'}}
+          position="bottom"
+          positionValue={100}
+          fadeInDuration={750}
+          fadeOutDuration={2000}
+          opacity={1}
+          textStyle={{color: '#000000'}}
+        />
+      </>
     );
 
     // login 정보 check

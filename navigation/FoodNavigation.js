@@ -72,7 +72,7 @@ const FoodNavigation = createMaterialTopTabNavigator(
         ),
       },
     },
-    제주전통: {
+    제주전통식: {
       screen: createTap(JejuFood),
       navigationOptions: {
         tabBarIcon: ({focused}) => (
@@ -84,7 +84,7 @@ const FoodNavigation = createMaterialTopTabNavigator(
         ),
       },
     },
-    기타: {
+    더보기: {
       screen: createTap(Other),
       navigationOptions: {
         tabBarIcon: ({focused}) => (
@@ -114,7 +114,7 @@ const FoodNavigation = createMaterialTopTabNavigator(
         justifyContent: 'center',
       },
       tabStyle: {
-        width: Layout.width / 5,
+        width: Layout.width / 4,
         alignItems: 'center',
         justifyContent: 'center',
       },

@@ -191,19 +191,17 @@ const LoginPresenter = ({
                   } else {
                     AccessToken.getCurrentAccessToken().then(data => {
                       let accessToken = data.accessToken;
-
                       const responseInfoCallback = (error, result) => {
                         if (error) {
                           console.log(error);
                           alert('Error fetching data: ' + error.toString());
                         } else {
                           onSNSLogin('facebook', result);
-                          alert(
-                            'Success fetching data: ' + JSON.stringify(result),
-                          );
+                          // alert(
+                          //   'Success fetching data: ' + JSON.stringify(result),
+                          // );
                         }
                       };
-
                       const infoRequest = new GraphRequest(
                         '/me',
                         {
@@ -217,7 +215,6 @@ const LoginPresenter = ({
                         },
                         responseInfoCallback,
                       );
-
                       // Start the graph request.
                       new GraphRequestManager().addRequest(infoRequest).start();
                     });

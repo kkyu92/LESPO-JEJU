@@ -7,7 +7,6 @@ import {verifyEmail, verifyPassword, verifyName} from '../../constants/Regex';
 import {Alert} from 'react-native';
 import Axios from 'axios';
 import {BASEURL} from '../../api/Api';
-import Toast from 'react-native-simple-toast';
 import AsyncStorage from '@react-native-community/async-storage';
 
 export default class extends React.Component {
@@ -30,6 +29,10 @@ export default class extends React.Component {
     let load, error;
     try {
       // load
+      Alert.alert(
+        '현재 아이디 찾기기능이 없습니다.',
+        '아이디 가입시 이메일을 잊지않게 주의해주세요!\n빠른시일내에 개선하겠습니다.',
+      );
     } catch (error) {
       error = "Can't load Login";
       console.log(error);
@@ -88,6 +91,7 @@ export default class extends React.Component {
       await AsyncStorage.setItem('@USER_NAME', this.state.name);
       await AsyncStorage.setItem('@USER_PASSWORD', this.state.password);
       await AsyncStorage.setItem('@USER_PROFILE', '');
+      await AsyncStorage.setItem('@SIGN_UP', 'true');
       console.log('(SignupContainer) save');
     } catch (e) {
       // saving error
@@ -131,11 +135,16 @@ export default class extends React.Component {
           .then(response => {
             console.log(JSON.stringify(response.data.messages.message));
             if (response.data.status === 'error') {
-              Alert.alert('', JSON.stringify(response.data.messages.message));
+              if (
+                response.data.messages.message === '회원가입에 실패했습니다.'
+              ) {
+                Alert.alert('', '이미 가입한 이메일 계정입니다.');
+              } else {
+                Alert.alert('', JSON.stringify(response.data.messages.message));
+              }
             } else {
               this.storeData();
               this.state.navigation.goBack(null);
-              Toast.show(name + '님의 회원가입이 완료되었습니다.', Toast.LONG);
             }
           })
           .catch(error => {

@@ -196,7 +196,7 @@ export default class extends React.Component {
         profile: M_PROFILE,
       });
       if (M_PROFILE !== null || M_PROFILE !== '') {
-        console.log('프로필 있다.');
+        console.log('프로필 있다: ' + M_PROFILE);
       } else {
         console.log('프로필 없다.');
       }

@@ -89,12 +89,12 @@ export default class extends React.Component {
   //친구 추가 하기로 링크
   addFriend = async () => {
     console.log('구매문의');
-    const add = await RNKakaoPlusFriend.addFriend('_xjXcmM');
+    const add = await RNKakaoPlusFriend.addFriend('_fxdMxlxb');
     console.log(add);
   };
   //바로 채팅하기로 링크
   chat = async () => {
-    await RNKakaoPlusFriend.chat('_xjXcmM');
+    await RNKakaoPlusFriend.chat('_fxdMxlxb');
   };
 
   componentWillUnmount() {

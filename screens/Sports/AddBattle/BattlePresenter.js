@@ -295,9 +295,11 @@ handleGoBack = navigation => {
 
 const sports = [
   {label: '스포츠 선택', value: '스포츠'},
+  {label: '상관없음', value: '상관없음'},
   {label: '당구', value: '당구'},
   {label: '농구', value: '농구'},
   {label: '축구', value: '축구'},
+  {label: '야구', value: '야구'},
   {label: '볼링', value: '볼링'},
   {label: '골프', value: '골프'},
   {label: '배드민턴', value: '배드민턴'},
@@ -353,6 +355,7 @@ const areas = [
 ];
 const types = [
   {label: '타입 선택', value: '타입'},
+  {label: '상관없음', value: '상관없음'},
   {label: '개인전', value: '개인전'},
   {label: '팀전', value: '팀전'},
 ];

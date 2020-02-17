@@ -78,7 +78,7 @@ const ViewNavigation = createMaterialTopTabNavigator(
         ),
       },
     },
-    기타: {
+    더보기: {
       screen: createTap(Other),
       navigationOptions: {
         tabBarIcon: ({focused}) => (

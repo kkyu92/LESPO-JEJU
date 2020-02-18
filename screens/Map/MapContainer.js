@@ -86,13 +86,15 @@ export default class extends React.Component {
     const enable = await Firebase.messaging().hasPermission();
     if (enable) {
       // 화면에 들어와있을 때 알림
-      Firebase.notifications().onNotification(notification => {
-        this.refs.toast.show(
-          notification.android._notification._data.name +
-            ' : ' +
-            notification.android._notification._data.msg,
-        );
-      });
+      this.removeToastListener = Firebase.notifications().onNotification(
+        notification => {
+          this.refs.toast.show(
+            notification.android._notification._data.name +
+              ' : ' +
+              notification.android._notification._data.msg,
+          );
+        },
+      );
     } else {
       try {
         Firebase.messaging().requestPermission();
@@ -668,7 +670,8 @@ export default class extends React.Component {
   };
 
   componentWillUnmount() {
-    console.log('componentWillUnmount ::: ');
+    console.log('componentWillUnmount[MapContainer]');
+    this.removeToastListener();
     this.removeNotificationOpenedListener();
     if (this.state.mainState !== 'map') {
       this.subs.forEach(sub => sub.remove());

@@ -160,13 +160,15 @@ export default class extends React.Component {
     const enable = await Firebase.messaging().hasPermission();
     if (enable) {
       // 화면에 들어와있을 때 알림
-      Firebase.notifications().onNotification(notification => {
-        this.refs.toast.show(
-          notification.android._notification._data.name +
-            ' : ' +
-            notification.android._notification._data.msg,
-        );
-      });
+      this.removeToastListener = Firebase.notifications().onNotification(
+        notification => {
+          this.refs.toast.show(
+            notification.android._notification._data.name +
+              ' : ' +
+              notification.android._notification._data.msg,
+          );
+        },
+      );
     } else {
       try {
         Firebase.messaging().requestPermission();
@@ -222,6 +224,8 @@ export default class extends React.Component {
 
   // Screen out
   componentWillUnmount() {
+    console.log('componentWillUnmount[AddBattleContainer]');
+    this.removeToastListener();
     this.removeNotificationOpenedListener();
     firebase
       .database()
@@ -281,22 +285,20 @@ export default class extends React.Component {
           battleResult,
         );
         const resetAction = NavigationActions.navigate({
-          routeName: 'Tabs',
-          action: NavigationActions.navigate({
-            routeName: '스포츠배틀',
-            params: {
-              check: true,
-            },
-          }),
+          routeName: 'SportsBattle',
+          // routeName: 'Tabs',
+          // action: NavigationActions.navigate({
+          //   routeName: '스포츠배틀',
+          //   params: {
+          //     check: true,
+          //   },
+          // }),
         });
         Alert.alert(
           '배틀등록 완료',
           '나의 배틀 페이지에서 확인할 수 있습니다!',
         );
         this.props.navigation.dispatch(resetAction);
-        // this.state.navigation.dispatch({
-        //   routeName: 'Tabs',
-        // });
       } catch (error) {
         console.log('update Battle error ::: ' + error);
       } finally {

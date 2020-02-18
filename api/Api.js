@@ -54,7 +54,7 @@ export const LESPO_API = {
   // Coin
   getCoin: config => API.get('credits', config),
   insertCoin: (params, config) => API.post('credits/create', params, config),
-  deleteCoin: (params, config) => API.post('credits', params, config),
+  deleteCoin: config => API.post('credits', config),
 
   // Detail
   getDetailItem: (id, config) => API.get('contents/' + id, config),

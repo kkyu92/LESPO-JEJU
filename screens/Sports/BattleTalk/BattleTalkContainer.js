@@ -28,6 +28,7 @@ export default class extends React.Component {
       id,
       profile,
       name,
+      otherToken: '',
       otherCoin: 0,
       coin: 0,
       myId: '',
@@ -127,7 +128,7 @@ export default class extends React.Component {
       },
     };
     let params = {a: 0};
-    await LESPO_API.deleteCoin(params, coinConfig)
+    await LESPO_API.deleteCoin(coinConfig)
       .then(response => {
         console.log('delete other coin');
       })
@@ -422,6 +423,7 @@ export default class extends React.Component {
     console.log('setData::: ', data);
     if (data === 'battleStart') {
       let API_TOKEN = await AsyncStorage.getItem('@API_TOKEN');
+      console.log(API_TOKEN);
       const config = {
         headers: {
           Authorization: API_TOKEN,
@@ -432,48 +434,65 @@ export default class extends React.Component {
           this.setState({
             coin: response.data.data.credit,
           });
+          console.log('myCoin Get: ' + response.data.data.credit);
         })
         .catch(error => {
           console.log('getCoin fail: ' + error);
         });
 
-      let otherToken;
       firebase
         .database()
         .ref('APITokenList/' + this.state.id)
         .once('value', dataSnapshot => {
-          otherToken = dataSnapshot;
+          let otherToken = JSON.stringify(dataSnapshot);
+          console.log(otherToken.length);
+          otherToken = otherToken.substring(1, 961);
+          console.log(otherToken);
+          let otherConfig = {
+            headers: {
+              Authorization: otherToken,
+            },
+          };
+          this.otherCoinGet(otherConfig);
         });
-      const coinConfig = {
-        headers: {
-          Authorization: otherToken,
-        },
-      };
-      await LESPO_API.getCoin(coinConfig)
+    }
+  };
+
+  otherCoinGet = async otherConfig => {
+    let otherCoin;
+    try {
+      await LESPO_API.getCoin(otherConfig)
         .then(response => {
+          // console.log(JSON.stringify(response));
           this.setState({
             otherCoin: response.data.data.credit,
           });
+          otherCoin = response.data.data.credit;
+          console.log('otherCoin[1]: ' + response.data.data.credit);
+          console.log('otherCoin[2]: ' + otherCoin);
+          // 코인 검사
+          if (this.state.coin > 0) {
+            if (this.state.otherCoin > 0) {
+              // 배틀 시작
+              this.setData({
+                battleState: '배틀진행중',
+              });
+              this.updateState();
+            } else {
+              // 상대 코인 부족
+              console.log('상대방의 코인 갯수: ' + this.state.otherCoin);
+              this.refs.toast.show('상대방의 코인이 부족합니다.');
+            }
+          } else {
+            // 내 코인 부족
+            this.refs.toast.show('사용가능한 코인이 부족합니다.');
+          }
         })
         .catch(error => {
-          console.log('getOtherCoin fail: ' + error);
+          console.log('otherCoin Get fail: ' + error);
         });
-      // 코인 검사
-      if (this.state.coin > 0) {
-        if (this.state.otherCoin > 0) {
-          // 배틀 시작
-          this.setData({
-            battleState: '배틀진행중',
-          });
-          this.updateState();
-        } else {
-          // 상대 코인 부족
-          this.refs.toast.show('상대방의 코인이 부족합니다.');
-        }
-      } else {
-        // 내 코인 부족
-        this.refs.toast.show('사용가능한 코인이 부족합니다.');
-      }
+    } catch (error) {
+      console.log('otherCoin fail: ' + error);
     }
   };
 

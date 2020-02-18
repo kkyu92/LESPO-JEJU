@@ -52,7 +52,7 @@ export default class extends React.Component {
     super(props);
     const {navigation} = this.props;
     this.state = {
-      navigation: navigation,
+      navigation,
       isKakaoLogging: false,
       token: 'token has not fetched',
       loading: true,
@@ -121,13 +121,17 @@ export default class extends React.Component {
         loading: false,
       });
     }
+    this.subs = [
+      this.props.navigation.addListener('willFocus', () => {
+        console.log('willFocus ::: reload');
+        this.resetSignUpCheck();
+      }),
+    ];
   }
 
   resetSignUpCheck = async () => {
     try {
-      this.setState({
-        loading: false,
-      });
+      this.getData();
       // sign up check
       let GET_SIGN_CHECK = await AsyncStorage.getItem('@SIGN_UP');
       let GET_USER_NAME = await AsyncStorage.getItem('@USER_NAME');
@@ -138,6 +142,9 @@ export default class extends React.Component {
       } else {
         console.log('not sign up check');
       }
+      this.setState({
+        loading: false,
+      });
     } catch (error) {
       console.log(error);
     }
@@ -149,11 +156,6 @@ export default class extends React.Component {
     await AsyncStorage.setItem('@NOTI_NAME', name);
     await AsyncStorage.setItem('@NOTI_PROFILE', profile);
   };
-
-  componentWillUnmount() {
-    console.log('componentWillUnmount');
-    this._isMounted = false;
-  }
 
   logCallback = (log, callback) => {
     console.log(log);
@@ -413,6 +415,15 @@ export default class extends React.Component {
     }
   };
 
+  async componentWillUnmount() {
+    console.log('componentWillUnmount');
+    this._isMounted = false;
+    let AUTO_LOGIN = await AsyncStorage.getItem('@AUTO_LOGIN');
+    if (AUTO_LOGIN !== 'true') {
+      this.subs.forEach(sub => sub.remove());
+    }
+  }
+
   render() {
     const {loading, email, password} = this.state;
     return (
@@ -426,7 +437,6 @@ export default class extends React.Component {
           kakaoLogin={this.kakaoLogin}
           onSNSLogin={this.onSNSLogin}
           onLogin={this.onLogin}
-          resetSignUpCheck={this.resetSignUpCheck}
           // kakaoLogout={kakaoLogout}
         />
         <Toast
@@ -434,8 +444,8 @@ export default class extends React.Component {
           style={{backgroundColor: '#fee6d0'}}
           position="bottom"
           positionValue={100}
-          fadeInDuration={750}
-          fadeOutDuration={2000}
+          fadeInDuration={100}
+          fadeOutDuration={2500}
           opacity={1}
           textStyle={{color: '#000000'}}
         />

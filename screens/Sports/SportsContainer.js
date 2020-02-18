@@ -22,6 +22,7 @@ export default class extends React.Component {
       myName: null,
       myProfile: null,
       navigation,
+      toast: null,
       error: null,
     };
     console.log('constructor ----');
@@ -71,13 +72,15 @@ export default class extends React.Component {
     const enable = await Firebase.messaging().hasPermission();
     if (enable) {
       // 화면에 들어와있을 때 알림
-      Firebase.notifications().onNotification(notification => {
-        this.refs.toast.show(
-          notification.android._notification._data.name +
-            ' : ' +
-            notification.android._notification._data.msg,
-        );
-      });
+      this.removeToastListener = Firebase.notifications().onNotification(
+        notification => {
+          this.toast.show(
+            notification.android._notification._data.name +
+              ' : ' +
+              notification.android._notification._data.msg,
+          );
+        },
+      );
     } else {
       try {
         Firebase.messaging().requestPermission();
@@ -157,6 +160,8 @@ export default class extends React.Component {
 
   // 나갔을때
   componentWillUnmount() {
+    console.log('componentWillUnmount[SportsContainer]');
+    this.removeToastListener();
     this.removeNotificationOpenedListener();
     firebase
       .database()
@@ -233,7 +238,9 @@ export default class extends React.Component {
           // handleListUpdate={this.handleListUpdate}
         />
         <Toast
-          ref="toast"
+          ref={toast => {
+            this.toast = toast;
+          }}
           style={{backgroundColor: '#fee6d0'}}
           position="top"
           positionValue={100}

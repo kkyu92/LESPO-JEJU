@@ -25,7 +25,7 @@ export default class extends React.Component {
     super(props);
     const {navigation} = this.props;
     this.state = {
-      loading: false,
+      loading: true,
       isModalVisible: false,
       loginStatus: '',
       name: '',
@@ -99,7 +99,7 @@ export default class extends React.Component {
 
     try {
       const products = await RNIap.getProducts(itemSkus);
-      console.log('getProducts: ' + JSON.stringify(products));
+      // console.log('getProducts: ' + JSON.stringify(products));
       this.setState({products: products});
     } catch (err) {
       console.warn(err); // standardized err.code and err.message available
@@ -161,6 +161,12 @@ export default class extends React.Component {
       });
     }
     this.getData();
+    this.subs = [
+      this.props.navigation.addListener('willFocus', () => {
+        console.log('willFocus ::: reload');
+        this.getData();
+      }),
+    ];
   }
 
   // 내정보 저장값 불러오기
@@ -194,14 +200,10 @@ export default class extends React.Component {
           console.log('getCoin fail: ' + error);
         });
       this.setState({
+        loading: false,
         name: M_NAME,
         profile: M_PROFILE,
       });
-      if (M_PROFILE !== null || M_PROFILE !== '') {
-        console.log('프로필 있다: ' + M_PROFILE);
-      } else {
-        console.log('프로필 없다.');
-      }
     } catch (e) {
       // error reading value
       console.log('getData ERROR ::: ' + e);
@@ -248,6 +250,7 @@ export default class extends React.Component {
     console.log('componentWillUnmount[MyContainer]');
     this.removeToastListener();
     this.removeNotificationOpenedListener();
+    this.subs.forEach(sub => sub.remove());
   }
 
   render() {

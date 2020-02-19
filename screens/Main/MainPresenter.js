@@ -70,12 +70,12 @@ const IconContainer = styled.View`
   margin-left: 40px;
 `;
 const IconBattle = styled.Image`
-  width: ${Layout.width / 4 + 40};
-  height: ${Layout.width / 4};
+  width: ${Layout.width / 3.5};
+  height: ${Layout.width / 3.5};
 `;
 const IconTrip = styled.Image`
-  width: ${Layout.width / 4 + 10};
-  height: ${Layout.width / 4};
+  width: ${Layout.width / 3.5};
+  height: ${Layout.width / 3.5};
 `;
 
 const IconText = styled.Text`
@@ -212,7 +212,7 @@ const MainPresenter = ({
               })
             }>
             <IconBattle
-              source={require(`../../assets/drawable-xxhdpi/btn_ch_sb.png`)}
+              source={require(`../../assets/drawable-xxhdpi/icon-battle-vs.png`)}
             />
             <IconText>스포츠 배틀</IconText>
           </TouchableContainer>
@@ -224,7 +224,7 @@ const MainPresenter = ({
               })
             }>
             <IconTrip
-              source={require(`../../assets/drawable-xxhdpi/img_traveler.png`)}
+              source={require(`../../assets/drawable-xxhdpi/icon-travel-bag.png`)}
             />
             <IconText>여행하기</IconText>
           </TouchableContainer>

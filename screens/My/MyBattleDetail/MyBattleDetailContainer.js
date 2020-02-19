@@ -8,6 +8,7 @@ import moment from 'moment';
 import {LESPO_API} from '../../../api/Api';
 import Firebase from 'react-native-firebase';
 import Toast from 'react-native-easy-toast';
+import RNKakaoPlusFriend from 'react-native-kakao-plus-friend';
 
 var M_ID, M_NAME, M_PROFILE;
 
@@ -99,7 +100,6 @@ export default class extends React.Component {
         });
       },
     );
-    let {roomKey, myId} = this.state;
     let maker;
     try {
       try {
@@ -190,6 +190,7 @@ export default class extends React.Component {
       }
     } else if (data === 'battleEnd') {
       // 배틀 종료 및 평가하기
+      this.endBattle();
       this.checkEndUser();
       this.changeModalVisiblity(true);
     } else if (data === 'start') {
@@ -200,13 +201,163 @@ export default class extends React.Component {
     } else if (data === 'success') {
       this.setState({isRandomBox: 'success'});
       this.changeModalVisiblity(true);
+    } else if (data === 'success2') {
+      this.setState({isRandomBox: 'success2'});
+      this.changeModalVisiblity(true);
+    } else if (data === 'success3') {
+      this.setState({isRandomBox: 'success3'});
+      this.changeModalVisiblity(true);
+    } else if (data === 'success4') {
+      this.setState({isRandomBox: 'success4'});
+      this.changeModalVisiblity(true);
+    } else if (data === 'success5') {
+      this.setState({isRandomBox: 'success5'});
+      this.changeModalVisiblity(true);
     } else if (data === 'fail') {
       this.setState({isRandomBox: 'fail'});
       this.changeModalVisiblity(true);
+    } else if (data === 'Channel') {
+      // 관리자연결
+      this.chatChannel();
     } else {
       // Dialog 취소
       console.log('cancel dialog');
     }
+  };
+  endBattle = async () => {
+    // check user in room
+    let makerIn;
+    let joinerIn;
+    var checkMaker = firebase
+      .database()
+      .ref('chatRoomList/' + this.state.roomKey + '/makeUser/userIn');
+    checkMaker.once('value', dataSnapshot => {
+      makerIn = JSON.stringify(dataSnapshot);
+    });
+    var checkJoiner = firebase
+      .database()
+      .ref('chatRoomList/' + this.state.roomKey + '/joinUser/userIn');
+    checkJoiner.once('value', dataSnapshot => {
+      joinerIn = JSON.stringify(dataSnapshot);
+    });
+    if ((makerIn === 'true') & (joinerIn === 'true')) {
+      let reader = {};
+      reader[this.state.id] = this.state.id;
+      reader[this.state.myId] = this.state.myId;
+      let user = this.state.myId;
+      let msg = '배틀을 종료합니다.';
+      let date = moment()
+        .local()
+        .format('LT');
+      firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey + '/chatList')
+        .push({user, msg, date, read: reader})
+        .then(data => {
+          //success callback
+          console.log('battle start notice Add: ', data);
+        })
+        .catch(error => {
+          //error callback
+          console.log('error ', error);
+        });
+    } else {
+      let reader = {};
+      reader[this.state.myId] = this.state.myId;
+      let user = this.state.myId;
+      let msg = '배틀을 종료합니다.';
+      let date = moment()
+        .local()
+        .format('LT');
+      firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey + '/chatList')
+        .push({user, msg, date, read: reader})
+        .then(data => {
+          //success callback
+          console.log('battle start notice Add: ', data);
+        })
+        .catch(error => {
+          //error callback
+          console.log('error ', error);
+        });
+      // fcm
+      let otherToken;
+      firebase
+        .database()
+        .ref('FcmTokenList/' + this.state.id)
+        .once('value', dataSnapshot => {
+          otherToken = dataSnapshot;
+          console.log(otherToken);
+          this.sendToServer(
+            this.state.myId,
+            this.state.myName,
+            this.state.myProfile,
+            '배틀을 종료합니다.',
+            otherToken,
+          );
+        });
+    }
+    firebase
+      .database()
+      .ref('chatRoomList/' + this.state.roomKey)
+      .update({
+        lastTime: moment()
+          .local()
+          .format('LT'),
+        lastRealTime: moment()
+          .local()
+          .format(),
+        lastMsg: '배틀을 종료합니다.',
+      });
+  };
+  // 배틀종료 FCM
+  sendToServer = async (senderId, senderName, senderProfile, msg, token) => {
+    const firebase_server_key =
+      'AAAABOeF95E:APA91bGCKfJwCOUeYC8QypsS7yCAtR8ZOZf_rAj1iRK_OvIB3mYXYnva4DAY28XmUZA1GpXsdp1eRf9rPeuIedr7eX_7yFWbL-C_4JfVGSFGorCdzjOA0AyYPxB83M8TTAfUj62tUZhH';
+    console.log('sendToFcm');
+
+    fetch('https://fcm.googleapis.com/fcm/send', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'key=' + firebase_server_key,
+      },
+      body: JSON.stringify({
+        registration_ids: [token],
+        notification: {
+          title: senderName,
+          body: msg,
+        },
+        data: {
+          roomKey: this.state.roomKey,
+          id: senderId,
+          name: senderName,
+          profile: senderProfile,
+          msg: msg,
+        },
+      }),
+    })
+      .then(response => {
+        console.log('FCM msg sent!');
+        // console.log(response);
+        // console.log('FCM Token: ' + token);
+        console.log('Message: ' + msg);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  };
+
+  //친구 추가 하기로 링크
+  addFriendChannel = async () => {
+    console.log('구매문의');
+    const add = await RNKakaoPlusFriend.addFriend('_fxdMxlxb');
+    console.log(add);
+  };
+  //바로 채팅하기로 링크
+  chatChannel = async () => {
+    await RNKakaoPlusFriend.chat('_fxdMxlxb');
   };
 
   // rating save to server
@@ -285,6 +436,7 @@ export default class extends React.Component {
   outChatRoom = async () => {
     let chatList = '';
     let joinUser = {
+      userIn: false,
       userId: '',
       userName: '',
       userProfile: '',

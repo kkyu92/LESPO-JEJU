@@ -51,11 +51,11 @@ const TabNavigation = createBottomTabNavigator(
         tabBarIcon: ({focused}) =>
           focused ? (
             <Icon
-              source={require(`../assets/drawable-xxhdpi/icon_battle_orange.png`)}
+              source={require(`../assets/drawable-xxhdpi/icon-event-or.png`)}
             />
           ) : (
             <Icon
-              source={require(`../assets/drawable-xxhdpi/icon_battle_gray.png`)}
+              source={require(`../assets/drawable-xxhdpi/icon-event-bk.png`)}
             />
           ),
         tabBarOptions: {
@@ -70,11 +70,11 @@ const TabNavigation = createBottomTabNavigator(
         tabBarIcon: ({focused}) =>
           focused ? (
             <Icon
-              source={require(`../assets/drawable-xxhdpi/icon_trip_orange.png`)}
+              source={require(`../assets/drawable-xxhdpi/icon-shopping-bk.png`)}
             />
           ) : (
             <Icon
-              source={require(`../assets/drawable-xxhdpi/icon_trip_gray.png`)}
+              source={require(`../assets/drawable-xxhdpi/icon-shopping-bk.png`)}
             />
           ),
         tabBarOptions: {

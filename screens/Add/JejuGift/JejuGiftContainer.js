@@ -68,7 +68,6 @@ export default class extends React.Component {
       ({
         data: {data: listChanged},
       } = await LESPO_API.getJejuAd());
-      console.log(listChanged);
     } catch (error) {
       console.log(error);
       error = "Cnat't get Shopping";
@@ -104,12 +103,6 @@ export default class extends React.Component {
     this.removeToastListener();
     this.removeNotificationOpenedListener();
   }
-
-  // 새로고침
-  // componentWillUnmount() {
-  //   console.log('componentWillUnmount ::: ');
-  //   this.subs.forEach(sub => sub.remove());
-  // }
 
   // List 입력값 받아온다
   handleListUpdate = list => {

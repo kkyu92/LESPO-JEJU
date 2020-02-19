@@ -247,12 +247,14 @@ export default class extends React.Component {
   updateBattle = async () => {
     let error;
     let makeUser = {
+      userIn: false,
       userId: this.state.myId,
       userName: this.state.myName,
       userProfile: this.state.myProfile ? this.state.myProfile : '',
       userRating: this.state.rating,
     };
     let joinUser = {
+      userIn: false,
       userId: '',
       userName: '',
       userProfile: '',

@@ -67,10 +67,6 @@ const Img = styled.Image`
   width: 70px;
   height: 70px;
 `;
-const Img2 = styled.Image`
-  width: 65px;
-  height: 76px;
-`;
 
 const Text = styled.Text`
   margin-top: 10px;
@@ -121,7 +117,7 @@ const TripPresenter = ({loading, navigation}) =>
                 })
               }>
               <BigImg
-                source={require(`../../assets/drawable-xxhdpi/icon_sightseeing.png`)}
+                source={require(`../../assets/drawable-xxhdpi/icon-favorite.png`)}
               />
               <Text>추천관광</Text>
             </BigCard>
@@ -134,7 +130,7 @@ const TripPresenter = ({loading, navigation}) =>
                 })
               }>
               <Img
-                source={require(`../../assets/drawable-xxhdpi/icon_meal.png`)}
+                source={require(`../../assets/drawable-xxhdpi/icon-fnb.png`)}
               />
               <Text>먹거리</Text>
             </Card>
@@ -144,8 +140,8 @@ const TripPresenter = ({loading, navigation}) =>
                   routeName: 'View',
                 })
               }>
-              <Img2
-                source={require(`../../assets/drawable-xxhdpi/icon_viewthing.png`)}
+              <Img
+                source={require(`../../assets/drawable-xxhdpi/icon-sightseeing.png`)}
               />
               <Text>볼거리</Text>
             </Card>
@@ -158,7 +154,7 @@ const TripPresenter = ({loading, navigation}) =>
                 })
               }>
               <Img
-                source={require(`../../assets/drawable-xxhdpi/icon_leisure.png`)}
+                source={require(`../../assets/drawable-xxhdpi/icon-exciting.png`)}
               />
               <Text>레저스포츠</Text>
             </Card>
@@ -169,7 +165,7 @@ const TripPresenter = ({loading, navigation}) =>
                 })
               }>
               <Img
-                source={require(`../../assets/drawable-xxhdpi/icon_gym.png`)}
+                source={require(`../../assets/drawable-xxhdpi/icon-exercise.png`)}
               />
               <Text>운동시설</Text>
             </Card>

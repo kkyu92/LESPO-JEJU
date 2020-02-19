@@ -43,14 +43,27 @@ export default class SimpleDialog extends Component {
   };
 
   createRandomNumber = () => {
+    // [ 20 / 20 / 20 / 15 / 15 / 10 ]
     let RandomNumber = Math.floor(Math.random() * 100) + 1;
     console.log('random number: ' + RandomNumber);
-    if (RandomNumber < 51) {
+    if (RandomNumber < 21) {
       this.setState({randomNum: 'fail'});
       this.props.setData('fail', this.state.rating);
-    } else {
+    } else if (20 < RandomNumber && RandomNumber < 41) {
       this.setState({randomNum: 'success'});
       this.props.setData('success', this.state.rating);
+    } else if (40 < RandomNumber && RandomNumber < 61) {
+      this.setState({randomNum: 'success2'});
+      this.props.setData('success2', this.state.rating);
+    } else if (60 < RandomNumber && RandomNumber < 76) {
+      this.setState({randomNum: 'success3'});
+      this.props.setData('success3', this.state.rating);
+    } else if (75 < RandomNumber && RandomNumber < 91) {
+      this.setState({randomNum: 'success4'});
+      this.props.setData('success4', this.state.rating);
+    } else {
+      this.setState({randomNum: 'success5'});
+      this.props.setData('success5', this.state.rating);
     }
   };
 
@@ -347,7 +360,11 @@ export default class SimpleDialog extends Component {
         </View>
       </TouchableOpacity>
     ) : this.props.battleState === '배틀종료' &&
-      this.props.isRandomBox === 'success' ? (
+      (this.props.isRandomBox === 'success' ||
+        this.props.isRandomBox === 'success2' ||
+        this.props.isRandomBox === 'success3' ||
+        this.props.isRandomBox === 'success4' ||
+        this.props.isRandomBox === 'success5') ? (
       <TouchableOpacity
         activeOpacity={1}
         disabled={true}
@@ -357,20 +374,78 @@ export default class SimpleDialog extends Component {
             <Text style={[styles.ratingText, {color: 'black'}, {fontSize: 30}]}>
               배틀완료
             </Text>
-            <Text style={styles.ratingText}> 바나나 우유 당첨! </Text>
-            <View style={styles.imageContainer}>
-              <TouchableOpacity>
-                <Image
-                  style={styles.img}
-                  source={require(`../assets/drawable-xxhdpi/img_banana.png`)}
-                />
-              </TouchableOpacity>
-            </View>
+            {this.props.isRandomBox === 'success' ? (
+              <>
+                <Text style={styles.ratingText}> 바나나 우유 당첨! [1번] </Text>
+                <View style={styles.imageContainer}>
+                  <TouchableOpacity>
+                    <Image
+                      style={styles.img}
+                      source={require(`../assets/drawable-xxhdpi/img_banana.png`)}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </>
+            ) : this.props.isRandomBox === 'success2' ? (
+              <>
+                <Text style={styles.ratingText}> 바나나 우유 당첨! [2번] </Text>
+                <View style={styles.imageContainer}>
+                  <TouchableOpacity>
+                    <Image
+                      style={styles.img}
+                      source={require(`../assets/drawable-xxhdpi/img_banana.png`)}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </>
+            ) : this.props.isRandomBox === 'success3' ? (
+              <>
+                <Text style={styles.ratingText}> 바나나 우유 당첨! [3번] </Text>
+                <View style={styles.imageContainer}>
+                  <TouchableOpacity>
+                    <Image
+                      style={styles.img}
+                      source={require(`../assets/drawable-xxhdpi/img_banana.png`)}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </>
+            ) : this.props.isRandomBox === 'success4' ? (
+              <>
+                <Text style={styles.ratingText}> 바나나 우유 당첨! [4번] </Text>
+                <View style={styles.imageContainer}>
+                  <TouchableOpacity>
+                    <Image
+                      style={styles.img}
+                      source={require(`../assets/drawable-xxhdpi/img_banana.png`)}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </>
+            ) : (
+              this.props.isRandomBox ===
+              'success5'(
+                <>
+                  <Text style={styles.ratingText}>
+                    {' '}
+                    바나나 우유 당첨! [5번]{' '}
+                  </Text>
+                  <View style={styles.imageContainer}>
+                    <TouchableOpacity>
+                      <Image
+                        style={styles.img}
+                        source={require(`../assets/drawable-xxhdpi/img_banana.png`)}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                </>,
+              )
+            )}
           </View>
           <View style={styles.ratingBtnView}>
             <TouchableHighlight
               onPress={() => {
-                this.closeModal('Cancel');
+                this.closeModal('Channel');
               }}
               style={styles.ratingBtn}
               underlayColor={'#f1f1f1'}>

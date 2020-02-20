@@ -157,6 +157,7 @@ export default class extends React.Component {
     try {
       await LESPO_API.getMainList()
         .then(response => {
+          console.log('getMain');
           this.setState({
             mainList: response.data.data,
           });
@@ -166,6 +167,7 @@ export default class extends React.Component {
         });
       await LESPO_API.getMainFoodList()
         .then(response => {
+          console.log('getFood');
           this.setState({
             foodList: response.data.data,
           });
@@ -175,6 +177,7 @@ export default class extends React.Component {
         });
       await LESPO_API.getMainPlayList()
         .then(response => {
+          console.log('getPlay');
           this.setState({
             playList: response.data.data,
           });
@@ -188,7 +191,7 @@ export default class extends React.Component {
             viewList: response.data.data,
           });
           if (this._isMounted) {
-            console.log('on');
+            console.log('getView == finish');
             this.setState({
               loading: false,
             });

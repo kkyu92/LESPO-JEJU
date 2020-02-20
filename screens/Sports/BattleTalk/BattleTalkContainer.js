@@ -471,8 +471,8 @@ export default class extends React.Component {
       // get ChattingList
       var userRef = firebase
         .database()
-        .ref('chatRoomList/' + roomKey + '/chatList/')
-        .limitToLast(30);
+        .ref('chatRoomList/' + roomKey + '/chatList/');
+      // .limitToLast(30);
       // .orderByChild('key');
       userRef.on('value', dataSnapshot => {
         getChatList = [];

@@ -15,7 +15,7 @@ import {
   BG_COLOR,
 } from '../../constants/Colors';
 import Layout from '../../constants/Layout';
-import Toast from 'react-native-easy-toast';
+import BookMark from 'react-native-vector-icons/Feather';
 
 const View = styled.View`
   background-color: ${BG_COLOR};
@@ -48,8 +48,6 @@ const SearchImg = styled.View`
 
 const Container = styled.ScrollView`
   background-color: white;
-  border-top-left-radius: 15;
-  border-top-right-radius: 15;
   padding-left: 20;
   padding-top: 20;
   padding-bottom: 20;
@@ -166,9 +164,10 @@ const MainPresenter = ({
               routeName: 'MyWishList',
             })
           }>
-          <WishList
+          <BookMark size={30} name={'bookmark'} color={`${TINT_COLOR}`} />
+          {/* <WishList
             source={require(`../../assets/drawable-xxxhdpi/icon_wish_wh.png`)}
-          />
+          /> */}
         </WishListBtn>
         <MapBtn
           onPress={() =>

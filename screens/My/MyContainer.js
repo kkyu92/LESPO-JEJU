@@ -19,7 +19,7 @@ const itemSkus = Platform.select({
   android: ['battlecoin', 'battlecoin1'],
   // android: ['com.lespojeju'],
 });
-
+let countCoin = 0;
 export default class extends React.Component {
   constructor(props) {
     super(props);
@@ -39,6 +39,7 @@ export default class extends React.Component {
   }
 
   requestPurchase = async () => {
+    countCoin = 0;
     console.log('requestPurchase : ' + this.state.products[0].productId);
     try {
       await RNIap.requestPurchase(this.state.products[0].productId, false);
@@ -78,22 +79,42 @@ export default class extends React.Component {
   async componentDidMount() {
     this.purchaseUpdateSubscription = purchaseUpdatedListener(
       (purchase = ProductPurchase) => {
-        const receipt = purchase.transactionReceipt;
-        if (Platform.OS === 'ios') {
-          //   RNIap.finishTransactionIOS(purchase.transactionId);
-          console.log(
-            'receipt: ',
-            purchase.productId,
-            purchase.transactionDate,
-            purchase.transactionId,
-          );
-        } else if (Platform.OS === 'android') {
-          console.log('receipt: ', receipt);
-          //   RNIap.consumePurchaseAndroid(purchase.purchaseToken);
-          //   console.log('purchaseToken: ', purchase.purchaseToken);
-        }
         RNIap.finishTransaction(purchase, true);
-        this.insertCoin();
+        console.log(countCoin);
+        const receipt = purchase.transactionReceipt;
+        try {
+          if (countCoin === 0) {
+            this.insertCoin();
+            countCoin++;
+            if (Platform.OS === 'ios') {
+              console.log(
+                'receipt: ',
+                purchase.productId,
+                purchase.transactionDate,
+                purchase.transactionId,
+              );
+            } else if (Platform.OS === 'android') {
+              console.log('receipt: ', receipt);
+            }
+          }
+        } catch (error) {
+          console.log(error);
+        }
+        // if (Platform.OS === 'ios') {
+        //     // RNIap.finishTransactionIOS(purchase.transactionId);
+        //   console.log(
+        //     'receipt: ',
+        //     purchase.productId,
+        //     purchase.transactionDate,
+        //     purchase.transactionId,
+        //   );
+        // } else if (Platform.OS === 'android') {
+        //   console.log('receipt: ', receipt);
+        //   //   RNIap.consumePurchaseAndroid(purchase.purchaseToken);
+        //   //   console.log('purchaseToken: ', purchase.purchaseToken);
+        // }
+        // RNIap.finishTransaction(purchase, true);
+        // this.insertCoin();
       },
     );
 

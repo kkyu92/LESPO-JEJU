@@ -2,13 +2,16 @@ import React from 'react';
 import {StyleSheet} from 'react-native';
 import styled from 'styled-components';
 import LinearGradient from 'react-native-linear-gradient';
-import {BG_COLOR, TINT_COLOR, GREY_COLOR2} from '../../constants/Colors';
+import {
+  BG_COLOR,
+  TINT_COLOR,
+  GREY_COLOR2,
+  BLACK_COLOR,
+} from '../../constants/Colors';
 import Layout from '../../constants/Layout';
 import Loader from '../../components/Loader';
 import {withNavigation} from 'react-navigation';
 import {LoginManager, AccessToken} from 'react-native-fbsdk';
-// import {AsyncStorage} from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
 
 const FBSDK = require('react-native-fbsdk');
 const {GraphRequest, GraphRequestManager} = FBSDK;
@@ -27,7 +30,7 @@ var styles = StyleSheet.create({
 });
 
 const HeaderTitle = styled.Text`
-  color: ${TINT_COLOR};
+  color: ${BG_COLOR};
   font-size: 28px;
   font-weight: bold;
   margin-top: ${Platform.OS === 'ios' ? '20px' : '0px'};
@@ -37,7 +40,7 @@ const HeaderTitle = styled.Text`
 `;
 
 const Title = styled.Text`
-  color: ${TINT_COLOR};
+  color: ${BG_COLOR};
   font-size: 28px;
   font-weight: 800;
   margin-top: 20px;
@@ -47,20 +50,22 @@ const Title = styled.Text`
 const SubTitle = styled.Text`
   font-size: 16px;
   font-weight: 600;
-  color: ${TINT_COLOR};
+  color: ${BG_COLOR};
   margin-top: 20px;
   margin-bottom: 10px;
 `;
 
 const TextInput = styled.TextInput`
-  color: ${TINT_COLOR};
+  color: ${BG_COLOR};
   padding: 5px;
   border-bottom-width: 1;
-  border-color: ${TINT_COLOR};
+  border-color: ${BG_COLOR};
 `;
 
 const BtnContainer = styled.TouchableOpacity`
   background-color: ${TINT_COLOR};
+  border-color: ${BG_COLOR};
+  border-width: 1px;
   border-radius: 15px;
   flex-direction: row;
   justify-content: center;
@@ -101,7 +106,7 @@ const ImgContainer = styled.TouchableOpacity`
 const Img = styled.Image`
   width: ${(Layout.width / 9) * 2.61};
   height: ${Layout.width / 9};
-  background-color: ${TINT_COLOR};
+  background-color: ${BLACK_COLOR};
   border-radius: 10px;
 `;
 
@@ -119,129 +124,121 @@ const LoginPresenter = ({
   loading ? (
     <Loader />
   ) : (
-    <LinearGradient
-      start={{x: 0.0, y: 0.25}}
-      end={{x: 0.5, y: 1.0}}
-      locations={[0, 0.5, 0.6]}
-      colors={['#fedd66', '#f98b59', '#f55b60']}
-      style={styles.linearGradient}>
-      <ViewContainer>
-        <HeaderTitle>제주배틀투어</HeaderTitle>
-        <Title>Log in</Title>
+    // <LinearGradient
+    //   start={{x: 0.0, y: 0.25}}
+    //   end={{x: 0.5, y: 1.0}}
+    //   locations={[0, 0.5, 0.6]}
+    //   colors={['#fedd66', '#f98b59', '#f55b60']}
+    //   style={styles.linearGradient}>
+    <ViewContainer>
+      <HeaderTitle>제주배틀투어</HeaderTitle>
+      <Title>Log in</Title>
 
-        <SubTitle>아이디</SubTitle>
-        <TextInput
-          onChangeText={handleEmailUpdate}
-          returnKeyType={'done'}
-          keyboardType={'email-address'}
-          placeholder={'이메일을 입력해주세요.'}
-          placeholderTextColor={GREY_COLOR2}
-          value={signEmail}
-          // onSubmitEditing={onSubmitEditing}
-        />
+      <SubTitle>아이디</SubTitle>
+      <TextInput
+        onChangeText={handleEmailUpdate}
+        returnKeyType={'done'}
+        keyboardType={'email-address'}
+        placeholder={'이메일을 입력해주세요.'}
+        placeholderTextColor={GREY_COLOR2}
+        value={signEmail}
+        // onSubmitEditing={onSubmitEditing}
+      />
 
-        <SubTitle>비밀번호</SubTitle>
-        <TextInput
-          onChangeText={handlePasswordUpdate}
-          returnKeyType={'done'}
-          keyboardType={'default'}
-          placeholder={'비밀번호를 입력해주세요.'}
-          placeholderTextColor={GREY_COLOR2}
-          secureTextEntry
-          value={signPassword}
-        />
+      <SubTitle>비밀번호</SubTitle>
+      <TextInput
+        onChangeText={handlePasswordUpdate}
+        returnKeyType={'done'}
+        keyboardType={'default'}
+        placeholder={'비밀번호를 입력해주세요.'}
+        placeholderTextColor={GREY_COLOR2}
+        secureTextEntry
+        value={signPassword}
+      />
 
-        <BtnContainer onPress={() => onLogin()}>
-          <BtnText>로그인</BtnText>
-        </BtnContainer>
+      <BtnContainer onPress={() => onLogin()}>
+        <BtnText>로그인</BtnText>
+      </BtnContainer>
 
-        <TextContainer>
-          <TouchableOpacity>
-            <SubTitle>비밀번호찾기</SubTitle>
-          </TouchableOpacity>
+      <TextContainer>
+        <TouchableOpacity>
+          <SubTitle>비밀번호찾기</SubTitle>
+        </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate({
-                routeName: 'Signup',
-              })
-            }>
-            <SubTitle>회원가입</SubTitle>
-          </TouchableOpacity>
-        </TextContainer>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate({
+              routeName: 'Signup',
+            })
+          }>
+          <SubTitle>회원가입</SubTitle>
+        </TouchableOpacity>
+      </TextContainer>
 
-        <SubTitle>SNS 로그인</SubTitle>
-        <ImgView>
-          <ImgContainer onPress={() => kakaoLogin()}>
-            <Img
-              source={require(`../../assets/drawable-xxhdpi/btn_login_01.png`)}
-            />
-          </ImgContainer>
-          <ImgContainer>
-            <Img
-              source={require(`../../assets/drawable-xxhdpi/btn_login_02.png`)}
-            />
-          </ImgContainer>
-          <ImgContainer
-            onPress={() =>
-              LoginManager.logInWithPermissions(['public_profile']).then(
-                function(result) {
-                  if (result.isCancelled) {
-                    console.log('Login cancelled');
-                  } else {
-                    AccessToken.getCurrentAccessToken().then(data => {
-                      let accessToken = data.accessToken;
-                      const responseInfoCallback = (error, result) => {
-                        if (error) {
-                          console.log(error);
-                          alert('Error fetching data: ' + error.toString());
-                        } else {
-                          onSNSLogin('facebook', result);
-                          // alert(
-                          //   'Success fetching data: ' + JSON.stringify(result),
-                          // );
-                        }
-                      };
-                      const infoRequest = new GraphRequest(
-                        '/me',
-                        {
-                          accessToken: accessToken,
-                          parameters: {
-                            fields: {
-                              string: 'id,email,name,picture.type(large)',
-                              // picture
-                            },
+      <SubTitle>SNS 로그인</SubTitle>
+      <ImgView>
+        <ImgContainer onPress={() => kakaoLogin()}>
+          <Img
+            source={require(`../../assets/drawable-xxhdpi/btn_login_01.png`)}
+          />
+        </ImgContainer>
+        <ImgContainer>
+          <Img
+            source={require(`../../assets/drawable-xxhdpi/btn_login_02.png`)}
+          />
+        </ImgContainer>
+        <ImgContainer
+          onPress={() =>
+            LoginManager.logInWithPermissions(['public_profile']).then(
+              function(result) {
+                if (result.isCancelled) {
+                  console.log('Login cancelled');
+                } else {
+                  AccessToken.getCurrentAccessToken().then(data => {
+                    let accessToken = data.accessToken;
+                    const responseInfoCallback = (error, result) => {
+                      if (error) {
+                        console.log(error);
+                        alert('Error fetching data: ' + error.toString());
+                      } else {
+                        onSNSLogin('facebook', result);
+                        // alert(
+                        //   'Success fetching data: ' + JSON.stringify(result),
+                        // );
+                      }
+                    };
+                    const infoRequest = new GraphRequest(
+                      '/me',
+                      {
+                        accessToken: accessToken,
+                        parameters: {
+                          fields: {
+                            string: 'id,email,name,picture.type(large)',
+                            // picture
                           },
                         },
-                        responseInfoCallback,
-                      );
-                      // Start the graph request.
-                      new GraphRequestManager().addRequest(infoRequest).start();
-                    });
-                  }
-                },
-                function(error) {
-                  console.log('Login fail with error: ' + error);
-                },
-              )
-            }>
-            <Img
-              source={require(`../../assets/drawable-xxhdpi/btn_login_03.png`)}
-            />
-          </ImgContainer>
-        </ImgView>
-      </ViewContainer>
-    </LinearGradient>
+                      },
+                      responseInfoCallback,
+                    );
+                    // Start the graph request.
+                    new GraphRequestManager().addRequest(infoRequest).start();
+                  });
+                }
+              },
+              function(error) {
+                console.log('Login fail with error: ' + error);
+              },
+            )
+          }>
+          <Img
+            source={require(`../../assets/drawable-xxhdpi/btn_login_03.png`)}
+          />
+        </ImgContainer>
+      </ImgView>
+    </ViewContainer>
   );
-
-const storeData = async result => {
-  try {
-    await AsyncStorage.setItem('@USER_ID', result.id);
-    await AsyncStorage.setItem('@USER_NAME', result.name);
-    await AsyncStorage.setItem('@USER_PROFILE', result.picture.data.url);
-  } catch (e) {
-    console.log('Can not saved AsyncStorage' + e);
-  }
-};
+{
+  /* </LinearGradient> */
+}
 
 export default withNavigation(LoginPresenter);

@@ -92,8 +92,8 @@ const PickerContainer = styled.View`
 
 const Container = styled.ScrollView`
   background-color: white;
-  border-top-left-radius: 15;
-  border-top-right-radius: 15;
+  /* border-top-left-radius: 15;
+  border-top-right-radius: 15; */
   padding-left: 20;
   padding-top: 20;
   padding-bottom: 20;
@@ -152,7 +152,7 @@ const JejuPresenter = ({
           />
         </PickerContainer>
         <AdApplyContainer onPress={() => addFriend()}>
-          <AdApplyText>구매문의</AdApplyText>
+          <AdApplyText>광고문의</AdApplyText>
         </AdApplyContainer>
       </HeaderConatiner>
       <Container showsVerticalScrollIndicator={false}>

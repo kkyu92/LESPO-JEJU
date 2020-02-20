@@ -12,6 +12,7 @@ import {
 } from '../../constants/Colors';
 import Layout from '../../constants/Layout';
 import MyLocationIcon from 'react-native-vector-icons/MaterialIcons';
+import ZoomIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconF from 'react-native-vector-icons/Fontisto';
 import Swiper from 'react-native-swiper';
@@ -99,6 +100,8 @@ const ListTextCheck = styled.Text`
 const MyLocation = styled.TouchableOpacity`
   position: absolute;
   background-color: ${TINT_COLOR};
+  border-color: ${GREY_COLOR3};
+  border-width: 1px;
   width: 50px;
   height: 50px;
   right: 0;
@@ -107,8 +110,64 @@ const MyLocation = styled.TouchableOpacity`
   border-radius: 25px;
   align-items: center;
   justify-content: center;
-  /* padding:10px; */
 `;
+const ZoomIn = styled.TouchableOpacity`
+  position: absolute;
+  background-color: ${TINT_COLOR};
+  border-color: ${GREY_COLOR3};
+  border-width: 1px;
+  width: 50px;
+  height: 50px;
+  right: 0;
+  top: 60px;
+  margin: 20px;
+  border-radius: 25px;
+  align-items: center;
+  justify-content: center;
+`;
+const ZoomOut = styled.TouchableOpacity`
+  position: absolute;
+  background-color: ${TINT_COLOR};
+  border-color: ${GREY_COLOR3};
+  border-width: 1px;
+  width: 50px;
+  height: 50px;
+  right: 0;
+  top: 120px;
+  margin: 20px;
+  border-radius: 25px;
+  align-items: center;
+  justify-content: center;
+`;
+const ZoomInBottom = styled.TouchableOpacity`
+  position: absolute;
+  background-color: ${TINT_COLOR};
+  border-color: ${GREY_COLOR3};
+  border-width: 1px;
+  width: 50px;
+  height: 50px;
+  right: 0;
+  bottom: 150px;
+  margin: 20px;
+  border-radius: 25px;
+  align-items: center;
+  justify-content: center;
+`;
+const ZoomOutBottom = styled.TouchableOpacity`
+  position: absolute;
+  background-color: ${TINT_COLOR};
+  border-color: ${GREY_COLOR3};
+  border-width: 1px;
+  width: 50px;
+  height: 50px;
+  right: 0;
+  bottom: 90px;
+  margin: 20px;
+  border-radius: 25px;
+  align-items: center;
+  justify-content: center;
+`;
+
 const SWIPER_HEIGHT = (Layout.width / 5) * 3;
 const MView = styled.View`
   border-radius: 15;
@@ -144,8 +203,27 @@ const NoticeText = styled.Text`
 
 const _getLocation = async (latitude, longitude) => {
   this.map.animateToRegion(
-    {latitude, longitude, latitudeDelta: 0.09, longitudeDelta: 0.035},
+    {latitude, longitude, latitudeDelta: 0.035, longitudeDelta: 0.035},
     1000,
+  );
+  this.marker.showCallout();
+};
+const _zoomIn = async (latitude, longitude, latDelta, lonDelta) => {
+  let latitudeDelta = latDelta / 2;
+  let longitudeDelta = lonDelta / 2;
+  this.map.animateToRegion(
+    {latitude, longitude, latitudeDelta, longitudeDelta},
+    500,
+  );
+  this.marker.showCallout();
+};
+const _zoomOut = async (latitude, longitude, latDelta, lonDelta) => {
+  console.log('latDelta: ' + latDelta + '\nlonDelta: ' + lonDelta);
+  let latitudeDelta = latDelta + latDelta;
+  let longitudeDelta = lonDelta + lonDelta;
+  this.map.animateToRegion(
+    {latitude, longitude, latitudeDelta, longitudeDelta},
+    500,
   );
   this.marker.showCallout();
 };
@@ -221,10 +299,13 @@ const MapPresenter = ({
   loading,
   latitude,
   longitude,
+  latDelta,
+  lonDelta,
   listChanged,
   locations,
   mainState,
   onListChanging,
+  onRegionChange,
   onSavePlace,
   listName,
   navigation,
@@ -237,6 +318,8 @@ const MapPresenter = ({
         provider={PROVIDER_GOOGLE}
         ref={map => (this.map = map)}
         // showsMyLocationButton
+        rotateEnabled={false}
+        onRegionChange={region => onRegionChange(region)}
         showsUserLocation
         style={{
           width: Layout.width,
@@ -246,8 +329,8 @@ const MapPresenter = ({
         initialRegion={{
           latitude: latitude,
           longitude: longitude,
-          latitudeDelta: 0.09,
-          longitudeDelta: 0.035,
+          latitudeDelta: latDelta,
+          longitudeDelta: lonDelta,
         }}>
         {locations
           ? locations.locations
@@ -279,6 +362,14 @@ const MapPresenter = ({
               ))
           : console.log('locations null ????? ' + JSON.stringify(locations))}
       </MapView>
+      <ZoomInBottom
+        onPress={() => _zoomIn(latitude, longitude, latDelta, lonDelta)}>
+        <ZoomIcon size={30} name={'plus'} color={`${GREY_COLOR3}`} />
+      </ZoomInBottom>
+      <ZoomOutBottom
+        onPress={() => _zoomOut(latitude, longitude, latDelta, lonDelta)}>
+        <ZoomIcon size={30} name={'minus'} color={`${GREY_COLOR3}`} />
+      </ZoomOutBottom>
       <MyLocation onPress={() => _getLocation(latitude, longitude)}>
         <MyLocationIcon
           size={30}
@@ -362,6 +453,8 @@ const MapPresenter = ({
         provider={PROVIDER_GOOGLE}
         ref={map => (this.map = map)}
         // showsMyLocationButton
+        rotateEnabled={false}
+        onRegionChange={region => onRegionChange(region)}
         showsUserLocation
         style={{
           width: Layout.width,
@@ -371,8 +464,8 @@ const MapPresenter = ({
         initialRegion={{
           latitude: latitude,
           longitude: longitude,
-          latitudeDelta: 0.09,
-          longitudeDelta: 0.035,
+          latitudeDelta: latDelta,
+          longitudeDelta: lonDelta,
         }}>
         {locations
           ? locations.locations
@@ -408,6 +501,13 @@ const MapPresenter = ({
               ))
           : console.log('locations null ????? ' + JSON.stringify(locations))}
       </MapView>
+      <ZoomIn onPress={() => _zoomIn(latitude, longitude, latDelta, lonDelta)}>
+        <ZoomIcon size={30} name={'plus'} color={`${GREY_COLOR3}`} />
+      </ZoomIn>
+      <ZoomOut
+        onPress={() => _zoomOut(latitude, longitude, latDelta, lonDelta)}>
+        <ZoomIcon size={30} name={'minus'} color={`${GREY_COLOR3}`} />
+      </ZoomOut>
       <MyLocation onPress={() => _getLocation(latitude, longitude)}>
         <MyLocationIcon
           size={30}
@@ -461,6 +561,8 @@ const MapPresenter = ({
         provider={PROVIDER_GOOGLE}
         ref={map => (this.map = map)}
         // showsMyLocationButton
+        rotateEnabled={false}
+        onRegionChange={region => onRegionChange(region)}
         showsUserLocation
         style={{
           width: Layout.width,
@@ -470,8 +572,8 @@ const MapPresenter = ({
         initialRegion={{
           latitude: latitude,
           longitude: longitude,
-          latitudeDelta: 0.09,
-          longitudeDelta: 0.035,
+          latitudeDelta: latDelta,
+          longitudeDelta: lonDelta,
         }}>
         {locations
           ? locations.locations
@@ -488,6 +590,13 @@ const MapPresenter = ({
               ))
           : console.log('locations null ????? ' + JSON.stringify(locations))}
       </MapView>
+      <ZoomIn onPress={() => _zoomIn(latitude, longitude, latDelta, lonDelta)}>
+        <ZoomIcon size={30} name={'plus'} color={`${GREY_COLOR3}`} />
+      </ZoomIn>
+      <ZoomOut
+        onPress={() => _zoomOut(latitude, longitude, latDelta, lonDelta)}>
+        <ZoomIcon size={30} name={'minus'} color={`${GREY_COLOR3}`} />
+      </ZoomOut>
       <MyLocation onPress={() => _getLocation(latitude, longitude)}>
         <MyLocationIcon
           size={30}

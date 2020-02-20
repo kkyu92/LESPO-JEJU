@@ -82,8 +82,8 @@ const OrangeText = styled.Text`
 
 const Container = styled.View`
   background-color: white;
-  border-top-left-radius: 15;
-  border-top-right-radius: 15;
+  /* border-top-left-radius: 15;
+  border-top-right-radius: 15; */
   padding-left: 20;
   padding-right: 20;
   padding-top: 20;

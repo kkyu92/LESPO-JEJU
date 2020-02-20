@@ -30,6 +30,8 @@ export default class extends React.Component {
       loading: true,
       latitude: null,
       longitude: null,
+      latDelta: null,
+      lonDelta: null,
       listChanged,
       locations,
       mainState,
@@ -66,6 +68,8 @@ export default class extends React.Component {
           this.setState({
             latitude: latitude,
             longitude: longitude,
+            latDelta: 0.035,
+            lonDelta: 0.035,
           });
         } catch (error) {
           console.log(error);
@@ -669,6 +673,15 @@ export default class extends React.Component {
     // return;
   };
 
+  onRegionChange = region => {
+    this.setState({
+      latitude: region.latitude,
+      longitude: region.longitude,
+      latDelta: region.latitudeDelta,
+      lonDelta: region.longitudeDelta,
+    });
+  };
+
   componentWillUnmount() {
     console.log('componentWillUnmount[MapContainer]');
     this.removeToastListener();
@@ -683,6 +696,8 @@ export default class extends React.Component {
       loading,
       latitude,
       longitude,
+      latDelta,
+      lonDelta,
       listChanged,
       locations,
       mainState,
@@ -697,12 +712,15 @@ export default class extends React.Component {
             loading={loading}
             latitude={latitude}
             longitude={longitude}
+            latDelta={latDelta}
+            lonDelta={lonDelta}
             listChanged={listChanged}
             locations={locations}
             mainState={mainState}
             listName={listName}
             onSavePlace={onSavePlace}
             onListChanging={this.onListChanging}
+            onRegionChange={this.onRegionChange}
           />
           <Toast
             ref="toast"

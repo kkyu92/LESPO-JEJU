@@ -99,6 +99,19 @@ export default class extends React.Component {
         }
       });
 
+    try {
+      await LESPO_API.getMainList()
+        .then(response => {
+          console.log('getMain');
+          console.log(response.data.data);
+        })
+        .catch(error => {
+          console.log('getMainList fail: ' + error);
+        });
+    } catch (e) {
+      console.log(e);
+    }
+
     // AUTO_LOGIN
     let AUTO_LOGIN = await AsyncStorage.getItem('@AUTO_LOGIN');
     if (AUTO_LOGIN === 'true') {
@@ -164,9 +177,8 @@ export default class extends React.Component {
 
   setLoginLoading = () => {};
   setProfileLoading = () => {};
+  setApiLoading = () => {};
   // const setLogoutLoading = () => {};
-  setToken = () => {};
-  setProfile = () => {};
   TOKEN_EMPTY = 'token has not fetched';
   PROFILE_EMPTY = {
     id: 'profile has not fetched',
@@ -181,7 +193,6 @@ export default class extends React.Component {
 
     await KakaoLogins.login()
       .then(result => {
-        this.setToken(result.accessToken);
         this.logCallback(
           `Login Finished:${JSON.stringify(result)}`,
           this.setLoginLoading(false),
@@ -220,50 +231,42 @@ export default class extends React.Component {
   //       );
   //     });
   // };
-  snsLoginApi = async params => {
-    console.log('snsLoginApi');
+  kakaoLoginApi = async (sns, result) => {
+    console.log('kakaoLoginApi');
   };
 
   // SNS 회원가입 + 로그인
   onSNSLogin = async (sns, result) => {
     console.log('onSNSLogin');
+    // this.logCallback('Login Start', this.setApiLoading(true));
     if (sns === 'kakao') {
       const params = new URLSearchParams();
       params.append('provider', sns);
       params.append('id', result.id);
       params.append('name', result.nickname);
       console.log('kakao login api');
-      try {
-        console.log('try');
-        await LESPO_API.login(params)
-          .then(response => {
-            console.log('response start');
-            if (response.data.status === 'success') {
-              console.log('== kakao login success ==');
-              console.log(
-                response.data.data.id.toString(),
-                result.nickname,
-                result.profile_image_url,
-                sns,
-              );
-              storeSNS(
-                response.data.data.token,
-                response.data.data.id.toString(),
-                result.nickname,
-                result.profile_image_url,
-                sns,
-              );
-              this.state.navigation.replace({
-                routeName: 'Tabs',
-              });
-            }
-          })
-          .catch(error => {
-            console.log('kakao login fail: ' + error);
-          });
-      } catch (error) {
-        console.log('kakao login error : ' + error);
-      }
+      await LESPO_API.login(params)
+        .then(response => {
+          this.logCallback(
+            console.log(
+              'response start: ' + JSON.stringify(response.data.data),
+            ),
+            storeSNS(
+              response.data.data.token,
+              response.data.data.id.toString(),
+              result.nickname,
+              result.profile_image_url,
+              sns,
+            ),
+            this.state.navigation.replace({
+              routeName: 'Tabs',
+            }),
+          );
+        })
+        .catch(error => {
+          this.logCallback(console.log('kakao login fail: ' + error));
+        });
+
       // await Axios.post(BASEURL + 'login/callback', params)
       //   .then(response => {
       //     if (response.data.status === 'success') {
@@ -327,7 +330,6 @@ export default class extends React.Component {
 
     await KakaoLogins.getProfile()
       .then(result => {
-        this.setProfile(result);
         this.logCallback(
           this.onSNSLogin('kakao', result),
           // alert('Success fetching data: ' + JSON.stringify(result)),

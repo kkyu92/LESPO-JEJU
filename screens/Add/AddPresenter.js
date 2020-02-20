@@ -20,8 +20,8 @@ const Container = styled.View`
   padding-bottom: 20px;
   margin-top: 20px;
   background-color: white;
-  border-top-left-radius: 15;
-  border-top-right-radius: 15;
+  /* border-top-left-radius: 15;
+  border-top-right-radius: 15; */
 `;
 
 const BtnContainer = styled.TouchableOpacity`
@@ -82,7 +82,7 @@ const AddPresenter = ({loading, navigation}) =>
         <BtnContainer
           onPress={() =>
             navigation.navigate({
-              routeName: 'JejuSound',
+              routeName: '이벤트',
             })
           }>
           <Text>이벤트</Text>
@@ -94,7 +94,7 @@ const AddPresenter = ({loading, navigation}) =>
         <BtnContainer
           onPress={() =>
             navigation.navigate({
-              routeName: 'JejuGift',
+              routeName: '쇼핑',
             })
           }>
           <Text>쇼핑</Text>

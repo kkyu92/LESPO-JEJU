@@ -34,10 +34,13 @@ export default class SimpleDialog extends Component {
   }
 
   closeModal = data => {
-    this.props.changeModalVisiblity(false);
     if (data === 'random') {
+      this.props.changeModalVisiblity(false);
       this.createRandomNumber();
+    } else if (data === 'start') {
+      this.props.setData(data, this.state.rating, this.state.battleResult);
     } else {
+      this.props.changeModalVisiblity(false);
       this.props.setData(data, this.state.rating);
     }
   };
@@ -46,24 +49,30 @@ export default class SimpleDialog extends Component {
     // [ 20 / 20 / 20 / 15 / 15 / 10 ]
     let RandomNumber = Math.floor(Math.random() * 100) + 1;
     console.log('random number: ' + RandomNumber);
-    if (RandomNumber < 21) {
+    if (RandomNumber < 31) {
       this.setState({randomNum: 'fail'});
       this.props.setData('fail', this.state.rating);
-    } else if (20 < RandomNumber && RandomNumber < 41) {
+    } else if (30 < RandomNumber && RandomNumber < 46) {
       this.setState({randomNum: 'success'});
       this.props.setData('success', this.state.rating);
-    } else if (40 < RandomNumber && RandomNumber < 61) {
+    } else if (45 < RandomNumber && RandomNumber < 61) {
       this.setState({randomNum: 'success2'});
       this.props.setData('success2', this.state.rating);
     } else if (60 < RandomNumber && RandomNumber < 76) {
       this.setState({randomNum: 'success3'});
       this.props.setData('success3', this.state.rating);
-    } else if (75 < RandomNumber && RandomNumber < 91) {
+    } else if (75 < RandomNumber && RandomNumber < 86) {
       this.setState({randomNum: 'success4'});
       this.props.setData('success4', this.state.rating);
-    } else {
+    } else if (85 < RandomNumber && RandomNumber < 93) {
       this.setState({randomNum: 'success5'});
       this.props.setData('success5', this.state.rating);
+    } else if (92 < RandomNumber && RandomNumber < 98) {
+      this.setState({randomNum: 'success6'});
+      this.props.setData('success6', this.state.rating);
+    } else {
+      this.setState({randomNum: 'success7'});
+      this.props.setData('success7', this.state.rating);
     }
   };
 
@@ -364,7 +373,9 @@ export default class SimpleDialog extends Component {
         this.props.isRandomBox === 'success2' ||
         this.props.isRandomBox === 'success3' ||
         this.props.isRandomBox === 'success4' ||
-        this.props.isRandomBox === 'success5') ? (
+        this.props.isRandomBox === 'success5' ||
+        this.props.isRandomBox === 'success6' ||
+        this.props.isRandomBox === 'success7') ? (
       <TouchableOpacity
         activeOpacity={1}
         disabled={true}
@@ -376,7 +387,7 @@ export default class SimpleDialog extends Component {
             </Text>
             {this.props.isRandomBox === 'success' ? (
               <>
-                <Text style={styles.ratingText}> 바나나 우유 당첨! [1번] </Text>
+                <Text style={styles.ratingText}> 코인 당첨! </Text>
                 <View style={styles.imageContainer}>
                   <TouchableOpacity>
                     <Image
@@ -388,7 +399,7 @@ export default class SimpleDialog extends Component {
               </>
             ) : this.props.isRandomBox === 'success2' ? (
               <>
-                <Text style={styles.ratingText}> 바나나 우유 당첨! [2번] </Text>
+                <Text style={styles.ratingText}> 게토레이 당첨! </Text>
                 <View style={styles.imageContainer}>
                   <TouchableOpacity>
                     <Image
@@ -400,7 +411,7 @@ export default class SimpleDialog extends Component {
               </>
             ) : this.props.isRandomBox === 'success3' ? (
               <>
-                <Text style={styles.ratingText}> 바나나 우유 당첨! [3번] </Text>
+                <Text style={styles.ratingText}> 닥터유 에너지바 당첨! </Text>
                 <View style={styles.imageContainer}>
                   <TouchableOpacity>
                     <Image
@@ -412,7 +423,37 @@ export default class SimpleDialog extends Component {
               </>
             ) : this.props.isRandomBox === 'success4' ? (
               <>
-                <Text style={styles.ratingText}> 바나나 우유 당첨! [4번] </Text>
+                <Text style={styles.ratingText}>
+                  {' '}
+                  파워에이드pet 600ml 당첨!{' '}
+                </Text>
+                <View style={styles.imageContainer}>
+                  <TouchableOpacity>
+                    <Image
+                      style={styles.img}
+                      source={require(`../assets/drawable-xxhdpi/img_banana.png`)}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </>
+            ) : this.props.isRandomBox === 'success5' ? (
+              <>
+                <Text style={styles.ratingText}>
+                  {' '}
+                  스타벅스 아메리카노(ICE){' '}
+                </Text>
+                <View style={styles.imageContainer}>
+                  <TouchableOpacity>
+                    <Image
+                      style={styles.img}
+                      source={require(`../assets/drawable-xxhdpi/img_banana.png`)}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </>
+            ) : this.props.isRandomBox === 'success6' ? (
+              <>
+                <Text style={styles.ratingText}> 베스킨라빈스 파인트 </Text>
                 <View style={styles.imageContainer}>
                   <TouchableOpacity>
                     <Image
@@ -423,23 +464,20 @@ export default class SimpleDialog extends Component {
                 </View>
               </>
             ) : (
-              this.props.isRandomBox ===
-              'success5'(
-                <>
-                  <Text style={styles.ratingText}>
-                    {' '}
-                    바나나 우유 당첨! [5번]{' '}
-                  </Text>
-                  <View style={styles.imageContainer}>
-                    <TouchableOpacity>
-                      <Image
-                        style={styles.img}
-                        source={require(`../assets/drawable-xxhdpi/img_banana.png`)}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                </>,
-              )
+              <>
+                <Text style={styles.ratingText}>
+                  {' '}
+                  bbq 황금올리브치킨 반반 + 콜라 1.25L{' '}
+                </Text>
+                <View style={styles.imageContainer}>
+                  <TouchableOpacity>
+                    <Image
+                      style={styles.img}
+                      source={require(`../assets/drawable-xxhdpi/img_banana.png`)}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </>
             )}
           </View>
           <View style={styles.ratingBtnView}>

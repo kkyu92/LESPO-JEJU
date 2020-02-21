@@ -30,7 +30,7 @@ var styles = StyleSheet.create({
 });
 
 const HeaderTitle = styled.Text`
-  color: ${BG_COLOR};
+  color: ${BLACK_COLOR};
   font-size: 28px;
   font-weight: bold;
   margin-top: ${Platform.OS === 'ios' ? '20px' : '0px'};
@@ -40,7 +40,7 @@ const HeaderTitle = styled.Text`
 `;
 
 const Title = styled.Text`
-  color: ${BG_COLOR};
+  color: ${BLACK_COLOR};
   font-size: 28px;
   font-weight: 800;
   margin-top: 20px;
@@ -50,21 +50,21 @@ const Title = styled.Text`
 const SubTitle = styled.Text`
   font-size: 16px;
   font-weight: 600;
-  color: ${BG_COLOR};
+  color: ${BLACK_COLOR};
   margin-top: 20px;
   margin-bottom: 10px;
 `;
 
 const TextInput = styled.TextInput`
-  color: ${BG_COLOR};
+  color: ${BLACK_COLOR};
   padding: 5px;
   border-bottom-width: 1;
-  border-color: ${BG_COLOR};
+  border-color: ${BLACK_COLOR};
 `;
 
 const BtnContainer = styled.TouchableOpacity`
   background-color: ${TINT_COLOR};
-  border-color: ${BG_COLOR};
+  border-color: ${BLACK_COLOR};
   border-width: 1px;
   border-radius: 15px;
   flex-direction: row;
@@ -86,7 +86,7 @@ const TouchableOpacity = styled.TouchableOpacity`
 `;
 
 const BtnText = styled.Text`
-  color: ${BG_COLOR};
+  color: ${BLACK_COLOR};
   font-size: 16px;
 `;
 

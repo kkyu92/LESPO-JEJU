@@ -1,6 +1,6 @@
-// export const BG_COLOR = '#fc9627';
+export const BG_COLOR = '#fc9627';
 // export const BG_COLOR = '#febb72';
-export const BG_COLOR = '#fbe5d6';
+// export const BG_COLOR = '#fbe5d6';
 export const BLACK_COLOR = 'black';
 export const TINT_COLOR = 'white';
 export const TINT_COLOR2 = '#f6f6f6';

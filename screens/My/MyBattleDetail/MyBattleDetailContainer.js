@@ -55,6 +55,8 @@ export default class extends React.Component {
       isRandomBox: '',
       endCheck: '',
       roomMaker: '',
+      win: '',
+      lose: '',
       error: null,
       navigation,
     };
@@ -70,11 +72,16 @@ export default class extends React.Component {
       // 화면에 들어와있을 때 알림
       this.removeToastListener = Firebase.notifications().onNotification(
         notification => {
-          this.refs.toast.show(
-            notification.android._notification._data.name +
-              ' : ' +
-              notification.android._notification._data.msg,
-          );
+          if (
+            notification.android._notification._data.msg !==
+            '~!@채팅방들어와서확인함~!@'
+          ) {
+            this.refs.toast.show(
+              notification.android._notification._data.name +
+                ' : ' +
+                notification.android._notification._data.msg,
+            );
+          }
         },
       );
     } else {
@@ -175,7 +182,7 @@ export default class extends React.Component {
     this.setState({isModalVisible: bool});
   };
 
-  setData = (data, rating) => {
+  setData = (data, rating, result) => {
     const {myId, roomMaker} = this.state;
     console.log('setData::: ', data);
     if (data === 'battleCancel') {
@@ -194,10 +201,7 @@ export default class extends React.Component {
       this.checkEndUser();
       this.changeModalVisiblity(true);
     } else if (data === 'start') {
-      this.checkEndUser();
-      this.addRating(rating);
-      this.setState({isRandomBox: 'start'});
-      this.changeModalVisiblity(true);
+      this.getBattleResult(rating, result);
     } else if (data === 'success') {
       this.setState({isRandomBox: 'success'});
       this.changeModalVisiblity(true);
@@ -213,17 +217,94 @@ export default class extends React.Component {
     } else if (data === 'success5') {
       this.setState({isRandomBox: 'success5'});
       this.changeModalVisiblity(true);
+    } else if (data === 'success6') {
+      this.setState({isRandomBox: 'success6'});
+      this.changeModalVisiblity(true);
+    } else if (data === 'success7') {
+      this.setState({isRandomBox: 'success7'});
+      this.changeModalVisiblity(true);
     } else if (data === 'fail') {
       this.setState({isRandomBox: 'fail'});
       this.changeModalVisiblity(true);
     } else if (data === 'Channel') {
-      // 관리자연결
+      // 관리자연결 & Email
+      this.sendEmail();
       this.chatChannel();
     } else {
       // Dialog 취소
       console.log('cancel dialog');
     }
   };
+
+  updateBattleResult = async (result, id) => {
+    if (result === 'win') {
+      firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey + '/battleResult')
+        .update({
+          win: id,
+        });
+    } else {
+      firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey + '/battleResult')
+        .update({
+          lose: id,
+        });
+    }
+  };
+
+  // battleResult check
+  getBattleResult = async (rating, result) => {
+    const {myId} = this.state;
+    let winner;
+    let loser;
+    var battleWin = firebase
+      .database()
+      .ref('chatRoomList/' + this.state.roomKey + '/battleResult/win');
+    battleWin.once('value', dataSnapshot => {
+      console.log('who is winner: ' + JSON.stringify(dataSnapshot));
+      winner = JSON.stringify(dataSnapshot);
+    });
+    var battleLose = firebase
+      .database()
+      .ref('chatRoomList/' + this.state.roomKey + '/battleResult/lose');
+    battleLose.once('value', dataSnapshot => {
+      console.log('who is loser: ' + JSON.stringify(dataSnapshot));
+      loser = JSON.stringify(dataSnapshot);
+    });
+
+    if (result === 'win') {
+      // 승자비교
+      console.log('win: ' + winner);
+      if (winner !== '""') {
+        // 상대가 이미 승리 누름
+        this.refs.toast.show('상대방이 승리에 체크했습니다.');
+      } else {
+        this.updateBattleResult('win', myId);
+        this.changeModalVisiblity(false);
+        this.checkEndUser();
+        this.addRating(rating);
+        this.setState({isRandomBox: 'start'});
+        this.changeModalVisiblity(true);
+      }
+    } else {
+      // 패자비교
+      console.log('lose: ' + loser);
+      if (loser !== '""') {
+        // 상대가 이미 패배 누름
+        this.refs.toast.show('상대방이 패배에 체크했습니다.');
+      } else {
+        this.updateBattleResult('lose', myId);
+        this.changeModalVisiblity(false);
+        this.checkEndUser();
+        this.addRating(rating);
+        this.setState({isRandomBox: 'fail'});
+        this.changeModalVisiblity(true);
+      }
+    }
+  };
+
   endBattle = async () => {
     // check user in room
     let makerIn;
@@ -358,6 +439,52 @@ export default class extends React.Component {
   //바로 채팅하기로 링크
   chatChannel = async () => {
     await RNKakaoPlusFriend.chat('_fxdMxlxb');
+  };
+  // send Email
+  sendEmail = async () => {
+    let TOKEN = await AsyncStorage.getItem('@API_TOKEN');
+    const config = {
+      headers: {
+        Authorization: TOKEN,
+      },
+    };
+    let product = '';
+    if (this.state.isRandomBox === 'success') {
+      product = '코인';
+    } else if (this.state.isRandomBox === 'success2') {
+      product = '게토레이 240ml 캔';
+    } else if (this.state.isRandomBox === 'success3') {
+      product = '닥터유 에너지바';
+    } else if (this.state.isRandomBox === 'success4') {
+      product = '파워에이드 pet 600ml';
+    } else if (this.state.isRandomBox === 'success5') {
+      product = '스타벅스 아메리카노(ICE)';
+    } else if (this.state.isRandomBox === 'success6') {
+      product = '베스킨라빈스 파인트';
+    } else if (this.state.isRandomBox === 'success7') {
+      product = 'bbq 황금올리브치킨 반반 + 콜라 1.25L';
+    }
+    const params = new URLSearchParams();
+    params.append(
+      'message',
+      '아이디: ' +
+        this.state.myId +
+        '\n' +
+        '이름: ' +
+        this.state.myName +
+        '\n' +
+        '당첨상품: ' +
+        product,
+    );
+    params.append('to', 'withmind.sns@gmail.com');
+    // params.append('to', 'lespojeju@naver.com');
+    await LESPO_API.sendEmail(params, config)
+      .then(response => {
+        console.log(JSON.stringify(response.data.data));
+      })
+      .catch(error => {
+        console.log('addRating fail: ' + error);
+      });
   };
 
   // rating save to server
@@ -537,7 +664,7 @@ export default class extends React.Component {
         <Toast
           ref="toast"
           style={{backgroundColor: '#fee6d0'}}
-          position="top"
+          position="bottom"
           positionValue={100}
           fadeInDuration={750}
           fadeOutDuration={1500}

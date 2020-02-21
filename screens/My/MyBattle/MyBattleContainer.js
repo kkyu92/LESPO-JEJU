@@ -52,11 +52,16 @@ export default class extends React.Component {
       // 화면에 들어와있을 때 알림
       this.removeToastListener = Firebase.notifications().onNotification(
         notification => {
-          this.refs.toast.show(
-            notification.android._notification._data.name +
-              ' : ' +
-              notification.android._notification._data.msg,
-          );
+          if (
+            notification.android._notification._data.msg !==
+            '~!@채팅방들어와서확인함~!@'
+          ) {
+            this.refs.toast.show(
+              notification.android._notification._data.name +
+                ' : ' +
+                notification.android._notification._data.msg,
+            );
+          }
         },
       );
     } else {

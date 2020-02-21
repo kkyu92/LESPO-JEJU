@@ -31,7 +31,7 @@ export default class extends React.Component {
       otherToken: '',
       otherCoin: 0,
       coin: 0,
-      myId: '',
+      myId: null,
       myName: '',
       myProfile: '',
       myRating: 5,
@@ -49,9 +49,15 @@ export default class extends React.Component {
   }
 
   updateState = async () => {
+    let {getChatList} = this.state;
     // check user in room
     let makerIn;
     let joinerIn;
+    let user = this.state.myId;
+    let msg = '배틀을 시작합니다';
+    let date = moment()
+      .local()
+      .format('LT');
     var checkMaker = firebase
       .database()
       .ref('chatRoomList/' + this.state.roomKey + '/makeUser/userIn');
@@ -68,11 +74,7 @@ export default class extends React.Component {
       let reader = {};
       reader[this.state.id] = this.state.id;
       reader[this.state.myId] = this.state.myId;
-      let user = this.state.myId;
-      let msg = '배틀을 시작합니다';
-      let date = moment()
-        .local()
-        .format('LT');
+
       firebase
         .database()
         .ref('chatRoomList/' + this.state.roomKey + '/chatList')
@@ -85,14 +87,20 @@ export default class extends React.Component {
           //error callback
           console.log('error ', error);
         });
+      getChatList.push({
+        key: '',
+        user: user,
+        msg: msg,
+        date: date,
+        read: reader,
+      });
+      this.setState({
+        getChatList,
+      });
     } else {
       let reader = {};
       reader[this.state.myId] = this.state.myId;
-      let user = this.state.myId;
-      let msg = '배틀을 시작합니다';
-      let date = moment()
-        .local()
-        .format('LT');
+
       firebase
         .database()
         .ref('chatRoomList/' + this.state.roomKey + '/chatList')
@@ -105,23 +113,34 @@ export default class extends React.Component {
           //error callback
           console.log('error ', error);
         });
-      // fcm
-      let otherToken;
-      firebase
-        .database()
-        .ref('FcmTokenList/' + this.state.id)
-        .once('value', dataSnapshot => {
-          otherToken = dataSnapshot;
-          console.log(otherToken);
-          this.sendToServer(
-            this.state.myId,
-            this.state.myName,
-            this.state.myProfile,
-            '배틀을 시작합니다.',
-            otherToken,
-          );
-        });
+      getChatList.push({
+        key: '',
+        user: user,
+        msg: msg,
+        date: date,
+        read: reader,
+      });
+      this.setState({
+        getChatList,
+      });
     }
+    // fcm
+    let otherToken;
+    firebase
+      .database()
+      .ref('FcmTokenList/' + this.state.id)
+      .once('value', dataSnapshot => {
+        otherToken = dataSnapshot;
+        console.log(otherToken);
+        this.sendToServer(
+          this.state.myId,
+          this.state.myName,
+          this.state.myProfile,
+          '배틀을 시작합니다.',
+          date,
+          otherToken,
+        );
+      });
     let endUser = {};
     endUser[this.state.id] = this.state.id;
     endUser[this.state.myId] = this.state.myId;
@@ -192,6 +211,14 @@ export default class extends React.Component {
 
   // write Data [ set / push = uuid ]
   writeChattingAdd(key, user, msg, date, read) {
+    let {getChatList} = this.state;
+    getChatList.push({
+      key: '',
+      user: user,
+      msg: msg,
+      date: date,
+      read: read,
+    });
     firebase
       .database()
       .ref('chatRoomList/' + key + '/chatList/')
@@ -235,11 +262,13 @@ export default class extends React.Component {
           this.state.myName,
           this.state.myProfile,
           msg,
+          date,
           otherToken,
         );
       });
     this.setState({
       msg: '',
+      getChatList,
     });
   }
 
@@ -302,15 +331,15 @@ export default class extends React.Component {
   };
 
   // 체팅방 들어와있는지 상태 체크 [읽음표시]
-  updateSingleData(room, chatList) {
-    const {myId} = this.state;
+  updateSingleData = async (room, chatList) => {
+    let MID = await AsyncStorage.getItem('@USER_ID');
     let i;
     if (typeof chatList.length !== 'undefined' && chatList.length > 0) {
       let list = {};
       chatList.forEach(child => {
         let key = child.key;
         let reader = child.read;
-        reader[myId] = myId;
+        reader[MID] = MID;
         list[key] = {
           user: child.user,
           msg: child.msg,
@@ -326,9 +355,9 @@ export default class extends React.Component {
           chatList: list,
         });
     }
-  }
+  };
 
-  getData = async (id, getChatList) => {
+  getData = async () => {
     console.log('getData');
     try {
       M_ID = await AsyncStorage.getItem('@USER_ID');
@@ -343,9 +372,6 @@ export default class extends React.Component {
         if (this.state.myProfile === null) {
           this.setState({myProfile: ''});
         }
-        console.log('myName : ' + this.state.myName);
-        console.log('myProfile : ' + this.state.myProfile);
-        this.updateSingleData(id, getChatList);
         if (this.state.makeUser !== JSON.stringify(this.state.myId)) {
           let joinUser = {
             userIn: true,
@@ -393,62 +419,134 @@ export default class extends React.Component {
     }
   };
 
-  sendToServer = async (senderId, senderName, senderProfile, msg, token) => {
+  sendToServer = async (
+    senderId,
+    senderName,
+    senderProfile,
+    msg,
+    date,
+    token,
+  ) => {
     const firebase_server_key =
       'AAAABOeF95E:APA91bGCKfJwCOUeYC8QypsS7yCAtR8ZOZf_rAj1iRK_OvIB3mYXYnva4DAY28XmUZA1GpXsdp1eRf9rPeuIedr7eX_7yFWbL-C_4JfVGSFGorCdzjOA0AyYPxB83M8TTAfUj62tUZhH';
     console.log('sendToFcm');
-
-    fetch('https://fcm.googleapis.com/fcm/send', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'key=' + firebase_server_key,
-      },
-      body: JSON.stringify({
-        registration_ids: [token],
-        notification: {
-          title: senderName,
-          body: msg,
+    if (msg === '~!@채팅방들어와서확인함~!@') {
+      fetch('https://fcm.googleapis.com/fcm/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'key=' + firebase_server_key,
         },
-        data: {
-          roomKey: this.state.roomKey,
-          id: senderId,
-          name: senderName,
-          profile: senderProfile,
-          msg: msg,
-        },
-      }),
-    })
-      .then(response => {
-        console.log('FCM msg sent!');
-        // console.log(response);
-        // console.log('FCM Token: ' + token);
-        console.log('Message: ' + msg);
+        body: JSON.stringify({
+          registration_ids: [token],
+          notification: {
+            title: senderName,
+            body: senderName + '님이 채팅방에 참여했습니다.',
+          },
+          data: {
+            roomKey: this.state.roomKey,
+            id: senderId,
+            name: senderName,
+            profile: senderProfile,
+            msg: msg,
+            date: date,
+          },
+        }),
       })
-      .catch(error => {
-        console.error(error);
-      });
+        .then(response => {
+          console.log('FCM msg sent!');
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    } else {
+      fetch('https://fcm.googleapis.com/fcm/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'key=' + firebase_server_key,
+        },
+        body: JSON.stringify({
+          registration_ids: [token],
+          notification: {
+            title: senderName,
+            body: msg,
+          },
+          data: {
+            roomKey: this.state.roomKey,
+            id: senderId,
+            name: senderName,
+            profile: senderProfile,
+            msg: msg,
+            date: date,
+          },
+        }),
+      })
+        .then(response => {
+          console.log('FCM msg sent!');
+          console.log('Message: ' + msg);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
   };
 
   // init 초기값
   async componentDidMount() {
+    let MID = await AsyncStorage.getItem('@USER_ID');
+    let MNAME = await AsyncStorage.getItem('@USER_NAME');
+    let {id, myId, roomKey, getChatList} = this.state;
+
     // fcm setting
-    // const enable = await Firebase.messaging().hasPermission();
-    // if (enable) {
-    // Firebase.notifications().onNotification(notification => {
-    // alert('notification._android');
-    // console.log(
-    //   'get FCM msg : ' + notification.android._notification._data,
-    // );
-    // });
-    // } else {
-    //   try {
-    //     Firebase.messaging().requestPermission();
-    //   } catch (error) {
-    //     alert('user reject permission');
-    //   }
-    // }
-    let {roomKey, getChatList} = this.state;
+    const enable = await Firebase.messaging().hasPermission();
+    if (enable) {
+      Firebase.notifications().onNotification(notification => {
+        if (
+          notification.android._notification._data.msg ===
+          '~!@채팅방들어와서확인함~!@'
+        ) {
+          console.log('~!@채팅방들어와서확인함~!@');
+          // get ChattingList
+          var userRef = firebase
+            .database()
+            .ref('chatRoomList/' + roomKey + '/chatList/');
+          userRef.once('value', dataSnapshot => {
+            getChatList = [];
+            dataSnapshot.forEach(child => {
+              getChatList.push({
+                key: child.key,
+                user: child.val().user,
+                msg: child.val().msg,
+                date: child.val().date,
+                read: child.val().read,
+              });
+            });
+          });
+        } else {
+          let reader = {};
+          reader[id] = id;
+          reader[MID] = MID;
+          getChatList.push({
+            key: '',
+            user: notification.android._notification._data.id,
+            msg: notification.android._notification._data.msg,
+            date: notification.android._notification._data.date,
+            read: reader,
+          });
+        }
+        this.setState({
+          getChatList: getChatList,
+        });
+      });
+    } else {
+      try {
+        Firebase.messaging().requestPermission();
+      } catch (error) {
+        alert('user reject permission');
+      }
+    }
+
     try {
       // get battleState
       firebase
@@ -474,9 +572,10 @@ export default class extends React.Component {
         .ref('chatRoomList/' + roomKey + '/chatList/');
       // .limitToLast(30);
       // .orderByChild('key');
-      userRef.on('value', dataSnapshot => {
+      userRef.once('value', dataSnapshot => {
         getChatList = [];
         dataSnapshot.forEach(child => {
+          // child.val().read[this.state.myId] = this.state.myId;
           getChatList.push({
             key: child.key,
             user: child.val().user,
@@ -486,19 +585,29 @@ export default class extends React.Component {
           });
           this.setState({
             getChatList: getChatList,
-            loading: false,
+            // loading: false,
           });
         });
-        // console.log(
-        //   'Firebase get chattingList Finish----------     ' +
-        //     JSON.stringify(dataSnapshot),
-        // );
       });
       // 내 로그인 정보 불러오ß기
-      this.getData(roomKey, getChatList);
-      console.log(
-        'chatList Data[try 1]: ' + JSON.stringify(this.state.battleState),
-      );
+      this.getData();
+      this.updateSingleData(roomKey, getChatList);
+      // fcm
+      let otherToken;
+      firebase
+        .database()
+        .ref('FcmTokenList/' + this.state.id)
+        .once('value', dataSnapshot => {
+          otherToken = dataSnapshot;
+          this.sendToServer(
+            '',
+            '',
+            '',
+            '~!@채팅방들어와서확인함~!@',
+            '',
+            otherToken,
+          );
+        });
     } catch (error) {
       console.log('get chattingList error ::: ' + error);
     } finally {
@@ -507,7 +616,6 @@ export default class extends React.Component {
           loading: false,
         });
       }
-      console.log('try/catch [ finally ]');
     }
   }
 

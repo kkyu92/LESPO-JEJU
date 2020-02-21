@@ -21,6 +21,8 @@ export const LESPO_API = {
   userDelete: config => API.delete('user/delete', config),
   // Notice
   getNotice: () => API.get('notices'),
+  // Send E-mail
+  sendEmail: (params, config) => API.post('prizes', params, config),
 
   // Jeju-sound
   getJejuSound: () => API.get('contents/jeju-ads'),

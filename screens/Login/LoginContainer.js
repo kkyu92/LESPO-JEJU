@@ -100,14 +100,14 @@ export default class extends React.Component {
       });
 
     try {
-      await LESPO_API.getMainList()
-        .then(response => {
-          console.log('getMain');
-          console.log(response.data.data);
-        })
-        .catch(error => {
-          console.log('getMainList fail: ' + error);
-        });
+      // await LESPO_API.getMainList()
+      //   .then(response => {
+      //     console.log('getMain');
+      //     console.log(response.data.data);
+      //   })
+      //   .catch(error => {
+      //     console.log('getMainList fail: ' + error);
+      //   });
     } catch (e) {
       console.log(e);
     }
@@ -244,7 +244,7 @@ export default class extends React.Component {
       params.append('provider', sns);
       params.append('id', result.id);
       params.append('name', result.nickname);
-      console.log('kakao login api');
+      console.log('kakao login api\n');
       await LESPO_API.login(params)
         .then(response => {
           this.logCallback(

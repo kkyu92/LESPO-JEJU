@@ -48,6 +48,7 @@ const MyBattlePresenter = ({loading, chatRoomList, myId}) =>
                         (
                           <BattleSlide
                             roomKey={list.key}
+                            myId={myId}
                             id={
                               list.makeUser.userId === myId
                                 ? list.joinUser.userId
@@ -71,6 +72,9 @@ const MyBattlePresenter = ({loading, chatRoomList, myId}) =>
                             area={list.area}
                             memo={list.memo}
                             statusText={list.battleState}
+                            battleResult={list.battleResult}
+                            endUser={list.endUser}
+                            openBox={list.openBox}
                           />
                         )
                       ),

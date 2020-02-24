@@ -109,6 +109,8 @@ export default class extends React.Component {
             memo: child.val().memo,
             battleState: child.val().battleState,
             battleResult: child.val().battleResult,
+            endUser: child.val().endUser,
+            openBox: child.val().openBox,
           });
           chatRoomList.sort(function(a, b) {
             return new Date(b.date) - new Date(a.date);

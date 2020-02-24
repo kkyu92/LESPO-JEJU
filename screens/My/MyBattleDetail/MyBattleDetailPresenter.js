@@ -356,7 +356,7 @@ const MyBattleDetailPresenter = ({
           <Btn onPress={() => changeModalVisiblity(true)}>
             <BtnText>배틀종료 및 평가하기</BtnText>
           </Btn>
-        ) : endCheck === JSON.stringify(myId) ? (
+        ) : endCheck !== myId ? (
           <Btn onPress={() => changeModalVisiblity(true)}>
             <BtnText>평가하기</BtnText>
           </Btn>

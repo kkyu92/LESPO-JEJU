@@ -142,9 +142,12 @@ export default class extends React.Component {
           otherToken,
         );
       });
-    let endUser = {};
-    endUser[this.state.id] = this.state.id;
-    endUser[this.state.myId] = this.state.myId;
+    let endUser = {
+      user1: '',
+      user2: '',
+    };
+    // endUser[this.state.id] = this.state.id;
+    // endUser[this.state.myId] = this.state.myId;
 
     firebase
       .database()

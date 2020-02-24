@@ -116,15 +116,20 @@ const CoinText = styled.Text`
   font-size: 14px;
 `;
 
-const Status = styled.View`
+const StatusContainer = styled.View`
   width: 30%;
+  justify-content: center;
+  align-items: stretch;
+  border-radius: 5;
+`;
+
+const Status = styled.View`
   justify-content: center;
   align-items: center;
   border-radius: 5;
   border-width: 1;
   border-color: ${BG_COLOR};
   padding: 5px;
-  margin-left: 10px;
 `;
 
 const StatusText = styled.Text`
@@ -132,7 +137,6 @@ const StatusText = styled.Text`
 `;
 
 const StatusIng = styled.View`
-  width: 30%;
   justify-content: center;
   align-items: center;
   border-radius: 5;
@@ -140,14 +144,12 @@ const StatusIng = styled.View`
   border-color: ${BG_COLOR};
   background-color: ${BG_COLOR};
   padding: 5px;
-  margin-left: 10px;
 `;
 
 const StatusTextIng = styled.Text`
   color: ${TINT_COLOR};
 `;
 const StatusEnd = styled.View`
-  width: 30%;
   justify-content: center;
   align-items: center;
   border-radius: 5;
@@ -155,7 +157,6 @@ const StatusEnd = styled.View`
   border-color: ${GREY_COLOR2};
   background-color: ${GREY_COLOR};
   padding: 5px;
-  margin-left: 10px;
 `;
 
 const StatusTextEnd = styled.Text`
@@ -169,8 +170,12 @@ ratingCompleted = rating => {
 
 // 리스트 기본틀
 const BattleSlide = ({
+  openBox,
+  endUser,
+  battleResult,
   statusText,
   roomKey,
+  myId,
   id,
   profile,
   name,
@@ -221,9 +226,11 @@ const BattleSlide = ({
         <GetText numberOfLines={1}>{memo}</GetText>
       </BattleTextContainer>
 
-      <Status>
-        <StatusText>{statusText}</StatusText>
-      </Status>
+      <StatusContainer>
+        <Status>
+          <StatusText>{statusText}</StatusText>
+        </Status>
+      </StatusContainer>
     </BattleContainer>
   ) : statusText === '배틀진행중' ? (
     // 나의 배틀 리스트
@@ -262,9 +269,11 @@ const BattleSlide = ({
         <GetText numberOfLines={1}>{memo}</GetText>
       </BattleTextContainer>
 
-      <StatusIng>
-        <StatusTextIng>{statusText}</StatusTextIng>
-      </StatusIng>
+      <StatusContainer>
+        <StatusIng>
+          <StatusTextIng>{statusText}</StatusTextIng>
+        </StatusIng>
+      </StatusContainer>
     </BattleContainer>
   ) : statusText === '배틀종료' ? (
     // 나의 배틀 리스트
@@ -283,6 +292,7 @@ const BattleSlide = ({
             area,
             memo,
             statusText,
+            battleResult,
             level,
           },
         })
@@ -303,9 +313,34 @@ const BattleSlide = ({
         <GetText numberOfLines={1}>{memo}</GetText>
       </BattleTextContainer>
 
-      <StatusEnd>
-        <StatusTextEnd>{statusText}</StatusTextEnd>
-      </StatusEnd>
+      <StatusContainer>
+        <StatusEnd>
+          <StatusTextEnd>{statusText}</StatusTextEnd>
+        </StatusEnd>
+        {battleResult.lose !== '' && battleResult.win !== '' ? (
+          battleResult.win === myId &&
+          endUser.user1 === myId &&
+          endUser.user2 !== '' &&
+          openBox === false ? (
+            <Status>
+              <StatusText>랜덤박스{'\n'}확인하기</StatusText>
+            </Status>
+          ) : (
+            <StatusEnd>
+              <StatusTextEnd>평가완료</StatusTextEnd>
+            </StatusEnd>
+          )
+        ) : (battleResult.lose === myId && battleResult.win === '') ||
+          (battleResult.lose === '' && battleResult.win === myId) ? (
+          <StatusIng>
+            <StatusTextIng>평가대기중</StatusTextIng>
+          </StatusIng>
+        ) : (
+          <Status>
+            <StatusText>평가하기</StatusText>
+          </Status>
+        )}
+      </StatusContainer>
     </BattleContainer>
   ) : (
     // 스포츠배틀 리스트

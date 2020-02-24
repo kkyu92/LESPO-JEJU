@@ -241,9 +241,7 @@ export default class extends React.Component {
           // handleListUpdate={this.handleListUpdate}
         />
         <Toast
-          ref={toast => {
-            this.toast = toast;
-          }}
+          ref={'toast'}
           style={{backgroundColor: '#fee6d0'}}
           position="top"
           positionValue={100}

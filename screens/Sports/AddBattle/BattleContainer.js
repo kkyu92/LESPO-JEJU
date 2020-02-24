@@ -104,6 +104,8 @@ export default class extends React.Component {
     memo,
     battleState,
     battleResult,
+    endUser,
+    openBox,
   ) {
     firebase
       .database()
@@ -121,6 +123,8 @@ export default class extends React.Component {
         memo,
         battleState,
         battleResult,
+        endUser,
+        openBox,
       })
       .then(data => {
         //success callback
@@ -268,6 +272,11 @@ export default class extends React.Component {
       lose: '',
     };
     let chatList = '';
+    let endUser = {
+      user1: '',
+      user2: '',
+    };
+    let openBox = false;
     if (
       this.state.sport !== '스포츠' &&
       this.state.area !== '지역' &&
@@ -288,6 +297,8 @@ export default class extends React.Component {
           this.state.memo,
           '배틀신청중',
           battleResult,
+          endUser,
+          openBox,
         );
         const resetAction = NavigationActions.navigate({
           routeName: 'SportsBattle',

@@ -8,6 +8,7 @@ import SimpleDialog from '../../../components/SimpleDialog';
 import Firebase from 'react-native-firebase';
 import Toast from 'react-native-easy-toast';
 import {LESPO_API} from '../../../api/Api';
+import {CHAT_ROOM_IN} from '../../../constants/Strings';
 
 var M_ID = '';
 var M_NAME = '';
@@ -430,7 +431,7 @@ export default class extends React.Component {
     const firebase_server_key =
       'AAAABOeF95E:APA91bGCKfJwCOUeYC8QypsS7yCAtR8ZOZf_rAj1iRK_OvIB3mYXYnva4DAY28XmUZA1GpXsdp1eRf9rPeuIedr7eX_7yFWbL-C_4JfVGSFGorCdzjOA0AyYPxB83M8TTAfUj62tUZhH';
     console.log('sendToFcm');
-    if (msg === '~!@채팅방들어와서확인함~!@') {
+    if (msg === CHAT_ROOM_IN) {
       fetch('https://fcm.googleapis.com/fcm/send', {
         method: 'POST',
         headers: {
@@ -502,11 +503,7 @@ export default class extends React.Component {
     const enable = await Firebase.messaging().hasPermission();
     if (enable) {
       Firebase.notifications().onNotification(notification => {
-        if (
-          notification.android._notification._data.msg ===
-          '~!@채팅방들어와서확인함~!@'
-        ) {
-          console.log('~!@채팅방들어와서확인함~!@');
+        if (notification.android._notification._data.msg === CHAT_ROOM_IN) {
           // get ChattingList
           var userRef = firebase
             .database()
@@ -599,14 +596,7 @@ export default class extends React.Component {
         .ref('FcmTokenList/' + this.state.id)
         .once('value', dataSnapshot => {
           otherToken = dataSnapshot;
-          this.sendToServer(
-            '',
-            '',
-            '',
-            '~!@채팅방들어와서확인함~!@',
-            '',
-            otherToken,
-          );
+          this.sendToServer('', '', '', CHAT_ROOM_IN, '', otherToken);
         });
     } catch (error) {
       console.log('get chattingList error ::: ' + error);

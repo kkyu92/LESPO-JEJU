@@ -6,6 +6,7 @@ import JejuGiftPresenter from './JejuGiftPresenter';
 import Firebase from 'react-native-firebase';
 import RNKakaoPlusFriend from 'react-native-kakao-plus-friend';
 import Toast from 'react-native-easy-toast';
+import {CHAT_ROOM_IN} from '../../../constants/Strings';
 
 export default class extends React.Component {
   // Title setting
@@ -33,10 +34,7 @@ export default class extends React.Component {
       // 화면에 들어와있을 때 알림
       this.removeToastListener = Firebase.notifications().onNotification(
         notification => {
-          if (
-            notification.android._notification._data.msg !==
-            '~!@채팅방들어와서확인함~!@'
-          ) {
+          if (notification.android._notification._data.msg !== CHAT_ROOM_IN) {
             this.refs.toast.show(
               notification.android._notification._data.name +
                 ' : ' +

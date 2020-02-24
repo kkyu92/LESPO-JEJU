@@ -9,6 +9,7 @@ import {LESPO_API} from '../../../api/Api';
 import Firebase from 'react-native-firebase';
 import Toast from 'react-native-easy-toast';
 import RNKakaoPlusFriend from 'react-native-kakao-plus-friend';
+import {CHAT_ROOM_IN} from '../../../constants/Strings';
 
 var M_ID, M_NAME, M_PROFILE;
 
@@ -72,10 +73,7 @@ export default class extends React.Component {
       // 화면에 들어와있을 때 알림
       this.removeToastListener = Firebase.notifications().onNotification(
         notification => {
-          if (
-            notification.android._notification._data.msg !==
-            '~!@채팅방들어와서확인함~!@'
-          ) {
+          if (notification.android._notification._data.msg !== CHAT_ROOM_IN) {
             this.refs.toast.show(
               notification.android._notification._data.name +
                 ' : ' +
@@ -476,7 +474,7 @@ export default class extends React.Component {
         '당첨상품: ' +
         product,
     );
-    params.append('to', 'withmind.sns@gmail.com');
+    params.append('to', 'lespojeju@naver.com');
     // params.append('to', 'lespojeju@naver.com');
     await LESPO_API.sendEmail(params, config)
       .then(response => {

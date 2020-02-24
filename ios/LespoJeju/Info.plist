@@ -32,17 +32,16 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>kakao4f9e332e4542802f6f7587f6294cff32</string>
-				<string>fb2516363172019512</string> 
+				<string>fb2516363172019512</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
-	
-<key>FacebookAppID</key> 
-<string>2516363172019512</string> 
-<key>FacebookDisplayName</key> 
-<string>lespojeju</string>
+	<key>FacebookAppID</key>
+	<string>2516363172019512</string>
+	<key>FacebookDisplayName</key>
+	<string>lespojeju</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>KAKAO_APP_KEY</key>

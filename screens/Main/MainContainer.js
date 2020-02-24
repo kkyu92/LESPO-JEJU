@@ -6,6 +6,7 @@ import firebase from 'firebase';
 import AsyncStorage from '@react-native-community/async-storage';
 import Toast from 'react-native-easy-toast';
 import {Linking} from 'react-native';
+import {CHAT_ROOM_IN} from '../../constants/Strings';
 
 // set DATA = Container
 export default class extends React.Component {
@@ -70,10 +71,7 @@ export default class extends React.Component {
       // 화면에 들어와있을 때 알림
       this.removeToastListener = Firebase.notifications().onNotification(
         notification => {
-          if (
-            notification.android._notification._data.msg !==
-            '~!@채팅방들어와서확인함~!@'
-          ) {
+          if (notification.android._notification._data.msg !== CHAT_ROOM_IN) {
             this.refs.toast.show(
               notification.android._notification._data.name +
                 ' : ' +
@@ -237,9 +235,7 @@ export default class extends React.Component {
           viewList={viewList}
         />
         <Toast
-          ref={toast => {
-            this.toast = toast;
-          }}
+          ref={'toast'}
           style={{backgroundColor: '#fee6d0'}}
           position="top"
           positionValue={100}

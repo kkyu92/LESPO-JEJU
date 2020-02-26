@@ -133,7 +133,8 @@ export default class SimpleDialog extends Component {
           </View>
         </View>
       </TouchableOpacity>
-    ) : this.props.battleState === '배틀시작' ? (
+    ) : this.props.battleStart === '배틀시작' &&
+      this.props.battleState === '배틀신청중' ? (
       <TouchableOpacity
         activeOpacity={1}
         disabled={true}
@@ -146,7 +147,7 @@ export default class SimpleDialog extends Component {
             <Text style={styles.text}>
               배틀을 신청 하시겠습니까?
               {'\n'}
-              배틀코인 1개가 차감 됩니다.
+              상대방이 신청수락시 배틀코인 1개가 차감 됩니다.
             </Text>
           </View>
           <View style={styles.buttonView}>
@@ -189,6 +190,38 @@ export default class SimpleDialog extends Component {
               style={styles.touchableHighlight}
               underlayColor={'#f1f1f1'}>
               <Text style={[styles.text, {color: 'orange'}]}> 예 </Text>
+            </TouchableHighlight>
+          </View>
+        </View>
+      </TouchableOpacity>
+    ) : this.props.battleState === '배틀요청' ||
+      this.props.battleState === '"배틀요청"' ? (
+      <TouchableOpacity
+        activeOpacity={1}
+        disabled={true}
+        style={styles.contentContainer}>
+        <View style={[styles.battleModal, {width: this.state.width - 80}]}>
+          <View style={styles.textView}>
+            <Text style={[styles.text, {color: 'black'}, {fontSize: 20}]}>
+              배틀요청 수락
+            </Text>
+            <Text style={styles.text}>
+              {' '}
+              배틀요청을 수락 하시겠습니까?{'\n'} 배틀코인 1개가 차감 됩니다.{' '}
+            </Text>
+          </View>
+          <View style={styles.buttonView}>
+            <TouchableHighlight
+              onPress={() => this.closeModal('Cancel')}
+              style={styles.touchableHighlight}
+              underlayColor={'#f1f1f1'}>
+              <Text style={[styles.text, {color: 'red'}]}> 취소 </Text>
+            </TouchableHighlight>
+            <TouchableHighlight
+              onPress={() => this.closeModal('requestOK')}
+              style={styles.touchableHighlight}
+              underlayColor={'#f1f1f1'}>
+              <Text style={[styles.text, {color: 'orange'}]}> 수락 </Text>
             </TouchableHighlight>
           </View>
         </View>
@@ -740,6 +773,7 @@ const styles = StyleSheet.create({
     margin: 5,
     fontSize: 16,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   touchableHighlight: {
     flex: 1,
@@ -751,6 +785,7 @@ const styles = StyleSheet.create({
   },
   textView: {
     flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
     marginTop: 10,
   },

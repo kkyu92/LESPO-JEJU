@@ -8,6 +8,7 @@ import {
   BLACK_COLOR,
   GREY_COLOR2,
   GREY_COLOR,
+  RED_COLOR,
 } from '../../../constants/Colors';
 import {Platform} from 'react-native';
 import Section from '../../../components/Section';
@@ -171,6 +172,21 @@ const StatusText = styled.Text`
   color: ${BG_COLOR};
 `;
 
+const StatusRequest = styled.View`
+  width: 30%;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5;
+  border-width: 1;
+  border-color: ${RED_COLOR};
+  padding: 5px;
+`;
+
+const StatusTextRequest = styled.Text`
+  color: ${RED_COLOR};
+  text-align: center;
+`;
+
 const StatusIng = styled.View`
   width: 30%;
   justify-content: center;
@@ -211,6 +227,7 @@ const MyBattleDetailPresenter = ({
   memo,
   statusText,
   level,
+  requestUser,
   chatRoomList,
   myId,
   myName,
@@ -221,6 +238,9 @@ const MyBattleDetailPresenter = ({
   roomKey,
   roomMaker,
   endCheck,
+  endUser1,
+  endUser2,
+  openBox,
   changeModalVisiblity,
   navigation,
 }) =>
@@ -337,6 +357,14 @@ const MyBattleDetailPresenter = ({
             <Status>
               <StatusText>{statusText}</StatusText>
             </Status>
+          ) : statusText === '배틀요청' ? (
+            <StatusRequest>
+              {requestUser === JSON.stringify(myId) ? (
+                <StatusTextRequest>배틀요청{'\n'}대기중</StatusTextRequest>
+              ) : (
+                <StatusTextRequest>{statusText}</StatusTextRequest>
+              )}
+            </StatusRequest>
           ) : statusText === '배틀진행중' ? (
             <StatusIng>
               <StatusTextIng>{statusText}</StatusTextIng>
@@ -352,6 +380,16 @@ const MyBattleDetailPresenter = ({
           <Btn onPress={() => changeModalVisiblity(true)}>
             <BtnText>배틀취소</BtnText>
           </Btn>
+        ) : statusText === '배틀요청' ? (
+          requestUser === JSON.stringify(myId) ? (
+            <Btn>
+              <BtnText>배틀요청을 대기중입니다.</BtnText>
+            </Btn>
+          ) : (
+            <Btn onPress={() => changeModalVisiblity(true)}>
+              <BtnText>배틀요청 수락하기</BtnText>
+            </Btn>
+          )
         ) : statusText === '배틀진행중' ? (
           <Btn onPress={() => changeModalVisiblity(true)}>
             <BtnText>배틀종료 및 평가하기</BtnText>
@@ -359,6 +397,10 @@ const MyBattleDetailPresenter = ({
         ) : endCheck !== myId ? (
           <Btn onPress={() => changeModalVisiblity(true)}>
             <BtnText>평가하기</BtnText>
+          </Btn>
+        ) : endUser1 === myId && endUser2 !== myId && openBox === 'false' ? (
+          <Btn>
+            <BtnText>상대의 평가를 기다리는중.</BtnText>
           </Btn>
         ) : (
           <Btn>

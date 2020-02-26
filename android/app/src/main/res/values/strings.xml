@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">LespoJeju</string>
+    <string name="app_name">제주배틀투어</string>
     <string name="default_notification_channel_id">DefaultChannel</string>
     <string name="facebook_app_id">2516363172019512</string>
     <string name="fb_login_protocol_scheme">fb2516363172019512</string>

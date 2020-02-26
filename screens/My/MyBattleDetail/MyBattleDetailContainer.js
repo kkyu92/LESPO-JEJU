@@ -1,5 +1,6 @@
 import React from 'react';
-import {Modal, Platform} from 'react-native';
+import {Modal} from 'react-native';
+import {NavigationEvents} from 'react-navigation';
 import SimpleDialog from '../../../components/SimpleDialog';
 import MyBattleDetailPresenter from './MyBattleDetailPresenter';
 import firebase from 'firebase';
@@ -33,6 +34,7 @@ export default class extends React.Component {
             statusText,
             battleResult,
             level,
+            requestUser,
           },
         },
       },
@@ -51,18 +53,23 @@ export default class extends React.Component {
       statusText,
       battleResult,
       level,
+      requestUser,
       myId: '',
       myName: '',
       myProfile: '',
       isModalVisible: false,
       isRandomBox: '',
       endCheck: '',
+      endUser1: '',
+      endUser2: '',
+      openBox: false,
       roomMaker: '',
       error: null,
       navigation,
     };
     console.log('room ID :' + JSON.stringify(roomKey));
     console.log('user ID :' + JSON.stringify(id));
+    console.log('statusText :' + statusText);
   }
 
   // 시작시 불러옴
@@ -79,6 +86,24 @@ export default class extends React.Component {
                 ' : ' +
                 notification.android._notification._data.msg,
             );
+            var battleState = firebase
+              .database()
+              .ref('chatRoomList/' + this.state.roomKey + '/battleState');
+            battleState.on('value', dataSnapshot => {
+              let state = JSON.stringify(dataSnapshot);
+              if (state === '"배틀신청중"') {
+                state = '배틀신청중';
+              } else if (state === '"배틀요청"') {
+                state = '배틀요청';
+              } else if (state === '"배틀진행중"') {
+                state = '배틀진행중';
+              } else {
+                state = '배틀종료';
+              }
+              this.setState({
+                statusText: state,
+              });
+            });
           }
         },
       );
@@ -105,6 +130,20 @@ export default class extends React.Component {
         });
       },
     );
+
+    this.init();
+    this.subs = [
+      this.props.navigation.addListener('willFocus', () => {
+        console.log('willFocus ::: reload');
+        this.setState({
+          loading: true,
+        });
+        this.init();
+      }),
+    ];
+  }
+  init = async () => {
+    console.log('init [MyBattleDetail] ');
     let maker;
     try {
       try {
@@ -135,27 +174,6 @@ export default class extends React.Component {
         });
       });
 
-      // var checkEnd = firebase
-      //   .database()
-      //   .ref('chatRoomList/' + this.state.roomKey + '/endUser');
-      // checkEnd.on('value', dataSnapshot => {
-      //   let user1 = dataSnapshot.val().user1;
-      //   let user2 = dataSnapshot.val().user2;
-      //   console.log(user1, user2, M_ID, '\n\n');
-      //   if (
-      //     (user1 === M_ID || user2 === M_ID) &&
-      //     (user1 !== this.state.id || user2 !== this.state.id)
-      //   ) {
-      //     this.setState({
-      //       endCheck: M_ID,
-      //     });
-      //   } else {
-      //     this.setState({
-      //       endCheck: '',
-      //     });
-      //   }
-      // });
-
       var battleState = firebase
         .database()
         .ref('chatRoomList/' + this.state.roomKey + '/battleState');
@@ -163,17 +181,30 @@ export default class extends React.Component {
         let state = JSON.stringify(dataSnapshot);
         if (state === '"배틀신청중"') {
           state = '배틀신청중';
+        } else if (state === '"배틀요청"') {
+          state = '배틀요청';
         } else if (state === '"배틀진행중"') {
           state = '배틀진행중';
         } else {
           state = '배틀종료';
         }
-        console.log('######### battleState: ' + state);
+        console.log('[MyBattleDetail]######### battleState: ' + state);
+        console.log(state);
         this.setState({
           statusText: state,
-          loading: false,
         });
       });
+
+      var requestUser = firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey + '/requestUser');
+      requestUser.on('value', dataSnapshot => {
+        let user = JSON.stringify(dataSnapshot);
+        this.setState({
+          requestUser: user,
+        });
+      });
+
       let winner;
       let loser;
       let endUser1, endUser2;
@@ -183,14 +214,21 @@ export default class extends React.Component {
         .ref('chatRoomList/' + this.state.roomKey + '/openBox');
       randomBox.once('value', dataSnapshot => {
         openBox = JSON.stringify(dataSnapshot);
+        this.setState({
+          openBox,
+        });
       });
 
       var endCheck = firebase
         .database()
         .ref('chatRoomList/' + this.state.roomKey + '/endUser');
-      endCheck.once('value', dataSnapshot => {
+      endCheck.on('value', dataSnapshot => {
         endUser1 = dataSnapshot.val().user1;
         endUser2 = dataSnapshot.val().user2;
+        this.setState({
+          endUser1,
+          endUser2,
+        });
         if (
           endUser1 === M_ID ||
           endUser2 === M_ID ||
@@ -229,22 +267,27 @@ export default class extends React.Component {
         endUser2 !== '' &&
         openBox === 'false'
       ) {
-        this.setState({isRandomBox: 'start'});
-        this.changeModalVisiblity(true);
-      } else if (
-        this.state.statusText === '배틀종료' &&
-        winner !== JSON.stringify(M_ID) &&
-        loser === '""' &&
-        endUser1 !== '' &&
-        endUser2 === ''
-      ) {
+        this.setState({isRandomBox: 'start', loading: false});
         this.changeModalVisiblity(true);
       }
+      this.setState({
+        loading: false,
+      });
+
+      // else if (
+      //   this.state.statusText === '배틀종료' &&
+      //   winner !== JSON.stringify(M_ID) &&
+      //   loser === '""' &&
+      //   endUser1 !== '' &&
+      //   endUser2 === ''
+      // ) {
+      //   this.changeModalVisiblity(true);
+      // }
     } catch (error) {
       console.log(error);
       error = "Cnat't get chatRoom makeUserId";
     }
-  }
+  };
 
   battleState = state => {
     console.log('battleState: ' + state);
@@ -252,6 +295,142 @@ export default class extends React.Component {
 
   changeModalVisiblity = bool => {
     this.setState({isModalVisible: bool});
+  };
+
+  requestOK = async () => {
+    // check user in room
+    let makerIn;
+    let joinerIn;
+    let user = this.state.myId;
+    let msg = '배틀을 수락합니다.';
+    let battleState = '배틀진행중';
+    let date = moment()
+      .local()
+      .format('LT');
+    var checkMaker = firebase
+      .database()
+      .ref('chatRoomList/' + this.state.roomKey + '/makeUser/userIn');
+    checkMaker.once('value', dataSnapshot => {
+      makerIn = JSON.stringify(dataSnapshot);
+    });
+    var checkJoiner = firebase
+      .database()
+      .ref('chatRoomList/' + this.state.roomKey + '/joinUser/userIn');
+    checkJoiner.once('value', dataSnapshot => {
+      joinerIn = JSON.stringify(dataSnapshot);
+    });
+    if ((makerIn === 'true') & (joinerIn === 'true')) {
+      let reader = {};
+      reader[this.state.id] = this.state.id;
+      reader[this.state.myId] = this.state.myId;
+
+      firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey + '/chatList')
+        .push({user, msg, date, read: reader})
+        .then(data => {
+          //success callback
+          console.log('battle start notice Add: ', data);
+        })
+        .catch(error => {
+          //error callback
+          console.log('error ', error);
+        });
+    } else {
+      let reader = {};
+      reader[this.state.myId] = this.state.myId;
+
+      firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey + '/chatList')
+        .push({user, msg, date, read: reader})
+        .then(data => {
+          //success callback
+          console.log('battle start notice Add: ', data);
+        })
+        .catch(error => {
+          //error callback
+          console.log('error ', error);
+        });
+    }
+    // fcm
+    let otherToken;
+    firebase
+      .database()
+      .ref('FcmTokenList/' + this.state.id)
+      .once('value', dataSnapshot => {
+        otherToken = dataSnapshot;
+        console.log(otherToken);
+        this.sendToServer(
+          this.state.myId,
+          this.state.myName,
+          this.state.myProfile,
+          msg,
+          otherToken,
+        );
+      });
+    let endUser = {
+      user1: '',
+      user2: '',
+    };
+
+    firebase
+      .database()
+      .ref('chatRoomList/' + this.state.roomKey)
+      .update({
+        lastTime: moment()
+          .local()
+          .format('LT'),
+        lastRealTime: moment()
+          .local()
+          .format(),
+        lastMsg: msg,
+        battleState: battleState,
+        endUser,
+      });
+    this.setState({
+      statusText: battleState,
+    });
+    this.coinCheckDelete();
+  };
+
+  coinCheckDelete = async () => {
+    // 코인차감
+    let API_TOKEN = await AsyncStorage.getItem('@API_TOKEN');
+    const config = {
+      headers: {
+        Authorization: API_TOKEN,
+      },
+    };
+    let params = {a: 0};
+    this.deleteCoin(params, config);
+
+    let otherToken;
+    firebase
+      .database()
+      .ref('APITokenList/' + this.state.id)
+      .once('value', dataSnapshot => {
+        otherToken = JSON.stringify(dataSnapshot);
+        console.log(otherToken.length);
+        otherToken = otherToken.substring(1, 961);
+        console.log(otherToken);
+        const coinConfig = {
+          headers: {
+            Authorization: otherToken,
+          },
+        };
+        this.deleteCoin(params, coinConfig);
+      });
+  };
+
+  deleteCoin = async (params, coinConfig) => {
+    await LESPO_API.deleteCoin(params, coinConfig)
+      .then(response => {
+        console.log('delete other coin');
+      })
+      .catch(error => {
+        console.log('getCoin fail: ' + error);
+      });
   };
 
   setData = (data, rating, result) => {
@@ -267,6 +446,9 @@ export default class extends React.Component {
         console.log('i am joinUser');
         this.outChatRoom();
       }
+    } else if (data === 'requestOK') {
+      // 배틀신청 수락
+      this.requestOK();
     } else if (data === 'battleEnd') {
       // 배틀 종료 및 평가하기
       this.endBattleFCM('battleEnd');
@@ -323,6 +505,9 @@ export default class extends React.Component {
       .update({
         openBox: true,
       });
+    this.setState({
+      openBox: true,
+    });
   };
 
   updateBattleResult = async (result, id) => {
@@ -382,12 +567,7 @@ export default class extends React.Component {
         this.addRating(rating);
         this.setState({isRandomBox: 'start'});
         this.changeModalVisiblity(true);
-        firebase
-          .database()
-          .ref('chatRoomList/' + this.state.roomKey)
-          .update({
-            openBox: true,
-          });
+        this.updateOpenBox();
         // fcm
         let otherToken;
         firebase
@@ -745,12 +925,16 @@ export default class extends React.Component {
     console.log('componentWillUnmount[MyBattleDetailContainer]');
     this.removeToastListener();
     this.removeNotificationOpenedListener();
+    this.subs.forEach(sub => sub.remove());
     const {roomKey, myId} = this.state;
     firebase
       .database()
-      .ref('chatRoomList/' + roomKey + '/endUser/' + myId)
+      .ref('chatRoomList/' + roomKey + '/requestUser')
       .off();
-
+    firebase
+      .database()
+      .ref('chatRoomList/' + roomKey + '/endUser')
+      .off();
     firebase
       .database()
       .ref('chatRoomList/' + roomKey + '/battleState')
@@ -767,6 +951,7 @@ export default class extends React.Component {
       memo,
       statusText,
       level,
+      requestUser,
       chatRoomList,
       myId,
       myName,
@@ -777,6 +962,9 @@ export default class extends React.Component {
       roomKey,
       roomMaker,
       endCheck,
+      endUser1,
+      endUser2,
+      openBox,
       isRandomBox,
     } = this.state;
     return (
@@ -790,6 +978,7 @@ export default class extends React.Component {
           memo={memo}
           statusText={statusText}
           level={level}
+          requestUser={requestUser}
           chatRoomList={chatRoomList}
           myId={myId}
           myProfile={myProfile}
@@ -800,6 +989,9 @@ export default class extends React.Component {
           roomKey={roomKey}
           roomMaker={roomMaker}
           endCheck={endCheck}
+          endUser1={endUser1}
+          endUser2={endUser2}
+          openBox={openBox}
           changeModalVisiblity={this.changeModalVisiblity}
         />
         <Modal
@@ -818,9 +1010,9 @@ export default class extends React.Component {
           ref="toast"
           style={{backgroundColor: '#fee6d0'}}
           position="bottom"
-          positionValue={100}
-          fadeInDuration={750}
-          fadeOutDuration={1500}
+          positionValue={150}
+          fadeInDuration={500}
+          // fadeOutDuration={1500}
           opacity={1}
           textStyle={{color: '#000000'}}
         />

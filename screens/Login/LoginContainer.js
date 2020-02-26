@@ -266,29 +266,6 @@ export default class extends React.Component {
         .catch(error => {
           this.logCallback(console.log('kakao login fail: ' + error));
         });
-
-      // await Axios.post(BASEURL + 'login/callback', params)
-      //   .then(response => {
-      //     if (response.data.status === 'success') {
-      //       console.log('== kakao login success ==');
-      //       console.log(
-      //         response.data.data.id.toString(),
-      //         result.nickname,
-      //         result.profile_image_url,
-      //         sns,
-      //       );
-      //       storeSNS(
-      //         response.data.data.token,
-      //         response.data.data.id.toString(),
-      //         result.nickname,
-      //         result.profile_image_url,
-      //         sns,
-      //       );
-      //     }
-      //   })
-      //   .catch(error => {
-      //     console.log('kakao login fail: ' + error);
-      //   });
     } else if (sns === 'facebook') {
       const params = new URLSearchParams();
       params.append('provider', sns);
@@ -320,7 +297,35 @@ export default class extends React.Component {
           console.log('facebook login fail: ' + error);
         });
     } else {
-      console.log('Naver Login');
+      const params = new URLSearchParams();
+      params.append('provider', sns);
+      params.append('id', result.response.id);
+      params.append('name', result.response.name);
+      await LESPO_API.login(params)
+        .then(response => {
+          if (response.data.status === 'success') {
+            console.log('== Naver login success ==');
+            console.log(
+              response.data.data.id.toString(),
+              result.response.name,
+              result.response.profile_image,
+              sns,
+            );
+            storeSNS(
+              response.data.data.token,
+              response.data.data.id.toString(),
+              result.response.name,
+              result.response.profile_image,
+              sns,
+            );
+            this.state.navigation.replace({
+              routeName: 'Tabs',
+            });
+          }
+        })
+        .catch(error => {
+          console.log('Naver login fail: ' + error);
+        });
     }
   };
 

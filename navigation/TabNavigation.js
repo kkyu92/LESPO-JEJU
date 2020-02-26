@@ -70,7 +70,7 @@ const TabNavigation = createBottomTabNavigator(
         tabBarIcon: ({focused}) =>
           focused ? (
             <Icon
-              source={require(`../assets/drawable-xxhdpi/icon-shopping-bk.png`)}
+              source={require(`../assets/drawable-xxhdpi/icon-shopping-or.png`)}
             />
           ) : (
             <Icon

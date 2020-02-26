@@ -134,13 +134,9 @@ export default class extends React.Component {
           chatRoomList.sort(function(a, b) {
             return new Date(b.lastRealTime) - new Date(a.lastRealTime);
           });
-          // chatRoomList.reverse();
-          this.setState({
-            chatRoomList: chatRoomList,
-          });
-          // console.log(
-          //   'chatList : ' + JSON.stringify(this.state.chatRoomList),
-          // );
+        });
+        this.setState({
+          chatRoomList: chatRoomList,
         });
       });
     } catch (error) {

@@ -138,6 +138,7 @@ PODS:
     - nanopb/encode (= 0.3.9011)
   - nanopb/decode (0.3.9011)
   - nanopb/encode (0.3.9011)
+  - naveridlogin-sdk-ios (4.1.2)
   - Permission-LocationWhenInUse (2.0.8):
     - RNPermissions
   - Protobuf (3.11.3)
@@ -383,6 +384,9 @@ PODS:
     - React
   - RNKakaoPlusFriend (1.0.0):
     - React
+  - RNNaverLogin (2.1.0):
+    - naveridlogin-sdk-ios (~> 4.1)
+    - React
   - RNPermissions (2.0.8):
     - React
   - RNReanimated (1.4.0):
@@ -439,6 +443,7 @@ DEPENDENCIES:
   - RNIap (from `../node_modules/react-native-iap`)
   - RNKakaoLink (from `../node_modules/react-native-kakao-links/ios`)
   - RNKakaoPlusFriend (from `../node_modules/react-native-kakao-plus-friend/ios`)
+  - "RNNaverLogin (from `../node_modules/@react-native-seoul/naver-login`)"
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
@@ -464,6 +469,7 @@ SPEC REPOS:
     - GoogleUtilities
     - KakaoOpenSDK
     - nanopb
+    - naveridlogin-sdk-ios
     - Protobuf
     - Toast
 
@@ -544,6 +550,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-kakao-links/ios"
   RNKakaoPlusFriend:
     :path: "../node_modules/react-native-kakao-plus-friend/ios"
+  RNNaverLogin:
+    :path: "../node_modules/@react-native-seoul/naver-login"
   RNPermissions:
     :path: "../node_modules/react-native-permissions"
   RNReanimated:
@@ -579,6 +587,7 @@ SPEC CHECKSUMS:
   kakao-login: 71ef84dece8532526a4af24f35bc768d5350c9a7
   KakaoOpenSDK: 797d97ec4a7074a23d7175147f13ec274c81c9b9
   nanopb: 18003b5e52dab79db540fe93fe9579f399bd1ccd
+  naveridlogin-sdk-ios: cf8afccdb1793d4ecfcd5d46aa8729d8b5058c70
   Permission-LocationWhenInUse: 17ddf0e359381e42afba5323cfa53f054414e11a
   Protobuf: 0e94afe3b47cb11876eb6aee296638711a24bf75
   RCTRequired: b153add4da6e7dbc44aebf93f3cf4fcae392ddf1
@@ -611,6 +620,7 @@ SPEC CHECKSUMS:
   RNIap: 9b6e92869de716305ecc6cac8c413321210e33c7
   RNKakaoLink: 1e1981118c364a06db596a22fe01a58ea8593ad5
   RNKakaoPlusFriend: cb7fa14d2d4e5d04055a2ff2ed943075d07c478f
+  RNNaverLogin: e3c76c8f589f3751f7d7e6f79dbacbfb080c91a4
   RNPermissions: 409e55ed060f7e35d4a3dfc3a336f94a5811dec1
   RNReanimated: b2ab0b693dddd2339bd2f300e770f6302d2e960c
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4

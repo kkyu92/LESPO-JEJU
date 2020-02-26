@@ -1,7 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import Loader from '../../../components/Loader';
-import {TINT_COLOR, BG_COLOR, GREY_COLOR2} from '../../../constants/Colors';
+import {
+  TINT_COLOR,
+  BG_COLOR,
+  GREY_COLOR2,
+  RED_COLOR,
+} from '../../../constants/Colors';
 import {
   KeyboardAvoidingView,
   SafeAreaView,
@@ -110,6 +115,10 @@ const RevBtnText = styled.Text`
   color: ${BG_COLOR};
   font-size: 16px;
 `;
+const RedBtnText = styled.Text`
+  color: ${RED_COLOR};
+  font-size: 16px;
+`;
 
 const ChatListContainer = styled.ScrollView`
   flex: 1;
@@ -183,6 +192,7 @@ const BattleTalkPresenter = ({
   myName,
   changeModalVisiblity,
   battleState,
+  requestUser,
   onSavePlace,
   navigation,
 }) =>
@@ -237,14 +247,24 @@ const BattleTalkPresenter = ({
             {/* <Btn>
               <BtnText>이용안내</BtnText>
             </Btn> */}
-            {battleState === '"배틀신청중"' || battleState === '' ? (
+            {battleState === '배틀신청중' || battleState === '' ? (
               <RevBtn onPress={() => changeModalVisiblity(true)}>
-                <RevBtnText>배틀시작</RevBtnText>
+                <RevBtnText>배틀신청</RevBtnText>
               </RevBtn>
-            ) : battleState === '"배틀진행중"' ? (
+            ) : battleState === '배틀진행중' ? (
               <RevBtn>
                 <RevBtnText>신청완료</RevBtnText>
               </RevBtn>
+            ) : battleState === '배틀요청' ? (
+              requestUser === JSON.stringify(myId) ? (
+                <RevBtn>
+                  <RedBtnText>배틀신청중</RedBtnText>
+                </RevBtn>
+              ) : (
+                <RevBtn onPress={() => changeModalVisiblity(true)}>
+                  <RedBtnText>신청수락</RedBtnText>
+                </RevBtn>
+              )
             ) : (
               <RevBtn>
                 <RevBtnText>배틀종료</RevBtnText>

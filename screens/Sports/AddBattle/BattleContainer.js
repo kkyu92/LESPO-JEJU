@@ -277,6 +277,7 @@ export default class extends React.Component {
       user2: '',
     };
     let openBox = false;
+    let requestUser = '';
     if (
       this.state.sport !== '스포츠' &&
       this.state.area !== '지역' &&
@@ -299,6 +300,7 @@ export default class extends React.Component {
           battleResult,
           endUser,
           openBox,
+          requestUser,
         );
         const resetAction = NavigationActions.navigate({
           routeName: 'SportsBattle',

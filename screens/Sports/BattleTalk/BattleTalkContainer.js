@@ -44,18 +44,27 @@ export default class extends React.Component {
       makeUser: '',
       isModalVisible: false,
       battleState: '',
+      requestUser: '',
       error: null,
     };
     console.log('@@@@@@@: battleTalk' + this.state.makeUser);
   }
 
-  updateState = async () => {
+  updateState = async (myId, what) => {
     let {getChatList} = this.state;
     // check user in room
     let makerIn;
     let joinerIn;
     let user = this.state.myId;
-    let msg = '배틀을 시작합니다';
+    let msg;
+    let battleState;
+    if (what === 'request') {
+      msg = '배틀을 신청합니다.';
+      battleState = '배틀요청';
+    } else {
+      msg = '배틀을 수락합니다.';
+      battleState = '배틀진행중';
+    }
     let date = moment()
       .local()
       .format('LT');
@@ -137,7 +146,7 @@ export default class extends React.Component {
           this.state.myId,
           this.state.myName,
           this.state.myProfile,
-          '배틀을 시작합니다.',
+          msg,
           date,
           otherToken,
         );
@@ -148,22 +157,39 @@ export default class extends React.Component {
     };
     // endUser[this.state.id] = this.state.id;
     // endUser[this.state.myId] = this.state.myId;
-
-    firebase
-      .database()
-      .ref('chatRoomList/' + this.state.roomKey)
-      .update({
-        lastTime: moment()
-          .local()
-          .format('LT'),
-        lastRealTime: moment()
-          .local()
-          .format(),
-        lastMsg: '배틀을 시작합니다.',
-        battleState: '배틀진행중',
-        endUser,
-      });
-    this.coinCheckDelete();
+    if (what === 'request') {
+      firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey)
+        .update({
+          lastTime: moment()
+            .local()
+            .format('LT'),
+          lastRealTime: moment()
+            .local()
+            .format(),
+          lastMsg: msg,
+          battleState: battleState,
+          endUser,
+          requestUser: myId,
+        });
+    } else {
+      firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey)
+        .update({
+          lastTime: moment()
+            .local()
+            .format('LT'),
+          lastRealTime: moment()
+            .local()
+            .format(),
+          lastMsg: msg,
+          battleState: battleState,
+          endUser,
+        });
+      this.coinCheckDelete();
+    }
   };
 
   coinCheckDelete = async () => {
@@ -500,7 +526,7 @@ export default class extends React.Component {
   async componentDidMount() {
     let MID = await AsyncStorage.getItem('@USER_ID');
     let MNAME = await AsyncStorage.getItem('@USER_NAME');
-    let {id, myId, roomKey, getChatList} = this.state;
+    let {getChatList} = this.state;
 
     // fcm setting
     const enable = await Firebase.messaging().hasPermission();
@@ -510,7 +536,7 @@ export default class extends React.Component {
           // get ChattingList
           var userRef = firebase
             .database()
-            .ref('chatRoomList/' + roomKey + '/chatList/');
+            .ref('chatRoomList/' + this.state.roomKey + '/chatList/');
           userRef.once('value', dataSnapshot => {
             getChatList = [];
             dataSnapshot.forEach(child => {
@@ -525,14 +551,22 @@ export default class extends React.Component {
           });
         } else {
           let reader = {};
-          reader[id] = id;
+          reader[this.state.id] = this.state.id;
           reader[MID] = MID;
-          getChatList.push({
-            key: '',
-            user: notification.android._notification._data.id,
-            msg: notification.android._notification._data.msg,
-            date: notification.android._notification._data.date,
-            read: reader,
+          var userRef = firebase
+            .database()
+            .ref('chatRoomList/' + this.state.roomKey + '/chatList/');
+          userRef.once('value', dataSnapshot => {
+            getChatList = [];
+            dataSnapshot.forEach(child => {
+              getChatList.push({
+                key: child.key,
+                user: child.val().user,
+                msg: child.val().msg,
+                date: child.val().date,
+                read: reader,
+              });
+            });
           });
         }
         this.setState({
@@ -551,16 +585,37 @@ export default class extends React.Component {
       // get battleState
       firebase
         .database()
-        .ref('chatRoomList/' + roomKey + '/battleState/')
+        .ref('chatRoomList/' + this.state.roomKey + '/battleState')
+        .on('value', dataSnapshot => {
+          let state = JSON.stringify(dataSnapshot);
+          if (state === '"배틀신청중"') {
+            state = '배틀신청중';
+          } else if (state === '"배틀요청"') {
+            state = '배틀요청';
+          } else if (state === '"배틀진행중"') {
+            state = '배틀진행중';
+          } else {
+            state = '배틀종료';
+          }
+          console.log('[BattleTalk]######### battleState: ' + state);
+          console.log(state);
+          this.setState({
+            battleState: state,
+          });
+        });
+      // get requestUser
+      firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey + '/requestUser')
         .on('value', dataSnapshot => {
           this.setState({
-            battleState: JSON.stringify(dataSnapshot),
+            requestUser: JSON.stringify(dataSnapshot),
           });
         });
       // get makeUser
       var maker = firebase
         .database()
-        .ref('chatRoomList/' + roomKey + '/makeUser/userId');
+        .ref('chatRoomList/' + this.state.roomKey + '/makeUser/userId');
       maker.once('value', dataSnapshot => {
         this.setState({
           makeUser: JSON.stringify(dataSnapshot),
@@ -569,7 +624,7 @@ export default class extends React.Component {
       // get ChattingList
       var userRef = firebase
         .database()
-        .ref('chatRoomList/' + roomKey + '/chatList/');
+        .ref('chatRoomList/' + this.state.roomKey + '/chatList/');
       // .limitToLast(30);
       // .orderByChild('key');
       userRef.once('value', dataSnapshot => {
@@ -591,7 +646,7 @@ export default class extends React.Component {
       });
       // 내 로그인 정보 불러오ß기
       this.getData();
-      this.updateSingleData(roomKey, getChatList);
+      this.updateSingleData(this.state.roomKey, getChatList);
       // fcm
       let otherToken;
       firebase
@@ -614,25 +669,31 @@ export default class extends React.Component {
 
   setData = async data => {
     console.log('setData::: ', data);
-    if (data === 'battleStart') {
-      let API_TOKEN = await AsyncStorage.getItem('@API_TOKEN');
-      console.log(API_TOKEN);
-      const config = {
-        headers: {
-          Authorization: API_TOKEN,
-        },
-      };
-      await LESPO_API.getCoin(config)
-        .then(response => {
-          this.setState({
-            coin: response.data.data.credit,
-          });
-          console.log('myCoin Get: ' + response.data.data.credit);
-        })
-        .catch(error => {
-          console.log('getCoin fail: ' + error);
+    let API_TOKEN = await AsyncStorage.getItem('@API_TOKEN');
+    console.log(API_TOKEN);
+    const config = {
+      headers: {
+        Authorization: API_TOKEN,
+      },
+    };
+    await LESPO_API.getCoin(config)
+      .then(response => {
+        this.setState({
+          coin: response.data.data.credit,
         });
-
+        console.log('myCoin Get: ' + response.data.data.credit);
+      })
+      .catch(error => {
+        console.log('getCoin fail: ' + error);
+      });
+    if (data === 'battleStart') {
+      if (this.state.coin > 0) {
+        this.refs.toast.show('배틀을 신청했습니다.');
+        this.updateState(M_ID, 'request');
+      } else {
+        this.refs.toast.show('사용가능한 코인이 부족합니다.');
+      }
+    } else if (data === 'requestOK') {
       firebase
         .database()
         .ref('APITokenList/' + this.state.id)
@@ -661,17 +722,17 @@ export default class extends React.Component {
             otherCoin: response.data.data.credit,
           });
           otherCoin = response.data.data.credit;
-          console.log('otherCoin[1]: ' + response.data.data.credit);
+          console.log('otherCoin[1]: ' + this.state.coin);
           console.log('otherCoin[2]: ' + otherCoin);
           // 코인 검사
           if (this.state.coin > 0) {
             if (this.state.otherCoin > 0) {
               // 배틀 시작
-              this.setData({
+              this.setState({
                 battleState: '배틀진행중',
               });
-              this.updateState();
-              this.refs.toast.show('배틀신청이 완료되었습니다.');
+              this.updateState(M_ID, 'OK');
+              this.refs.toast.show('배틀신청을 수락했습니다.');
             } else {
               // 상대 코인 부족
               console.log('상대방의 코인 갯수: ' + this.state.otherCoin);
@@ -761,30 +822,41 @@ export default class extends React.Component {
 
     firebase
       .database()
-      .ref('chatRoomList/' + this.state.roomKey + '/chatList/')
+      .ref('chatRoomList/' + this.state.roomKey + '/battleState')
       .off('value');
     firebase
       .database()
-      .ref('chatRoomList/' + this.state.roomKey + '/battleState/')
-      .off('value');
-    firebase
-      .database()
-      .ref('chatRoomList/' + this.state.roomKey + '/makeUser/userIn')
-      .off('value');
-    firebase
-      .database()
-      .ref('chatRoomList/' + this.state.roomKey + '/joinUser/userIn')
+      .ref('chatRoomList/' + this.state.roomKey + '/requestUser')
       .off('value');
   }
 
   onSavePlace = async (place, navigation) => {
     console.log('onSavePlace::: ' + place);
     navigation.goBack();
-
+    // check user in room
+    let makerIn;
+    let joinerIn;
+    var checkMaker = firebase
+      .database()
+      .ref('chatRoomList/' + this.state.roomKey + '/makeUser/userIn');
+    checkMaker.once('value', dataSnapshot => {
+      makerIn = JSON.stringify(dataSnapshot);
+    });
+    var checkJoiner = firebase
+      .database()
+      .ref('chatRoomList/' + this.state.roomKey + '/joinUser/userIn');
+    checkJoiner.once('value', dataSnapshot => {
+      joinerIn = JSON.stringify(dataSnapshot);
+    });
     let reader = {};
-    reader[this.state.myId] = this.state.myId;
+    if ((makerIn === 'true') & (joinerIn === 'true')) {
+      reader[this.state.myId] = this.state.myId;
+      reader[this.state.id] = this.state.id;
+    } else {
+      reader[this.state.myId] = this.state.myId;
+    }
     try {
-      await this.writeChattingAdd(
+      this.writeChattingAdd(
         this.state.roomKey,
         this.state.myId,
         place,
@@ -809,6 +881,7 @@ export default class extends React.Component {
       myName,
       myId,
       battleState,
+      requestUser,
     } = this.state;
     return (
       <>
@@ -826,6 +899,7 @@ export default class extends React.Component {
           myName={myName}
           myProfile={myProfile}
           battleState={battleState}
+          requestUser={requestUser}
           changeModalVisiblity={this.changeModalVisiblity}
           onSavePlace={this.onSavePlace}
         />
@@ -835,7 +909,8 @@ export default class extends React.Component {
           onRequestClose={() => this.changeModalVisiblity(false)}
           animationType="fade">
           <SimpleDialog
-            battleState={'배틀시작'}
+            battleState={battleState}
+            battleStart={'배틀시작'}
             changeModalVisiblity={this.changeModalVisiblity}
             setData={this.setData}
           />

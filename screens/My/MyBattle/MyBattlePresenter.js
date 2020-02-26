@@ -75,6 +75,7 @@ const MyBattlePresenter = ({loading, chatRoomList, myId}) =>
                             battleResult={list.battleResult}
                             endUser={list.endUser}
                             openBox={list.openBox}
+                            requestUser={list.requestUser}
                           />
                         )
                       ),

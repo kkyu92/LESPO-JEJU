@@ -10,6 +10,7 @@ import {
   GREY_COLOR,
   BLACK_COLOR,
   GREY_COLOR2,
+  RED_COLOR,
 } from '../constants/Colors';
 import PhotoUri from '../api/PhotoUri';
 import Layout from '../constants/Layout';
@@ -136,6 +137,20 @@ const StatusText = styled.Text`
   color: ${BG_COLOR};
 `;
 
+const StatusRequest = styled.View`
+  justify-content: center;
+  align-items: center;
+  border-radius: 5;
+  border-width: 1;
+  border-color: ${RED_COLOR};
+  padding: 5px;
+`;
+
+const StatusTextRequest = styled.Text`
+  color: ${RED_COLOR};
+  text-align: center;
+`;
+
 const StatusIng = styled.View`
   justify-content: center;
   align-items: center;
@@ -170,6 +185,7 @@ ratingCompleted = rating => {
 
 // 리스트 기본틀
 const BattleSlide = ({
+  requestUser,
   openBox,
   endUser,
   battleResult,
@@ -230,6 +246,54 @@ const BattleSlide = ({
         <Status>
           <StatusText>{statusText}</StatusText>
         </Status>
+      </StatusContainer>
+    </BattleContainer>
+  ) : statusText === '배틀요청' ? (
+    // 나의 배틀 리스트
+    <BattleContainer
+      onPress={() =>
+        navigation.navigate({
+          routeName: 'MyBattleDetail',
+          params: {
+            roomKey,
+            id,
+            profile,
+            name,
+            sport,
+            type,
+            date,
+            area,
+            memo,
+            statusText,
+            level,
+            requestUser,
+          },
+        })
+      }>
+      <BattleTitleConatiner>
+        <TitleText>배틀종목</TitleText>
+        <TitleText>매칭형태</TitleText>
+        <TitleText>배틀날짜</TitleText>
+        <TitleText>배틀지역</TitleText>
+        <TitleText>메 모</TitleText>
+      </BattleTitleConatiner>
+
+      <BattleTextContainer>
+        <GetText>{sport}</GetText>
+        <GetText>{type}</GetText>
+        <GetText>{date}</GetText>
+        <GetText>{area}</GetText>
+        <GetText numberOfLines={1}>{memo}</GetText>
+      </BattleTextContainer>
+
+      <StatusContainer>
+        <StatusRequest>
+          {requestUser === myId ? (
+            <StatusTextRequest>배틀요청{'\n'}대기중</StatusTextRequest>
+          ) : (
+            <StatusTextRequest>{statusText}</StatusTextRequest>
+          )}
+        </StatusRequest>
       </StatusContainer>
     </BattleContainer>
   ) : statusText === '배틀진행중' ? (

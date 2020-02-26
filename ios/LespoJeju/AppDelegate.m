@@ -11,6 +11,7 @@
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 #import <KakaoOpenSDK/KakaoOpenSDK.h>
+#import <NaverThirdPartyLogin/NaverThirdPartyLoginConnection.h>
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <GoogleMaps/GoogleMaps.h>
 #import <Firebase.h> //Add This Line
@@ -59,8 +60,11 @@
 - (BOOL)application:(UIApplication *)application 
             openURL:(NSURL *)url 
             options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
-
-  BOOL handled =  [[FBSDKApplicationDelegate sharedInstance] application:application openURL:url options:options];
+              BOOL handled;
+if ([url.scheme isEqualToString:@"naverlogin"]) {
+    handled = [[NaverThirdPartyLoginConnection getSharedInstance] application:application openURL:url options:options];
+  }
+  handled =  [[FBSDKApplicationDelegate sharedInstance] application:application openURL:url options:options];
   // Add any custom logic here.
   return handled;
 }
@@ -83,6 +87,18 @@
 
     return false;
 }
+
+// NAVER LOGIN #4. 인증방법 적용안함
+// - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary *)options {
+//    return [[NaverThirdPartyLoginConnection getSharedInstance] application:app openURL:url options:options];
+// }
+// - (BOOL)application:(UIApplication *)application openURL:(nonnull NSURL *)url options:(nonnull NSDictionary<NSString *,id> *)options {
+//   if ([url.scheme isEqualToString:@"naverlogin"]) {
+//     return [[NaverThirdPartyLoginConnection getSharedInstance] application:application openURL:url options:options];
+//   }
+
+//   return [RNGoogleSignin application:application openURL:url options:options];
+// }
 
 // - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
 //                                                options:(NSDictionary<NSString *,id> *)options {

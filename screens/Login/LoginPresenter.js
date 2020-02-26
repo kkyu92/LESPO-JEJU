@@ -1,5 +1,5 @@
-import React from 'react';
-import {StyleSheet} from 'react-native';
+import React, {useState} from 'react';
+import {StyleSheet, Platform} from 'react-native';
 import styled from 'styled-components';
 import LinearGradient from 'react-native-linear-gradient';
 import {
@@ -12,6 +12,7 @@ import Layout from '../../constants/Layout';
 import Loader from '../../components/Loader';
 import {withNavigation} from 'react-navigation';
 import {LoginManager, AccessToken} from 'react-native-fbsdk';
+import {NaverLogin, getProfile} from '@react-native-seoul/naver-login';
 
 const FBSDK = require('react-native-fbsdk');
 const {GraphRequest, GraphRequestManager} = FBSDK;
@@ -110,6 +111,35 @@ const Img = styled.Image`
   border-radius: 10px;
 `;
 
+const iosKeys = {
+  kConsumerKey: '93lujQArHjePL4C80iwL',
+  kConsumerSecret: 'SnqwiyTXhI',
+  kServiceAppName: '제주배틀투어(iOS)',
+  kServiceAppUrlScheme: 'naverlogin', // only for iOS
+};
+
+const androidKeys = {
+  kConsumerKey: '93lujQArHjePL4C80iwL',
+  kConsumerSecret: 'SnqwiyTXhI',
+  kServiceAppName: '제주배틀투어(안드로이드)',
+};
+
+const initials = Platform.OS === 'ios' ? iosKeys : androidKeys;
+
+let naverToken = null;
+
+const getUserProfile = async onSNSLogin => {
+  const profileResult = await getProfile(naverToken.accessToken);
+  if (profileResult.resultcode === '024') {
+    Alert.alert('로그인 실패', profileResult.message);
+    return;
+  }
+  console.log('[NAVER LOGIN] profileResult', profileResult);
+  onSNSLogin('naver', profileResult);
+  NaverLogin.logout();
+  naverToken = null;
+};
+
 const LoginPresenter = ({
   loading,
   signEmail,
@@ -182,7 +212,24 @@ const LoginPresenter = ({
             source={require(`../../assets/drawable-xxhdpi/btn_login_01.png`)}
           />
         </ImgContainer>
-        <ImgContainer>
+        <ImgContainer
+          onPress={() =>
+            new Promise((resolve, reject) => {
+              NaverLogin.login(initials, (err, token) => {
+                console.log(
+                  `\n\n [NAVER LOGIN] Token is fetched  :: ${token} \n\n`,
+                );
+                // setNaverToken(token);
+                naverToken = token;
+                if (err) {
+                  reject(err);
+                  return;
+                }
+                resolve(token);
+                getUserProfile(onSNSLogin);
+              });
+            })
+          }>
           <Img
             source={require(`../../assets/drawable-xxhdpi/btn_login_02.png`)}
           />

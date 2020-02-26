@@ -35,6 +35,14 @@
 				<string>fb2516363172019512</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>naverlogin</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
@@ -48,6 +56,8 @@
 	<string>4f9e332e4542802f6f7587f6294cff32</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
+     <string>naversearchapp</string>
+     <string>naversearchthirdlogin</string>
 		<string>kakao4f9e332e4542802f6f7587f6294cff32</string>
 		<string>kakaolink</string>
 		<string>kakaotalk-5.9.7</string>

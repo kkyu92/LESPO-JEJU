@@ -6,6 +6,7 @@ import {
   GREY_COLOR,
   GREY_COLOR2,
   TINT_COLOR,
+  GREY_COLOR3,
 } from '../../constants/Colors';
 import Layout from '../../constants/Layout';
 import makePhotoUrl from '../../api/PhotoUri';
@@ -32,14 +33,16 @@ const View = styled.View`
 
 // 이미지
 const ImageContainer = styled.View`
-  background-color: #fee6d0;
-  position: absolute;
+  background-color: ${GREY_COLOR};
+  width: 100%;
+  height: ${Layout.height / 3};
+  align-items: center;
+  justify-content: center;
 `;
 
 const Image = styled.Image`
-  width: ${Layout.width};
-  height: ${Layout.height / 3};
-  background-color: #fee6d0;
+  width: 100px;
+  height: 100px;
 `;
 
 // 내용
@@ -230,13 +233,17 @@ const DetailPresenter = ({
             ))
           ) : (
             <ImageContainer>
-              <Image source={{uri: GetPhoto(backgroundPoster)}} />
+              <Image
+                source={require(`../../assets/drawable-xxhdpi/img_noimage.png`)}
+              />
             </ImageContainer>
           )}
         </Swiper>
       ) : (
         <ImageContainer>
-          <Image source={{uri: makePhotoUrl(backgroundPoster)}} />
+          <Image
+            source={require(`../../assets/drawable-xxhdpi/img_noimage.png`)}
+          />
         </ImageContainer>
       )}
       <ContextContainer>
@@ -277,13 +284,17 @@ const DetailPresenter = ({
               ))
             ) : (
               <ImageContainer>
-                <Image source={{uri: GetPhoto(backgroundPoster)}} />
+                <Image
+                  source={require(`../../assets/drawable-xxhdpi/img_noimage.png`)}
+                />
               </ImageContainer>
             )}
           </Swiper>
         ) : (
           <ImageContainer>
-            <Image source={{uri: makePhotoUrl(backgroundPoster)}} />
+            <Image
+              source={require(`../../assets/drawable-xxhdpi/img_noimage.png`)}
+            />
           </ImageContainer>
         )}
         {/* <ImageContainer>
@@ -360,20 +371,26 @@ const DetailPresenter = ({
           <ContextText>이벤트: {detail.events}</ContextText>
           <ContextText>전화번호: {detail.tel_number}</ContextText>
           <CommentContainer>
-            <ContextText>댓글 ( {comments.length} )</ContextText>
-            {comments.length !== 0
-              ? comments.map((value, index) => (
-                  <CommentSlide
-                    index={index}
-                    commentId={value.id}
-                    commentText={value.comment_description}
-                    userId={value.users_id}
-                    userName={value.user.nickname}
-                    time={value.created_at}
-                    onRightPress={deleteComment}
-                  />
-                ))
-              : null}
+            {comments === undefined ? (
+              <ContextText>댓글 ( 0 )</ContextText>
+            ) : (
+              <>
+                <ContextText>댓글 ( {comments.length} )</ContextText>
+                {comments.length !== 0
+                  ? comments.map((value, index) => (
+                      <CommentSlide
+                        index={index}
+                        commentId={value.id}
+                        commentText={value.comment_description}
+                        userId={value.users_id}
+                        userName={value.user.nickname}
+                        time={value.created_at}
+                        onRightPress={deleteComment}
+                      />
+                    ))
+                  : null}
+              </>
+            )}
           </CommentContainer>
         </ContextContainer>
       </Container>

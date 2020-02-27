@@ -1,6 +1,6 @@
 import React from 'react';
 import LoginPresenter from './LoginPresenter';
-import {LESPO_API, BASEURL, CONFIG} from '../../api/Api';
+import {LESPO_API, BASEURL, CONFIG, TEST_API, movie} from '../../api/Api';
 import KakaoLogins from '@react-native-seoul/kakao-login';
 import AsyncStorage from '@react-native-community/async-storage';
 import Axios from 'axios';
@@ -100,13 +100,38 @@ export default class extends React.Component {
       });
 
     try {
+      // await movie
+      //   .getPopular()
+      //   .then(response => {
+      //     console.log('\n\n\nMOVIE DATA\n\n');
+      //     console.log(response.data.results);
+      //   })
+      //   .catch(error => {
+      //     console.log('getMOVIE fail: ' + error);
+      //   });
+
+      var params = {
+        CMD: 'myInfo',
+        PRM: {
+          userKey: 124,
+        },
+      };
+      await TEST_API.getTest(params)
+        .then(response => {
+          console.log('\n\n\nIM\n\n');
+          console.log(response.data);
+        })
+        .catch(error => {
+          console.log('getTEST[IM] fail: ' + error);
+        });
+
       // await LESPO_API.getMainList()
       //   .then(response => {
-      //     console.log('getMain');
+      //     console.log('\n\n\nLESPO\n\n');
       //     console.log(response.data.data);
       //   })
       //   .catch(error => {
-      //     console.log('getMainList fail: ' + error);
+      //     console.log('getnLESPO fail: ' + error);
       //   });
     } catch (e) {
       console.log(e);

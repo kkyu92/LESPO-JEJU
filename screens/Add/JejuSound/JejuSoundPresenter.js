@@ -161,20 +161,33 @@ const JejuPresenter = ({
             <Section horizontal={false} title="제주의 소리">
               {listChanged
                 .filter(list => list.id !== null)
-                .map(list => (
-                  <SubSlide
-                    tag={'image'}
-                    horizontal={false}
-                    key={list.id}
-                    id={list.id}
-                    backgroundPoster={list.banner.full_filename}
-                    poster={list.matched_content_images}
-                    title={list.title}
-                    overview={list.description}
-                    detail={list.detail}
-                    // avg={list.vote_average}
-                  />
-                ))}
+                .map(list =>
+                  list.banner === null ? (
+                    <SubSlide
+                      tag={'image'}
+                      horizontal={false}
+                      key={list.id}
+                      id={list.id}
+                      backgroundPoster={'no'}
+                      poster={'no'}
+                      title={list.title}
+                      overview={list.description}
+                      detail={list.detail}
+                    />
+                  ) : (
+                    <SubSlide
+                      tag={'image'}
+                      horizontal={false}
+                      key={list.id}
+                      id={list.id}
+                      backgroundPoster={list.banner.full_filename}
+                      poster={list.matched_content_images}
+                      title={list.title}
+                      overview={list.description}
+                      detail={list.detail}
+                    />
+                  ),
+                )}
             </Section>
           ) : (
             <SearchNo text={'등록된 광고가 없습니다.'} />

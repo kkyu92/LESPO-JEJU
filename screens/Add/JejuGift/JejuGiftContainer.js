@@ -81,13 +81,6 @@ export default class extends React.Component {
         error,
       });
     }
-    // 화면 돌아왔을 때 reload !
-    // this.subs = [
-    //   this.props.navigation.addListener('willFocus', () => {
-    //     console.log('willFocus ::: reload');
-    //     this.onListChanging();
-    //   }),
-    // ];
   }
 
   //친구 추가 하기로 링크

@@ -113,6 +113,15 @@ const VerticalImgContainer = styled.View`
   height: 120px;
   border-radius: 15;
   align-items: flex-end;
+  align-items: center;
+  justify-content: center;
+  background-color: ${GREY_COLOR};
+`;
+
+const NullImg = styled.Image`
+  width: 100px;
+  height: 100px;
+  position: absolute;
 `;
 
 const VerticalImg = styled.Image`
@@ -140,6 +149,14 @@ const ADContainer = styled.View`
   height: 120px;
   border-radius: 15;
   align-items: flex-end;
+  align-items: center;
+  justify-content: center;
+  background-color: ${GREY_COLOR};
+`;
+const NullADImg = styled.Image`
+  width: 100px;
+  height: 100px;
+  border-radius: 15;
 `;
 const ADImg = styled.Image`
   width: 100%;
@@ -290,7 +307,13 @@ const SubSlide = ({
         })
       }>
       <VerticalImgContainer>
-        <VerticalImg source={{uri: GetPhoto(backgroundPoster)}} />
+        {backgroundPoster === 'no' ? (
+          <NullImg
+            source={require(`../assets/drawable-xxhdpi/img_noimage.png`)}
+          />
+        ) : (
+          <VerticalImg source={{uri: GetPhoto(backgroundPoster)}} />
+        )}
         {tagName === '먹거리' ? (
           <TagContainer>
             <TagImg>먹거리</TagImg>
@@ -344,7 +367,13 @@ const SubSlide = ({
         })
       }>
       <VerticalImgContainer>
-        <VerticalImg source={{uri: GetPhoto(backgroundPoster)}} />
+        {backgroundPoster === 'no' ? (
+          <NullImg
+            source={require(`../assets/drawable-xxhdpi/img_noimage.png`)}
+          />
+        ) : (
+          <VerticalImg source={{uri: GetPhoto(backgroundPoster)}} />
+        )}
       </VerticalImgContainer>
       <VerticalColum>
         <VerticalTitle numberOfLines={1}>{title}</VerticalTitle>
@@ -364,7 +393,6 @@ const SubSlide = ({
           source={{
             uri: GetPhoto(backgroundPoster),
           }}
-          // source={{uri: JPG.getImage(backgroundPoster.full_filename)}}
         />
       </RecommendImgContainer>
       <VerticalColum>
@@ -413,7 +441,13 @@ const SubSlide = ({
         })
       }>
       <ADContainer>
-        <ADImg source={{uri: GetPhoto(backgroundPoster)}} />
+        {backgroundPoster === 'no' ? (
+          <NullADImg
+            source={require(`../assets/drawable-xxhdpi/img_noimage.png`)}
+          />
+        ) : (
+          <ADImg source={{uri: GetPhoto(backgroundPoster)}} />
+        )}
       </ADContainer>
     </VerticalContainer>
   );

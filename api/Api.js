@@ -11,11 +11,17 @@ const api = axios.create({
 const API = axios.create({
   baseURL: 'https://www.jejubattle.com/api/',
 });
-
+const TEST = axios.create({
+  baseURL: 'https://withim.net/api/',
+});
 // POST 사용
 export const BASEURL = 'https://www.jejubattle.com/api/';
 
-// TODO: LESPO API
+export const TEST_API = {
+  getTest: params => TEST.post('myInfo', params),
+};
+
+// LESPO API
 export const LESPO_API = {
   login: params => API.post('login/callback', params),
   userDelete: config => API.delete('user/delete', config),

@@ -123,20 +123,34 @@ export default class extends React.Component {
       console.log('get id : ' + this.state.id);
       await LESPO_API.getDetailItem(this.state.id, config)
         .then(response => {
-          console.log(JSON.stringify(response.data.data));
           listChanged = response.data.data;
-          this.setState({
-            backgroundPoster:
-              listChanged.matched_content_images[0].full_filename,
-            poster: listChanged.matched_content_images,
-            title: listChanged.title,
-            avg: listChanged.like_count,
-            overview: listChanged.description,
-            detail: listChanged.detail,
-            isWish: listChanged.is_wishlist_added_count,
-            isLike: listChanged.is_liked_count,
-            comments: listChanged.comments,
-          });
+          console.log('get list: ' + JSON.stringify(listChanged));
+          if (JSON.stringify(listChanged.matched_content_images) === '[]') {
+            this.setState({
+              backgroundPoster: 'no',
+              poster: 'no',
+              title: listChanged.title,
+              avg: listChanged.like_count,
+              overview: listChanged.description,
+              detail: listChanged.detail,
+              isWish: listChanged.is_wishlist_added_count,
+              isLike: listChanged.is_liked_count,
+              comments: listChanged.comments,
+            });
+          } else {
+            this.setState({
+              backgroundPoster:
+                listChanged.matched_content_images[0].full_filename,
+              poster: listChanged.matched_content_images,
+              title: listChanged.title,
+              avg: listChanged.like_count,
+              overview: listChanged.description,
+              detail: listChanged.detail,
+              isWish: listChanged.is_wishlist_added_count,
+              isLike: listChanged.is_liked_count,
+              comments: listChanged.comments,
+            });
+          }
         })
         .catch(error => {
           console.log('get DetailItem fail: ' + error);

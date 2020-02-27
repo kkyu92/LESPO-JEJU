@@ -654,7 +654,7 @@ export default class extends React.Component {
         .ref('FcmTokenList/' + this.state.id)
         .once('value', dataSnapshot => {
           otherToken = dataSnapshot;
-          this.sendToServer('', '', '', CHAT_ROOM_IN, '', otherToken);
+          this.sendToServer(MID, MNAME, '', CHAT_ROOM_IN, '', otherToken);
         });
     } catch (error) {
       console.log('get chattingList error ::: ' + error);

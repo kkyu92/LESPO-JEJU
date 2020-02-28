@@ -140,22 +140,37 @@ const CoursePresenter = ({
                 <Section horizontal={false} title="">
                   {listChanged
                     .filter(list => list.id !== null)
-                    .map(list => (
-                      <SubSlide
-                        tag={'recommend'}
-                        horizontal={false}
-                        key={list.id}
-                        id={list.id}
-                        backgroundPoster={
-                          list.matched_content_images[0].full_filename
-                        }
-                        title={list.title}
-                        overview={list.description}
-                        detail={list.detail}
-                        markerOn={markerOn}
-                        avg={list.like_count}
-                      />
-                    ))}
+                    .map(list =>
+                      JSON.stringify(list.matched_content_images) === '[]' ? (
+                        <SubSlide
+                          tag={'recommend'}
+                          horizontal={false}
+                          key={list.id}
+                          id={list.id}
+                          backgroundPoster={'no'}
+                          title={list.title}
+                          overview={list.description}
+                          detail={list.detail}
+                          markerOn={markerOn}
+                          avg={list.like_count}
+                        />
+                      ) : (
+                        <SubSlide
+                          tag={'recommend'}
+                          horizontal={false}
+                          key={list.id}
+                          id={list.id}
+                          backgroundPoster={
+                            list.matched_content_images[0].full_filename
+                          }
+                          title={list.title}
+                          overview={list.description}
+                          detail={list.detail}
+                          markerOn={markerOn}
+                          avg={list.like_count}
+                        />
+                      ),
+                    )}
                 </Section>
               ) : (
                 <SearchNo text={'등록된 추천경로가 없습니다.'} />

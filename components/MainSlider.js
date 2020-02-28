@@ -27,15 +27,27 @@ const MainSlider = ({mainList}) =>
         .filter(list => list.id !== null)
         .map(list => (
           <View key={list.id}>
-            <MainSlide
-              id={list.id}
-              backgroundPoster={list.matched_content_images[0].full_filename}
-              poster={list.matched_content_images}
-              title={list.title}
-              overview={list.description}
-              detail={list.detail}
-              avg={list.like_count}
-            />
+            {JSON.stringify(list.matched_content_images) === '[]' ? (
+              <MainSlide
+                id={list.id}
+                backgroundPoster={'no'}
+                poster={'no'}
+                title={list.title}
+                overview={list.description}
+                detail={list.detail}
+                avg={list.like_count}
+              />
+            ) : (
+              <MainSlide
+                id={list.id}
+                backgroundPoster={list.matched_content_images[0].full_filename}
+                poster={list.matched_content_images}
+                title={list.title}
+                overview={list.description}
+                detail={list.detail}
+                avg={list.like_count}
+              />
+            )}
           </View>
         ))}
     </Swiper>

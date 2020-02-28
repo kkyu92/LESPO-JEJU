@@ -858,7 +858,7 @@
 				CODE_SIGN_ENTITLEMENTS = LespoJeju/LespoJeju.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 105;
+				CURRENT_PROJECT_VERSION = 106;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = ZP3SF2A2ZT;
 				ENABLE_BITCODE = NO;
@@ -872,7 +872,7 @@
 				INFOPLIST_FILE = LespoJeju/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.0.5;
+				MARKETING_VERSION = 1.0.6;
 				OTHER_LDFLAGS = "${inherited}";
 				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.JejuBattle;
 				PRODUCT_NAME = LespoJeju;
@@ -891,7 +891,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 105;
+				CURRENT_PROJECT_VERSION = 106;
 				DEVELOPMENT_TEAM = ZP3SF2A2ZT;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -904,7 +904,7 @@
 				INFOPLIST_FILE = LespoJeju/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.0.5;
+				MARKETING_VERSION = 1.0.6;
 				OTHER_LDFLAGS = "${inherited}";
 				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.JejuBattle;
 				PRODUCT_NAME = LespoJeju;

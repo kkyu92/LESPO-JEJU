@@ -18,13 +18,24 @@ import GetPhoto from '../api/GetPhoto';
 const Container = styled.TouchableOpacity`
   border-radius: 15;
   flex: 1;
-  background-color: black;
   position: relative;
 `;
 
 // 메인슬라이드 - 배경
+const BGImageContainer = styled.View`
+  background-color: ${GREY_COLOR};
+  border-radius: 15;
+  width: ${Layout.width - 40};
+  height: ${Layout.height / 4};
+  align-items: center;
+  justify-content: center;
+`;
+const NullBGImage = styled.Image`
+  border-radius: 15;
+  width: ${Layout.width / 3};
+  height: ${Layout.width / 3};
+`;
 const BGImage = styled.Image`
-  background-color: ${TINT_COLOR};
   border-radius: 15;
   width: ${Layout.width - 40};
   height: ${Layout.height / 4};
@@ -101,7 +112,19 @@ const ItemLikeContainer = styled.View`
   align-items: center;
   justify-content: center;
 `;
+const NullItemImgContainer = styled.View`
+  background-color: ${GREY_COLOR};
+  width: ${Layout.width / 3};
+  height: ${(Layout.width / 5) * 3};
+  justify-content: center;
+  align-items: center;
+`;
+const NullItemImg = styled.Image`
+  width: ${Layout.width / 4};
+  height: ${Layout.width / 4};
+`;
 const ItemImg = styled.Image`
+  background-color: ${GREY_COLOR};
   width: ${Layout.width / 3};
   height: ${(Layout.width / 5) * 3};
 `;
@@ -151,7 +174,15 @@ const MainSlide = ({
           },
         })
       }>
-      <ItemImg source={{uri: GetPhoto(backgroundPoster)}} />
+      {backgroundPoster === 'no' ? (
+        <NullItemImgContainer>
+          <NullItemImg
+            source={require(`../assets/drawable-xxhdpi/img_noimage.png`)}
+          />
+        </NullItemImgContainer>
+      ) : (
+        <ItemImg source={{uri: GetPhoto(backgroundPoster)}} />
+      )}
       <ItemTextContainer>
         <ItemTitle numberOfLines={1}>{title}</ItemTitle>
         <ItemContents numberOfLines={5}>{overview}</ItemContents>
@@ -179,7 +210,15 @@ const MainSlide = ({
           },
         })
       }>
-      <BGImage source={{uri: GetPhoto(backgroundPoster)}} />
+      {backgroundPoster === 'no' ? (
+        <BGImageContainer>
+          <NullBGImage
+            source={require(`../assets/drawable-xxhdpi/img_noimage.png`)}
+          />
+        </BGImageContainer>
+      ) : (
+        <BGImage source={{uri: GetPhoto(backgroundPoster)}} />
+      )}
       <TextContainer>
         <Column>
           <Title numberOfLines={1}>{title}</Title>

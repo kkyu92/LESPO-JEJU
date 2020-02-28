@@ -64,21 +64,39 @@ const WishListPresenter = ({loading, listChanged, locations, navigation}) =>
         <Section horizontal={false} title="관광 상품">
           {listChanged
             .filter(list => list.backdrop_path !== null)
-            .map(list => (
-              <SubSlide
-                tag={'tag'}
-                horizontal={false}
-                key={list.id}
-                id={list.id}
-                backgroundPoster={list.matched_content_images[0].full_filename}
-                poster={list.matched_content_images}
-                title={list.title}
-                overview={list.description}
-                detail={list.detail}
-                avg={list.like_count}
-                tagName={list.category.parent.category_name}
-              />
-            ))}
+            .map(list =>
+              JSON.stringify(list.matched_content_images) === '[]' ? (
+                <SubSlide
+                  tag={'tag'}
+                  horizontal={false}
+                  key={list.id}
+                  id={list.id}
+                  backgroundPoster={'no'}
+                  poster={'no'}
+                  title={list.title}
+                  overview={list.description}
+                  detail={list.detail}
+                  avg={list.like_count}
+                  tagName={list.category.parent.category_name}
+                />
+              ) : (
+                <SubSlide
+                  tag={'tag'}
+                  horizontal={false}
+                  key={list.id}
+                  id={list.id}
+                  backgroundPoster={
+                    list.matched_content_images[0].full_filename
+                  }
+                  poster={list.matched_content_images}
+                  title={list.title}
+                  overview={list.description}
+                  detail={list.detail}
+                  avg={list.like_count}
+                  tagName={list.category.parent.category_name}
+                />
+              ),
+            )}
         </Section>
       </Container>
     </View>

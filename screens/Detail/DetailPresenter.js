@@ -32,7 +32,7 @@ const View = styled.View`
 `;
 
 // 이미지
-const ImageContainer = styled.View`
+const NullImageContainer = styled.View`
   background-color: ${GREY_COLOR};
   width: 100%;
   height: ${Layout.height / 3};
@@ -40,9 +40,14 @@ const ImageContainer = styled.View`
   justify-content: center;
 `;
 
-const Image = styled.Image`
+const NullImage = styled.Image`
   width: 100px;
   height: 100px;
+`;
+
+const Image = styled.Image`
+  width: ${Layout.width};
+  height: ${Layout.height / 3};
 `;
 
 // 내용
@@ -232,19 +237,19 @@ const DetailPresenter = ({
               </View>
             ))
           ) : (
-            <ImageContainer>
-              <Image
+            <NullImageContainer>
+              <NullImage
                 source={require(`../../assets/drawable-xxhdpi/img_noimage.png`)}
               />
-            </ImageContainer>
+            </NullImageContainer>
           )}
         </Swiper>
       ) : (
-        <ImageContainer>
-          <Image
+        <NullImageContainer>
+          <NullImage
             source={require(`../../assets/drawable-xxhdpi/img_noimage.png`)}
           />
-        </ImageContainer>
+        </NullImageContainer>
       )}
       <ContextContainer>
         <HeaderContainer>
@@ -283,19 +288,19 @@ const DetailPresenter = ({
                 </View>
               ))
             ) : (
-              <ImageContainer>
-                <Image
+              <NullImageContainer>
+                <NullImage
                   source={require(`../../assets/drawable-xxhdpi/img_noimage.png`)}
                 />
-              </ImageContainer>
+              </NullImageContainer>
             )}
           </Swiper>
         ) : (
-          <ImageContainer>
-            <Image
+          <NullImageContainer>
+            <NullImage
               source={require(`../../assets/drawable-xxhdpi/img_noimage.png`)}
             />
-          </ImageContainer>
+          </NullImageContainer>
         )}
         {/* <ImageContainer>
         {backgroundPoster.includes('/contents/') ? (

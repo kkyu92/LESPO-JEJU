@@ -263,9 +263,14 @@ const onMarkerPressed = (locations, mainState) => {
 
 const onCalloutPress = (listChanged, key, navigation) => {
   let id = listChanged[key].id;
-  let backgroundPoster =
-    listChanged[key].matched_content_images[0].full_filename;
-  let poster = listChanged[key].matched_content_images;
+  let backgroundPoster, poster;
+  if (JSON.stringify(listChanged[key].matched_content_images) === '[]') {
+    backgroundPoster = 'no';
+    poster = 'no';
+  } else {
+    backgroundPoster = listChanged[key].matched_content_images[0].full_filename;
+    poster = listChanged[key].matched_content_images;
+  }
   let title = listChanged[key].title;
   let avg = listChanged[key].like_count;
   let overview = listChanged[key].description;
@@ -538,18 +543,31 @@ const MapPresenter = ({
             .filter(list => list.id !== null)
             .map((list, index) => (
               <View key={index}>
-                <MainSlide
-                  map={true}
-                  overview={list.description}
-                  avg={list.like_count}
-                  title={list.title}
-                  id={list.id}
-                  backgroundPoster={
-                    list.matched_content_images[0].full_filename
-                  }
-                  poster={list.matched_content_images}
-                  detail={list.detail}
-                />
+                {JSON.stringify(list.matched_content_images) === '[]' ? (
+                  <MainSlide
+                    map={true}
+                    overview={list.description}
+                    avg={list.like_count}
+                    title={list.title}
+                    id={list.id}
+                    backgroundPoster={'no'}
+                    poster={'no'}
+                    detail={list.detail}
+                  />
+                ) : (
+                  <MainSlide
+                    map={true}
+                    overview={list.description}
+                    avg={list.like_count}
+                    title={list.title}
+                    id={list.id}
+                    backgroundPoster={
+                      list.matched_content_images[0].full_filename
+                    }
+                    poster={list.matched_content_images}
+                    detail={list.detail}
+                  />
+                )}
               </View>
             ))}
         </Swiper>
@@ -623,18 +641,31 @@ const MapPresenter = ({
             .filter(list => list.id !== null)
             .map((list, index) => (
               <View key={index}>
-                <MainSlide
-                  map={true}
-                  overview={list.description}
-                  avg={list.like_count}
-                  title={list.title}
-                  id={list.id}
-                  backgroundPoster={
-                    list.matched_content_images[0].full_filename
-                  }
-                  poster={list.matched_content_images}
-                  detail={list.detail}
-                />
+                {JSON.stringify(list.matched_content_images) === '[]' ? (
+                  <MainSlide
+                    map={true}
+                    overview={list.description}
+                    avg={list.like_count}
+                    title={list.title}
+                    id={list.id}
+                    backgroundPoster={'no'}
+                    poster={'no'}
+                    detail={list.detail}
+                  />
+                ) : (
+                  <MainSlide
+                    map={true}
+                    overview={list.description}
+                    avg={list.like_count}
+                    title={list.title}
+                    id={list.id}
+                    backgroundPoster={
+                      list.matched_content_images[0].full_filename
+                    }
+                    poster={list.matched_content_images}
+                    detail={list.detail}
+                  />
+                )}
               </View>
             ))}
         </Swiper>

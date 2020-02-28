@@ -237,77 +237,104 @@ const MainPresenter = ({
         {/*TODO: 먹거리 */}
         {foodList ? (
           <Section title="먹거리">
-            {foodList.map(list => (
-              <SubSlide
-                key={list.id}
-                id={list.id}
-                backgroundPoster={list.matched_content_images[0].full_filename}
-                poster={list.matched_content_images}
-                title={list.title}
-                overview={list.description}
-                detail={list.detail}
-                avg={list.like_count}
-              />
-            ))}
+            {foodList.map(list =>
+              JSON.stringify(list.matched_content_images) === '[]' ? (
+                <SubSlide
+                  key={list.id}
+                  id={list.id}
+                  backgroundPoster={'no'}
+                  poster={'no'}
+                  title={list.title}
+                  overview={list.description}
+                  detail={list.detail}
+                  avg={list.like_count}
+                />
+              ) : (
+                <SubSlide
+                  key={list.id}
+                  id={list.id}
+                  backgroundPoster={
+                    list.matched_content_images[0].full_filename
+                  }
+                  poster={list.matched_content_images}
+                  title={list.title}
+                  overview={list.description}
+                  detail={list.detail}
+                  avg={list.like_count}
+                />
+              ),
+            )}
           </Section>
         ) : null}
 
         {/*TODO: 놀거리 */}
         {playList ? (
           <Section title="놀거리">
-            {playList.map(list => (
-              <SubSlide
-                key={list.id}
-                id={list.id}
-                backgroundPoster={list.matched_content_images[0].full_filename}
-                poster={list.matched_content_images}
-                title={list.title}
-                overview={list.description}
-                detail={list.detail}
-                avg={list.like_count}
-              />
-            ))}
+            {playList.map(list =>
+              JSON.stringify(list.matched_content_images) === '[]' ? (
+                <SubSlide
+                  key={list.id}
+                  id={list.id}
+                  backgroundPoster={'no'}
+                  poster={'no'}
+                  title={list.title}
+                  overview={list.description}
+                  detail={list.detail}
+                  avg={list.like_count}
+                />
+              ) : (
+                <SubSlide
+                  key={list.id}
+                  id={list.id}
+                  backgroundPoster={
+                    list.matched_content_images[0].full_filename
+                  }
+                  poster={list.matched_content_images}
+                  title={list.title}
+                  overview={list.description}
+                  detail={list.detail}
+                  avg={list.like_count}
+                />
+              ),
+            )}
           </Section>
         ) : null}
 
         {/*TODO: 볼거리 */}
         {viewList ? (
           <Section title="볼거리">
-            {viewList.map(list => (
-              <SubSlide
-                key={list.id}
-                id={list.id}
-                backgroundPoster={list.matched_content_images[0].full_filename}
-                poster={list.matched_content_images}
-                title={list.title}
-                overview={list.description}
-                detail={list.detail}
-                avg={list.like_count}
-              />
-            ))}
+            {viewList.map(list =>
+              JSON.stringify(list.matched_content_images) === '[]' ? (
+                <SubSlide
+                  key={list.id}
+                  id={list.id}
+                  backgroundPoster={'no'}
+                  poster={'no'}
+                  title={list.title}
+                  overview={list.description}
+                  detail={list.detail}
+                  avg={list.like_count}
+                />
+              ) : (
+                <SubSlide
+                  key={list.id}
+                  id={list.id}
+                  backgroundPoster={
+                    list.matched_content_images[0].full_filename
+                  }
+                  poster={list.matched_content_images}
+                  title={list.title}
+                  overview={list.description}
+                  detail={list.detail}
+                  avg={list.like_count}
+                />
+              ),
+            )}
           </Section>
         ) : null}
-        {/* <Text
-          style={{
-            color: "black",
-            fontSize: 20,
-            fontWeight: "bold",
-            marginTop: 20
-          }}
-        >
-          먹거리
-        </Text> */}
         <Blank />
       </Container>
     </View>
   );
-
-//TODO: Flow.js -facebook
-// MainPresenter.propTypes = {
-//   loading: PropTypes.bool.isRequired,
-//   upComing: PropTypes.array,
-//   popular: PropTypes.array,
-//   nowPlaying: PropTypes.array
-// };
 
 export default withNavigation(MainPresenter);

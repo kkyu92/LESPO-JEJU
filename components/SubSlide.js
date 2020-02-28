@@ -45,6 +45,11 @@ const BackColor = styled.View`
   border-radius: 15;
 `;
 
+const NullFoodImg = styled.Image`
+  width: 80px;
+  height: 80px;
+  border-radius: 15;
+`;
 const FoodImg = styled.Image`
   width: 100px;
   height: 150px;
@@ -109,37 +114,44 @@ const VerticalContext = styled.Text`
 `;
 
 const VerticalImgContainer = styled.View`
-  width: 150px;
-  height: 120px;
+  width: ${Layout.width / 2.7};
+  height: ${Layout.height / 7};
   border-radius: 15;
   align-items: flex-end;
+  background-color: ${GREY_COLOR};
+`;
+const NullImgContainer = styled.View`
+  width: ${Layout.width / 2.7};
+  height: ${Layout.height / 7};
+  border-radius: 15;
   align-items: center;
   justify-content: center;
   background-color: ${GREY_COLOR};
+  position: absolute;
 `;
 
 const NullImg = styled.Image`
-  width: 100px;
-  height: 100px;
+  width: ${Layout.width / 5};
+  height: ${Layout.width / 5};
   position: absolute;
 `;
 
 const VerticalImg = styled.Image`
-  width: 150px;
-  height: 120px;
+  width: ${Layout.width / 2.7};
+  height: ${Layout.height / 7};
   border-radius: 15;
   position: absolute;
 `;
 
 const RecommendImgContainer = styled.View`
-  width: ${Layout.width / 3};
-  height: ${Layout.height / 8};
+  width: ${Layout.width / 2.7};
+  height: ${Layout.height / 7};
   border-radius: 15;
   align-items: flex-end;
 `;
 const RecommendImg = styled.Image`
-  width: ${Layout.width / 3};
-  height: ${Layout.height / 8};
+  width: ${Layout.width / 2.7};
+  height: ${Layout.height / 7};
   border-radius: 15;
   position: absolute;
 `;
@@ -270,7 +282,13 @@ const SubSlide = ({
       }>
       {/* <Poster path={poster} /> */}
       <BackColor backgroundColor={ChangeColor()}>
-        <FoodImg source={{uri: GetPhoto(backgroundPoster)}} />
+        {backgroundPoster === 'no' ? (
+          <NullFoodImg
+            source={require(`../assets/drawable-xxhdpi/img_noimage.png`)}
+          />
+        ) : (
+          <FoodImg source={{uri: GetPhoto(backgroundPoster)}} />
+        )}
       </BackColor>
       <LikeConatiner>
         <Like votes={avg} inSlide={true} />
@@ -308,9 +326,11 @@ const SubSlide = ({
       }>
       <VerticalImgContainer>
         {backgroundPoster === 'no' ? (
-          <NullImg
-            source={require(`../assets/drawable-xxhdpi/img_noimage.png`)}
-          />
+          <NullImgContainer>
+            <NullImg
+              source={require(`../assets/drawable-xxhdpi/img_noimage.png`)}
+            />
+          </NullImgContainer>
         ) : (
           <VerticalImg source={{uri: GetPhoto(backgroundPoster)}} />
         )}
@@ -368,9 +388,11 @@ const SubSlide = ({
       }>
       <VerticalImgContainer>
         {backgroundPoster === 'no' ? (
-          <NullImg
-            source={require(`../assets/drawable-xxhdpi/img_noimage.png`)}
-          />
+          <NullImgContainer>
+            <NullImg
+              source={require(`../assets/drawable-xxhdpi/img_noimage.png`)}
+            />
+          </NullImgContainer>
         ) : (
           <VerticalImg source={{uri: GetPhoto(backgroundPoster)}} />
         )}
@@ -389,11 +411,19 @@ const SubSlide = ({
     // 추천관광 - [ 상세보기 ]
     <VerticalContainer onPress={() => markerOn(id)}>
       <RecommendImgContainer>
-        <RecommendImg
-          source={{
-            uri: GetPhoto(backgroundPoster),
-          }}
-        />
+        {backgroundPoster === 'no' ? (
+          <NullImgContainer>
+            <NullImg
+              source={require(`../assets/drawable-xxhdpi/img_noimage.png`)}
+            />
+          </NullImgContainer>
+        ) : (
+          <RecommendImg
+            source={{
+              uri: GetPhoto(backgroundPoster),
+            }}
+          />
+        )}
       </RecommendImgContainer>
       <VerticalColum>
         <VerticalTitle numberOfLines={1}>{title}</VerticalTitle>

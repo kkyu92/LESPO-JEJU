@@ -100,34 +100,38 @@ export default class extends React.Component {
       });
 
     try {
+      // const start = new Date();
       // await movie
       //   .getPopular()
       //   .then(response => {
-      //     console.log('\n\n\nMOVIE DATA\n\n');
+      //     const timeTaken = new Date() - start;
+      //     console.log('\n\n' + timeTaken + '\nMOVIE DATA\n\n');
       //     console.log(response.data.results);
       //   })
       //   .catch(error => {
       //     console.log('getMOVIE fail: ' + error);
       //   });
-
-      var params = {
-        CMD: 'myInfo',
-        PRM: {
-          userKey: 124,
-        },
-      };
-      await TEST_API.getTest(params)
-        .then(response => {
-          console.log('\n\n\nIM\n\n');
-          console.log(response.data);
-        })
-        .catch(error => {
-          console.log('getTEST[IM] fail: ' + error);
-        });
-
+      // var params = {
+      //   CMD: 'myInfo',
+      //   PRM: {
+      //     userKey: 124,
+      //   },
+      // };
+      // const start1 = new Date();
+      // await TEST_API.getTest(params)
+      //   .then(response => {
+      //     const timeTaken = new Date() - start1;
+      //     console.log('\n\n' + timeTaken + '\nIM\n\n');
+      //     console.log(response.data);
+      //   })
+      //   .catch(error => {
+      //     console.log('getTEST[IM] fail: ' + error);
+      //   });
+      // const start2 = new Date();
       // await LESPO_API.getMainList()
       //   .then(response => {
-      //     console.log('\n\n\nLESPO\n\n');
+      //     const timeTaken = new Date() - start2;
+      //     console.log('\n\n' + timeTaken + '\nLESPO\n\n');
       //     console.log(response.data.data);
       //   })
       //   .catch(error => {

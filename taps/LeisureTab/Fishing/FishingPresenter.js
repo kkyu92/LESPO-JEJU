@@ -70,22 +70,37 @@ const FishingPresenter = ({loading, listChanged, locations, navigation}) =>
                 <Section horizontal={false} title="">
                   {listChanged
                     .filter(list => list.id !== null)
-                    .map(list => (
-                      <SubSlide
-                        tag={'notag'}
-                        horizontal={false}
-                        key={list.id}
-                        id={list.id}
-                        backgroundPoster={
-                          list.matched_content_images[0].full_filename
-                        }
-                        poster={list.matched_content_images}
-                        title={list.title}
-                        overview={list.description}
-                        detail={list.detail}
-                        avg={list.like_count}
-                      />
-                    ))}
+                    .map(list =>
+                      JSON.stringify(list.matched_content_images) === '[]' ? (
+                        <SubSlide
+                          tag={'notag'}
+                          horizontal={false}
+                          key={list.id}
+                          id={list.id}
+                          backgroundPoster={'no'}
+                          poster={'no'}
+                          title={list.title}
+                          overview={list.description}
+                          detail={list.detail}
+                          avg={list.like_count}
+                        />
+                      ) : (
+                        <SubSlide
+                          tag={'notag'}
+                          horizontal={false}
+                          key={list.id}
+                          id={list.id}
+                          backgroundPoster={
+                            list.matched_content_images[0].full_filename
+                          }
+                          poster={list.matched_content_images}
+                          title={list.title}
+                          overview={list.description}
+                          detail={list.detail}
+                          avg={list.like_count}
+                        />
+                      ),
+                    )}
                 </Section>
               ) : (
                 <SearchNo text={'등록된 리스트가 없습니다.'} />

@@ -457,6 +457,8 @@ export default class extends React.Component {
     } else if (data === 'start') {
       this.getBattleResult(rating, result);
     } else if (data === 'success') {
+      // coin
+      this.addCoin();
       this.updateOpenBox();
       this.setState({isRandomBox: 'success'});
       this.changeModalVisiblity(true);
@@ -497,8 +499,29 @@ export default class extends React.Component {
       console.log('cancel dialog');
     }
   };
+
+  addCoin = async () => {
+    // 코인차감
+    let API_TOKEN = await AsyncStorage.getItem('@API_TOKEN');
+    const config = {
+      headers: {
+        Authorization: API_TOKEN,
+      },
+    };
+    const params = new URLSearchParams();
+    params.append('credit', 1);
+
+    await LESPO_API.insertCoin(params, config)
+      .then(response => {
+        console.log('add coin success');
+        this.refs.toast.show('코인 1개가 추가되었습니다.');
+      })
+      .catch(error => {
+        console.log('addCoin fail: ' + error);
+      });
+  };
+
   updateOpenBox = async () => {
-    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!');
     firebase
       .database()
       .ref('chatRoomList/' + this.state.roomKey)

@@ -48,6 +48,7 @@ export default class SimpleDialog extends Component {
   createRandomNumber = () => {
     // [ 20 / 20 / 20 / 15 / 15 / 10 ]
     let RandomNumber = Math.floor(Math.random() * 100) + 1;
+    // let RandomNumber = 35;
     console.log('random number: ' + RandomNumber);
     if (RandomNumber < 31) {
       this.setState({randomNum: 'fail'});
@@ -514,18 +515,29 @@ export default class SimpleDialog extends Component {
             )}
           </View>
           <View style={styles.ratingBtnView}>
-            <TouchableHighlight
-              onPress={() => {
-                this.closeModal('Channel');
-              }}
-              style={styles.ratingBtn}
-              underlayColor={'#f1f1f1'}>
-              <Text style={[styles.text, {color: TINT_COLOR}]}> 받기 </Text>
-            </TouchableHighlight>
+            {this.props.isRandomBox === 'success' ? (
+              <TouchableHighlight
+                onPress={() => {
+                  this.closeModal('Cancel');
+                }}
+                style={styles.ratingBtn}
+                underlayColor={'#f1f1f1'}>
+                <Text style={[styles.text, {color: TINT_COLOR}]}> 확인 </Text>
+              </TouchableHighlight>
+            ) : (
+              <TouchableHighlight
+                onPress={() => {
+                  this.closeModal('Channel');
+                }}
+                style={styles.ratingBtn}
+                underlayColor={'#f1f1f1'}>
+                <Text style={[styles.text, {color: TINT_COLOR}]}> 받기 </Text>
+              </TouchableHighlight>
+            )}
           </View>
           <Text style={styles.imgMiniText}>
             {' '}
-            관리자 카카오톡으로 연결됩니다.{' '}
+            관리자 카카오채널로 연결됩니다.{' '}
           </Text>
         </View>
       </TouchableOpacity>

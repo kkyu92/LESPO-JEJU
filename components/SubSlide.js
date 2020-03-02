@@ -105,7 +105,8 @@ const VerticalTitle = styled.Text`
   color: ${BLACK_COLOR};
   font-size: 14px;
   font-weight: 800;
-  margin-vertical: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
 `;
 
 const VerticalContext = styled.Text`

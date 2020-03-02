@@ -3,6 +3,7 @@ import SettingPresenter from './SettingPresenter';
 import Firebase from 'react-native-firebase';
 import Toast from 'react-native-easy-toast';
 import {CHAT_ROOM_IN} from '../../../constants/Strings';
+import {Platform} from 'react-native';
 
 export default class extends React.Component {
   constructor(props) {
@@ -63,6 +64,7 @@ export default class extends React.Component {
     );
     let error;
     try {
+      console.log('GETGETGET\n' + Platform.Version.toString());
     } catch (error) {
       console.log(error);
       error = "Cnat't get MORE API";

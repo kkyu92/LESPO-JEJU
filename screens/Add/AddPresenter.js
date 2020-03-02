@@ -79,7 +79,7 @@ const AddPresenter = ({loading, navigation}) =>
         <HeaderText>더보기</HeaderText>
       </HeaderContainer>
       <Container>
-        <BtnContainer
+        {/* <BtnContainer
           onPress={() =>
             navigation.navigate({
               routeName: '이벤트',
@@ -101,7 +101,7 @@ const AddPresenter = ({loading, navigation}) =>
           <BtnImg
             source={require(`../../assets/drawable-xxhdpi/icon_gift.png`)}
           />
-        </BtnContainer>
+        </BtnContainer> */}
 
         <BtnContainer
           onPress={() =>

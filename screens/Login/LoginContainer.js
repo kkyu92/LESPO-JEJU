@@ -127,16 +127,16 @@ export default class extends React.Component {
       //   .catch(error => {
       //     console.log('getTEST[IM] fail: ' + error);
       //   });
-      const start2 = new Date();
-      await LESPO_API.getMainList()
-        .then(response => {
-          const timeTaken = new Date() - start2;
-          console.log('\n\n' + timeTaken + '\nLESPO\n\n');
-          console.log(response.data.messages);
-        })
-        .catch(error => {
-          console.log('getnLESPO fail: ' + error);
-        });
+      // const start2 = new Date();
+      // await LESPO_API.getMainList()
+      //   .then(response => {
+      //     const timeTaken = new Date() - start2;
+      //     console.log('\n\n' + timeTaken + '\nLESPO\n\n');
+      //     console.log(response.data.messages);
+      //   })
+      //   .catch(error => {
+      //     console.log('getnLESPO fail: ' + error);
+      //   });
     } catch (e) {
       console.log(e);
     }

@@ -426,7 +426,7 @@ export default class SimpleDialog extends Component {
                   <TouchableOpacity>
                     <Image
                       style={styles.img}
-                      source={require(`../assets/drawable-xxhdpi/img_banana.png`)}
+                      source={require(`../assets/drawable-xxhdpi/img_coin.png`)}
                     />
                   </TouchableOpacity>
                 </View>
@@ -438,7 +438,7 @@ export default class SimpleDialog extends Component {
                   <TouchableOpacity>
                     <Image
                       style={styles.img}
-                      source={require(`../assets/drawable-xxhdpi/img_banana.png`)}
+                      source={require(`../assets/drawable-xxhdpi/img_gatorade.png`)}
                     />
                   </TouchableOpacity>
                 </View>
@@ -450,7 +450,7 @@ export default class SimpleDialog extends Component {
                   <TouchableOpacity>
                     <Image
                       style={styles.img}
-                      source={require(`../assets/drawable-xxhdpi/img_banana.png`)}
+                      source={require(`../assets/drawable-xxhdpi/img_dryou.png`)}
                     />
                   </TouchableOpacity>
                 </View>
@@ -465,7 +465,7 @@ export default class SimpleDialog extends Component {
                   <TouchableOpacity>
                     <Image
                       style={styles.img}
-                      source={require(`../assets/drawable-xxhdpi/img_banana.png`)}
+                      source={require(`../assets/drawable-xxhdpi/img_powerade.png`)}
                     />
                   </TouchableOpacity>
                 </View>
@@ -480,7 +480,7 @@ export default class SimpleDialog extends Component {
                   <TouchableOpacity>
                     <Image
                       style={styles.img}
-                      source={require(`../assets/drawable-xxhdpi/img_banana.png`)}
+                      source={require(`../assets/drawable-xxhdpi/img_starbucks.png`)}
                     />
                   </TouchableOpacity>
                 </View>
@@ -492,7 +492,7 @@ export default class SimpleDialog extends Component {
                   <TouchableOpacity>
                     <Image
                       style={styles.img}
-                      source={require(`../assets/drawable-xxhdpi/img_banana.png`)}
+                      source={require(`../assets/drawable-xxhdpi/img_baskin.png`)}
                     />
                   </TouchableOpacity>
                 </View>
@@ -507,7 +507,7 @@ export default class SimpleDialog extends Component {
                   <TouchableOpacity>
                     <Image
                       style={styles.img}
-                      source={require(`../assets/drawable-xxhdpi/img_banana.png`)}
+                      source={require(`../assets/drawable-xxhdpi/img_bbq.png`)}
                     />
                   </TouchableOpacity>
                 </View>

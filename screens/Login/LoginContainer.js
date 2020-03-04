@@ -28,19 +28,16 @@ const storeSNS = async (token, id, name, profile, provider) => {
   }
 };
 // 로그인 정보 저장 일반
-const storeAPI = async (result, email, password) => {
+const storeAPI = async (token, id, name, password) => {
   try {
-    await AsyncStorage.setItem(
-      '@API_TOKEN',
-      'Bearer ' + result.data.data.token,
-    );
-    await AsyncStorage.setItem('@TOKEN', result.data.data.token);
-    await AsyncStorage.setItem('@USER_ID', '' + result.data.data.id);
-    await AsyncStorage.setItem('@USER_NAME', result.data.data.nickname);
+    await AsyncStorage.setItem('@API_TOKEN', 'Bearer ' + token);
+    await AsyncStorage.setItem('@TOKEN', token);
+    await AsyncStorage.setItem('@USER_ID', id);
+    await AsyncStorage.setItem('@USER_NAME', name);
     await AsyncStorage.setItem('@USER_PASSWORD', password);
     await AsyncStorage.setItem('@USER_PROFILE', '');
     await AsyncStorage.setItem('@AUTO_LOGIN', 'true');
-    console.log('saving id: ' + result.data.data.id);
+    console.log('saving id: ' + id);
   } catch (error) {
     console.log('saving error: ' + error);
   }
@@ -100,43 +97,6 @@ export default class extends React.Component {
       });
 
     try {
-      // const start = new Date();
-      // await movie
-      //   .getPopular()
-      //   .then(response => {
-      //     const timeTaken = new Date() - start;
-      //     console.log('\n\n' + timeTaken + '\nMOVIE DATA\n\n');
-      //     console.log(response.data.results);
-      //   })
-      //   .catch(error => {
-      //     console.log('getMOVIE fail: ' + error);
-      //   });
-      // var params = {
-      //   CMD: 'myInfo',
-      //   PRM: {
-      //     userKey: 124,
-      //   },
-      // };
-      // const start1 = new Date();
-      // await TEST_API.getTest(params)
-      //   .then(response => {
-      //     const timeTaken = new Date() - start1;
-      //     console.log('\n\n' + timeTaken + '\nIM\n\n');
-      //     console.log(response.data);
-      //   })
-      //   .catch(error => {
-      //     console.log('getTEST[IM] fail: ' + error);
-      //   });
-      // const start2 = new Date();
-      // await LESPO_API.getMainList()
-      //   .then(response => {
-      //     const timeTaken = new Date() - start2;
-      //     console.log('\n\n' + timeTaken + '\nLESPO\n\n');
-      //     console.log(response.data.messages);
-      //   })
-      //   .catch(error => {
-      //     console.log('getnLESPO fail: ' + error);
-      //   });
     } catch (e) {
       console.log(e);
     }
@@ -243,23 +203,6 @@ export default class extends React.Component {
       });
   };
 
-  // const kakaoLogout = () => {
-  //   console.log('     kakaoLogout      ');
-  //   this.logCallback('Logout Start', setLogoutLoading(true));
-
-  //   KakaoLogins.logout()
-  //     .then(result => {
-  //       this.setToken(TOKEN_EMPTY);
-  //       this.setProfile(PROFILE_EMPTY);
-  //       this.logCallback(`Logout Finished:${result}`, setLogoutLoading(false));
-  //     })
-  //     .catch(err => {
-  //       this.logCallback(
-  //         `Logout Failed:${err.code} ${err.message}`,
-  //         this.setLogoutLoading(false),
-  //       );
-  //     });
-  // };
   kakaoLoginApi = async (sns, result) => {
     console.log('kakaoLoginApi');
   };
@@ -383,7 +326,7 @@ export default class extends React.Component {
   getData = async () => {
     console.log('getData');
     try {
-      let M_Email = await AsyncStorage.getItem('@USER_ID');
+      let M_Email = await AsyncStorage.getItem('@USER_EMAIL');
       let M_Password = await AsyncStorage.getItem('@USER_PASSWORD');
       if (M_Email.includes('@')) {
         this.setState({
@@ -431,7 +374,13 @@ export default class extends React.Component {
       await Axios.post(BASEURL + 'login', params)
         .then(response => {
           console.log(JSON.stringify(response.data.data));
-          storeAPI(response, email, password);
+          // storeAPI(response, email, password);
+          storeAPI(
+            response.data.data.token,
+            response.data.data.id.toString(),
+            response.data.data.nickname,
+            password,
+          );
           if (response.data.status !== 'error') {
             this.state.navigation.replace({
               routeName: 'Tabs',

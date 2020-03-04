@@ -48,14 +48,12 @@ const SearchImg = styled.View`
 
 const Container = styled.ScrollView`
   background-color: white;
-  padding-left: 20;
-  padding-top: 20;
-  padding-bottom: 20;
   flex: 1;
 `;
 
-const Blank = styled.View`
-  height: 20px;
+const ContentsContainer = styled.View`
+  padding-top: 20px;
+  padding-left: 20px;
 `;
 
 const IconContainer = styled.View`
@@ -153,188 +151,191 @@ const MainPresenter = ({
   loading ? (
     <Loader />
   ) : (
-    <View>
-      <HeaderContainer>
-        <HeaderText>제주배틀투어</HeaderText>
-      </HeaderContainer>
-      <RightButtonContainer>
-        <WishListBtn
-          onPress={() =>
-            navigation.navigate({
-              routeName: 'MyWishList',
-            })
-          }>
-          <BookMark size={30} name={'bookmark'} color={`${TINT_COLOR}`} />
-          {/* <WishList
+    <>
+      <Container>
+        <View>
+          <HeaderContainer>
+            <HeaderText>제주배틀투어</HeaderText>
+          </HeaderContainer>
+          <RightButtonContainer>
+            <WishListBtn
+              onPress={() =>
+                navigation.navigate({
+                  routeName: 'MyWishList',
+                })
+              }>
+              <BookMark size={30} name={'bookmark'} color={`${TINT_COLOR}`} />
+              {/* <WishList
             source={require(`../../assets/drawable-xxxhdpi/icon_wish_wh.png`)}
           /> */}
-        </WishListBtn>
-        <MapBtn
-          onPress={() =>
-            navigation.navigate({
-              routeName: 'Map',
-              params: {
-                mainState: 'map',
-              },
-            })
-          }>
-          <Map
-            source={require(`../../assets/drawable-xxxhdpi/icon_map_wh.png`)}
-          />
-        </MapBtn>
-      </RightButtonContainer>
-      <SearchContainer
-        onPress={() =>
-          navigation.navigate({
-            routeName: 'Search',
-          })
-        }>
-        <SearchText>여행정보를 검색해보세요.</SearchText>
-        <SearchImg>
-          <Icon
-            size={30}
-            name={Platform.OS === 'ios' ? 'ios-search' : 'md-search'}
-            color={`${BLACK_COLOR}`}
-          />
-        </SearchImg>
-      </SearchContainer>
-      <Container>
-        <Text style={{color: 'black', fontSize: 20, fontWeight: 'bold'}}>
-          제주에서 뭘 할까?
-        </Text>
-
-        <IconContainer>
-          <TouchableContainer
+            </WishListBtn>
+            <MapBtn
+              onPress={() =>
+                navigation.navigate({
+                  routeName: 'Map',
+                  params: {
+                    mainState: 'map',
+                  },
+                })
+              }>
+              <Map
+                source={require(`../../assets/drawable-xxxhdpi/icon_map_wh.png`)}
+              />
+            </MapBtn>
+          </RightButtonContainer>
+          <SearchContainer
             onPress={() =>
               navigation.navigate({
-                routeName: 'SportsBattle',
+                routeName: 'Search',
               })
             }>
-            <IconBattle
-              source={require(`../../assets/drawable-xxhdpi/icon-battle-vs.png`)}
-            />
-            <IconText>스포츠 배틀</IconText>
-          </TouchableContainer>
+            <SearchText>여행정보를 검색해보세요.</SearchText>
+            <SearchImg>
+              <Icon
+                size={30}
+                name={Platform.OS === 'ios' ? 'ios-search' : 'md-search'}
+                color={`${BLACK_COLOR}`}
+              />
+            </SearchImg>
+          </SearchContainer>
+        </View>
+        <ContentsContainer>
+          <Text style={{color: 'black', fontSize: 20, fontWeight: 'bold'}}>
+            제주에서 뭘 할까?
+          </Text>
 
-          <TouchableContainer
-            onPress={() =>
-              navigation.navigate({
-                routeName: 'Trip',
-              })
-            }>
-            <IconTrip
-              source={require(`../../assets/drawable-xxhdpi/icon-travel-bag.png`)}
-            />
-            <IconText>여행하기</IconText>
-          </TouchableContainer>
-        </IconContainer>
+          <IconContainer>
+            <TouchableContainer
+              onPress={() =>
+                navigation.navigate({
+                  routeName: 'SportsBattle',
+                })
+              }>
+              <IconBattle
+                source={require(`../../assets/drawable-xxhdpi/icon-battle-vs.png`)}
+              />
+              <IconText>스포츠 배틀</IconText>
+            </TouchableContainer>
 
-        <Text style={{color: 'black', fontSize: 20, fontWeight: 'bold'}}>
-          레스포가 추천하는 제주맛집
-        </Text>
-        {mainList ? <MainSlider mainList={mainList} /> : null}
+            <TouchableContainer
+              onPress={() =>
+                navigation.navigate({
+                  routeName: 'Trip',
+                })
+              }>
+              <IconTrip
+                source={require(`../../assets/drawable-xxhdpi/icon-travel-bag.png`)}
+              />
+              <IconText>여행하기</IconText>
+            </TouchableContainer>
+          </IconContainer>
 
-        {/*TODO: 먹거리 */}
-        {foodList ? (
-          <Section title="먹거리">
-            {foodList.map(list =>
-              JSON.stringify(list.matched_content_images) === '[]' ? (
-                <SubSlide
-                  key={list.id}
-                  id={list.id}
-                  backgroundPoster={'no'}
-                  poster={'no'}
-                  title={list.title}
-                  overview={list.description}
-                  detail={list.detail}
-                  avg={list.like_count}
-                />
-              ) : (
-                <SubSlide
-                  key={list.id}
-                  id={list.id}
-                  backgroundPoster={
-                    list.matched_content_images[0].full_filename
-                  }
-                  poster={list.matched_content_images}
-                  title={list.title}
-                  overview={list.description}
-                  detail={list.detail}
-                  avg={list.like_count}
-                />
-              ),
-            )}
-          </Section>
-        ) : null}
+          <Text style={{color: 'black', fontSize: 20, fontWeight: 'bold'}}>
+            레스포가 추천하는 제주맛집
+          </Text>
+          {mainList ? <MainSlider mainList={mainList} /> : null}
 
-        {/*TODO: 놀거리 */}
-        {playList ? (
-          <Section title="놀거리">
-            {playList.map(list =>
-              JSON.stringify(list.matched_content_images) === '[]' ? (
-                <SubSlide
-                  key={list.id}
-                  id={list.id}
-                  backgroundPoster={'no'}
-                  poster={'no'}
-                  title={list.title}
-                  overview={list.description}
-                  detail={list.detail}
-                  avg={list.like_count}
-                />
-              ) : (
-                <SubSlide
-                  key={list.id}
-                  id={list.id}
-                  backgroundPoster={
-                    list.matched_content_images[0].full_filename
-                  }
-                  poster={list.matched_content_images}
-                  title={list.title}
-                  overview={list.description}
-                  detail={list.detail}
-                  avg={list.like_count}
-                />
-              ),
-            )}
-          </Section>
-        ) : null}
+          {/*TODO: 먹거리 */}
+          {foodList ? (
+            <Section title="먹거리">
+              {foodList.map(list =>
+                JSON.stringify(list.matched_content_images) === '[]' ? (
+                  <SubSlide
+                    key={list.id}
+                    id={list.id}
+                    backgroundPoster={'no'}
+                    poster={'no'}
+                    title={list.title}
+                    overview={list.description}
+                    detail={list.detail}
+                    avg={list.like_count}
+                  />
+                ) : (
+                  <SubSlide
+                    key={list.id}
+                    id={list.id}
+                    backgroundPoster={
+                      list.matched_content_images[0].full_filename
+                    }
+                    poster={list.matched_content_images}
+                    title={list.title}
+                    overview={list.description}
+                    detail={list.detail}
+                    avg={list.like_count}
+                  />
+                ),
+              )}
+            </Section>
+          ) : null}
 
-        {/*TODO: 볼거리 */}
-        {viewList ? (
-          <Section title="볼거리">
-            {viewList.map(list =>
-              JSON.stringify(list.matched_content_images) === '[]' ? (
-                <SubSlide
-                  key={list.id}
-                  id={list.id}
-                  backgroundPoster={'no'}
-                  poster={'no'}
-                  title={list.title}
-                  overview={list.description}
-                  detail={list.detail}
-                  avg={list.like_count}
-                />
-              ) : (
-                <SubSlide
-                  key={list.id}
-                  id={list.id}
-                  backgroundPoster={
-                    list.matched_content_images[0].full_filename
-                  }
-                  poster={list.matched_content_images}
-                  title={list.title}
-                  overview={list.description}
-                  detail={list.detail}
-                  avg={list.like_count}
-                />
-              ),
-            )}
-          </Section>
-        ) : null}
-        <Blank />
+          {/*TODO: 놀거리 */}
+          {playList ? (
+            <Section title="놀거리">
+              {playList.map(list =>
+                JSON.stringify(list.matched_content_images) === '[]' ? (
+                  <SubSlide
+                    key={list.id}
+                    id={list.id}
+                    backgroundPoster={'no'}
+                    poster={'no'}
+                    title={list.title}
+                    overview={list.description}
+                    detail={list.detail}
+                    avg={list.like_count}
+                  />
+                ) : (
+                  <SubSlide
+                    key={list.id}
+                    id={list.id}
+                    backgroundPoster={
+                      list.matched_content_images[0].full_filename
+                    }
+                    poster={list.matched_content_images}
+                    title={list.title}
+                    overview={list.description}
+                    detail={list.detail}
+                    avg={list.like_count}
+                  />
+                ),
+              )}
+            </Section>
+          ) : null}
+
+          {/*TODO: 볼거리 */}
+          {viewList ? (
+            <Section title="볼거리">
+              {viewList.map(list =>
+                JSON.stringify(list.matched_content_images) === '[]' ? (
+                  <SubSlide
+                    key={list.id}
+                    id={list.id}
+                    backgroundPoster={'no'}
+                    poster={'no'}
+                    title={list.title}
+                    overview={list.description}
+                    detail={list.detail}
+                    avg={list.like_count}
+                  />
+                ) : (
+                  <SubSlide
+                    key={list.id}
+                    id={list.id}
+                    backgroundPoster={
+                      list.matched_content_images[0].full_filename
+                    }
+                    poster={list.matched_content_images}
+                    title={list.title}
+                    overview={list.description}
+                    detail={list.detail}
+                    avg={list.like_count}
+                  />
+                ),
+              )}
+            </Section>
+          ) : null}
+        </ContentsContainer>
       </Container>
-    </View>
+    </>
   );
 
 export default withNavigation(MainPresenter);

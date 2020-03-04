@@ -1,6 +1,7 @@
 import React from 'react';
 import {StyleSheet, Linking} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import CheckBox from 'react-native-vector-icons/MaterialCommunityIcons';
 import styled from 'styled-components';
 import {
   BG_COLOR,
@@ -11,7 +12,6 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import Loader from '../../components/Loader';
 import {withNavigation} from 'react-navigation';
-import CheckboxForm from 'react-native-checkbox-form';
 
 const ViewContainer = styled.View`
   flex: 1;
@@ -100,16 +100,9 @@ const Blank = styled.View`
   background-color: royalblue;
 `;
 
-const checkData = [
-  {
-    label: '',
-    RNchecked: false,
-  },
-];
-_onSelect = item => {
-  onCheckSignup;
-  console.log(item[0].RNchecked);
-};
+const Check = styled.TouchableOpacity`
+  margin: 5px;
+`;
 
 const SignupPresenter = ({
   loading,
@@ -137,7 +130,7 @@ const SignupPresenter = ({
           <Icon
             size={30}
             name={Platform.OS === 'ios' ? 'ios-arrow-back' : 'md-arrow-back'}
-            color={`${TINT_COLOR}`}
+            color={`${BLACK_COLOR}`}
           />
         </HeaderIcon>
         <HeaderTitle>제주배틀투어</HeaderTitle>
@@ -184,17 +177,23 @@ const SignupPresenter = ({
         />
 
         <TextContainer>
-          <CheckboxForm
-            style={{width: 10}}
-            dataSource={checkData}
-            itemShowKey="label"
-            itemCheckedKey="RNchecked"
-            iconSize={26}
-            iconColor={BLACK_COLOR}
-            formHorizontal={false}
-            labelHorizontal={true}
-            onChecked={item => handleCheckBox(item[0].RNchecked)}
-          />
+          {checked ? (
+            <Check onPress={() => handleCheckBox(false)}>
+              <CheckBox
+                size={30}
+                name={'checkbox-marked'}
+                color={`${BLACK_COLOR}`}
+              />
+            </Check>
+          ) : (
+            <Check onPress={() => handleCheckBox(true)}>
+              <CheckBox
+                size={30}
+                name={'checkbox-blank-outline'}
+                color={`${BLACK_COLOR}`}
+              />
+            </Check>
+          )}
 
           <TouchableOpacity
             onPress={() =>

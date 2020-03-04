@@ -87,7 +87,7 @@ export default class extends React.Component {
   //FIXME: 회원가입 성공시 가입정보 저장 [프로필사진 없음]
   storeData = async () => {
     try {
-      await AsyncStorage.setItem('@USER_ID', this.state.email);
+      await AsyncStorage.setItem('@USER_EMAIL', this.state.email);
       await AsyncStorage.setItem('@USER_NAME', this.state.name);
       await AsyncStorage.setItem('@USER_PASSWORD', this.state.password);
       await AsyncStorage.setItem('@USER_PROFILE', '');

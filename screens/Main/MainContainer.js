@@ -29,7 +29,7 @@ export default class extends React.Component {
 
   async componentDidMount() {
     let userId = await AsyncStorage.getItem('@USER_ID');
-    console.log(userId);
+    console.log('[MAIN] ' + userId);
     const FcmToken = await Firebase.messaging().getToken();
     await AsyncStorage.setItem('@FCM', FcmToken);
     await firebase

@@ -12,6 +12,7 @@ import {
   GREY_COLOR3,
 } from '../../../constants/Colors';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {Linking} from 'react-native';
 
 const View = styled.View`
   background-color: ${BG_COLOR};
@@ -120,7 +121,8 @@ const SettingPresenter = ({loading, alarm, alarmChange, navigation}) =>
           />
         </SwitchContainer>
 
-        <BtnContainer>
+        <BtnContainer
+          onPress={() => Linking.openURL('https://www.jejubattle.com/privacy')}>
           <Text>개인정보, 이용약관</Text>
           <Icon
             size={Platform.OS === 'ios' ? 30 : 30}
@@ -131,7 +133,7 @@ const SettingPresenter = ({loading, alarm, alarmChange, navigation}) =>
 
         <BtnContainer>
           <Text>버전정보</Text>
-          <VersionText>1.0.2</VersionText>
+          <VersionText>1.0.9</VersionText>
         </BtnContainer>
       </Container>
     </View>

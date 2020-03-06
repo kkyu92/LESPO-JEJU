@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Axios from 'axios';
 import {Alert} from 'react-native';
 import Firebase from 'react-native-firebase';
+import firebase from 'firebase';
 import {NavigationActions} from 'react-navigation';
 import Toast from 'react-native-easy-toast';
 
@@ -28,12 +29,13 @@ const storeSNS = async (token, id, name, profile, provider) => {
   }
 };
 // 로그인 정보 저장 일반
-const storeAPI = async (token, id, name, password) => {
+const storeAPI = async (token, id, name, email, password) => {
   try {
     await AsyncStorage.setItem('@API_TOKEN', 'Bearer ' + token);
     await AsyncStorage.setItem('@TOKEN', token);
     await AsyncStorage.setItem('@USER_ID', id);
     await AsyncStorage.setItem('@USER_NAME', name);
+    await AsyncStorage.setItem('@USER_EMAIL', email);
     await AsyncStorage.setItem('@USER_PASSWORD', password);
     await AsyncStorage.setItem('@USER_PROFILE', '');
     await AsyncStorage.setItem('@AUTO_LOGIN', 'true');
@@ -103,26 +105,32 @@ export default class extends React.Component {
 
     // AUTO_LOGIN
     let AUTO_LOGIN = await AsyncStorage.getItem('@AUTO_LOGIN');
-    if (AUTO_LOGIN === 'true') {
-      this.state.navigation.replace({
-        routeName: 'Tabs',
+    let TOKEN = await AsyncStorage.getItem('@API_TOKEN');
+    let ID = await AsyncStorage.getItem('@USER_ID');
+    firebase
+      .database()
+      .ref('APITokenList/' + ID)
+      .once('value', dataSnapshot => {
+        let otherToken = JSON.stringify(dataSnapshot);
+        if (AUTO_LOGIN === 'true') {
+          if (JSON.stringify(TOKEN) === otherToken) {
+            this.state.navigation.replace({
+              routeName: 'Tabs',
+            });
+          } else {
+            this.refs.toast.show('다른기기에서 로그인 되었습니다.');
+          }
+        } else {
+          console.log('log-out한 상태');
+        }
+        this.setState({
+          loading: false,
+        });
       });
-    } else {
-      console.log('log-out한 상태');
-    }
 
     this._isMounted = true;
     this.getData();
-    try {
-      // load
-    } catch (error) {
-      error = "Can't load Login";
-      console.log(error);
-    } finally {
-      this.setState({
-        loading: false,
-      });
-    }
+
     this.subs = [
       this.props.navigation.addListener('willFocus', () => {
         console.log('willFocus ::: reload');
@@ -379,6 +387,7 @@ export default class extends React.Component {
             response.data.data.token,
             response.data.data.id.toString(),
             response.data.data.nickname,
+            email,
             password,
           );
           if (response.data.status !== 'error') {
@@ -430,7 +439,7 @@ export default class extends React.Component {
           position="bottom"
           positionValue={100}
           fadeInDuration={100}
-          fadeOutDuration={2500}
+          fadeOutDuration={3000}
           opacity={1}
           textStyle={{color: '#000000'}}
         />

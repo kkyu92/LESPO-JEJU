@@ -18,6 +18,11 @@ export default class extends React.Component {
   }
 
   alarmChange = val => {
+    if (val) {
+      this.refs.toast.show('알림을 받습니다.');
+    } else {
+      this.refs.toast.show('알림을 받지않습니다.');
+    }
     this.setState({
       alarm: val,
     });

@@ -28,43 +28,6 @@ export default class extends React.Component {
   }
 
   async componentDidMount() {
-    let userId = await AsyncStorage.getItem('@USER_ID');
-    console.log('[MAIN] ' + userId);
-    const FcmToken = await Firebase.messaging().getToken();
-    await AsyncStorage.setItem('@FCM', FcmToken);
-    await firebase
-      .database()
-      .ref('FcmTokenList')
-      .update({
-        [userId]: FcmToken,
-      })
-      .then(data => {
-        //success callback
-        console.log(data);
-        console.log('update my FcmToken: ', FcmToken);
-        // AsyncStorage save
-      })
-      .catch(error => {
-        //error callback
-        console.log('error ', error);
-      });
-    const API_TOKEN = await AsyncStorage.getItem('@API_TOKEN');
-    await firebase
-      .database()
-      .ref('APITokenList')
-      .update({
-        [userId]: API_TOKEN,
-      })
-      .then(data => {
-        //success callback
-        console.log(data);
-        console.log('update my FcmToken: ', FcmToken);
-        // AsyncStorage save
-      })
-      .catch(error => {
-        //error callback
-        console.log('error ', error);
-      });
     // fcm setting
     const enable = await Firebase.messaging().hasPermission();
     if (enable) {

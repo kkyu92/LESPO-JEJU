@@ -24,6 +24,34 @@ const storeSNS = async (token, id, name, profile, provider) => {
     await AsyncStorage.setItem('@USER_PROFILE', profile);
     await AsyncStorage.setItem('@USER_PROVIDER', provider);
     await AsyncStorage.setItem('@AUTO_LOGIN', 'true');
+
+    const FcmToken = await Firebase.messaging().getToken();
+    await AsyncStorage.setItem('@FCM', FcmToken);
+    await firebase
+      .database()
+      .ref('FcmTokenList')
+      .update({
+        [id]: FcmToken,
+      })
+      .then(data => {
+        console.log('update my FcmToken: ', FcmToken);
+      })
+      .catch(error => {
+        console.log('error ', error);
+      });
+    // const API_TOKEN = await AsyncStorage.getItem('@API_TOKEN');
+    await firebase
+      .database()
+      .ref('APITokenList')
+      .update({
+        [id]: 'Bearer ' + token,
+      })
+      .then(data => {
+        console.log('update my APIToken: ', token);
+      })
+      .catch(error => {
+        console.log('error ', error);
+      });
   } catch (e) {
     console.log('saving error: ' + e);
   }
@@ -39,9 +67,35 @@ const storeAPI = async (token, id, name, email, password) => {
     await AsyncStorage.setItem('@USER_PASSWORD', password);
     await AsyncStorage.setItem('@USER_PROFILE', '');
     await AsyncStorage.setItem('@AUTO_LOGIN', 'true');
-    console.log('saving id: ' + id);
-  } catch (error) {
-    console.log('saving error: ' + error);
+
+    const FcmToken = await Firebase.messaging().getToken();
+    await AsyncStorage.setItem('@FCM', FcmToken);
+    await firebase
+      .database()
+      .ref('FcmTokenList')
+      .update({
+        [id]: FcmToken,
+      })
+      .then(data => {
+        console.log('update my FcmToken: ', FcmToken);
+      })
+      .catch(error => {
+        console.log('error ', error);
+      });
+    await firebase
+      .database()
+      .ref('APITokenList')
+      .update({
+        [id]: 'Bearer ' + token,
+      })
+      .then(data => {
+        console.log('update my APIToken: ', token);
+      })
+      .catch(error => {
+        console.log('error ', error);
+      });
+  } catch (e) {
+    console.log('saving error: ' + e);
   }
 };
 
@@ -112,13 +166,17 @@ export default class extends React.Component {
       .ref('APITokenList/' + ID)
       .once('value', dataSnapshot => {
         let otherToken = JSON.stringify(dataSnapshot);
+        console.log(JSON.stringify(TOKEN));
+        console.log(otherToken);
         if (AUTO_LOGIN === 'true') {
-          if (JSON.stringify(TOKEN) === otherToken) {
+          if (otherToken === 'null') {
+            this.refs.toast.show('탈퇴한 계정입니다.');
+          } else if (JSON.stringify(TOKEN) === otherToken) {
             this.state.navigation.replace({
               routeName: 'Tabs',
             });
           } else {
-            this.refs.toast.show('다른기기에서 로그인 되었습니다.');
+            this.refs.toast.show('다른기기에 로그인 되어있습니다.');
           }
         } else {
           console.log('log-out한 상태');
@@ -218,7 +276,6 @@ export default class extends React.Component {
   // SNS 회원가입 + 로그인
   onSNSLogin = async (sns, result) => {
     console.log('onSNSLogin');
-    // this.logCallback('Login Start', this.setApiLoading(true));
     if (sns === 'kakao') {
       const params = new URLSearchParams();
       params.append('provider', sns);
@@ -227,21 +284,21 @@ export default class extends React.Component {
       console.log('kakao login api\n');
       await LESPO_API.login(params)
         .then(response => {
-          this.logCallback(
-            console.log(
-              'response start: ' + JSON.stringify(response.data.data),
-            ),
+          console.log('response start: ' + JSON.stringify(response.data.data));
+          if (response.data.status === 'success') {
             storeSNS(
               response.data.data.token,
               response.data.data.id.toString(),
               result.nickname,
               result.profile_image_url,
               sns,
-            ),
+            );
             this.state.navigation.replace({
               routeName: 'Tabs',
-            }),
-          );
+            });
+          } else {
+            Alert.alert('', response.data.messages.message);
+          }
         })
         .catch(error => {
           this.logCallback(console.log('kakao login fail: ' + error));
@@ -271,6 +328,8 @@ export default class extends React.Component {
             this.state.navigation.replace({
               routeName: 'Tabs',
             });
+          } else {
+            Alert.alert('', response.data.messages.message);
           }
         })
         .catch(error => {
@@ -301,6 +360,8 @@ export default class extends React.Component {
             this.state.navigation.replace({
               routeName: 'Tabs',
             });
+          } else {
+            Alert.alert('', response.data.messages.message);
           }
         })
         .catch(error => {
@@ -381,16 +442,14 @@ export default class extends React.Component {
       params.append('name', name);
       await Axios.post(BASEURL + 'login', params)
         .then(response => {
-          console.log(JSON.stringify(response.data.data));
-          // storeAPI(response, email, password);
-          storeAPI(
-            response.data.data.token,
-            response.data.data.id.toString(),
-            response.data.data.nickname,
-            email,
-            password,
-          );
           if (response.data.status !== 'error') {
+            storeAPI(
+              response.data.data.token,
+              response.data.data.id.toString(),
+              response.data.data.nickname,
+              email,
+              password,
+            );
             this.state.navigation.replace({
               routeName: 'Tabs',
             });

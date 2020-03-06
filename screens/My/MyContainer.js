@@ -5,6 +5,7 @@ import MyPresenter from './MyPresenter';
 import AsyncStorage from '@react-native-community/async-storage';
 import {NavigationActions, StackActions} from 'react-navigation';
 import Firebase, {config} from 'react-native-firebase';
+import firebase from 'firebase';
 import Toast from 'react-native-easy-toast';
 import {LESPO_API} from '../../api/Api';
 import RNIap, {
@@ -252,6 +253,7 @@ export default class extends React.Component {
   setData = async data => {
     console.log('setData::: ', data);
     console.log('modal: ' + this.state.modal);
+    let ID = await AsyncStorage.getItem('@USER_ID');
     let API_TOKEN = await AsyncStorage.getItem('@API_TOKEN');
     const config = {
       headers: {
@@ -261,6 +263,26 @@ export default class extends React.Component {
     if (data === 'OK') {
       if (this.state.modal === '회원탈퇴') {
         LESPO_API.userDelete(config);
+        await firebase
+          .database()
+          .ref('FcmTokenList/' + ID)
+          .remove()
+          .then(data => {
+            console.log('delete FCM Token');
+          })
+          .catch(error => {
+            console.log('error ', error);
+          });
+        await firebase
+          .database()
+          .ref('APITokenList/' + ID)
+          .remove()
+          .then(data => {
+            console.log('delete API Token');
+          })
+          .catch(error => {
+            console.log('error ', error);
+          });
       }
       await AsyncStorage.setItem('@AUTO_LOGIN', 'false');
       const resetAction = StackActions.reset({

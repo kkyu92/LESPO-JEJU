@@ -131,8 +131,8 @@ android {
         applicationId "com.lespojeju"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1011
-        versionName "1.0.11"
+        versionCode 1012
+        versionName "1.0.12"
     }
     splits {
         abi {
@@ -188,7 +188,6 @@ android {
 }
 
 dependencies {
-    implementation project(':react-native-kakao-plus-friend')
     implementation project(':react-native-kakao-links')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules

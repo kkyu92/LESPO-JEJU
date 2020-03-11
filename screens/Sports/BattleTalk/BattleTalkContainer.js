@@ -526,53 +526,63 @@ export default class extends React.Component {
   async componentDidMount() {
     let MID = await AsyncStorage.getItem('@USER_ID');
     let MNAME = await AsyncStorage.getItem('@USER_NAME');
-    let {getChatList} = this.state;
+    let {getChatList, roomKey} = this.state;
 
     // fcm setting
     const enable = await Firebase.messaging().hasPermission();
     if (enable) {
-      Firebase.notifications().onNotification(notification => {
-        if (notification.android._notification._data.msg === CHAT_ROOM_IN) {
-          // get ChattingList
-          var userRef = firebase
-            .database()
-            .ref('chatRoomList/' + this.state.roomKey + '/chatList/');
-          userRef.once('value', dataSnapshot => {
-            getChatList = [];
-            dataSnapshot.forEach(child => {
-              getChatList.push({
-                key: child.key,
-                user: child.val().user,
-                msg: child.val().msg,
-                date: child.val().date,
-                read: child.val().read,
+      this.removeToastListener = Firebase.notifications().onNotification(
+        notification => {
+          if (notification.android._notification._data.msg === CHAT_ROOM_IN) {
+            // get ChattingList
+            var userRef = firebase
+              .database()
+              .ref('chatRoomList/' + this.state.roomKey + '/chatList/');
+            userRef.once('value', dataSnapshot => {
+              getChatList = [];
+              dataSnapshot.forEach(child => {
+                getChatList.push({
+                  key: child.key,
+                  user: child.val().user,
+                  msg: child.val().msg,
+                  date: child.val().date,
+                  read: child.val().read,
+                });
               });
             });
-          });
-        } else {
-          let reader = {};
-          reader[this.state.id] = this.state.id;
-          reader[MID] = MID;
-          var userRef = firebase
-            .database()
-            .ref('chatRoomList/' + this.state.roomKey + '/chatList/');
-          userRef.once('value', dataSnapshot => {
-            getChatList = [];
-            dataSnapshot.forEach(child => {
-              getChatList.push({
-                key: child.key,
-                user: child.val().user,
-                msg: child.val().msg,
-                date: child.val().date,
-                read: reader,
+          } else {
+            if (notification.android._notification._data.roomKey === roomKey) {
+              let reader = {};
+              reader[this.state.id] = this.state.id;
+              reader[MID] = MID;
+              var userRef = firebase
+                .database()
+                .ref('chatRoomList/' + this.state.roomKey + '/chatList/');
+              userRef.once('value', dataSnapshot => {
+                getChatList = [];
+                dataSnapshot.forEach(child => {
+                  getChatList.push({
+                    key: child.key,
+                    user: child.val().user,
+                    msg: child.val().msg,
+                    date: child.val().date,
+                    read: reader,
+                  });
+                });
               });
-            });
+            } else {
+              this.refs.toast.show(
+                notification.android._notification._data.name +
+                  ' : ' +
+                  notification.android._notification._data.msg,
+              );
+            }
+          }
+          this.setState({
+            getChatList: getChatList,
           });
-        }
-        this.setState({
-          getChatList: getChatList,
-        });
-      });
+        },
+      );
     } else {
       try {
         Firebase.messaging().requestPermission();
@@ -744,6 +754,9 @@ export default class extends React.Component {
           }
         })
         .catch(error => {
+          if (error === 'Error: Network Error') {
+            alert.toString('다시한번 시도해 주세요.');
+          }
           console.log('otherCoin Get fail: ' + error);
         });
     } catch (error) {
@@ -758,6 +771,7 @@ export default class extends React.Component {
   // Screen OUT
   componentWillUnmount() {
     console.log('componentWillUnmount ::: [BattleTalk Container]');
+    this.removeToastListener();
     // this.state.getChatList.forEach(child => {
     //   console.log('getChild: ' + JSON.stringify(child));
     // });

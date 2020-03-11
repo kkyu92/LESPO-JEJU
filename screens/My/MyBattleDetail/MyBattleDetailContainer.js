@@ -1,5 +1,5 @@
 import React from 'react';
-import {Modal} from 'react-native';
+import {Modal, Linking, Platform} from 'react-native';
 import {NavigationEvents} from 'react-navigation';
 import SimpleDialog from '../../../components/SimpleDialog';
 import MyBattleDetailPresenter from './MyBattleDetailPresenter';
@@ -174,17 +174,21 @@ export default class extends React.Component {
         });
       });
 
+      let state;
       var battleState = firebase
         .database()
         .ref('chatRoomList/' + this.state.roomKey + '/battleState');
       battleState.on('value', dataSnapshot => {
-        let state = JSON.stringify(dataSnapshot);
+        state = JSON.stringify(dataSnapshot);
+        console.log('여기 확인해\n' + state);
         if (state === '"배틀신청중"') {
           state = '배틀신청중';
         } else if (state === '"배틀요청"') {
           state = '배틀요청';
         } else if (state === '"배틀진행중"') {
           state = '배틀진행중';
+        } else if (state === 'null') {
+          state = '배틀취소';
         } else {
           state = '배틀종료';
         }
@@ -247,14 +251,14 @@ export default class extends React.Component {
       var battleWin = firebase
         .database()
         .ref('chatRoomList/' + this.state.roomKey + '/battleResult/win');
-      battleWin.once('value', dataSnapshot => {
+      battleWin.on('value', dataSnapshot => {
         console.log('who is winner: ' + JSON.stringify(dataSnapshot));
         winner = JSON.stringify(dataSnapshot);
       });
       var battleLose = firebase
         .database()
         .ref('chatRoomList/' + this.state.roomKey + '/battleResult/lose');
-      battleLose.once('value', dataSnapshot => {
+      battleLose.on('value', dataSnapshot => {
         console.log('who is loser: ' + JSON.stringify(dataSnapshot));
         loser = JSON.stringify(dataSnapshot);
       });
@@ -434,10 +438,29 @@ export default class extends React.Component {
   };
 
   setData = (data, rating, result) => {
-    const {myId, roomMaker} = this.state;
+    const {myId, roomMaker, roomKey} = this.state;
     console.log('setData::: ', data);
     if (data === 'battleCancel') {
-      // this.props.navigation.navigate({routeName: 'Login'});
+      firebase
+        .database()
+        .ref('chatRoomList/' + roomKey + '/requestUser')
+        .off();
+      firebase
+        .database()
+        .ref('chatRoomList/' + roomKey + '/endUser')
+        .off();
+      firebase
+        .database()
+        .ref('chatRoomList/' + roomKey + '/battleState')
+        .off();
+      firebase
+        .database()
+        .ref('chatRoomList/' + roomKey + '/battleResult/lose')
+        .off();
+      firebase
+        .database()
+        .ref('chatRoomList/' + roomKey + '/battleResult/win')
+        .off();
       // 배틀 취소 [ 방장 / 참여자 ]
       if (JSON.stringify(myId) === roomMaker) {
         console.log('i am roomMaker');
@@ -765,7 +788,12 @@ export default class extends React.Component {
   };
   //바로 채팅하기로 링크
   chatChannel = async () => {
-    await RNKakaoPlusFriend.chat('_fxdMxlxb');
+    if (Platform.OS === 'ios') {
+      Linking.openURL('https://pf.kakao.com/_fxdMxlxb/chat');
+    } else {
+      const chat = await RNKakaoPlusFriend.chat('_fxdMxlxb');
+      console.log(chat);
+    }
   };
   // send Email
   sendEmail = async () => {
@@ -961,6 +989,14 @@ export default class extends React.Component {
     firebase
       .database()
       .ref('chatRoomList/' + roomKey + '/battleState')
+      .off();
+    firebase
+      .database()
+      .ref('chatRoomList/' + roomKey + '/battleResult/lose')
+      .off();
+    firebase
+      .database()
+      .ref('chatRoomList/' + roomKey + '/battleResult/win')
       .off();
   }
 

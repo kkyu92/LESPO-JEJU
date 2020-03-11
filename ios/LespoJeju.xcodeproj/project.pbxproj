@@ -31,12 +31,11 @@
 		8A019777A6291C7E813D9E49 /* libPods-LespoJejuTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D5B2372BFB4FE2BDCAE184A3 /* libPods-LespoJejuTests.a */; };
 		8F5C36F357FB4104B92544F6 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4CA1DD3C04824382A3376475 /* EvilIcons.ttf */; };
 		9A7F788495C5476BB4BB7779 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B56EB26383AB4A90B025F3D9 /* Entypo.ttf */; };
-		A804B14A23F6632900DD6367 /* libRNKakaoPlusFriend.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A804B14923F6631A00DD6367 /* libRNKakaoPlusFriend.a */; };
+		A8CC377B24178AF8000AFC33 /* libRNKakaoPlusFriend.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A8CC377A24178ACD000AFC33 /* libRNKakaoPlusFriend.a */; };
+		A8CC378024179314000AFC33 /* KakaoCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8CC377E24179314000AFC33 /* KakaoCommon.framework */; };
 		A8D027C423EA4A5F003B06B4 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8D027C323EA4A5F003B06B4 /* StoreKit.framework */; };
 		A8D027C623EABF23003B06B4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A8D027C523EABF23003B06B4 /* GoogleService-Info.plist */; };
 		A8D4E9C023F4E4C400D92D11 /* KakaoLink.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8D4E9BD23F4E4C400D92D11 /* KakaoLink.framework */; };
-		A8D4E9D523F53BE000D92D11 /* KakaoCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8D4E9D323F53BE000D92D11 /* KakaoCommon.framework */; };
-		A8D4E9D623F53BE000D92D11 /* KakaoMessageTemplate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8D4E9D423F53BE000D92D11 /* KakaoMessageTemplate.framework */; };
 		A8D4E9D823F53CD500D92D11 /* KakaoPlusFriend.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8D4E9D723F53CD500D92D11 /* KakaoPlusFriend.framework */; };
 		A930071B5510A486E0B50324 /* libPods-LespoJeju-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 093D24EA89E5EA5DBED1AC72 /* libPods-LespoJeju-tvOS.a */; };
 		B5BD7E786D2A3FCA90BCB8E3 /* libPods-LespoJeju-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A5D08B74718EE0CA5506A49 /* libPods-LespoJeju-tvOSTests.a */; };
@@ -61,9 +60,9 @@
 			remoteGlobalIDString = 2D02E47A1E0B4A5D006451C7;
 			remoteInfo = "LespoJeju-tvOS";
 		};
-		A804B14823F6631A00DD6367 /* PBXContainerItemProxy */ = {
+		A8CC377924178ACD000AFC33 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = A804B14423F6631A00DD6367 /* RNKakaoPlusFriend.xcodeproj */;
+			containerPortal = A8CC377524178ACD000AFC33 /* RNKakaoPlusFriend.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = RNKakaoPlusFriend;
@@ -104,12 +103,11 @@
 		7CB0277EC1C04DF1B22A8C7D /* AntDesign.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AntDesign.ttf; path = "../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf"; sourceTree = "<group>"; };
 		8775B53C098B43308E4DC820 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		A702A8663CA145E09B84DD41 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
-		A804B14423F6631A00DD6367 /* RNKakaoPlusFriend.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNKakaoPlusFriend.xcodeproj; path = "../node_modules/react-native-kakao-plus-friend/ios/RNKakaoPlusFriend.xcodeproj"; sourceTree = "<group>"; };
+		A8CC377524178ACD000AFC33 /* RNKakaoPlusFriend.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNKakaoPlusFriend.xcodeproj; path = "../node_modules/react-native-kakao-plus-friend/ios/RNKakaoPlusFriend.xcodeproj"; sourceTree = "<group>"; };
+		A8CC377E24179314000AFC33 /* KakaoCommon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = KakaoCommon.framework; path = "../../../Downloads/kakao-ios-sdk-1.21.1/KakaoCommon.framework"; sourceTree = "<group>"; };
 		A8D027C323EA4A5F003B06B4 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		A8D027C523EABF23003B06B4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A8D4E9BD23F4E4C400D92D11 /* KakaoLink.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = KakaoLink.framework; path = "../../../Downloads/kakao-ios-sdk-1.21.0/KakaoLink.framework"; sourceTree = "<group>"; };
-		A8D4E9D323F53BE000D92D11 /* KakaoCommon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = KakaoCommon.framework; path = "../../../Downloads/kakao-ios-sdk-1.21.0/KakaoCommon.framework"; sourceTree = "<group>"; };
-		A8D4E9D423F53BE000D92D11 /* KakaoMessageTemplate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = KakaoMessageTemplate.framework; path = "../../../Downloads/kakao-ios-sdk-1.21.0/KakaoMessageTemplate.framework"; sourceTree = "<group>"; };
 		A8D4E9D723F53CD500D92D11 /* KakaoPlusFriend.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = KakaoPlusFriend.framework; path = "../../../Downloads/kakao-ios-sdk-1.21.0/KakaoPlusFriend.framework"; sourceTree = "<group>"; };
 		A8FAF4BE23E9312300A17036 /* LespoJeju.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = LespoJeju.entitlements; path = LespoJeju/LespoJeju.entitlements; sourceTree = "<group>"; };
 		B56EB26383AB4A90B025F3D9 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
@@ -138,11 +136,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A804B14A23F6632900DD6367 /* libRNKakaoPlusFriend.a in Frameworks */,
+				A8CC377B24178AF8000AFC33 /* libRNKakaoPlusFriend.a in Frameworks */,
 				A8D027C423EA4A5F003B06B4 /* StoreKit.framework in Frameworks */,
-				A8D4E9D623F53BE000D92D11 /* KakaoMessageTemplate.framework in Frameworks */,
+				A8CC378024179314000AFC33 /* KakaoCommon.framework in Frameworks */,
 				A8D4E9D823F53CD500D92D11 /* KakaoPlusFriend.framework in Frameworks */,
-				A8D4E9D523F53BE000D92D11 /* KakaoCommon.framework in Frameworks */,
 				A8D4E9C023F4E4C400D92D11 /* KakaoLink.framework in Frameworks */,
 				53A4B64F23B1E47E000446CE /* KakaoOpenSDK.framework in Frameworks */,
 				CDE3916B2CE85F294BC095FA /* libPods-LespoJeju.a in Frameworks */,
@@ -227,9 +224,8 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A8CC377E24179314000AFC33 /* KakaoCommon.framework */,
 				A8D4E9D723F53CD500D92D11 /* KakaoPlusFriend.framework */,
-				A8D4E9D323F53BE000D92D11 /* KakaoCommon.framework */,
-				A8D4E9D423F53BE000D92D11 /* KakaoMessageTemplate.framework */,
 				A8D4E9BD23F4E4C400D92D11 /* KakaoLink.framework */,
 				A8D027C323EA4A5F003B06B4 /* StoreKit.framework */,
 				53A4B64E23B1E47E000446CE /* KakaoOpenSDK.framework */,
@@ -246,7 +242,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				A804B14423F6631A00DD6367 /* RNKakaoPlusFriend.xcodeproj */,
+				A8CC377524178ACD000AFC33 /* RNKakaoPlusFriend.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -279,19 +275,19 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		A804B14523F6631A00DD6367 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				A804B14923F6631A00DD6367 /* libRNKakaoPlusFriend.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		A86E520523BAD9840037E168 /* Recovered References */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			name = "Recovered References";
+			sourceTree = "<group>";
+		};
+		A8CC377624178ACD000AFC33 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A8CC377A24178ACD000AFC33 /* libRNKakaoPlusFriend.a */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		BF89270EBFE7495DD01EA136 /* Pods */ = {
@@ -435,8 +431,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = A804B14523F6631A00DD6367 /* Products */;
-					ProjectRef = A804B14423F6631A00DD6367 /* RNKakaoPlusFriend.xcodeproj */;
+					ProductGroup = A8CC377624178ACD000AFC33 /* Products */;
+					ProjectRef = A8CC377524178ACD000AFC33 /* RNKakaoPlusFriend.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -450,11 +446,11 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		A804B14923F6631A00DD6367 /* libRNKakaoPlusFriend.a */ = {
+		A8CC377A24178ACD000AFC33 /* libRNKakaoPlusFriend.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = libRNKakaoPlusFriend.a;
-			remoteRef = A804B14823F6631A00DD6367 /* PBXContainerItemProxy */;
+			remoteRef = A8CC377924178ACD000AFC33 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -858,7 +854,7 @@
 				CODE_SIGN_ENTITLEMENTS = LespoJeju/LespoJeju.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1011;
+				CURRENT_PROJECT_VERSION = 1012;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = ZP3SF2A2ZT;
 				ENABLE_BITCODE = NO;
@@ -872,8 +868,11 @@
 				INFOPLIST_FILE = LespoJeju/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.0.11;
-				OTHER_LDFLAGS = "${inherited}";
+				MARKETING_VERSION = 1.0.12;
+				OTHER_LDFLAGS = (
+					"${inherited}",
+					"-all_load",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.JejuBattle;
 				PRODUCT_NAME = LespoJeju;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -891,7 +890,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1011;
+				CURRENT_PROJECT_VERSION = 1012;
 				DEVELOPMENT_TEAM = ZP3SF2A2ZT;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -904,8 +903,11 @@
 				INFOPLIST_FILE = LespoJeju/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.0.11;
-				OTHER_LDFLAGS = "${inherited}";
+				MARKETING_VERSION = 1.0.12;
+				OTHER_LDFLAGS = (
+					"${inherited}",
+					"-all_load",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.JejuBattle;
 				PRODUCT_NAME = LespoJeju;
 				PROVISIONING_PROFILE_SPECIFIER = "";

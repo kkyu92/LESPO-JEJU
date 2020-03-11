@@ -149,6 +149,7 @@ const LoginPresenter = ({
   kakaoLogin,
   onSNSLogin,
   onLogin,
+  changeModalVisiblity,
   navigation,
 }) =>
   loading ? (
@@ -191,7 +192,7 @@ const LoginPresenter = ({
       </BtnContainer>
 
       <TextContainer>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => changeModalVisiblity('비밀번호찾기')}>
           <SubTitle>비밀번호찾기</SubTitle>
         </TouchableOpacity>
 

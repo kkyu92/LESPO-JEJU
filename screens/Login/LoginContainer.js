@@ -4,11 +4,12 @@ import {LESPO_API, BASEURL, CONFIG, TEST_API, movie} from '../../api/Api';
 import KakaoLogins from '@react-native-seoul/kakao-login';
 import AsyncStorage from '@react-native-community/async-storage';
 import Axios from 'axios';
-import {Alert} from 'react-native';
+import {Alert, Modal} from 'react-native';
 import Firebase from 'react-native-firebase';
 import firebase from 'firebase';
 import {NavigationActions} from 'react-navigation';
 import Toast from 'react-native-easy-toast';
+import SimpleDialog from '../../components/SimpleDialog';
 
 if (!KakaoLogins) {
   console.error('Module is Not Linked');
@@ -66,6 +67,7 @@ const storeAPI = async (token, id, name, email, password) => {
     await AsyncStorage.setItem('@USER_EMAIL', email);
     await AsyncStorage.setItem('@USER_PASSWORD', password);
     await AsyncStorage.setItem('@USER_PROFILE', '');
+    await AsyncStorage.setItem('@USER_PROVIDER', '');
     await AsyncStorage.setItem('@AUTO_LOGIN', 'true');
 
     const FcmToken = await Firebase.messaging().getToken();
@@ -106,6 +108,7 @@ export default class extends React.Component {
     const {navigation} = this.props;
     this.state = {
       navigation,
+      isModalVisible: false,
       isKakaoLogging: false,
       token: 'token has not fetched',
       loading: true,
@@ -468,6 +471,36 @@ export default class extends React.Component {
     }
   };
 
+  changeModalVisiblity = modal => {
+    if (modal === false) {
+      this.setState({
+        isModalVisible: false,
+      });
+    } else {
+      this.setState({
+        isModalVisible: true,
+        modal: modal,
+      });
+    }
+  };
+
+  setData = async (data, email) => {
+    if (data === 'FIND') {
+      const params = new URLSearchParams();
+      params.append('email', email);
+      LESPO_API.findPassword(params)
+        .then(data => {
+          this.refs.toast.show(data.data.messages.message);
+          console.log('send my password: ', data.data.messages.message);
+        })
+        .catch(error => {
+          console.log('find password error ', error);
+        });
+    }
+    console.log('loginContainer: data = ' + data);
+    console.log('loginContainer: data = ' + email);
+  };
+
   async componentWillUnmount() {
     console.log('componentWillUnmount');
     this._isMounted = false;
@@ -478,7 +511,7 @@ export default class extends React.Component {
   }
 
   render() {
-    const {loading, email, password} = this.state;
+    const {loading, email, password, isModalVisible} = this.state;
     return (
       <>
         <LoginPresenter
@@ -491,7 +524,19 @@ export default class extends React.Component {
           onSNSLogin={this.onSNSLogin}
           onLogin={this.onLogin}
           // kakaoLogout={kakaoLogout}
+          changeModalVisiblity={this.changeModalVisiblity}
         />
+        <Modal
+          transparent={true}
+          visible={isModalVisible}
+          onRequestClose={() => this.changeModalVisiblity(false)}
+          animationType="fade">
+          <SimpleDialog
+            battleState={'비밀번호찾기'}
+            changeModalVisiblity={this.changeModalVisiblity}
+            setData={this.setData}
+          />
+        </Modal>
         <Toast
           ref="toast"
           style={{backgroundColor: '#fee6d0'}}

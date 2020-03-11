@@ -25,6 +25,8 @@ export const TEST_API = {
 export const LESPO_API = {
   login: params => API.post('login/callback', params),
   userDelete: config => API.delete('user/delete', config),
+  findPassword: params => API.put('user/password/reset', params),
+  changePassword: (params, config) => API.put('user/password', params, config),
   // Notice
   getNotice: () => API.get('notices'),
   // Send E-mail

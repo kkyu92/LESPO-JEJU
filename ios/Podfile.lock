@@ -117,7 +117,7 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (6.5.1):
     - GoogleUtilities/Logger
-  - kakao-login (2.2.0):
+  - kakao-login (2.4.1):
     - KakaoOpenSDK (~> 1.20.0)
     - React
   - KakaoOpenSDK (1.20.0):
@@ -584,7 +584,7 @@ SPEC CHECKSUMS:
   GoogleAppMeasurement: a35a645835bae31b6bdc0576396bc23908f12a22
   GoogleMaps: 5046d7edfe381c1a0b20fdaf293915a375c3122b
   GoogleUtilities: 06eb53bb579efe7099152735900dd04bf09e7275
-  kakao-login: 71ef84dece8532526a4af24f35bc768d5350c9a7
+  kakao-login: 0a270ca2d3c68f6f0f14895bc3487b37d21203f5
   KakaoOpenSDK: 797d97ec4a7074a23d7175147f13ec274c81c9b9
   nanopb: 18003b5e52dab79db540fe93fe9579f399bd1ccd
   naveridlogin-sdk-ios: cf8afccdb1793d4ecfcd5d46aa8729d8b5058c70
@@ -619,7 +619,7 @@ SPEC CHECKSUMS:
   RNGestureHandler: 02905abe54e1f6e59c081a10b4bd689721e17aa6
   RNIap: 9b6e92869de716305ecc6cac8c413321210e33c7
   RNKakaoLink: 1e1981118c364a06db596a22fe01a58ea8593ad5
-  RNKakaoPlusFriend: cb7fa14d2d4e5d04055a2ff2ed943075d07c478f
+  RNKakaoPlusFriend: 465850b53775fd2e855cb075f1f5587421249b05
   RNNaverLogin: e3c76c8f589f3751f7d7e6f79dbacbfb080c91a4
   RNPermissions: 409e55ed060f7e35d4a3dfc3a336f94a5811dec1
   RNReanimated: b2ab0b693dddd2339bd2f300e770f6302d2e960c
@@ -627,6 +627,6 @@ SPEC CHECKSUMS:
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
 
-PODFILE CHECKSUM: 0ec3506c25ae096e67b542bacc733af3dfacf4b0
+PODFILE CHECKSUM: 710ad7bf146e155e00c7d5a14c00d364048a3948
 
 COCOAPODS: 1.8.4

@@ -218,6 +218,19 @@ const StatusTextEnd = styled.Text`
   color: ${GREY_COLOR2};
 `;
 
+const BattleTalkBtn = styled.TouchableOpacity`
+  border-radius: 10px;
+  border-width: 1px;
+  border-color: ${BG_COLOR};
+  justify-content: center;
+  align-items: center;
+  padding: 8px;
+`;
+
+const BattleTalkTxt = styled.Text`
+  color: ${BG_COLOR};
+`;
+
 const MyBattleDetailPresenter = ({
   loading,
   sport,
@@ -252,47 +265,25 @@ const MyBattleDetailPresenter = ({
         <TopContainer>
           <TopText>{statusText}</TopText>
           {name !== '' && name !== null ? (
-            statusText === '배틀종료' ? (
-              <>
-                <LevelText>{level}</LevelText>
-                <Ionicons
-                  size={30}
-                  name={Platform.OS === 'ios' ? 'ios-send' : 'md-send'}
-                  color={`${TINT_COLOR}`}
-                />
-              </>
-            ) : (
-              <>
-                <LevelText>{level}</LevelText>
-                <Touchable
-                  onPress={() =>
-                    navigation.navigate({
-                      routeName: 'BattleTalk',
-                      params: {
-                        roomKey,
-                        id,
-                        profile,
-                        name,
-                      },
-                    })
-                  }>
-                  <Ionicons
-                    size={30}
-                    name={Platform.OS === 'ios' ? 'ios-send' : 'md-send'}
-                    color={`${BG_COLOR}`}
-                  />
-                </Touchable>
-              </>
-            )
-          ) : (
             <>
               <LevelText>{level}</LevelText>
-              <Ionicons
-                size={30}
-                name={Platform.OS === 'ios' ? 'ios-send' : 'md-send'}
-                color={`${TINT_COLOR}`}
-              />
+              <BattleTalkBtn
+                onPress={() =>
+                  navigation.navigate({
+                    routeName: 'BattleTalk',
+                    params: {
+                      roomKey,
+                      id,
+                      profile,
+                      name,
+                    },
+                  })
+                }>
+                <BattleTalkTxt>배틀톡</BattleTalkTxt>
+              </BattleTalkBtn>
             </>
+          ) : (
+            <LevelText>{level}</LevelText>
           )}
         </TopContainer>
 

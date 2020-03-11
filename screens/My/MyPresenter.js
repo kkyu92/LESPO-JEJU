@@ -2,10 +2,16 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Loader from '../../components/Loader';
-import {TINT_COLOR, BG_COLOR, GREY_COLOR} from '../../constants/Colors';
+import {
+  TINT_COLOR,
+  BG_COLOR,
+  GREY_COLOR,
+  BLACK_COLOR,
+} from '../../constants/Colors';
 import {Rating, AirbnbRating} from 'react-native-ratings';
 import {Platform, Alert} from 'react-native';
 import {withNavigation} from 'react-navigation';
+import BookMark from 'react-native-vector-icons/Feather';
 
 const View = styled.View`
   background-color: ${BG_COLOR};
@@ -119,7 +125,7 @@ const BtnImg = styled.Image`
 `;
 
 const BtnImg2 = styled.Image`
-  width: 30px;
+  width: 29px;
   height: 25px;
 `;
 
@@ -146,12 +152,12 @@ const HeaderText = styled.Text`
 // show DATA
 const MyPresenter = ({
   loading,
+  provider,
   name,
   profile,
   rating,
   coin,
   changeModalVisiblity,
-  setData,
   requestPurchase,
   navigation,
 }) =>
@@ -231,13 +237,19 @@ const MyPresenter = ({
             })
           }>
           <Text>위시리스트</Text>
-          <BtnImg2
+          <BookMark size={25} name={'bookmark'} color={`${BLACK_COLOR}`} />
+          {/* <BtnImg2
             source={require(`../../assets/drawable-xxhdpi/icon_wishlist.png`)}
-          />
+          /> */}
         </BtnContainer>
         <BtnContainer onPress={() => changeModalVisiblity('로그아웃')}>
           <TextLogout>로그아웃</TextLogout>
         </BtnContainer>
+        {provider === null ? (
+          <BtnContainer onPress={() => changeModalVisiblity('비밀번호변경')}>
+            <Text>비밀번호변경</Text>
+          </BtnContainer>
+        ) : null}
         <BtnContainer onPress={() => changeModalVisiblity('회원탈퇴')}>
           <Text>회원탈퇴</Text>
         </BtnContainer>

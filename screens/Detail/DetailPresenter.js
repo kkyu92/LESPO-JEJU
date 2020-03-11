@@ -16,6 +16,7 @@ import IconLike from 'react-native-vector-icons/AntDesign';
 import GetPhoto from '../../api/GetPhoto';
 import Loader from '../../components/Loader';
 import CommentSlide from '../../components/CommentSlide';
+import BookMark from 'react-native-vector-icons/MaterialIcons';
 
 var scrollViewRef = React.createRef();
 const SwiperView = styled.View``;
@@ -328,15 +329,21 @@ const DetailPresenter = ({
               </TouchableOpacity>
               {isWish === 1 ? (
                 <TouchableOpacity onPress={() => wishListOut()}>
-                  <Icon
+                  <BookMark size={30} name={'bookmark'} color={`${BG_COLOR}`} />
+                  {/* <Icon
                     size={Platform.OS === 'ios' ? 30 : 30}
                     name={Platform.OS === 'ios' ? 'ios-heart' : 'md-heart'}
                     color={`${BG_COLOR}`}
-                  />
+                  /> */}
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity onPress={() => wishListIn()}>
-                  <Icon
+                  <BookMark
+                    size={30}
+                    name={'bookmark-border'}
+                    color={`${BG_COLOR}`}
+                  />
+                  {/* <Icon
                     size={Platform.OS === 'ios' ? 30 : 30}
                     name={
                       Platform.OS === 'ios'
@@ -344,7 +351,7 @@ const DetailPresenter = ({
                         : 'md-heart-empty'
                     }
                     color={`${BG_COLOR}`}
-                  />
+                  /> */}
                 </TouchableOpacity>
               )}
               {isLike === 1 ? (

@@ -11,6 +11,7 @@
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 #import <KakaoOpenSDK/KakaoOpenSDK.h>
+#import <KakaoPlusFriend/KakaoPlusFriend.h>
 #import <NaverThirdPartyLogin/NaverThirdPartyLoginConnection.h>
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <GoogleMaps/GoogleMaps.h>

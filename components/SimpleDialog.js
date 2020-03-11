@@ -8,15 +8,17 @@ import {
   TouchableOpacity,
   Modal,
   Dimensions,
+  TextInput,
+  Keyboard,
 } from 'react-native';
 import Layout from '../constants/Layout';
 import {
-  GREY_COLOR,
+  GREY_COLOR2,
   BG_COLOR,
   TINT_COLOR,
   GREY_COLOR3,
 } from '../constants/Colors';
-import Toast, {DURATION} from 'react-native-easy-toast';
+import Toast from 'react-native-easy-toast';
 
 export default class SimpleDialog extends Component {
   constructor(props) {
@@ -24,6 +26,9 @@ export default class SimpleDialog extends Component {
     this.state = {
       width: Layout.width,
       height: Layout.height,
+      handleEmail: '',
+      changePassword: '',
+      changePasswordCheck: '',
       battleResult: '',
       rating: 5,
       randomNum: '',
@@ -33,12 +38,38 @@ export default class SimpleDialog extends Component {
     });
   }
 
+  handleEmail = getEmail => {
+    this.setState({
+      handleEmail: getEmail,
+    });
+  };
+  changePassword = getPassword => {
+    this.setState({
+      changePassword: getPassword,
+    });
+  };
+  changePasswordCheck = getPassword => {
+    this.setState({
+      changePasswordCheck: getPassword,
+    });
+  };
+  toastView = msg => {
+    Keyboard.dismiss();
+    this.refs.toast.show(msg);
+  };
+
   closeModal = data => {
     if (data === 'random') {
       this.props.changeModalVisiblity(false);
       this.createRandomNumber();
     } else if (data === 'start') {
       this.props.setData(data, this.state.rating, this.state.battleResult);
+    } else if (data === 'CHANGE') {
+      this.props.changeModalVisiblity(false);
+      this.props.setData(data, this.state.changePassword);
+    } else if (data === 'FIND') {
+      this.props.changeModalVisiblity(false);
+      this.props.setData(data, this.state.handleEmail);
     } else {
       this.props.changeModalVisiblity(false);
       this.props.setData(data, this.state.rating);
@@ -105,6 +136,123 @@ export default class SimpleDialog extends Component {
             </TouchableHighlight>
           </View>
         </View>
+      </TouchableOpacity>
+    ) : this.props.battleState === '비밀번호찾기' ? (
+      <TouchableOpacity
+        activeOpacity={1}
+        disabled={true}
+        style={styles.contentContainer}>
+        <View style={[styles.loseModal, {width: this.state.width - 80}]}>
+          <View style={styles.textView}>
+            <Text style={[styles.text, {color: 'black'}, {fontSize: 20}]}>
+              가입시 등록한{'\n'}이메일(아이디)을 입력해 주세요.
+            </Text>
+          </View>
+          <Text style={styles.textPS}> ● 이메일 </Text>
+          <TextInput
+            style={styles.textInput}
+            onChangeText={this.handleEmail}
+            returnKeyType={'done'}
+            keyboardType={'email-address'}
+            placeholder={'이메일을 입력해주세요.'}
+            placeholderTextColor={GREY_COLOR2}
+            value={this.state.handleEmail}
+          />
+          <View style={styles.buttonView}>
+            <TouchableHighlight
+              onPress={() => this.closeModal('Cancel')}
+              style={styles.touchableHighlight}
+              underlayColor={'#f1f1f1'}>
+              <Text style={[styles.text, {color: 'red'}]}> 취소 </Text>
+            </TouchableHighlight>
+            <TouchableHighlight
+              onPress={() => {
+                this.state.handleEmail === ''
+                  ? this.toastView('등록한 이메일(아이디)을 입력해주세요.')
+                  : this.closeModal('FIND');
+              }}
+              style={styles.touchableHighlight}
+              underlayColor={'#f1f1f1'}>
+              <Text style={[styles.text, {color: 'orange'}]}> 찾기 </Text>
+            </TouchableHighlight>
+          </View>
+        </View>
+        <Toast
+          ref="toast"
+          style={{backgroundColor: BG_COLOR}}
+          position="bottom"
+          positionValue={100}
+          fadeInDuration={750}
+          fadeOutDuration={1500}
+          opacity={1}
+          textStyle={{color: TINT_COLOR}}
+        />
+      </TouchableOpacity>
+    ) : this.props.battleState === '비밀번호변경' ? (
+      <TouchableOpacity
+        activeOpacity={1}
+        disabled={true}
+        style={styles.contentContainer}>
+        <View style={[styles.passwordModal, {width: this.state.width - 80}]}>
+          <View style={styles.textView}>
+            <Text style={[styles.text, {color: 'black'}, {fontSize: 20}]}>
+              변경할 비밀번호를 입력해 주세요.
+            </Text>
+          </View>
+          <Text style={styles.textPS}> ● 비밀번호 </Text>
+          <TextInput
+            style={styles.textInput}
+            onChangeText={this.changePassword}
+            returnKeyType={'done'}
+            keyboardType={'default'}
+            placeholder={'비밀번호를 입력해주세요.'}
+            placeholderTextColor={GREY_COLOR2}
+            value={this.state.changePassword}
+            secureTextEntry
+          />
+          <Text style={styles.textPS}> ● 비밀번호 확인 </Text>
+          <TextInput
+            style={styles.textInput}
+            onChangeText={this.changePasswordCheck}
+            returnKeyType={'done'}
+            keyboardType={'default'}
+            placeholder={'비밀번호 확인.'}
+            placeholderTextColor={GREY_COLOR2}
+            value={this.state.changePasswordCheck}
+            secureTextEntry
+          />
+          <View style={styles.buttonView}>
+            <TouchableHighlight
+              onPress={() => this.closeModal('Cancel')}
+              style={styles.touchableHighlight}
+              underlayColor={'#f1f1f1'}>
+              <Text style={[styles.text, {color: 'red'}]}> 취소 </Text>
+            </TouchableHighlight>
+            <TouchableHighlight
+              onPress={() => {
+                this.state.changePassword === '' ||
+                this.state.changePasswordCheck === ''
+                  ? this.toastView('변경할 비밀번호를 입력해주세요.')
+                  : this.state.changePassword !== this.state.changePasswordCheck
+                  ? this.toastView('변경할 비밀번호가 일치하지 않습니다.')
+                  : this.closeModal('CHANGE');
+              }}
+              style={styles.touchableHighlight}
+              underlayColor={'#f1f1f1'}>
+              <Text style={[styles.text, {color: 'orange'}]}> 변경 </Text>
+            </TouchableHighlight>
+          </View>
+        </View>
+        <Toast
+          ref="toast"
+          style={{backgroundColor: BG_COLOR}}
+          position="bottom"
+          positionValue={100}
+          fadeInDuration={750}
+          fadeOutDuration={1500}
+          opacity={1}
+          textStyle={{color: TINT_COLOR}}
+        />
       </TouchableOpacity>
     ) : this.props.battleState === '회원탈퇴' ? (
       <TouchableOpacity
@@ -535,10 +683,14 @@ export default class SimpleDialog extends Component {
               </TouchableHighlight>
             )}
           </View>
-          <Text style={styles.imgMiniText}>
-            {' '}
-            관리자 카카오채널로 연결됩니다.{' '}
-          </Text>
+          {this.props.isRandomBox === 'success' ? (
+            <Text style={styles.imgMiniText}> 코인 1개가 추가되었습니다. </Text>
+          ) : (
+            <Text style={styles.imgMiniText}>
+              {' '}
+              관리자 카카오채널로 연결됩니다.{' '}
+            </Text>
+          )}
         </View>
       </TouchableOpacity>
     ) : this.props.battleState === '배틀종료' &&
@@ -547,23 +699,23 @@ export default class SimpleDialog extends Component {
         activeOpacity={1}
         disabled={true}
         style={styles.contentContainer}>
-        <View style={[styles.ratingModal, {width: this.state.width - 80}]}>
+        <View style={[styles.loseModal, {width: this.state.width - 80}]}>
           <View style={styles.imgTitleView}>
             <Text style={[styles.ratingText, {color: 'black'}, {fontSize: 30}]}>
               배틀완료
             </Text>
             <Text style={styles.ratingText}>
               {' '}
-              아쉬워요 ㅜㅜ{'\n'}다음에는 화이팅!{' '}
+              아쉬워요 ㅠㅠ{'\n'}다음 기회에 도전 !{' '}
             </Text>
-            <View style={styles.imageContainer}>
+            {/* <View style={styles.imageContainer}>
               <TouchableOpacity>
                 <Image
                   style={styles.img}
                   source={require(`../assets/drawable-xxhdpi/img_loseorange.png`)}
                 />
               </TouchableOpacity>
-            </View>
+            </View> */}
           </View>
           <View style={styles.ratingBtnView}>
             <TouchableHighlight
@@ -698,6 +850,32 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 10,
   },
+  loseModal: {
+    height: Layout.height / 3,
+    paddingTop: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
+    alignSelf: 'center',
+    alignItems: 'flex-start',
+    textAlign: 'center',
+    backgroundColor: 'white',
+    borderColor: 'orange',
+    borderWidth: 2,
+    borderRadius: 10,
+  },
+  passwordModal: {
+    height: Layout.height / 2.5,
+    paddingTop: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
+    alignSelf: 'center',
+    alignItems: 'flex-start',
+    textAlign: 'center',
+    backgroundColor: 'white',
+    borderColor: 'orange',
+    borderWidth: 2,
+    borderRadius: 10,
+  },
   titleView: {
     flex: 1,
     alignSelf: 'stretch',
@@ -786,6 +964,23 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  textPS: {
+    margin: 10,
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  textInput: {
+    padding: 5,
+    marginBottom: 10,
+    fontSize: 16,
+    justifyContent: 'flex-start',
+    alignSelf: 'stretch',
+    fontWeight: 'bold',
+    // textAlign: 'center',
+    borderWidth: 1,
+    borderColor: BG_COLOR,
   },
   touchableHighlight: {
     flex: 1,

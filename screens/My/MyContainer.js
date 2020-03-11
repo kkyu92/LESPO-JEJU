@@ -17,7 +17,7 @@ import RNIap, {
 import {CHAT_ROOM_IN} from '../../constants/Strings';
 
 const itemSkus = Platform.select({
-  ios: ['battleCoin', 'battleCoin10'],
+  ios: ['battleCoin'],
   android: ['battlecoin', 'battlecoin1'],
   // android: ['com.lespojeju'],
 });
@@ -30,6 +30,7 @@ export default class extends React.Component {
       loading: true,
       isModalVisible: false,
       loginStatus: '',
+      provider: '',
       name: '',
       profile: '',
       rating: '',
@@ -46,7 +47,11 @@ export default class extends React.Component {
     try {
       await RNIap.requestPurchase(this.state.products[0].productId, false);
     } catch (err) {
-      console.warn(err.code, err.message);
+      if (err.code == 'E_USER_CANCELLED') {
+        this.refs.toast.show('코인 충전을 취소하였습니다.');
+      } else {
+        console.warn(err.code, err.message);
+      }
     }
   };
 
@@ -121,9 +126,9 @@ export default class extends React.Component {
     );
 
     try {
+      let provider = await AsyncStorage.getItem('@USER_PROVIDER');
       const products = await RNIap.getProducts(itemSkus);
-      // console.log('getProducts: ' + JSON.stringify(products));
-      this.setState({products: products});
+      this.setState({products: products, provider});
     } catch (err) {
       console.warn(err); // standardized err.code and err.message available
     }
@@ -250,7 +255,7 @@ export default class extends React.Component {
   };
 
   //TODO: Logout
-  setData = async data => {
+  setData = async (data, changePassword) => {
     console.log('setData::: ', data);
     console.log('modal: ' + this.state.modal);
     let ID = await AsyncStorage.getItem('@USER_ID');
@@ -290,6 +295,11 @@ export default class extends React.Component {
         actions: [NavigationActions.navigate({routeName: 'Login'})],
       });
       this.props.navigation.dispatch(resetAction);
+    } else if (data === 'CHANGE') {
+      this.refs.toast.show('비밀번호가 변경되었습니다.');
+      const params = new URLSearchParams();
+      params.append('password', changePassword);
+      LESPO_API.changePassword(params, config);
     }
   };
 
@@ -303,6 +313,7 @@ export default class extends React.Component {
   render() {
     const {
       loading,
+      provider,
       name,
       profile,
       rating,
@@ -314,12 +325,12 @@ export default class extends React.Component {
       <>
         <MyPresenter
           loading={loading}
+          provider={provider}
           name={name}
           profile={profile}
           rating={rating}
           coin={coin}
           changeModalVisiblity={this.changeModalVisiblity}
-          setData={this.setData}
           requestPurchase={this.requestPurchase}
         />
         <Modal

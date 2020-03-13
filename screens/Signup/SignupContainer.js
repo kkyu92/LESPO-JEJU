@@ -144,7 +144,12 @@ export default class extends React.Component {
               }
             } else {
               this.storeData();
-              this.state.navigation.goBack(null);
+              this.setState({
+                loading: true,
+              });
+              setTimeout(() => {
+                this.state.navigation.goBack(null);
+              }, 1000);
             }
           })
           .catch(error => {

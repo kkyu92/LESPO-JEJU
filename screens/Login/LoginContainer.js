@@ -195,6 +195,9 @@ export default class extends React.Component {
     this.subs = [
       this.props.navigation.addListener('willFocus', () => {
         console.log('willFocus ::: reload');
+        this.setState({
+          loading: true,
+        });
         this.resetSignUpCheck();
       }),
     ];
@@ -209,13 +212,16 @@ export default class extends React.Component {
       console.log('signUpCheck: ' + GET_SIGN_CHECK);
       if ((await AsyncStorage.getItem('@SIGN_UP')) === 'true') {
         this.refs.toast.show(GET_USER_NAME + '님의 회원가입이 완료되었습니다.');
-        await AsyncStorage.setItem('@SIGN_UP', '');
+        await AsyncStorage.setItem('@SIGN_UP', 'false');
+        this.setState({
+          loading: false,
+        });
       } else {
         console.log('not sign up check');
+        this.setState({
+          loading: false,
+        });
       }
-      this.setState({
-        loading: false,
-      });
     } catch (error) {
       console.log(error);
     }

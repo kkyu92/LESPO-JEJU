@@ -83,25 +83,22 @@ const BtnContainer = styled.TouchableOpacity`
 
 const TextContainer = styled.View`
   flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  align-self: center;
 `;
 
-const TouchableOpacity = styled.TouchableOpacity``;
+const TouchableOpacity = styled.TouchableOpacity`
+  justify-content: center;
+  align-items: center;
+`;
 
 const BtnText = styled.Text`
   color: ${BLACK_COLOR};
   font-size: 16px;
 `;
 
-const Blank = styled.View`
-  width: 45%;
-  background-color: royalblue;
-`;
-
 const Check = styled.TouchableOpacity`
-  margin: 5px;
+  margin-right: 5px;
+  justify-content: center;
+  align-self: center;
 `;
 
 const SignupPresenter = ({
@@ -201,7 +198,7 @@ const SignupPresenter = ({
             }>
             <SubTitle>이용약관 및 개인정보보호</SubTitle>
           </TouchableOpacity>
-          <Blank />
+          {/* <Blank /> */}
         </TextContainer>
 
         <BtnContainer onPress={onCheckSignup}>

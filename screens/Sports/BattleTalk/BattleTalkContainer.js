@@ -209,9 +209,9 @@ export default class extends React.Component {
       .ref('APITokenList/' + this.state.id)
       .once('value', dataSnapshot => {
         otherToken = JSON.stringify(dataSnapshot);
+        otherToken = otherToken.replace('"', '');
+        otherToken = otherToken.replace('"', '');
         console.log(otherToken.length);
-        otherToken = otherToken.substring(1, 961);
-        console.log(otherToken);
         const coinConfig = {
           headers: {
             Authorization: otherToken,
@@ -709,9 +709,9 @@ export default class extends React.Component {
         .ref('APITokenList/' + this.state.id)
         .once('value', dataSnapshot => {
           let otherToken = JSON.stringify(dataSnapshot);
+          otherToken = otherToken.replace('"', '');
+          otherToken = otherToken.replace('"', '');
           console.log(otherToken.length);
-          otherToken = otherToken.substring(1, 961);
-          console.log(otherToken);
           let otherConfig = {
             headers: {
               Authorization: otherToken,

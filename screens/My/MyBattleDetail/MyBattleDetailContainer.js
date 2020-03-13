@@ -86,6 +86,14 @@ export default class extends React.Component {
                 ' : ' +
                 notification.android._notification._data.msg,
             );
+            let winner;
+            var battleWin = firebase
+              .database()
+              .ref('chatRoomList/' + this.state.roomKey + '/battleResult/win');
+            battleWin.on('value', dataSnapshot => {
+              console.log('who is winner: ' + JSON.stringify(dataSnapshot));
+              winner = JSON.stringify(dataSnapshot);
+            });
             var battleState = firebase
               .database()
               .ref('chatRoomList/' + this.state.roomKey + '/battleState');
@@ -99,6 +107,23 @@ export default class extends React.Component {
                 state = '배틀진행중';
               } else {
                 state = '배틀종료';
+                console.log(this.state.openBox);
+                console.log(this.state.endUser2);
+                if (
+                  '' !== this.state.endUser2 &&
+                  'true' !== this.state.openBox &&
+                  winner === JSON.stringify(this.state.myId) &&
+                  notification.android._notification._data.name ===
+                    this.state.name &&
+                  notification.android._notification._data.msg ===
+                    '평가를 완료했습니다.'
+                ) {
+                  this.setState({isRandomBox: 'start'});
+                  setTimeout(() => {
+                    this.changeModalVisiblity(true), 1000;
+                  });
+                  // this.changeModalVisiblity(true);
+                }
               }
               this.setState({
                 statusText: state,
@@ -415,9 +440,9 @@ export default class extends React.Component {
       .ref('APITokenList/' + this.state.id)
       .once('value', dataSnapshot => {
         otherToken = JSON.stringify(dataSnapshot);
+        otherToken = otherToken.replace('"', '');
+        otherToken = otherToken.replace('"', '');
         console.log(otherToken.length);
-        otherToken = otherToken.substring(1, 961);
-        console.log(otherToken);
         const coinConfig = {
           headers: {
             Authorization: otherToken,
@@ -791,8 +816,8 @@ export default class extends React.Component {
     if (Platform.OS === 'ios') {
       Linking.openURL('https://pf.kakao.com/_fxdMxlxb/chat');
     } else {
-      const chat = await RNKakaoPlusFriend.chat('_fxdMxlxb');
-      console.log(chat);
+      await RNKakaoPlusFriend.chat('_fxdMxlxb');
+      // console.log('kakaoPlusFriend: '+chat);
     }
   };
   // send Email

@@ -78,8 +78,8 @@ export default class SimpleDialog extends Component {
 
   createRandomNumber = () => {
     // [ 20 / 20 / 20 / 15 / 15 / 10 ]
-    // let RandomNumber = Math.floor(Math.random() * 100) + 1;
-    let RandomNumber = 55;
+    let RandomNumber = Math.floor(Math.random() * 100) + 1;
+    // let RandomNumber = 55;
     console.log('random number: ' + RandomNumber);
     if (RandomNumber < 31) {
       this.setState({randomNum: 'fail'});

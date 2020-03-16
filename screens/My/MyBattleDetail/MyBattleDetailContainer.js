@@ -813,12 +813,13 @@ export default class extends React.Component {
   };
   //바로 채팅하기로 링크
   chatChannel = async () => {
-    if (Platform.OS === 'ios') {
-      Linking.openURL('https://pf.kakao.com/_fxdMxlxb/chat');
-    } else {
-      await RNKakaoPlusFriend.chat('_fxdMxlxb');
-      // console.log('kakaoPlusFriend: '+chat);
-    }
+    Linking.openURL('https://pf.kakao.com/_fxdMxlxb/chat');
+    // if (Platform.OS === 'ios') {
+    //   Linking.openURL('https://pf.kakao.com/_fxdMxlxb/chat');
+    // } else {
+    //   await RNKakaoPlusFriend.chat('_fxdMxlxb');
+    //   // console.log('kakaoPlusFriend: '+chat);
+    // }
   };
   // send Email
   sendEmail = async () => {

@@ -127,6 +127,7 @@ const ItemImg = styled.Image`
   background-color: ${GREY_COLOR};
   width: ${Layout.width / 3};
   height: ${(Layout.width / 5) * 3};
+  resize-mode: cover;
 `;
 const ItemTitle = styled.Text`
   font-size: 20px;

@@ -222,6 +222,7 @@ const BattlePresenter = ({
 
           <PickerContainer>
             <DatePicker
+              locale={'kor'}
               style={{width: '100%'}}
               date={date}
               mode="date"

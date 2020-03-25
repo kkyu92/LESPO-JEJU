@@ -125,6 +125,7 @@ export default class extends React.Component {
   }
 
   async componentDidMount() {
+    console.log('login componentDidMount');
     //TODO:  App was opened by a notification
     Firebase.notifications()
       .getInitialNotification()
@@ -135,63 +136,48 @@ export default class extends React.Component {
           let id = notification.id;
           let name = notification.name;
           let profile = notification.profile;
+          console.log('saveNotiData 시작: ' + roomKey);
           this.saveNotiData(roomKey, id, name, profile);
-          // this.props.navigation.navigation({routeName: 'Tabs'});
-          this.props.navigation.replace({
-            routeName: 'Tabs',
-            action: NavigationActions.navigate({routeName: '내정보'}),
-            // this.props.navigation.replace({
-            //   routeName: 'MyBattleTalk',
-            //   params: {
-            //     roomKey,
-            //     id,
-            //     profile,
-            //     name,
-            //   },
-            // }),
-          });
         } else {
           console.log('not noti open');
         }
       });
 
     try {
+      // AUTO_LOGIN
+      let AUTO_LOGIN = await AsyncStorage.getItem('@AUTO_LOGIN');
+      let TOKEN = await AsyncStorage.getItem('@API_TOKEN');
+      let ID = await AsyncStorage.getItem('@USER_ID');
+      firebase
+        .database()
+        .ref('APITokenList/' + ID)
+        .once('value', dataSnapshot => {
+          let otherToken = JSON.stringify(dataSnapshot);
+          console.log(JSON.stringify(TOKEN));
+          console.log(otherToken);
+          if (AUTO_LOGIN === 'true') {
+            if (otherToken === 'null') {
+              this.refs.toast.show('탈퇴한 계정입니다.');
+            } else if (JSON.stringify(TOKEN) === otherToken) {
+              this.state.navigation.replace({
+                routeName: 'Tabs',
+              });
+            } else {
+              this.refs.toast.show('다른기기에 로그인 되어있습니다.');
+            }
+          } else {
+            console.log('log-out한 상태');
+          }
+          this.setState({
+            loading: false,
+          });
+        });
+
+      this._isMounted = true;
+      this.getData();
     } catch (e) {
       console.log(e);
     }
-
-    // AUTO_LOGIN
-    let AUTO_LOGIN = await AsyncStorage.getItem('@AUTO_LOGIN');
-    let TOKEN = await AsyncStorage.getItem('@API_TOKEN');
-    let ID = await AsyncStorage.getItem('@USER_ID');
-    firebase
-      .database()
-      .ref('APITokenList/' + ID)
-      .once('value', dataSnapshot => {
-        let otherToken = JSON.stringify(dataSnapshot);
-        console.log(JSON.stringify(TOKEN));
-        console.log(otherToken);
-        if (AUTO_LOGIN === 'true') {
-          if (otherToken === 'null') {
-            this.refs.toast.show('탈퇴한 계정입니다.');
-          } else if (JSON.stringify(TOKEN) === otherToken) {
-            this.state.navigation.replace({
-              routeName: 'Tabs',
-            });
-          } else {
-            this.refs.toast.show('다른기기에 로그인 되어있습니다.');
-          }
-        } else {
-          console.log('log-out한 상태');
-        }
-        this.setState({
-          loading: false,
-        });
-      });
-
-    this._isMounted = true;
-    this.getData();
-
     this.subs = [
       this.props.navigation.addListener('willFocus', () => {
         console.log('willFocus ::: reload');
@@ -232,6 +218,12 @@ export default class extends React.Component {
     await AsyncStorage.setItem('@NOTI_ID', id);
     await AsyncStorage.setItem('@NOTI_NAME', name);
     await AsyncStorage.setItem('@NOTI_PROFILE', profile);
+    console.log('saveNotiData: 저장 끝나는 지점: ' + roomKey);
+    // this.props.navigation.navigation({routeName: 'Tabs'});
+    // this.props.navigation.replace({
+    //   routeName: 'Tabs',
+    //   action: NavigationActions.navigate({routeName: '메인'}),
+    // });
   };
 
   logCallback = (log, callback) => {
@@ -496,10 +488,11 @@ export default class extends React.Component {
       params.append('email', email);
       LESPO_API.findPassword(params)
         .then(data => {
-          this.refs.toast.show(data.data.messages.message);
+          this.refs.toast.show('임시비밀번호가 해당 이메일로 발송되었습니다.');
           console.log('send my password: ', data.data.messages.message);
         })
         .catch(error => {
+          this.refs.toast.show(data.data.messages.message);
           console.log('find password error ', error);
         });
     }

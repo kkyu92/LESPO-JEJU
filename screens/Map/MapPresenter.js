@@ -1,5 +1,5 @@
 import React from 'react';
-import {withNavigation} from 'react-navigation';
+import {withNavigation, FlatList} from 'react-navigation';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import styled from 'styled-components';
 import Loader from '../../components/Loader';
@@ -16,6 +16,7 @@ import ZoomIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconF from 'react-native-vector-icons/Fontisto';
 import Swiper from 'react-native-swiper';
+import SwiperFlatList from 'react-native-swiper-flatlist';
 import MainSlide from '../../components/MainSlide';
 import {Callout} from 'react-native-maps';
 import {Text, StyleSheet, Platform} from 'react-native';
@@ -105,7 +106,6 @@ const MyLocation = styled.TouchableOpacity`
   width: 50px;
   height: 50px;
   right: 0;
-  bottom: 30px;
   margin: 20px;
   border-radius: 25px;
   align-items: center;
@@ -167,12 +167,27 @@ const ZoomOutBottom = styled.TouchableOpacity`
   align-items: center;
   justify-content: center;
 `;
+const MyLocationBottom = styled.TouchableOpacity`
+  position: absolute;
+  background-color: ${TINT_COLOR};
+  border-color: ${GREY_COLOR3};
+  border-width: 1px;
+  width: 50px;
+  height: 50px;
+  right: 0;
+  bottom: 30px;
+  margin: 20px;
+  border-radius: 25px;
+  align-items: center;
+  justify-content: center;
+`;
 
 const SWIPER_HEIGHT = (Layout.width / 5) * 3;
 const MView = styled.View`
   border-radius: 15;
   height: ${(Layout.width / 5) * 3};
-  margin-top: ${Layout.height - SWIPER_HEIGHT};
+  width: 100%;
+  margin-top: ${Layout.height - SWIPER_HEIGHT - 15};
 `;
 const VIEW_HEIGHT = Layout.height / 4;
 const View = styled.View`
@@ -202,48 +217,107 @@ const NoticeText = styled.Text`
 `;
 
 const _getLocation = async (latitude, longitude) => {
+  console.log('lat: ' + latitude + '\nlon: ' + longitude);
   this.map.animateToRegion(
     {latitude, longitude, latitudeDelta: 0.035, longitudeDelta: 0.035},
     1000,
   );
-  this.marker.showCallout();
+  // this.marker.showCallout();
 };
-const _zoomIn = async (latitude, longitude, latDelta, lonDelta) => {
+const _zoomIn = async (
+  latitude,
+  longitude,
+  latDelta,
+  lonDelta,
+  latitudeMY,
+  longitudeMY,
+) => {
   let latitudeDelta = latDelta / 2;
   let longitudeDelta = lonDelta / 2;
-  this.map.animateToRegion(
-    {latitude, longitude, latitudeDelta, longitudeDelta},
-    500,
-  );
-  this.marker.showCallout();
+  if (latitude !== null) {
+    this.map.animateToRegion(
+      {latitude, longitude, latitudeDelta, longitudeDelta},
+      500,
+    );
+  } else {
+    this.map.animateToRegion(
+      {
+        latitude: latitudeMY,
+        longitude: longitudeMY,
+        latitudeDelta,
+        longitudeDelta,
+      },
+      500,
+    );
+  }
+  // this.marker.showCallout();
 };
-const _zoomOut = async (latitude, longitude, latDelta, lonDelta) => {
-  console.log('latDelta: ' + latDelta + '\nlonDelta: ' + lonDelta);
+const _zoomOut = async (
+  latitude,
+  longitude,
+  latDelta,
+  lonDelta,
+  latitudeMY,
+  longitudeMY,
+) => {
   let latitudeDelta = latDelta + latDelta;
   let longitudeDelta = lonDelta + lonDelta;
-  this.map.animateToRegion(
-    {latitude, longitude, latitudeDelta, longitudeDelta},
-    500,
-  );
-  this.marker.showCallout();
+  if (latitude !== null) {
+    this.map.animateToRegion(
+      {latitude, longitude, latitudeDelta, longitudeDelta},
+      500,
+    );
+  } else {
+    this.map.animateToRegion(
+      {
+        latitude: latitudeMY,
+        longitude: longitudeMY,
+        latitudeDelta,
+        longitudeDelta,
+      },
+      500,
+    );
+  }
+  // this.marker.showCallout();
 };
 
 let INDEX = 0;
 
-const onSwiperItemChange = (index, locations) => {
+const onSwiperItemChange = async (index, locations) => {
   INDEX = index;
-  console.log(JSON.stringify(locations.locations));
+  // console.log(JSON.stringify(locations.locations));
   console.log(INDEX + ' :::onSwiperItemChange::: ' + index);
   // let location = coordinates.markers[index];
   let location = locations.locations[index].location;
   console.log('latlng ::: ' + location.latitude + ', ' + location.longitude);
-  this.map.animateToRegion({
+  await this.map.animateToRegion({
     latitude: location.latitude,
     longitude: location.longitude,
     latitudeDelta: 0.09,
     longitudeDelta: 0.035,
   });
-  locations.mark[index].showCallout();
+  console.log('index::: ' + index);
+  if (index !== 0) {
+    locations.mark[index].showCallout();
+  }
+};
+
+const onSwiperItemChangeFlat = (index, locations) => {
+  console.log('onSwiperItemChangeFlat ' + JSON.stringify(index));
+  if (index.index !== index.prevIndex) {
+    console.log('if');
+    INDEX = index.index;
+    console.log(INDEX + ' :::onSwiperItemChange::: ' + index.index);
+    let location = locations.locations[index.index].location;
+    console.log('latlng ::: ' + location.latitude + ', ' + location.longitude);
+    this.map.animateToRegion({
+      latitude: location.latitude,
+      longitude: location.longitude,
+      latitudeDelta: 0.09,
+      longitudeDelta: 0.035,
+    });
+    locations.mark[index.index].showCallout();
+  }
 };
 
 const onMarkerPressed = (locations, mainState) => {
@@ -253,11 +327,10 @@ const onMarkerPressed = (locations, mainState) => {
     latitudeDelta: 0.09,
     longitudeDelta: 0.035,
   });
-  let moveIndex = locations.key - INDEX;
-  console.log('index::: ' + locations.key);
-  console.log('INDEX::: ' + moveIndex);
+
   if (mainState !== 'map') {
-    this.swiper.scrollBy(moveIndex, true);
+    console.log('마커클릭 인덱스: ' + locations.key);
+    INDEX = locations.key;
   }
 };
 
@@ -302,6 +375,8 @@ const onCalloutPress = (listChanged, key, navigation) => {
 
 const MapPresenter = ({
   loading,
+  latitudeMY,
+  longitudeMY,
   latitude,
   longitude,
   latDelta,
@@ -332,8 +407,8 @@ const MapPresenter = ({
           position: 'absolute',
         }}
         initialRegion={{
-          latitude: latitude,
-          longitude: longitude,
+          latitude: latitudeMY,
+          longitude: longitudeMY,
           latitudeDelta: latDelta,
           longitudeDelta: lonDelta,
         }}>
@@ -368,20 +443,38 @@ const MapPresenter = ({
           : console.log('locations null ????? ' + JSON.stringify(locations))}
       </MapView>
       <ZoomInBottom
-        onPress={() => _zoomIn(latitude, longitude, latDelta, lonDelta)}>
+        onPress={() =>
+          _zoomIn(
+            latitude,
+            longitude,
+            latDelta,
+            lonDelta,
+            latitudeMY,
+            longitudeMY,
+          )
+        }>
         <ZoomIcon size={30} name={'plus'} color={`${GREY_COLOR3}`} />
       </ZoomInBottom>
       <ZoomOutBottom
-        onPress={() => _zoomOut(latitude, longitude, latDelta, lonDelta)}>
+        onPress={() =>
+          _zoomOut(
+            latitude,
+            longitude,
+            latDelta,
+            lonDelta,
+            latitudeMY,
+            longitudeMY,
+          )
+        }>
         <ZoomIcon size={30} name={'minus'} color={`${GREY_COLOR3}`} />
       </ZoomOutBottom>
-      <MyLocation onPress={() => _getLocation(latitude, longitude)}>
+      <MyLocationBottom onPress={() => _getLocation(latitudeMY, longitudeMY)}>
         <MyLocationIcon
           size={30}
           name={'my-location'}
           color={`${GREY_COLOR3}`}
         />
-      </MyLocation>
+      </MyLocationBottom>
       <ListContainer>
         {listName === '' || listName === 'food' ? (
           <>
@@ -467,8 +560,8 @@ const MapPresenter = ({
           position: 'absolute',
         }}
         initialRegion={{
-          latitude: latitude,
-          longitude: longitude,
+          latitude: latitudeMY,
+          longitude: longitudeMY,
           latitudeDelta: latDelta,
           longitudeDelta: lonDelta,
         }}>
@@ -506,14 +599,33 @@ const MapPresenter = ({
               ))
           : console.log('locations null ????? ' + JSON.stringify(locations))}
       </MapView>
-      <ZoomIn onPress={() => _zoomIn(latitude, longitude, latDelta, lonDelta)}>
+      <ZoomIn
+        onPress={() =>
+          _zoomIn(
+            latitude,
+            longitude,
+            latDelta,
+            lonDelta,
+            latitudeMY,
+            longitudeMY,
+          )
+        }>
         <ZoomIcon size={30} name={'plus'} color={`${GREY_COLOR3}`} />
       </ZoomIn>
       <ZoomOut
-        onPress={() => _zoomOut(latitude, longitude, latDelta, lonDelta)}>
+        onPress={() =>
+          _zoomOut(
+            latitude,
+            longitude,
+            latDelta,
+            lonDelta,
+            latitudeMY,
+            longitudeMY,
+          )
+        }>
         <ZoomIcon size={30} name={'minus'} color={`${GREY_COLOR3}`} />
       </ZoomOut>
-      <MyLocation onPress={() => _getLocation(latitude, longitude)}>
+      <MyLocation onPress={() => _getLocation(latitudeMY, longitudeMY)}>
         <MyLocationIcon
           size={30}
           name={'my-location'}
@@ -526,51 +638,31 @@ const MapPresenter = ({
         </NoticeText>
       </NoticeContainer>
       <MView>
-        <Swiper
-          ref={swiper => {
-            this.swiper = swiper;
-          }}
-          showsPagination={true}
-          autoplay={false}
-          autoplayTimeout={3}
-          onIndexChanged={index => onSwiperItemChange(index, locations)}
-          style={{
-            height: (Layout.width / 5) * 3,
-            position: 'absolute',
-            bottom: 20,
-          }}>
-          {listChanged
-            .filter(list => list.id !== null)
-            .map((list, index) => (
-              <View key={index}>
-                {JSON.stringify(list.matched_content_images) === '[]' ? (
-                  <MainSlide
-                    map={true}
-                    overview={list.description}
-                    avg={list.like_count}
-                    title={list.title}
-                    id={list.id}
-                    backgroundPoster={'no'}
-                    poster={'no'}
-                    detail={list.detail}
-                  />
-                ) : (
-                  <MainSlide
-                    map={true}
-                    overview={list.description}
-                    avg={list.like_count}
-                    title={list.title}
-                    id={list.id}
-                    backgroundPoster={
-                      list.matched_content_images[0].full_filename
-                    }
-                    poster={list.matched_content_images}
-                    detail={list.detail}
-                  />
-                )}
-              </View>
-            ))}
-        </Swiper>
+        {JSON.stringify(listChanged[INDEX].matched_content_images) === '[]' ? (
+          <MainSlide
+            map={true}
+            overview={listChanged[INDEX].description}
+            avg={listChanged[INDEX].like_count}
+            title={listChanged[INDEX].title}
+            id={listChanged[INDEX].id}
+            backgroundPoster={'no'}
+            poster={'no'}
+            detail={listChanged[INDEX].detail}
+          />
+        ) : (
+          <MainSlide
+            map={true}
+            overview={listChanged[INDEX].description}
+            avg={listChanged[INDEX].like_count}
+            title={listChanged[INDEX].title}
+            id={listChanged[INDEX].id}
+            backgroundPoster={
+              listChanged[INDEX].matched_content_images[0].full_filename
+            }
+            poster={listChanged[INDEX].matched_content_images}
+            detail={listChanged[INDEX].detail}
+          />
+        )}
       </MView>
     </MapContainer>
   ) : (
@@ -588,8 +680,8 @@ const MapPresenter = ({
           position: 'absolute',
         }}
         initialRegion={{
-          latitude: latitude,
-          longitude: longitude,
+          latitude: latitudeMY,
+          longitude: longitudeMY,
           latitudeDelta: latDelta,
           longitudeDelta: lonDelta,
         }}>
@@ -608,69 +700,112 @@ const MapPresenter = ({
               ))
           : console.log('locations null ????? ' + JSON.stringify(locations))}
       </MapView>
-      <ZoomIn onPress={() => _zoomIn(latitude, longitude, latDelta, lonDelta)}>
+      <ZoomIn
+        onPress={() =>
+          _zoomIn(
+            latitude,
+            longitude,
+            latDelta,
+            lonDelta,
+            latitudeMY,
+            longitudeMY,
+          )
+        }>
         <ZoomIcon size={30} name={'plus'} color={`${GREY_COLOR3}`} />
       </ZoomIn>
       <ZoomOut
-        onPress={() => _zoomOut(latitude, longitude, latDelta, lonDelta)}>
+        onPress={() =>
+          _zoomOut(
+            latitude,
+            longitude,
+            latDelta,
+            lonDelta,
+            latitudeMY,
+            longitudeMY,
+          )
+        }>
         <ZoomIcon size={30} name={'minus'} color={`${GREY_COLOR3}`} />
       </ZoomOut>
-      <MyLocation onPress={() => _getLocation(latitude, longitude)}>
+      <MyLocation onPress={() => _getLocation(latitudeMY, longitudeMY)}>
         <MyLocationIcon
           size={30}
           name={'my-location'}
           color={`${GREY_COLOR3}`}
         />
       </MyLocation>
-      {/* {listChanged.map(list => console.log(list.backdrop_path))} */}
       <MView>
-        <Swiper
-          ref={swiper => {
-            this.swiper = swiper;
-          }}
-          showsPagination={true}
-          autoplay={false}
-          autoplayTimeout={3}
-          onIndexChanged={index => onSwiperItemChange(index, locations)}
-          style={{
-            height: (Layout.width / 5) * 3,
-            position: 'absolute',
-            bottom: 20,
-          }}>
-          {listChanged
-            .filter(list => list.id !== null)
-            .map((list, index) => (
-              <View key={index}>
-                {JSON.stringify(list.matched_content_images) === '[]' ? (
-                  <MainSlide
-                    map={true}
-                    overview={list.description}
-                    avg={list.like_count}
-                    title={list.title}
-                    id={list.id}
-                    backgroundPoster={'no'}
-                    poster={'no'}
-                    detail={list.detail}
-                  />
-                ) : (
-                  <MainSlide
-                    map={true}
-                    overview={list.description}
-                    avg={list.like_count}
-                    title={list.title}
-                    id={list.id}
-                    backgroundPoster={
-                      list.matched_content_images[0].full_filename
-                    }
-                    poster={list.matched_content_images}
-                    detail={list.detail}
-                  />
-                )}
-              </View>
-            ))}
-        </Swiper>
+        {JSON.stringify(listChanged[INDEX].matched_content_images) === '[]' ? (
+          <MainSlide
+            map={true}
+            overview={listChanged[INDEX].description}
+            avg={listChanged[INDEX].like_count}
+            title={listChanged[INDEX].title}
+            id={listChanged[INDEX].id}
+            backgroundPoster={'no'}
+            poster={'no'}
+            detail={listChanged[INDEX].detail}
+          />
+        ) : (
+          <MainSlide
+            map={true}
+            overview={listChanged[INDEX].description}
+            avg={listChanged[INDEX].like_count}
+            title={listChanged[INDEX].title}
+            id={listChanged[INDEX].id}
+            backgroundPoster={
+              listChanged[INDEX].matched_content_images[0].full_filename
+            }
+            poster={listChanged[INDEX].matched_content_images}
+            detail={listChanged[INDEX].detail}
+          />
+        )}
       </MView>
     </MapContainer>
   );
 
 export default withNavigation(MapPresenter);
+
+{
+  /* <SwiperFlatList
+          ref={swiper => {
+            this.swiper = swiper;
+          }}
+          index={0}
+          renderAll={true}
+          // onChangeIndex={index => onSwiperItemChange(index.index, locations)}
+          onChangeIndex={index => onSwiperItemChangeFlat(index, locations)}
+          style={{
+            height: (Layout.width / 5) * 3,
+            position: 'absolute',
+            bottom: 20,
+          }}
+          data={listChanged}
+          renderItem={list =>
+            JSON.stringify(list.item.matched_content_images) === '[]' ? (
+              <MainSlide
+                map={true}
+                overview={list.item.description}
+                avg={list.item.like_count}
+                title={list.item.title}
+                id={list.item.id}
+                backgroundPoster={'no'}
+                poster={'no'}
+                detail={list.item.detail}
+              />
+            ) : (
+              <MainSlide
+                map={true}
+                overview={list.item.description}
+                avg={list.item.like_count}
+                title={list.item.title}
+                id={list.item.id}
+                backgroundPoster={
+                  list.item.matched_content_images[0].full_filename
+                }
+                poster={list.item.matched_content_images}
+                detail={list.item.detail}
+              />
+            )
+          }
+        /> */
+}

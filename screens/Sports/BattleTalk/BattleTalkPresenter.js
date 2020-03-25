@@ -20,6 +20,7 @@ import ProfileUri from '../../../api/ProfileUri';
 import ChatSlide from '../../../components/ChatSlide';
 import Section from '../../../components/Section';
 import moment from 'moment';
+import SearchNo from '../../Main/Search/SearchNo';
 
 var scrollViewRef = React.createRef();
 
@@ -181,6 +182,7 @@ const styles = StyleSheet.create({
 // show DATA
 const BattleTalkPresenter = ({
   loading,
+  notiCheck,
   getChatList,
   insertChatList,
   msg,
@@ -288,7 +290,7 @@ const BattleTalkPresenter = ({
           {loading ? (
             <Loader />
           ) : getChatList.length > 0 ? (
-            <Section horizontal={false} title="">
+            <Section horizontal={false} title="chat">
               {getChatList
                 .filter(list => list.msg !== null)
                 .map((value, index, list) =>
@@ -302,6 +304,7 @@ const BattleTalkPresenter = ({
                       msg={list[index].msg}
                       user={list[index].user}
                       reader={list[index].read}
+                      place={list[index].place}
                       name={name}
                       profile={profile}
                       myId={myId}
@@ -318,6 +321,7 @@ const BattleTalkPresenter = ({
                       msg={list[index].msg}
                       user={list[index].user}
                       reader={list[index].read}
+                      place={list[index].place}
                       name={name}
                       profile={profile}
                       myName={myName}
@@ -334,6 +338,7 @@ const BattleTalkPresenter = ({
                       msg={list[index].msg}
                       user={list[index].user}
                       reader={list[index].read}
+                      place={list[index].place}
                       name={name}
                       profile={profile}
                       myName={myName}
@@ -350,6 +355,7 @@ const BattleTalkPresenter = ({
                       msg={list[index].msg}
                       user={list[index].user}
                       reader={list[index].read}
+                      place={list[index].place}
                       name={name}
                       profile={profile}
                       myName={myName}
@@ -359,6 +365,8 @@ const BattleTalkPresenter = ({
                   ),
                 )}
             </Section>
+          ) : notiCheck === true ? (
+            <SearchNo text={'채팅 내역을 불러오는 중입니다...'} />
           ) : (
             console.log('no chattingList')
           )}

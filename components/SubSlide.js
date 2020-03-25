@@ -18,15 +18,15 @@ import Layout from '../constants/Layout';
 import GetPhoto from '../api/GetPhoto';
 
 function ChangeColor() {
-  const ColorCode =
-    'rgb(' +
-    Math.floor(Math.random() * 256) +
-    ',' +
-    Math.floor(Math.random() * 256) +
-    ',' +
-    Math.floor(Math.random() * 256) +
-    ')';
-  return ColorCode;
+  // const ColorCode =
+  //   'rgb(' +
+  //   Math.floor(Math.random() * 256) +
+  //   ',' +
+  //   Math.floor(Math.random() * 256) +
+  //   ',' +
+  //   Math.floor(Math.random() * 256) +
+  //   ')';
+  // return ColorCode;
 }
 
 const Container = styled.TouchableOpacity`
@@ -50,9 +50,10 @@ const NullFoodImg = styled.Image`
   height: 80px;
   border-radius: 15;
 `;
+// if background change color -10px size
 const FoodImg = styled.Image`
-  width: 100px;
-  height: 150px;
+  width: 110px;
+  height: 160px;
   border-radius: 15;
 `;
 
@@ -343,7 +344,7 @@ const SubSlide = ({
           tagName === '운동시설' ||
           tagName === '레저스포츠' ? (
           <TagPlayContainer>
-            <TagPlayImg>놀거리</TagPlayImg>
+            <TagPlayImg>{tagName}</TagPlayImg>
           </TagPlayContainer>
         ) : tagName === '볼거리' ? (
           <TagViewContainer>
@@ -351,7 +352,7 @@ const SubSlide = ({
           </TagViewContainer>
         ) : tagName === '시설' ? (
           <TagOtherContainer>
-            <TagOtherImg>추 천</TagOtherImg>
+            <TagOtherImg>시 설</TagOtherImg>
           </TagOtherContainer>
         ) : (
           <TagRecoContainer>

@@ -1,4 +1,5 @@
 import React from 'react';
+import {NavigationActions} from 'react-navigation';
 import MainPresenter from './MainPresenter';
 import {LESPO_API} from '../../api/Api';
 import Firebase from 'react-native-firebase';
@@ -75,11 +76,28 @@ export default class extends React.Component {
       });
     } else {
       //ios는 이벤트리스너를 mount/unmount 하여 url을 navigate 합니다.
+      Linking.getInitialURL()
+        .then(ev => {
+          if (ev) {
+            console.log('ios ev: ' + ev);
+            this.handleOpenURL(ev);
+          }
+        })
+        .catch(err => {
+          console.warn('An error occurred', err);
+        });
       Linking.addEventListener('url', this.handleOpenURL);
     }
 
     this._isMounted = true;
-    this.onListChanging();
+    let noti = await AsyncStorage.getItem('@NOTI_ROOMKEY');
+    if (noti) {
+      console.log('noti 확인');
+      this.state.navigation.navigate({routeName: '내정보'});
+    } else {
+      console.log('noti 아닌경우');
+      this.onListChanging();
+    }
     this.subs = [
       this.props.navigation.addListener('willFocus', () => {
         console.log('willFocus ::: reload');
@@ -89,7 +107,7 @@ export default class extends React.Component {
   }
 
   navigate = url => {
-    console.log(url); // exampleapp://somepath?id=3
+    console.log('link URL: ' + url); // exampleapp://somepath?id=3
     const paths = url.split('?'); // 쿼리스트링 관련한 패키지들을 활용하면 유용합니다.
     if (paths.length > 1) {
       //파라미터가 있다
@@ -111,9 +129,12 @@ export default class extends React.Component {
   };
 
   handleOpenURL = event => {
-    console.log(JSON.stringify(event));
+    let url = JSON.stringify(event);
+    url = url.replace('"', '');
+    url = url.replace('"', '');
+    console.log(url);
     //이벤트 리스너.
-    this.navigate(event.url);
+    this.navigate(url);
   };
 
   onListChanging = async () => {

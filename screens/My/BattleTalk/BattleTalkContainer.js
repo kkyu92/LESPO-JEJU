@@ -37,6 +37,42 @@ export default class extends React.Component {
           myProfile: M_PROFILE,
         });
         console.log(M_ID);
+        // get ChatRoomList
+        let list = [];
+        var userRef = firebase.database().ref('chatRoomList/');
+        // .orderByChild('key');
+        userRef.on('value', dataSnapshot => {
+          let chatRoomList = [];
+          dataSnapshot.forEach(child => {
+            chatRoomList.push({
+              key: child.key,
+              makeUser: child.val().makeUser,
+              joinUser: child.val().joinUser,
+              chatList: child.val().chatList,
+              date: child.val().date,
+              sports: child.val().sports,
+              area: child.val().area,
+              battleStyle: child.val().battleStyle,
+              battleDate: child.val().battleDate,
+              level: child.val().level,
+              memo: child.val().memo,
+              battleState: child.val().battleState,
+              battleResult: child.val().battleResult,
+              lastRealTime: child.val().lastRealTime,
+              lastMsg: child.val().lastMsg,
+            });
+            chatRoomList = chatRoomList.filter(
+              list => list.joinUser.userId !== '',
+            );
+            chatRoomList.sort(function(a, b) {
+              return new Date(b.lastRealTime) - new Date(a.lastRealTime);
+            });
+          });
+          this.setState({
+            chatRoomList: chatRoomList,
+            loading: false,
+          });
+        });
       } else {
         console.log('Login profile image null');
       }
@@ -100,61 +136,12 @@ export default class extends React.Component {
           name,
         },
       });
-      this.resetNotiData();
+      // this.setState({
+      //   loading: false,
+      // });
     }
-    try {
-      this.getData();
-      // get ChatRoomList
-      let list = [];
-      var userRef = firebase.database().ref('chatRoomList/');
-      // .orderByChild('key');
-      userRef.on('value', dataSnapshot => {
-        let chatRoomList = [];
-        dataSnapshot.forEach(child => {
-          chatRoomList.push({
-            key: child.key,
-            makeUser: child.val().makeUser,
-            joinUser: child.val().joinUser,
-            chatList: child.val().chatList,
-            date: child.val().date,
-            sports: child.val().sports,
-            area: child.val().area,
-            battleStyle: child.val().battleStyle,
-            battleDate: child.val().battleDate,
-            level: child.val().level,
-            memo: child.val().memo,
-            battleState: child.val().battleState,
-            battleResult: child.val().battleResult,
-            lastRealTime: child.val().lastRealTime,
-            lastMsg: child.val().lastMsg,
-          });
-          chatRoomList = chatRoomList.filter(
-            list => list.joinUser.userId !== '',
-          );
-          chatRoomList.sort(function(a, b) {
-            return new Date(b.lastRealTime) - new Date(a.lastRealTime);
-          });
-        });
-        this.setState({
-          chatRoomList: chatRoomList,
-        });
-      });
-    } catch (error) {
-      console.log(error);
-      error = "Cnat't get ChatRoomList";
-    } finally {
-      this.setState({
-        loading: false,
-      });
-    }
+    this.getData();
   }
-
-  resetNotiData = async () => {
-    await AsyncStorage.setItem('@NOTI_ROOMKEY', '');
-    await AsyncStorage.setItem('@NOTI_ID', '');
-    await AsyncStorage.setItem('@NOTI_NAME', '');
-    await AsyncStorage.setItem('@NOTI_PROFILE', '');
-  };
 
   componentWillUnmount() {
     console.log('componentWillUnmount[MY BattleTalkContainer]');

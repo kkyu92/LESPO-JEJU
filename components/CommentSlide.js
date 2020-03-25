@@ -14,8 +14,10 @@ import {
   GREY_COLOR2,
   TINT_COLOR,
   RED_COLOR,
+  BG_COLOR,
 } from '../constants/Colors';
 import Layout from '../constants/Layout';
+import IconDelete from 'react-native-vector-icons/MaterialIcons';
 import moment from 'moment';
 
 const Container = styled.View`
@@ -27,12 +29,12 @@ const Container = styled.View`
   background-color: ${TINT_COLOR};
 `;
 const ProfileContainer = styled.View`
-  width: 20%;
+  width: 15%;
   align-items: center;
   justify-content: center;
 `;
 const TextContainer = styled.View`
-  width: 65%;
+  width: 60%;
   align-items: flex-start;
   justify-content: center;
 `;
@@ -62,6 +64,9 @@ const DateText = styled.Text`
   font-size: 10px;
   font-weight: 600;
   align-self: flex-end;
+`;
+const DeleteBtn = styled.TouchableOpacity`
+  width: 10%;
 `;
 
 const styles = StyleSheet.create({
@@ -128,31 +133,32 @@ const CommentSlide = ({
   time,
   onRightPress,
 }) => (
-  <Swiperable
-    ref={ref => (row[index] = ref)}
-    onSwipeableOpen={() => closeRow(index)}
-    renderRightActions={(progress, dragX) => (
-      <RightAction
-        progress={progress}
-        dragX={dragX}
-        onPress={() => onRightPress(commentId, userId)}
-      />
-    )}>
-    <Container>
-      <ProfileContainer>
-        <Profile
-          source={require(`../assets/drawable-xxhdpi/icon_profile.png`)}
-        />
-      </ProfileContainer>
-      <TextContainer>
-        <NameText>{userName}</NameText>
-        <CommentText>{commentText}</CommentText>
-      </TextContainer>
-      <DateContainer>
-        <DateText>{moment(time).format('MM월 D일 h:mm a')}</DateText>
-      </DateContainer>
-    </Container>
-  </Swiperable>
+  // <Swiperable
+  //   ref={ref => (row[index] = ref)}
+  //   onSwipeableOpen={() => closeRow(index)}
+  //   renderRightActions={(progress, dragX) => (
+  //     <RightAction
+  //       progress={progress}
+  //       dragX={dragX}
+  //       onPress={() => onRightPress(commentId, userId)}
+  //     />
+  //   )}>
+  <Container>
+    <ProfileContainer>
+      <Profile source={require(`../assets/drawable-xxhdpi/icon_profile.png`)} />
+    </ProfileContainer>
+    <TextContainer>
+      <NameText>{userName}</NameText>
+      <CommentText>{commentText}</CommentText>
+    </TextContainer>
+    <DateContainer>
+      <DateText>{moment(time).format('MM월 D일 h:mm a')}</DateText>
+    </DateContainer>
+    <DeleteBtn onPress={() => onRightPress(commentId, userId)}>
+      <IconDelete size={30} name={'delete-forever'} color={`${BG_COLOR}`} />
+    </DeleteBtn>
+  </Container>
+  // </Swiperable>
 );
 // console.log(commentId, commentText, userId, userName, time);
 export const Separator = () => <View style={styles.separator} />;

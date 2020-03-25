@@ -106,13 +106,13 @@ const AddPresenter = ({loading, navigation}) =>
         <BtnContainer
           onPress={() =>
             Linking.openURL(
-              'mailto:support@lespo.com?subject=' +
-                JSON.stringify(EMAIL_TITLE) +
+              'mailto:lespojeju@naver.com?subject=' +
+                EMAIL_TITLE +
                 '&body=' +
-                JSON.stringify(EMAIL_DESCRIPTION),
+                EMAIL_DESCRIPTION,
             )
           }
-          title="support@lespo.com">
+          title="lespojeju@naver.com">
           <Text>고객센터</Text>
           <BtnImg
             source={require(`../../assets/drawable-xxhdpi/icon_callcenter.png`)}

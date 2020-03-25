@@ -9,7 +9,6 @@ import moment from 'moment';
 import {LESPO_API} from '../../../api/Api';
 import Firebase from 'react-native-firebase';
 import Toast from 'react-native-easy-toast';
-import RNKakaoPlusFriend from 'react-native-kakao-plus-friend';
 import {CHAT_ROOM_IN} from '../../../constants/Strings';
 
 var M_ID, M_NAME, M_PROFILE;
@@ -356,7 +355,7 @@ export default class extends React.Component {
       firebase
         .database()
         .ref('chatRoomList/' + this.state.roomKey + '/chatList')
-        .push({user, msg, date, read: reader})
+        .push({user, msg, date, read: reader, place: false})
         .then(data => {
           //success callback
           console.log('battle start notice Add: ', data);
@@ -372,7 +371,7 @@ export default class extends React.Component {
       firebase
         .database()
         .ref('chatRoomList/' + this.state.roomKey + '/chatList')
-        .push({user, msg, date, read: reader})
+        .push({user, msg, date, read: reader, place: false})
         .then(data => {
           //success callback
           console.log('battle start notice Add: ', data);
@@ -501,6 +500,12 @@ export default class extends React.Component {
       // 배틀 종료 및 평가하기
       this.endBattleFCM('battleEnd');
       this.checkEndUser();
+      this.changeModalVisiblity(true);
+    } else if (data === 'reCheck') {
+      this.setState({isRandomBox: 'reCheck'});
+      this.changeModalVisiblity(true);
+    } else if (data === 're') {
+      this.setState({isRandomBox: ''});
       this.changeModalVisiblity(true);
     } else if (data === 'start') {
       this.getBattleResult(rating, result);
@@ -708,7 +713,7 @@ export default class extends React.Component {
       firebase
         .database()
         .ref('chatRoomList/' + this.state.roomKey + '/chatList')
-        .push({user, msg, date, read: reader})
+        .push({user, msg, date, read: reader, place: false})
         .then(data => {
           //success callback
           console.log('battle start notice Add: ', data);
@@ -728,7 +733,7 @@ export default class extends React.Component {
       firebase
         .database()
         .ref('chatRoomList/' + this.state.roomKey + '/chatList')
-        .push({user, msg, date, read: reader})
+        .push({user, msg, date, read: reader, place: false})
         .then(data => {
           //success callback
           console.log('battle start notice Add: ', data);
@@ -805,12 +810,6 @@ export default class extends React.Component {
       });
   };
 
-  //친구 추가 하기로 링크
-  addFriendChannel = async () => {
-    console.log('구매문의');
-    const add = await RNKakaoPlusFriend.addFriend('_fxdMxlxb');
-    console.log(add);
-  };
   //바로 채팅하기로 링크
   chatChannel = async () => {
     Linking.openURL('https://pf.kakao.com/_fxdMxlxb/chat');

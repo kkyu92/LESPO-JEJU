@@ -1,10 +1,9 @@
 import React from 'react';
-import Text from 'react-native';
+import Text, {Linking} from 'react-native';
 import styled from 'styled-components';
 import {tv, movie, LESPO_API} from '../../../api/Api';
 import JejuGiftPresenter from './JejuGiftPresenter';
 import Firebase from 'react-native-firebase';
-import RNKakaoPlusFriend from 'react-native-kakao-plus-friend';
 import Toast from 'react-native-easy-toast';
 import {CHAT_ROOM_IN} from '../../../constants/Strings';
 
@@ -85,13 +84,10 @@ export default class extends React.Component {
 
   //친구 추가 하기로 링크
   addFriend = async () => {
-    console.log('구매문의');
-    const add = await RNKakaoPlusFriend.addFriend('_fxdMxlxb');
-    console.log(add);
-  };
-  //바로 채팅하기로 링크
-  chat = async () => {
-    await RNKakaoPlusFriend.chat('_fxdMxlxb');
+    Linking.openURL('https://pf.kakao.com/_fxdMxlxb');
+    // console.log('구매문의');
+    // const add = await RNKakaoPlusFriend.addFriend('_fxdMxlxb');
+    // console.log(add);
   };
 
   componentWillUnmount() {

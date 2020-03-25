@@ -313,8 +313,8 @@ export default class extends React.Component {
           // }),
         });
         Alert.alert(
-          '배틀등록 완료',
-          '나의 배틀 페이지에서 확인할 수 있습니다!',
+          '배틀등록이 완료되었습니다',
+          '내 정보->나의 배틀에 가서 확인하세요!',
         );
         this.props.navigation.dispatch(resetAction);
       } catch (error) {

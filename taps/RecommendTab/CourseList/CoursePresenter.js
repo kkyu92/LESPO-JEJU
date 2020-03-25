@@ -1,5 +1,5 @@
 import React from 'react';
-import {withNavigation} from 'react-navigation';
+import {withNavigation, FlatList} from 'react-navigation';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import styled from 'styled-components';
 import Loader from '../../../components/Loader';
@@ -24,10 +24,8 @@ const View = styled.View`
   flex: 1;
 `;
 
-const Container = styled.ScrollView`
+const Container = styled.View`
   background-color: ${TINT_COLOR};
-  padding-top: 10;
-  padding-bottom: 20;
   padding-left: 20;
   flex: 1;
 `;
@@ -134,51 +132,55 @@ const CoursePresenter = ({
         {loading ? (
           <Loader />
         ) : (
-          <>
-            {listChanged ? (
-              listChanged.length > 0 ? (
-                <Section horizontal={false} title="">
-                  {listChanged
-                    .filter(list => list.id !== null)
-                    .map(list =>
-                      JSON.stringify(list.matched_content_images) === '[]' ? (
+          <FlatList
+            data={listChanged}
+            renderItem={list => (
+              <>
+                {listChanged ? (
+                  listChanged.length > 0 ? (
+                    <Section horizontal={false} title="">
+                      {JSON.stringify(list.item.matched_content_images) ===
+                      '[]' ? (
                         <SubSlide
                           tag={'recommend'}
                           horizontal={false}
-                          key={list.id}
-                          id={list.id}
+                          key={list.item.id}
+                          id={list.item.id}
                           backgroundPoster={'no'}
-                          title={list.title}
-                          overview={list.description}
-                          detail={list.detail}
+                          poster={'no'}
+                          title={list.item.title}
+                          overview={list.item.description}
+                          detail={list.item.detail}
                           markerOn={markerOn}
-                          avg={list.like_count}
+                          avg={list.item.like_count}
                         />
                       ) : (
                         <SubSlide
                           tag={'recommend'}
                           horizontal={false}
-                          key={list.id}
-                          id={list.id}
+                          key={list.item.id}
+                          id={list.item.id}
                           backgroundPoster={
-                            list.matched_content_images[0].full_filename
+                            list.item.matched_content_images[0].full_filename
                           }
-                          title={list.title}
-                          overview={list.description}
-                          detail={list.detail}
+                          poster={list.item.matched_content_images}
+                          title={list.item.title}
+                          overview={list.item.description}
+                          detail={list.item.detail}
                           markerOn={markerOn}
-                          avg={list.like_count}
+                          avg={list.item.like_count}
                         />
-                      ),
-                    )}
-                </Section>
-              ) : (
-                <SearchNo text={'등록된 추천경로가 없습니다.'} />
-              )
-            ) : (
-              console.log('null')
+                      )}
+                    </Section>
+                  ) : (
+                    <SearchNo text={'등록된 추천경로가 없습니다.'} />
+                  )
+                ) : (
+                  console.log('null')
+                )}
+              </>
             )}
-          </>
+          />
         )}
       </Container>
     </View>

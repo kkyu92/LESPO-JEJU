@@ -6,7 +6,7 @@ import {Keyboard} from 'react-native';
 import Toast from 'react-native-easy-toast';
 import Firebase from 'react-native-firebase';
 import Animated from 'react-native-reanimated';
-import KakaoSDK from 'react-native-kakao-links';
+import RNKakaoLink from 'react-native-kakao-links';
 import {CHAT_ROOM_IN} from '../../constants/Strings';
 
 export default class extends React.Component {
@@ -239,7 +239,7 @@ export default class extends React.Component {
           ios: id,
         },
       };
-      const response = await KakaoSDK.link(options);
+      const response = await RNKakaoLink.link(options);
       console.log(response);
     } catch (error) {
       console.log('kakaoLink error : ' + error);

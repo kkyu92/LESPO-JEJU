@@ -68,9 +68,9 @@ export default class extends React.Component {
   }
 
   onListChanging = async () => {
-    this.setState({
-      loading: true,
-    });
+    // this.setState({
+    //   loading: true,
+    // });
     let listChanged = [];
     let locations = {
       mark: [],

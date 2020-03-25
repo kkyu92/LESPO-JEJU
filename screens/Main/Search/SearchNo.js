@@ -19,7 +19,10 @@ const Text = styled.Text`
   font-weight: 500;
 `;
 
-const Image = styled.Image``;
+const Image = styled.Image`
+  width: ${Layout.width / 4 + 12};
+  height: ${Layout.width / 4};
+`;
 
 const SearchNo = giveText => {};
 
@@ -42,9 +45,8 @@ export default class extends React.Component {
       <Container>
         <Text>{this.props.text}</Text>
         <Image
-          width={Layout.width / 2}
-          height={Layout.height / 2}
-          source={require(`../../../assets/drawable-xxhdpi/icon_loser_or.png`)}></Image>
+          source={require(`../../../assets/drawable-xxhdpi/icon_loser_or.png`)}
+        />
       </Container>
     );
   }

@@ -1,11 +1,10 @@
 import React from 'react';
-import {Text, View} from 'react-native';
+import {Text, View, Linking} from 'react-native';
 import styled from 'styled-components';
 import {LESPO_API} from '../../../api/Api';
 import JejuSoundPresenter from './JejuSoundPresenter';
 import Firebase from 'react-native-firebase';
 import Toast from 'react-native-easy-toast';
-import RNKakaoPlusFriend from 'react-native-kakao-plus-friend';
 import {CHAT_ROOM_IN} from '../../../constants/Strings';
 
 export default class extends React.Component {
@@ -87,14 +86,10 @@ export default class extends React.Component {
 
   //친구 추가 하기로 링크
   addFriend = async () => {
-    console.log('구매문의');
+    Linking.openURL('https://pf.kakao.com/_fxdMxlxb');
+    // console.log('구매문의');
     // const add = await RNKakaoPlusFriend.addFriend('_fxdMxlxb');
-    const add = await RNKakaoPlusFriend.chat('_fxdMxlxb');
-    console.log(add);
-  };
-  //바로 채팅하기로 링크
-  chat = async () => {
-    await RNKakaoPlusFriend.chat('_fxdMxlxb');
+    // console.log(add);
   };
 
   // List 입력값 받아온다

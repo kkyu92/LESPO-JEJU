@@ -10,7 +10,7 @@ import Firebase from 'react-native-firebase';
 import Toast from 'react-native-easy-toast';
 import {CHAT_ROOM_IN} from '../../constants/Strings';
 
-export default class extends React.Component {
+export default class extends React.PureComponent {
   static navigationOptions = () => {
     // return {
     //   title: navigation.getParam("title")
@@ -29,6 +29,8 @@ export default class extends React.Component {
     } = props;
     this.state = {
       loading: true,
+      latitudeMY: null,
+      longitudeMY: null,
       latitude: null,
       longitude: null,
       latDelta: null,
@@ -64,18 +66,17 @@ export default class extends React.Component {
   locateCurrentPosition = () => {
     Geolocation.getCurrentPosition(
       position => {
+        const {latitude, longitude} = position.coords;
         try {
-          const {latitude, longitude} = position.coords;
           this.setState({
-            latitude: latitude,
-            longitude: longitude,
+            latitudeMY: latitude,
+            longitudeMY: longitude,
             latDelta: 0.035,
             lonDelta: 0.035,
           });
+          console.log('setState');
         } catch (error) {
           console.log(error);
-        } finally {
-          console.log('MapView: ', this.state.latitude, this.state.longitude);
         }
       },
       error => {
@@ -217,6 +218,7 @@ export default class extends React.Component {
     } else {
       console.log('mainState: ' + mainState);
       try {
+        this.onContentsListChanging(mainState);
         this.setState({
           loading: false,
         });
@@ -697,6 +699,8 @@ export default class extends React.Component {
   render() {
     const {
       loading,
+      latitudeMY,
+      longitudeMY,
       latitude,
       longitude,
       latDelta,
@@ -708,11 +712,13 @@ export default class extends React.Component {
       listName,
     } = this.state;
     // 위치정보 받기 전
-    if (latitude) {
+    if (latitudeMY) {
       return (
         <>
           <MapPresenter
             loading={loading}
+            latitudeMY={latitudeMY}
+            longitudeMY={longitudeMY}
             latitude={latitude}
             longitude={longitude}
             latDelta={latDelta}

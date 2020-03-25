@@ -25,6 +25,7 @@ export default class extends React.Component {
       },
     } = props;
     this.state = {
+      notiCheck: false,
       roomKey,
       id,
       profile,
@@ -240,7 +241,7 @@ export default class extends React.Component {
   };
 
   // write Data [ set / push = uuid ]
-  writeChattingAdd(key, user, msg, date, read) {
+  writeChattingAdd(key, user, msg, date, read, place = false) {
     let {getChatList} = this.state;
     getChatList.push({
       key: '',
@@ -248,11 +249,12 @@ export default class extends React.Component {
       msg: msg,
       date: date,
       read: read,
+      place,
     });
     firebase
       .database()
       .ref('chatRoomList/' + key + '/chatList/')
-      .push({user, msg, date, read})
+      .push({user, msg, date, read, place})
       .then(data => {
         //success callback
         console.log('writeChatting Add: ', data);
@@ -375,6 +377,7 @@ export default class extends React.Component {
           msg: child.msg,
           date: child.date,
           read: reader,
+          place: child.place,
         };
       });
       console.log('check :::: chatList UPDATE');
@@ -526,7 +529,13 @@ export default class extends React.Component {
   async componentDidMount() {
     let MID = await AsyncStorage.getItem('@USER_ID');
     let MNAME = await AsyncStorage.getItem('@USER_NAME');
-    let {getChatList, roomKey} = this.state;
+    let {getChatList, roomKey, notiCheck} = this.state;
+
+    let id = await AsyncStorage.getItem('@NOTI_ID');
+    if (id) {
+      this.setState({notiCheck: true});
+      this.resetNotiData();
+    }
 
     // fcm setting
     const enable = await Firebase.messaging().hasPermission();
@@ -547,6 +556,7 @@ export default class extends React.Component {
                   msg: child.val().msg,
                   date: child.val().date,
                   read: child.val().read,
+                  place: child.val().place,
                 });
               });
             });
@@ -567,6 +577,7 @@ export default class extends React.Component {
                     msg: child.val().msg,
                     date: child.val().date,
                     read: reader,
+                    place: child.val().place,
                   });
                 });
               });
@@ -647,6 +658,7 @@ export default class extends React.Component {
             msg: child.val().msg,
             date: child.val().date,
             read: child.val().read,
+            place: child.val().place,
           });
           this.setState({
             getChatList: getChatList,
@@ -676,6 +688,13 @@ export default class extends React.Component {
       }
     }
   }
+
+  resetNotiData = async () => {
+    await AsyncStorage.setItem('@NOTI_ROOMKEY', '');
+    await AsyncStorage.setItem('@NOTI_ID', '');
+    await AsyncStorage.setItem('@NOTI_NAME', '');
+    await AsyncStorage.setItem('@NOTI_PROFILE', '');
+  };
 
   setData = async data => {
     console.log('setData::: ', data);
@@ -742,7 +761,11 @@ export default class extends React.Component {
                 battleState: '배틀진행중',
               });
               this.updateState(M_ID, 'OK');
-              this.refs.toast.show('배틀신청을 수락했습니다.');
+              // this.refs.toast.show('배틀신청을 수락했습니다.');
+              Alert.alert(
+                '배틀신청을 수락했습니다.',
+                '나의 배틀에 가서 배틀현황을 확인하세요 !',
+              );
             } else {
               // 상대 코인 부족
               console.log('상대방의 코인 갯수: ' + this.state.otherCoin);
@@ -878,6 +901,7 @@ export default class extends React.Component {
           .local()
           .format('LT'),
         reader,
+        (place = true),
       );
     } catch (error) {
       console.log('insert Chatting message error ::: ' + error);
@@ -887,6 +911,7 @@ export default class extends React.Component {
   render() {
     const {
       loading,
+      notiCheck,
       getChatList,
       msg,
       profile,
@@ -901,6 +926,7 @@ export default class extends React.Component {
       <>
         <BattleTalkPresenter
           loading={loading}
+          notiCheck={notiCheck}
           getChatList={getChatList}
           insertChatList={this.insertChatList}
           msgHandler={this.msgHandler}

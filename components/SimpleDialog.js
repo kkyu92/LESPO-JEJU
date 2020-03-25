@@ -17,6 +17,7 @@ import {
   BG_COLOR,
   TINT_COLOR,
   GREY_COLOR3,
+  BLACK_COLOR,
 } from '../constants/Colors';
 import Toast from 'react-native-easy-toast';
 
@@ -79,7 +80,7 @@ export default class SimpleDialog extends Component {
   createRandomNumber = () => {
     // [ 20 / 20 / 20 / 15 / 15 / 10 ]
     let RandomNumber = Math.floor(Math.random() * 100) + 1;
-    // let RandomNumber = 55;
+    // let RandomNumber = 35;
     console.log('random number: ' + RandomNumber);
     if (RandomNumber < 31) {
       this.setState({randomNum: 'fail'});
@@ -508,11 +509,78 @@ export default class SimpleDialog extends Component {
               onPress={() => {
                 this.state.battleResult === ''
                   ? this.refs.toast.show('승패를 선택해주세요!')
-                  : this.closeModal('start');
+                  : this.closeModal('reCheck');
               }}
               style={styles.ratingBtn}
               underlayColor={'#f1f1f1'}>
               <Text style={[styles.text, {color: TINT_COLOR}]}> 평가하기 </Text>
+            </TouchableHighlight>
+          </View>
+        </View>
+        <Toast
+          ref="toast"
+          style={{backgroundColor: BG_COLOR}}
+          position="bottom"
+          positionValue={100}
+          fadeInDuration={750}
+          fadeOutDuration={1500}
+          opacity={1}
+          textStyle={{color: TINT_COLOR}}
+        />
+      </TouchableOpacity>
+    ) : this.props.battleState === '배틀종료' &&
+      this.props.isRandomBox === 'reCheck' ? ( // 평가하기
+      <TouchableOpacity
+        activeOpacity={1}
+        disabled={true}
+        style={styles.contentContainer}>
+        <View style={[styles.ratingModal, {width: this.state.width - 80}]}>
+          <View style={styles.titleView}>
+            <Text style={[styles.ratingText, {color: 'black'}, {fontSize: 30}]}>
+              배틀결과
+            </Text>
+            <Text style={styles.centerText}> 내가 선택한 결과 </Text>
+            <View style={styles.imageContainer}>
+              {this.state.battleResult === 'win' ? (
+                <TouchableOpacity style={styles.imageBtnSelect}>
+                  <Image
+                    style={styles.image}
+                    source={require(`../assets/drawable-xxhdpi/icon_winner_wh.png`)}
+                  />
+                  <Text style={styles.textSelect}>승</Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity style={styles.imageBtnSelect}>
+                  <Image
+                    style={styles.image}
+                    source={require(`../assets/drawable-xxhdpi/icon_loser_wh.png`)}
+                  />
+                  <Text style={styles.textSelect}>패</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+            <Text style={styles.centerText}>
+              {' '}
+              선택한 결과는 수정이 불가능합니다.{'\n'}
+              (다시 선택을 원하시면 선택취소 버튼을 눌러주세요.)
+            </Text>
+          </View>
+          <View style={styles.ratingBtnView}>
+            <TouchableHighlight
+              onPress={() => {
+                this.closeModal('re');
+              }}
+              style={styles.ratingBtn}
+              underlayColor={'#f1f1f1'}>
+              <Text style={[styles.text, {color: TINT_COLOR}]}> 선택취소 </Text>
+            </TouchableHighlight>
+            <TouchableHighlight
+              onPress={() => {
+                this.closeModal('start');
+              }}
+              style={styles.ratingBtn}
+              underlayColor={'#f1f1f1'}>
+              <Text style={[styles.text, {color: TINT_COLOR}]}> 확인 </Text>
             </TouchableHighlight>
           </View>
         </View>
@@ -890,6 +958,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  centerText: {
+    marginTop: 10,
+    marginLeft: 5,
+    marginRight: 5,
+    marginBottom: 15,
+    alignItems: 'center',
+    alignSelf: 'center',
+    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
   imageContainer: {
     width: '100%',
     flexDirection: 'row',
@@ -955,6 +1034,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: BG_COLOR,
     paddingVertical: 10,
+    margin: 5,
     alignSelf: 'stretch',
     alignItems: 'center',
     borderRadius: 10,
@@ -978,6 +1058,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignSelf: 'stretch',
     fontWeight: 'bold',
+    color: BLACK_COLOR,
     // textAlign: 'center',
     borderWidth: 1,
     borderColor: BG_COLOR,

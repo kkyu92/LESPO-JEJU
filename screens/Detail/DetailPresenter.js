@@ -114,7 +114,7 @@ const Profile = styled.Image`
 `;
 
 const LikeCount = styled.Text`
-  color: ${BG_COLOR};
+  color: ${GREY_COLOR3};
   font-size: 16px;
   font-weight: 600;
 `;
@@ -341,7 +341,7 @@ const DetailPresenter = ({
                   <BookMark
                     size={30}
                     name={'bookmark-border'}
-                    color={`${BG_COLOR}`}
+                    color={`${GREY_COLOR2}`}
                   />
                   {/* <Icon
                     size={Platform.OS === 'ios' ? 30 : 30}
@@ -367,7 +367,7 @@ const DetailPresenter = ({
                   <IconLike
                     size={Platform.OS === 'ios' ? 25 : 25}
                     name={'like2'}
-                    color={`${BG_COLOR}`}
+                    color={`${GREY_COLOR2}`}
                   />
                 </TouchableOpacity>
               )}

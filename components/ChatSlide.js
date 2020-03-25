@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import {withNavigation} from 'react-navigation';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {Platform} from 'react-native';
+import {Platform, Linking} from 'react-native';
 import {Rating, AirbnbRating} from 'react-native-ratings';
 import {
   BG_COLOR,
@@ -49,7 +49,22 @@ const TextContainer = styled.View`
 const RightTextContainer = styled.View`
   align-items: flex-end;
 `;
+const Touchable = styled.TouchableOpacity``;
+const LeftTouchable = styled.TouchableOpacity`
+  max-width: 50%;
+`;
 
+const LeftPlaceText = styled.Text`
+  margin-left: 5px;
+  margin-right: 5px;
+  padding: 10px;
+  border-radius: 10px;
+  border-width: 1px;
+  border-color: ${BG_COLOR};
+  color: ${BG_COLOR};
+  text-align: left;
+  /* align-self: center; */
+`;
 const MsgText = styled.Text`
   margin-left: 5px;
   margin-right: 5px;
@@ -87,6 +102,19 @@ const ReadText = styled.Text`
   font-size: 10px;
 `;
 
+const ChangeUrl = place => {
+  var placeArray = place.split('\n');
+  const url = Platform.select({
+    // ios: 'maps:?q=' + placeArray[1],
+    // ios: 'maps:?q=' + placeArray[0] + '@33.529293,126.838147',
+    ios: 'https://www.google.com/maps/search/?api=1&query=' + placeArray[1],
+    android: 'https://www.google.com/maps/search/?api=1&query=' + placeArray[1],
+  });
+  // let url =
+  //   'geo:33.529293,126.838147?center=33.529293,126.838147&q=33.529293,126.838147(평대초등학교 운동장)&z=16';
+  Linking.openURL(url);
+};
+
 // 체팅 리스트 아이템
 const ChatSlide = ({
   prevDate,
@@ -97,6 +125,7 @@ const ChatSlide = ({
   msg,
   user,
   reader,
+  place,
   name,
   profile,
   myId,
@@ -123,9 +152,19 @@ const ChatSlide = ({
           <DateText>{date}</DateText>
         )}
       </RightTextContainer>
-      <MsgContainer>
-        <RightMsgText>{msg}</RightMsgText>
-      </MsgContainer>
+      {place ? (
+        <MsgContainer>
+          <Touchable onPress={() => ChangeUrl(msg)}>
+            <RightMsgText style={{textDecorationLine: 'underline'}}>
+              {msg}
+            </RightMsgText>
+          </Touchable>
+        </MsgContainer>
+      ) : (
+        <MsgContainer>
+          <RightMsgText>{msg}</RightMsgText>
+        </MsgContainer>
+      )}
     </RightContainer>
   ) : (
     <Container>
@@ -150,7 +189,15 @@ const ChatSlide = ({
           }
         />
       )}
-      <MsgText>{msg}</MsgText>
+      {place ? (
+        <LeftTouchable onPress={() => ChangeUrl(msg)}>
+          <LeftPlaceText style={{textDecorationLine: 'underline'}}>
+            {msg}
+          </LeftPlaceText>
+        </LeftTouchable>
+      ) : (
+        <MsgText>{msg}</MsgText>
+      )}
       <TextContainer>
         <ReadText>
           {2 - Object.keys(reader).length === 0

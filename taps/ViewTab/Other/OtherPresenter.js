@@ -1,5 +1,5 @@
 import React from 'react';
-import {withNavigation} from 'react-navigation';
+import {withNavigation, FlatList} from 'react-navigation';
 import styled from 'styled-components';
 import Loader from '../../../components/Loader';
 import {BG_COLOR, TINT_COLOR, GREY_COLOR3} from '../../../constants/Colors';
@@ -34,12 +34,10 @@ const MapText = styled.Text`
   font-size: 14px;
 `;
 
-const Container = styled.ScrollView`
+const Container = styled.View`
   border-top-left-radius: 15px;
   border-top-right-radius: 15px;
   background-color: white;
-  padding-top: 10;
-  padding-bottom: 20;
   padding-left: 20;
   flex: 1;
 `;
@@ -64,51 +62,53 @@ const OtherPresenter = ({loading, listChanged, locations, navigation}) =>
         {loading ? (
           <Loader />
         ) : (
-          <>
-            {listChanged ? (
-              listChanged.length > 0 ? (
-                <Section horizontal={false} title="">
-                  {listChanged
-                    .filter(list => list.id !== null)
-                    .map(list =>
-                      JSON.stringify(list.matched_content_images) === '[]' ? (
+          <FlatList
+            data={listChanged}
+            renderItem={list => (
+              <>
+                {listChanged ? (
+                  listChanged.length > 0 ? (
+                    <Section horizontal={false} title="">
+                      {JSON.stringify(list.item.matched_content_images) ===
+                      '[]' ? (
                         <SubSlide
                           tag={'notag'}
                           horizontal={false}
-                          key={list.id}
-                          id={list.id}
+                          key={list.item.id}
+                          id={list.item.id}
                           backgroundPoster={'no'}
                           poster={'no'}
-                          title={list.title}
-                          overview={list.description}
-                          detail={list.detail}
-                          avg={list.like_count}
+                          title={list.item.title}
+                          overview={list.item.description}
+                          detail={list.item.detail}
+                          avg={list.item.like_count}
                         />
                       ) : (
                         <SubSlide
                           tag={'notag'}
                           horizontal={false}
-                          key={list.id}
-                          id={list.id}
+                          key={list.item.id}
+                          id={list.item.id}
                           backgroundPoster={
-                            list.matched_content_images[0].full_filename
+                            list.item.matched_content_images[0].full_filename
                           }
-                          poster={list.matched_content_images}
-                          title={list.title}
-                          overview={list.description}
-                          detail={list.detail}
-                          avg={list.like_count}
+                          poster={list.item.matched_content_images}
+                          title={list.item.title}
+                          overview={list.item.description}
+                          detail={list.item.detail}
+                          avg={list.item.like_count}
                         />
-                      ),
-                    )}
-                </Section>
-              ) : (
-                <SearchNo text={'등록된 리스트가 없습니다.'} />
-              )
-            ) : (
-              console.log('null')
+                      )}
+                    </Section>
+                  ) : (
+                    <SearchNo text={'등록된 리스트가 없습니다.'} />
+                  )
+                ) : (
+                  console.log('null')
+                )}
+              </>
             )}
-          </>
+          />
         )}
       </Container>
     </View>

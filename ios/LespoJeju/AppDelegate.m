@@ -7,11 +7,14 @@
 
 #import "AppDelegate.h"
 
+#import <React/RCTLinkingManager.h>
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 #import <KakaoOpenSDK/KakaoOpenSDK.h>
-#import <KakaoPlusFriend/KakaoPlusFriend.h>
+#import <KakaoLink/KakaoLink.h>
+#import <KakaoMessageTemplate/KakaoMessageTemplate.h>
+// #import <KakaoPlusFriend/KakaoPlusFriend.h>
 #import <NaverThirdPartyLogin/NaverThirdPartyLoginConnection.h>
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <GoogleMaps/GoogleMaps.h>
@@ -88,6 +91,14 @@ if ([url.scheme isEqualToString:@"naverlogin"]) {
 
     return false;
 }
+
+// - (BOOL)application:(UIApplication *)application continueUserActivity:(nonnull NSUserActivity *)userActivity
+//  restorationHandler:(nonnull void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable))restorationHandler
+// {
+//  return [RCTLinkingManager application:application
+//                   continueUserActivity:userActivity
+//                     restorationHandler:restorationHandler];
+// }
 
 // NAVER LOGIN #4. 인증방법 적용안함
 // - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary *)options {

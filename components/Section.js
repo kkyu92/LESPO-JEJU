@@ -8,6 +8,8 @@ const Container = styled.View`
   margin-bottom: 20px;
 `;
 
+const VerticalContainer = styled.View``;
+
 const NoticeContainer = styled.View``;
 
 const Title = styled.Text`
@@ -34,12 +36,18 @@ const Section = ({title, children, horizontal = true}) =>
         {children}
       </ScrollView>
     </NoticeContainer>
-  ) : (
+  ) : title === 'chat' ? (
     <Container>
       <ScrollView horizontal={horizontal} showsVerticalScrollIndicator={false}>
         {children}
       </ScrollView>
     </Container>
+  ) : (
+    <VerticalContainer>
+      <ScrollView horizontal={horizontal} showsVerticalScrollIndicator={false}>
+        {children}
+      </ScrollView>
+    </VerticalContainer>
   );
 
 Section.propTypes = {

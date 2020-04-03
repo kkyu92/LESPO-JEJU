@@ -73,7 +73,7 @@ export default class SimpleDialog extends Component {
       this.props.setData(data, this.state.handleEmail);
     } else {
       this.props.changeModalVisiblity(false);
-      this.props.setData(data, this.state.rating);
+      this.props.setData(data, this.state.rating, this.state.battleResult);
     }
   };
 
@@ -541,7 +541,9 @@ export default class SimpleDialog extends Component {
             </Text>
             <Text style={styles.centerText}> 내가 선택한 결과 </Text>
             <View style={styles.imageContainer}>
-              {this.state.battleResult === 'win' ? (
+              {this.state.battleResult === 'win' ||
+              (JSON.stringify(this.props.myId) === this.props.winner &&
+                JSON.stringify(this.props.myId) !== this.props.loser) ? (
                 <TouchableOpacity style={styles.imageBtnSelect}>
                   <Image
                     style={styles.image}

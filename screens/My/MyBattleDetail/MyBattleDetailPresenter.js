@@ -102,6 +102,8 @@ const NameText = styled.Text`
   font-size: 20px;
   font-weight: 600;
   text-align: center;
+  align-items: center;
+  justify-content: center;
   margin-top: 20px;
   margin-bottom: 20px;
 `;
@@ -254,7 +256,9 @@ const MyBattleDetailPresenter = ({
   endUser1,
   endUser2,
   openBox,
+  battleResult,
   changeModalVisiblity,
+  setData,
   navigation,
 }) =>
   loading ? (
@@ -297,7 +301,11 @@ const MyBattleDetailPresenter = ({
                   source={require(`../../../assets/drawable-xxhdpi/icon_profile.png`)}
                 />
               )}
-              <NameText>{'대기중입니다...'}</NameText>
+              {statusText === '배틀종료' ? (
+                <NameText>{'상대방이\n나갔습니다.'}</NameText>
+              ) : (
+                <NameText>{'대기중입니다...'}</NameText>
+              )}
             </UserContainer>
           ) : (
             <UserContainer>
@@ -390,7 +398,7 @@ const MyBattleDetailPresenter = ({
             <BtnText>평가하기</BtnText>
           </Btn>
         ) : endUser1 === myId && endUser2 !== myId && openBox === 'false' ? (
-          <Btn>
+          <Btn onPress={() => setData('reCheck', '', battleResult)}>
             <BtnText>상대의 평가를 기다리는중.</BtnText>
           </Btn>
         ) : (

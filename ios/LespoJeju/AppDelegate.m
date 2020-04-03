@@ -67,8 +67,11 @@
               BOOL handled;
 if ([url.scheme isEqualToString:@"naverlogin"]) {
     handled = [[NaverThirdPartyLoginConnection getSharedInstance] application:application openURL:url options:options];
+  } else if ([url.scheme isEqualToString:@"kakao4f9e332e4542802f6f7587f6294cff32"]) {
+    handled = [RCTLinkingManager application:application openURL:url options:options];
+  } else {
+    handled = [[FBSDKApplicationDelegate sharedInstance] application:application openURL:url options:options];
   }
-  handled =  [[FBSDKApplicationDelegate sharedInstance] application:application openURL:url options:options];
   // Add any custom logic here.
   return handled;
 }
@@ -88,9 +91,13 @@ if ([url.scheme isEqualToString:@"naverlogin"]) {
     if ([KOSession isKakaoAccountLoginCallback:url]) {
         return [KOSession handleOpenURL:url];
     }
-
     return false;
 }
+// - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url
+//  options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
+// {
+//  return [RCTLinkingManager application:app openURL:url options:options];
+// }
 
 // - (BOOL)application:(UIApplication *)application continueUserActivity:(nonnull NSUserActivity *)userActivity
 //  restorationHandler:(nonnull void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable))restorationHandler

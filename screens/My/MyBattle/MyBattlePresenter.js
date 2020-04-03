@@ -23,7 +23,7 @@ const Container = styled.ScrollView`
   flex: 1;
 `;
 let itemCount = [];
-const MyBattlePresenter = ({loading, chatRoomList, myId}) =>
+const MyBattlePresenter = ({loading, chatRoomList, myId, deleteMyBattle}) =>
   loading ? (
     <Loader />
   ) : (
@@ -76,6 +76,7 @@ const MyBattlePresenter = ({loading, chatRoomList, myId}) =>
                             endUser={list.endUser}
                             openBox={list.openBox}
                             requestUser={list.requestUser}
+                            deleteMyBattle={deleteMyBattle}
                           />
                         )
                       ),

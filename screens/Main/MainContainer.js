@@ -6,8 +6,9 @@ import Firebase from 'react-native-firebase';
 import firebase from 'firebase';
 import AsyncStorage from '@react-native-community/async-storage';
 import Toast from 'react-native-easy-toast';
-import {Linking} from 'react-native';
+import {Linking, Platform} from 'react-native';
 import {CHAT_ROOM_IN} from '../../constants/Strings';
+import {ShareLink} from '../../components/Linking';
 
 // set DATA = Container
 export default class extends React.Component {
@@ -18,6 +19,7 @@ export default class extends React.Component {
     const {navigation} = this.props;
     this.state = {
       loading: true,
+      detailId: '',
       mainList: [],
       foodList: [],
       playList: [],
@@ -67,27 +69,45 @@ export default class extends React.Component {
         });
       },
     );
-    // link
-    if (Platform.OS === 'android') {
-      //안드로이드는 아래와 같이 initialURL을 확인하고 navigate 합니다.
-      Linking.getInitialURL().then(url => {
-        if (url) this.navigate(url);
-        // console.log('into the link get url: ' + url);
-      });
-    } else {
-      //ios는 이벤트리스너를 mount/unmount 하여 url을 navigate 합니다.
-      Linking.getInitialURL()
-        .then(ev => {
-          if (ev) {
-            console.log('ios ev: ' + ev);
-            this.handleOpenURL(ev);
-          }
-        })
-        .catch(err => {
-          console.warn('An error occurred', err);
+
+    // 공유하기 Deep Link
+    Linking.getInitialURL().then(url => {
+      if (url) {
+        console.log('all ev: ' + url);
+        let id = ShareLink.navigate(url);
+        this.props.navigation.navigate({
+          routeName: 'Detail',
+          params: {
+            id: id,
+          },
         });
-      Linking.addEventListener('url', this.handleOpenURL);
-    }
+      }
+    });
+    Linking.addEventListener(
+      'url',
+      (ShareLink.handleOpenURL = id => {
+        let url = id.url;
+        console.log('all ev: ' + url);
+        const paths = url.split('?'); // 쿼리스트링 관련한 패키지들을 활용하면 유용합니다.
+        if (paths.length > 1) {
+          //파라미터가 있다
+          const params = paths[1].split('&');
+          let id;
+          for (let i = 0; i < params.length; i++) {
+            let param = params[i].split('='); // [0]: key, [1]:value
+            if (param[0] === 'id') {
+              id = Number(param[1]); //id=3
+            }
+          }
+          this.props.navigation.navigate({
+            routeName: 'Detail',
+            params: {
+              id: id,
+            },
+          });
+        }
+      }),
+    );
 
     this._isMounted = true;
     let noti = await AsyncStorage.getItem('@NOTI_ROOMKEY');
@@ -105,37 +125,6 @@ export default class extends React.Component {
       }),
     ];
   }
-
-  navigate = url => {
-    console.log('link URL: ' + url); // exampleapp://somepath?id=3
-    const paths = url.split('?'); // 쿼리스트링 관련한 패키지들을 활용하면 유용합니다.
-    if (paths.length > 1) {
-      //파라미터가 있다
-      const params = paths[1].split('&');
-      let id;
-      for (let i = 0; i < params.length; i++) {
-        let param = params[i].split('='); // [0]: key, [1]:value
-        if (param[0] === 'id') {
-          id = Number(param[1]); //id=3
-        }
-      }
-      this.props.navigation.navigate({
-        routeName: 'Detail',
-        params: {
-          id: id,
-        },
-      });
-    }
-  };
-
-  handleOpenURL = event => {
-    let url = JSON.stringify(event);
-    url = url.replace('"', '');
-    url = url.replace('"', '');
-    console.log(url);
-    //이벤트 리스너.
-    this.navigate(url);
-  };
 
   onListChanging = async () => {
     this.setState({
@@ -200,7 +189,7 @@ export default class extends React.Component {
     this._isMounted = false;
     this.subs.forEach(sub => sub.remove());
     this.removeNotificationOpenedListener();
-    Linking.removeEventListener('url', this.handleOpenURL);
+    Linking.removeEventListener('url', ShareLink.handleOpenURL);
     firebase
       .database()
       .ref('FcmTokenList')

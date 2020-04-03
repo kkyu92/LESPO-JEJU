@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import {withNavigation} from 'react-navigation';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {Platform} from 'react-native';
+import {Platform, Alert} from 'react-native';
 import {Rating, AirbnbRating} from 'react-native-ratings';
 import {
   BG_COLOR,
@@ -177,6 +177,19 @@ const StatusEnd = styled.View`
 const StatusTextEnd = styled.Text`
   color: ${GREY_COLOR2};
 `;
+const StatusDelete = styled.TouchableOpacity`
+  justify-content: center;
+  align-items: center;
+  border-radius: 5;
+  border-width: 1;
+  border-color: ${RED_COLOR};
+  background-color: ${RED_COLOR};
+  padding: 5px;
+`;
+
+const StatusTextDelete = styled.Text`
+  color: ${TINT_COLOR};
+`;
 
 // 별점 표시
 ratingCompleted = rating => {
@@ -185,6 +198,7 @@ ratingCompleted = rating => {
 
 // 리스트 기본틀
 const BattleSlide = ({
+  deleteMyBattle,
   requestUser,
   openBox,
   endUser,
@@ -383,16 +397,39 @@ const BattleSlide = ({
         </StatusEnd>
         {battleResult.lose !== '' && battleResult.win !== '' ? (
           battleResult.win === myId &&
-          endUser.user1 === myId &&
+          endUser.user1 !== '' &&
           endUser.user2 !== '' &&
           openBox === false ? (
             <Status>
               <StatusText>랜덤박스{'\n'}확인하기</StatusText>
             </Status>
           ) : (
-            <StatusEnd>
-              <StatusTextEnd>평가완료</StatusTextEnd>
-            </StatusEnd>
+            <>
+              <StatusEnd>
+                <StatusTextEnd>평가완료</StatusTextEnd>
+              </StatusEnd>
+              <StatusDelete
+                onPress={() =>
+                  Alert.alert(
+                    '배틀내역 삭제하기',
+                    '나의 배틀 내역을 삭제합니다',
+                    [
+                      {
+                        text: '취소',
+                        onPress: () => console.log('Cancel Pressed'),
+                        style: 'cancel',
+                      },
+                      {
+                        text: '삭제',
+                        onPress: () => deleteMyBattle(roomKey, myId, id),
+                      },
+                    ],
+                    {cancelable: false},
+                  )
+                }>
+                <StatusTextDelete>삭제하기</StatusTextDelete>
+              </StatusDelete>
+            </>
           )
         ) : (battleResult.lose === myId && battleResult.win === '') ||
           (battleResult.lose === '' && battleResult.win === myId) ? (

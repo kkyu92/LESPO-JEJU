@@ -9,7 +9,7 @@ import moment from 'moment';
 import {LESPO_API} from '../../../api/Api';
 import Firebase from 'react-native-firebase';
 import Toast from 'react-native-easy-toast';
-import {CHAT_ROOM_IN} from '../../../constants/Strings';
+import {CHAT_ROOM_IN, RESPONSE_OK} from '../../../constants/Strings';
 
 var M_ID, M_NAME, M_PROFILE;
 
@@ -61,6 +61,8 @@ export default class extends React.Component {
       endCheck: '',
       endUser1: '',
       endUser2: '',
+      winner: '',
+      loser: '',
       openBox: false,
       roomMaker: '',
       error: null,
@@ -122,12 +124,56 @@ export default class extends React.Component {
                     this.changeModalVisiblity(true), 1000;
                   });
                   // this.changeModalVisiblity(true);
+                } else if (
+                  '' !== this.state.endUser2 &&
+                  'true' !== this.state.openBox &&
+                  winner !== JSON.stringify(this.state.myId) &&
+                  notification.android._notification._data.name ===
+                    this.state.name &&
+                  notification.android._notification._data.msg ===
+                    '평가를 완료했습니다.'
+                ) {
+                  this.setState({isRandomBox: 'fail', openBox: 'true'});
+                  setTimeout(() => {
+                    this.changeModalVisiblity(true), 1000;
+                  });
                 }
               }
               this.setState({
                 statusText: state,
               });
             });
+          } else {
+            let makerId, makerName;
+            let joinerId, joinerName;
+            var checkMaker = firebase
+              .database()
+              .ref('chatRoomList/' + this.state.roomKey + '/makeUser');
+            checkMaker.once('value', dataSnapshot => {
+              console.log(dataSnapshot);
+              makerId = dataSnapshot.val().userId;
+              makerName = dataSnapshot.val().userName;
+              console.log(makerId, makerName);
+            });
+            var checkJoiner = firebase
+              .database()
+              .ref('chatRoomList/' + this.state.roomKey + '/joinUser');
+            checkJoiner.once('value', dataSnapshot => {
+              console.log(dataSnapshot);
+              joinerId = dataSnapshot.val().userId;
+              joinerName = dataSnapshot.val().userName;
+              console.log(joinerId, joinerName);
+            });
+            if (this.state.myId === makerId) {
+              this.setState({
+                name: joinerName,
+              });
+            } else if (this.state.myId === joinerId) {
+              this.setState({
+                name: makerName,
+              });
+            }
+            console.log('myId: ' + this.state.myId);
           }
         },
       );
@@ -278,6 +324,9 @@ export default class extends React.Component {
       battleWin.on('value', dataSnapshot => {
         console.log('who is winner: ' + JSON.stringify(dataSnapshot));
         winner = JSON.stringify(dataSnapshot);
+        this.setState({
+          winner,
+        });
       });
       var battleLose = firebase
         .database()
@@ -285,6 +334,9 @@ export default class extends React.Component {
       battleLose.on('value', dataSnapshot => {
         console.log('who is loser: ' + JSON.stringify(dataSnapshot));
         loser = JSON.stringify(dataSnapshot);
+        this.setState({
+          loser,
+        });
       });
 
       if (
@@ -393,7 +445,7 @@ export default class extends React.Component {
           this.state.myId,
           this.state.myName,
           this.state.myProfile,
-          msg,
+          RESPONSE_OK,
           otherToken,
         );
       });
@@ -503,9 +555,25 @@ export default class extends React.Component {
       this.changeModalVisiblity(true);
     } else if (data === 'reCheck') {
       this.setState({isRandomBox: 'reCheck'});
+      // console.log(
+      //   'battleResult: ' + result,
+      //   'winner: ' + this.state.winner,
+      //   'loser: ' + this.state.loser,
+      //   'myId: ' + this.state.myId,
+      // );
+      // this.setState({
+      //   isRandomBox: 'reCheck',
+      //   battleResult: result,
+      //   winner: this.state.winner,
+      //   loser: this.state.loser,
+      //   myId: this.state.myId,
+      // });
       this.changeModalVisiblity(true);
     } else if (data === 're') {
-      this.setState({isRandomBox: ''});
+      this.setState({
+        isRandomBox: '',
+      });
+      this.cancelChoice();
       this.changeModalVisiblity(true);
     } else if (data === 'start') {
       this.getBattleResult(rating, result);
@@ -551,6 +619,51 @@ export default class extends React.Component {
       // Dialog 취소
       console.log('cancel dialog');
     }
+  };
+
+  cancelChoice = async () => {
+    let winner = this.state.winner;
+    let loser = this.state.loser;
+    let myId = this.state.myId;
+    let endUser1 = this.state.endUser1;
+    let endUser2 = this.state.endUser2;
+    // battleResult 데이터 초기화
+    if (JSON.stringify(myId) === winner) {
+      console.log('\n승 선택 취소\n');
+      firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey + '/battleResult')
+        .update({
+          win: '',
+        });
+    } else if (JSON.stringify(myId) === loser) {
+      console.log('\n패 선택 취소\n');
+      firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey + '/battleResult')
+        .update({
+          lose: '',
+        });
+    }
+    // endUser 초기화
+    if (myId === endUser1) {
+      firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey + '/endUser')
+        .update({
+          user1: '',
+        });
+    } else if (myId === endUser2) {
+      firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey + '/endUser')
+        .update({
+          user2: '',
+        });
+    }
+    this.setState({
+      endCheck: '',
+    });
   };
 
   addCoin = async () => {
@@ -606,31 +719,40 @@ export default class extends React.Component {
 
   // battleResult check
   getBattleResult = async (rating, result) => {
-    const {myId} = this.state;
-    let winner;
-    let loser;
-    var battleWin = firebase
-      .database()
-      .ref('chatRoomList/' + this.state.roomKey + '/battleResult/win');
-    battleWin.once('value', dataSnapshot => {
-      console.log('who is winner: ' + JSON.stringify(dataSnapshot));
-      winner = JSON.stringify(dataSnapshot);
-    });
-    var battleLose = firebase
-      .database()
-      .ref('chatRoomList/' + this.state.roomKey + '/battleResult/lose');
-    battleLose.once('value', dataSnapshot => {
-      console.log('who is loser: ' + JSON.stringify(dataSnapshot));
-      loser = JSON.stringify(dataSnapshot);
-    });
+    let myId = this.state.myId;
+    let id = this.state.id;
+    let winner = this.state.winner;
+    let loser = this.state.loser;
+    console.log('winner : ' + winner);
+    console.log('loser : ' + loser);
+    // var battleWin = firebase
+    //   .database()
+    //   .ref('chatRoomList/' + this.state.roomKey + '/battleResult/win');
+    // battleWin.once('value', dataSnapshot => {
+    //   console.log('who is winner: ' + JSON.stringify(dataSnapshot));
+    //   winner = JSON.stringify(dataSnapshot);
+    // });
+    // var battleLose = firebase
+    //   .database()
+    //   .ref('chatRoomList/' + this.state.roomKey + '/battleResult/lose');
+    // battleLose.once('value', dataSnapshot => {
+    //   console.log('who is loser: ' + JSON.stringify(dataSnapshot));
+    //   loser = JSON.stringify(dataSnapshot);
+    // });
 
-    if (result === 'win') {
+    if (
+      result === 'win' ||
+      (JSON.stringify(myId) === winner && JSON.stringify(myId) !== loser)
+    ) {
       // 승자비교
       console.log('win: ' + winner);
-      if (winner !== '""') {
+      if (winner === JSON.stringify(id)) {
         // 상대가 이미 승리 누름
         this.refs.toast.show('상대방이 승리에 체크했습니다.');
-      } else if (winner === '""' && loser === '""') {
+      } else if (
+        (winner === '""' || winner === JSON.stringify(myId)) &&
+        loser === '""'
+      ) {
         this.updateBattleResult('win', myId);
         this.changeModalVisiblity(false);
         this.checkEndUser();
@@ -644,6 +766,7 @@ export default class extends React.Component {
         this.setState({isRandomBox: 'start'});
         this.changeModalVisiblity(true);
         this.updateOpenBox();
+        this.endBattleFCM('end');
         // fcm
         let otherToken;
         firebase
@@ -664,9 +787,18 @@ export default class extends React.Component {
     } else {
       // 패자비교
       console.log('lose: ' + loser);
-      if (loser !== '""') {
+      if (loser === JSON.stringify(id)) {
         // 상대가 이미 패배 누름
         this.refs.toast.show('상대방이 패배에 체크했습니다.');
+      } else if (
+        winner === '""' &&
+        (loser === '""' || loser === JSON.stringify(myId))
+      ) {
+        this.refs.toast.show('상대방의 평가를 완료했습니다.');
+        this.updateBattleResult('lose', myId);
+        this.changeModalVisiblity(false);
+        this.checkEndUser();
+        this.addRating(rating);
       } else {
         this.updateBattleResult('lose', myId);
         this.changeModalVisiblity(false);
@@ -675,6 +807,22 @@ export default class extends React.Component {
         this.setState({isRandomBox: 'fail'});
         this.changeModalVisiblity(true);
         this.endBattleFCM('end');
+        // fcm
+        let otherToken;
+        firebase
+          .database()
+          .ref('FcmTokenList/' + this.state.id)
+          .once('value', dataSnapshot => {
+            otherToken = dataSnapshot;
+            console.log(otherToken);
+            this.sendToServer(
+              this.state.myId,
+              this.state.myName,
+              this.state.myProfile,
+              '평가를 완료했습니다.',
+              otherToken,
+            );
+          });
       }
     }
   };
@@ -777,37 +925,65 @@ export default class extends React.Component {
     const firebase_server_key =
       'AAAABOeF95E:APA91bGCKfJwCOUeYC8QypsS7yCAtR8ZOZf_rAj1iRK_OvIB3mYXYnva4DAY28XmUZA1GpXsdp1eRf9rPeuIedr7eX_7yFWbL-C_4JfVGSFGorCdzjOA0AyYPxB83M8TTAfUj62tUZhH';
     console.log('sendToFcm');
-
-    fetch('https://fcm.googleapis.com/fcm/send', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'key=' + firebase_server_key,
-      },
-      body: JSON.stringify({
-        registration_ids: [token],
-        notification: {
-          title: senderName,
-          body: msg,
+    if (msg === RESPONSE_OK) {
+      fetch('https://fcm.googleapis.com/fcm/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'key=' + firebase_server_key,
         },
-        data: {
-          roomKey: this.state.roomKey,
-          id: senderId,
-          name: senderName,
-          profile: senderProfile,
-          msg: msg,
-        },
-      }),
-    })
-      .then(response => {
-        console.log('FCM msg sent!');
-        // console.log(response);
-        // console.log('FCM Token: ' + token);
-        console.log('Message: ' + msg);
+        body: JSON.stringify({
+          registration_ids: [token],
+          notification: {
+            title: senderName,
+            body: '배틀을 수락합니다.',
+          },
+          data: {
+            roomKey: this.state.roomKey,
+            id: senderId,
+            name: senderName,
+            profile: senderProfile,
+            msg: msg,
+          },
+        }),
       })
-      .catch(error => {
-        console.error(error);
-      });
+        .then(response => {
+          console.log('FCM msg sent!');
+          console.log('Message: ' + msg);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    } else {
+      fetch('https://fcm.googleapis.com/fcm/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'key=' + firebase_server_key,
+        },
+        body: JSON.stringify({
+          registration_ids: [token],
+          notification: {
+            title: senderName,
+            body: msg,
+          },
+          data: {
+            roomKey: this.state.roomKey,
+            id: senderId,
+            name: senderName,
+            profile: senderProfile,
+            msg: msg,
+          },
+        }),
+      })
+        .then(response => {
+          console.log('FCM msg sent!');
+          console.log('Message: ' + msg);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
   };
 
   //바로 채팅하기로 링크
@@ -1050,6 +1226,9 @@ export default class extends React.Component {
       endUser2,
       openBox,
       isRandomBox,
+      battleResult,
+      winner,
+      loser,
     } = this.state;
     return (
       <>
@@ -1076,7 +1255,9 @@ export default class extends React.Component {
           endUser1={endUser1}
           endUser2={endUser2}
           openBox={openBox}
+          battleResult={battleResult}
           changeModalVisiblity={this.changeModalVisiblity}
+          setData={this.setData}
         />
         <Modal
           transparent={true}
@@ -1086,6 +1267,10 @@ export default class extends React.Component {
           <SimpleDialog
             isRandomBox={isRandomBox}
             battleState={statusText}
+            battleResult={battleResult}
+            winner={winner}
+            loser={loser}
+            myId={myId}
             changeModalVisiblity={this.changeModalVisiblity}
             setData={this.setData}
           />

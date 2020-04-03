@@ -106,6 +106,7 @@ const MyLocation = styled.TouchableOpacity`
   width: 50px;
   height: 50px;
   right: 0;
+  top: 60px;
   margin: 20px;
   border-radius: 25px;
   align-items: center;
@@ -119,7 +120,7 @@ const ZoomIn = styled.TouchableOpacity`
   width: 50px;
   height: 50px;
   right: 0;
-  top: 60px;
+  top: 120px;
   margin: 20px;
   border-radius: 25px;
   align-items: center;
@@ -133,7 +134,7 @@ const ZoomOut = styled.TouchableOpacity`
   width: 50px;
   height: 50px;
   right: 0;
-  top: 120px;
+  top: 180px;
   margin: 20px;
   border-radius: 25px;
   align-items: center;

@@ -96,6 +96,8 @@ export default class extends React.Component {
                 ' : ' +
                 notification.android._notification._data.msg,
             );
+          } else {
+            this.getData();
           }
         },
       );

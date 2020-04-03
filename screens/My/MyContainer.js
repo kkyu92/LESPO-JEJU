@@ -290,6 +290,8 @@ export default class extends React.Component {
           });
       }
       await AsyncStorage.setItem('@AUTO_LOGIN', 'false');
+      await AsyncStorage.setItem('@USER_EMAIL', '');
+      await AsyncStorage.setItem('@USER_PASSWORD', '');
       const resetAction = StackActions.reset({
         index: 0,
         actions: [NavigationActions.navigate({routeName: 'Login'})],

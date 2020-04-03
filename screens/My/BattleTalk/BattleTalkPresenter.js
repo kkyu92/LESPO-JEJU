@@ -54,8 +54,10 @@ const BattleTalkPresenter = ({loading, chatRoomList, myId}) =>
                   {chatRoomList
                     .filter(
                       list =>
-                        list.makeUser.userId === myId ||
-                        list.joinUser.userId === myId,
+                        (list.makeUser.userId === myId &&
+                          list.joinUser.userId !== '') ||
+                        (list.makeUser.userId !== '' &&
+                          list.joinUser.userId === myId),
                     )
                     .map((list, index, array) => (
                       <TalkListSlide

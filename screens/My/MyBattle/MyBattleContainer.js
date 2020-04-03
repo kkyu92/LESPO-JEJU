@@ -5,7 +5,7 @@ import firebase from 'firebase';
 import AsyncStorage from '@react-native-community/async-storage';
 import Toast from 'react-native-easy-toast';
 import Firebase from 'react-native-firebase';
-import {CHAT_ROOM_IN} from '../../../constants/Strings';
+import {CHAT_ROOM_IN, DELETE_UPDATE} from '../../../constants/Strings';
 
 var M_ID, M_NAME, M_PROFILE;
 
@@ -85,9 +85,13 @@ export default class extends React.Component {
         });
       },
     );
+    this.init();
+  }
+
+  init = async () => {
+    this.getData();
     let {chatRoomList} = this.state;
     try {
-      this.getData();
       // get ChatRoomList
       let list = [];
       var userRef = firebase.database().ref('chatRoomList/');
@@ -130,7 +134,125 @@ export default class extends React.Component {
         loading: false,
       });
     }
-  }
+  };
+
+  deleteMyBattle = async (roomKey, myId, id) => {
+    let makerId;
+    let joinerId;
+    var checkMaker = firebase
+      .database()
+      .ref('chatRoomList/' + roomKey + '/makeUser/userId');
+    checkMaker.once('value', dataSnapshot => {
+      makerId = JSON.stringify(dataSnapshot);
+    });
+    var checkJoiner = firebase
+      .database()
+      .ref('chatRoomList/' + roomKey + '/joinUser/userId');
+    checkJoiner.once('value', dataSnapshot => {
+      joinerId = JSON.stringify(dataSnapshot);
+    });
+
+    if (joinerId === JSON.stringify(myId)) {
+      if (makerId === '""') {
+        console.log('삭제삭제 / 상대방이 만들었고 상대방은 이미 나감');
+        firebase
+          .database()
+          .ref('chatRoomList/' + roomKey)
+          .remove();
+      } else {
+        firebase
+          .database()
+          .ref('chatRoomList/' + roomKey + '/joinUser')
+          .update({
+            userId: '',
+            userIn: false,
+            userName: '',
+            userProfile: '',
+            userRating: '',
+          });
+      }
+    } else if (makerId === JSON.stringify(myId)) {
+      if (joinerId === '""') {
+        this.setState({loading: true});
+        console.log('삭제삭제 / 내가 만들었고 상대방은 이미 나감');
+        firebase
+          .database()
+          .ref('chatRoomList/' + roomKey)
+          .remove();
+      } else {
+        firebase
+          .database()
+          .ref('chatRoomList/' + roomKey + '/makeUser')
+          .update({
+            userId: '',
+            userIn: false,
+            userName: '',
+            userProfile: '',
+            userRating: '',
+          });
+      }
+    }
+    // fcm
+    let otherToken;
+    firebase
+      .database()
+      .ref('FcmTokenList/' + id)
+      .once('value', dataSnapshot => {
+        otherToken = dataSnapshot;
+        this.sendToServer(
+          id,
+          this.state.myName,
+          this.state.myProfile,
+          CHAT_ROOM_IN,
+          otherToken,
+          roomKey,
+        );
+      });
+  };
+
+  sendToServer = async (
+    senderId,
+    senderName,
+    senderProfile,
+    msg,
+    token,
+    roomKey,
+  ) => {
+    const firebase_server_key =
+      'AAAABOeF95E:APA91bGCKfJwCOUeYC8QypsS7yCAtR8ZOZf_rAj1iRK_OvIB3mYXYnva4DAY28XmUZA1GpXsdp1eRf9rPeuIedr7eX_7yFWbL-C_4JfVGSFGorCdzjOA0AyYPxB83M8TTAfUj62tUZhH';
+    console.log('sendToFcm');
+
+    fetch('https://fcm.googleapis.com/fcm/send', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'key=' + firebase_server_key,
+      },
+      body: JSON.stringify({
+        registration_ids: [token],
+        notification: {
+          title: senderName,
+          body: msg,
+        },
+        data: {
+          roomKey: roomKey,
+          id: senderId,
+          name: senderName,
+          profile: senderProfile,
+          msg: msg,
+        },
+      }),
+    })
+      .then(response => {
+        console.log('FCM msg sent!');
+        // console.log(response);
+        // console.log('FCM Token: ' + token);
+        console.log('Message: ' + msg);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  };
 
   componentWillUnmount() {
     console.log('componentWillUnmount[MyBattleContainer]');
@@ -150,6 +272,7 @@ export default class extends React.Component {
           loading={loading}
           chatRoomList={chatRoomList}
           myId={myId}
+          deleteMyBattle={this.deleteMyBattle}
         />
         <Toast
           ref="toast"

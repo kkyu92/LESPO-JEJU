@@ -28,9 +28,9 @@
 	<array>
 		<dict>
 			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
+			<string>Viewer</string>
 			<key>CFBundleURLName</key>
-			<string>kakao4f9e332e4542802f6f7587f6294cff32</string>
+			<string></string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>kakao4f9e332e4542802f6f7587f6294cff32</string>
@@ -50,6 +50,14 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>fb2516363172019512</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>kakaolink</string>
 			</array>
 		</dict>
 	</array>

@@ -3,12 +3,12 @@ import moment from 'moment';
 import firebase from 'firebase';
 import AsyncStorage from '@react-native-community/async-storage';
 import BattleTalkPresenter from './BattleTalkPresenter';
-import {Modal, Alert} from 'react-native';
+import {Modal, Alert, AppState} from 'react-native';
 import SimpleDialog from '../../../components/SimpleDialog';
 import Firebase from 'react-native-firebase';
 import Toast from 'react-native-easy-toast';
 import {LESPO_API} from '../../../api/Api';
-import {CHAT_ROOM_IN} from '../../../constants/Strings';
+import {CHAT_ROOM_IN, RESPONSE_OK} from '../../../constants/Strings';
 
 var M_ID = '';
 var M_NAME = '';
@@ -25,6 +25,7 @@ export default class extends React.Component {
       },
     } = props;
     this.state = {
+      appState: AppState.currentState,
       notiCheck: false,
       roomKey,
       id,
@@ -43,6 +44,7 @@ export default class extends React.Component {
       msg: null,
       battlePlace: '',
       makeUser: '',
+      joinUser: '',
       isModalVisible: false,
       battleState: '',
       requestUser: '',
@@ -62,7 +64,7 @@ export default class extends React.Component {
     if (what === 'request') {
       msg = '배틀을 신청합니다.';
       battleState = '배틀요청';
-    } else {
+    } else if (what === 'OK') {
       msg = '배틀을 수락합니다.';
       battleState = '배틀진행중';
     }
@@ -89,7 +91,7 @@ export default class extends React.Component {
       firebase
         .database()
         .ref('chatRoomList/' + this.state.roomKey + '/chatList')
-        .push({user, msg, date, read: reader})
+        .push({user, msg, date, read: reader, place: false})
         .then(data => {
           //success callback
           console.log('battle start notice Add: ', data);
@@ -104,6 +106,7 @@ export default class extends React.Component {
         msg: msg,
         date: date,
         read: reader,
+        place: false,
       });
       this.setState({
         getChatList,
@@ -115,7 +118,7 @@ export default class extends React.Component {
       firebase
         .database()
         .ref('chatRoomList/' + this.state.roomKey + '/chatList')
-        .push({user, msg, date, read: reader})
+        .push({user, msg, date, read: reader, place: false})
         .then(data => {
           //success callback
           console.log('battle start notice Add: ', data);
@@ -130,28 +133,33 @@ export default class extends React.Component {
         msg: msg,
         date: date,
         read: reader,
+        place: false,
       });
       this.setState({
         getChatList,
       });
     }
-    // fcm
-    let otherToken;
-    firebase
-      .database()
-      .ref('FcmTokenList/' + this.state.id)
-      .once('value', dataSnapshot => {
-        otherToken = dataSnapshot;
-        console.log(otherToken);
-        this.sendToServer(
-          this.state.myId,
-          this.state.myName,
-          this.state.myProfile,
-          msg,
-          date,
-          otherToken,
-        );
-      });
+
+    if (what !== 'update') {
+      // fcm
+      let otherToken;
+      firebase
+        .database()
+        .ref('FcmTokenList/' + this.state.id)
+        .once('value', dataSnapshot => {
+          otherToken = dataSnapshot;
+          console.log(otherToken);
+          this.sendToServer(
+            this.state.myId,
+            this.state.myName,
+            this.state.myProfile,
+            msg,
+            date,
+            otherToken,
+          );
+        });
+    }
+
     let endUser = {
       user1: '',
       user2: '',
@@ -174,7 +182,7 @@ export default class extends React.Component {
           endUser,
           requestUser: myId,
         });
-    } else {
+    } else if (what === 'OK') {
       firebase
         .database()
         .ref('chatRoomList/' + this.state.roomKey)
@@ -405,44 +413,52 @@ export default class extends React.Component {
         if (this.state.myProfile === null) {
           this.setState({myProfile: ''});
         }
-        if (this.state.makeUser !== JSON.stringify(this.state.myId)) {
-          let joinUser = {
-            userIn: true,
-            userId: this.state.myId,
-            userName: this.state.myName,
-            userProfile: this.state.myProfile,
-            userRating: this.state.myRating,
-          };
-          firebase
-            .database()
-            .ref('chatRoomList/' + this.state.roomKey)
-            .update({
-              joinUser,
-            })
-            .then(data => {
-              //success callback
-              console.log('joinUser Add: ', data);
-            })
-            .catch(error => {
-              //error callback
-              console.log('error ', error);
-            });
-        } else {
-          firebase
-            .database()
-            .ref('chatRoomList/' + this.state.roomKey + '/makeUser')
-            .update({
+        // get makeUser
+        let makeUser;
+        var maker = firebase
+          .database()
+          .ref('chatRoomList/' + this.state.roomKey + '/makeUser/userId');
+        maker.once('value', dataSnapshot => {
+          makeUser = JSON.stringify(dataSnapshot);
+          if (makeUser !== JSON.stringify(this.state.myId)) {
+            let joinUser = {
               userIn: true,
-            })
-            .then(data => {
-              //success callback
-              console.log('joinUser Add: ', data);
-            })
-            .catch(error => {
-              //error callback
-              console.log('error ', error);
-            });
-        }
+              userId: this.state.myId,
+              userName: this.state.myName,
+              userProfile: this.state.myProfile,
+              userRating: this.state.myRating,
+            };
+            firebase
+              .database()
+              .ref('chatRoomList/' + this.state.roomKey)
+              .update({
+                joinUser,
+              })
+              .then(data => {
+                //success callback
+                console.log('joinUser Add: ', data);
+              })
+              .catch(error => {
+                //error callback
+                console.log('error ', error);
+              });
+          } else {
+            firebase
+              .database()
+              .ref('chatRoomList/' + this.state.roomKey + '/makeUser')
+              .update({
+                userIn: true,
+              })
+              .then(data => {
+                //success callback
+                console.log('joinUser Add: ', data);
+              })
+              .catch(error => {
+                //error callback
+                console.log('error ', error);
+              });
+          }
+        });
       } else {
         console.log('Login profile image null');
       }
@@ -462,7 +478,7 @@ export default class extends React.Component {
   ) => {
     const firebase_server_key =
       'AAAABOeF95E:APA91bGCKfJwCOUeYC8QypsS7yCAtR8ZOZf_rAj1iRK_OvIB3mYXYnva4DAY28XmUZA1GpXsdp1eRf9rPeuIedr7eX_7yFWbL-C_4JfVGSFGorCdzjOA0AyYPxB83M8TTAfUj62tUZhH';
-    console.log('sendToFcm');
+    // 읽음처리
     if (msg === CHAT_ROOM_IN) {
       fetch('https://fcm.googleapis.com/fcm/send', {
         method: 'POST',
@@ -488,6 +504,36 @@ export default class extends React.Component {
       })
         .then(response => {
           console.log('FCM msg sent!');
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    } else if (msg === RESPONSE_OK) {
+      fetch('https://fcm.googleapis.com/fcm/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'key=' + firebase_server_key,
+        },
+        body: JSON.stringify({
+          registration_ids: [token],
+          notification: {
+            title: senderName,
+            body: '배틀을 수락합니다.',
+          },
+          data: {
+            roomKey: this.state.roomKey,
+            id: senderId,
+            name: senderName,
+            profile: senderProfile,
+            msg: msg,
+            date: date,
+          },
+        }),
+      })
+        .then(response => {
+          console.log('FCM msg sent!');
+          console.log('Message: ' + msg);
         })
         .catch(error => {
           console.error(error);
@@ -527,6 +573,7 @@ export default class extends React.Component {
 
   // init 초기값
   async componentDidMount() {
+    AppState.addEventListener('change', this._handleAppStateChange);
     let MID = await AsyncStorage.getItem('@USER_ID');
     let MNAME = await AsyncStorage.getItem('@USER_NAME');
     let {getChatList, roomKey, notiCheck} = this.state;
@@ -542,7 +589,9 @@ export default class extends React.Component {
     if (enable) {
       this.removeToastListener = Firebase.notifications().onNotification(
         notification => {
+          // 방 참여 여부 노티
           if (notification.android._notification._data.msg === CHAT_ROOM_IN) {
+            console.log('chat Room In Noti');
             // get ChattingList
             var userRef = firebase
               .database()
@@ -561,6 +610,7 @@ export default class extends React.Component {
               });
             });
           } else {
+            console.log('메시지 받음');
             if (notification.android._notification._data.roomKey === roomKey) {
               let reader = {};
               reader[this.state.id] = this.state.id;
@@ -581,6 +631,14 @@ export default class extends React.Component {
                   });
                 });
               });
+              if (
+                notification.android._notification._data.msg === RESPONSE_OK
+              ) {
+                Alert.alert(
+                  '배틀신청을 수락했습니다.',
+                  '나의 배틀에 가서 배틀현황을 확인하세요 !',
+                );
+              }
             } else {
               this.refs.toast.show(
                 notification.android._notification._data.name +
@@ -633,6 +691,8 @@ export default class extends React.Component {
             requestUser: JSON.stringify(dataSnapshot),
           });
         });
+      let makerIn;
+      let joinerIn;
       // get makeUser
       var maker = firebase
         .database()
@@ -641,6 +701,27 @@ export default class extends React.Component {
         this.setState({
           makeUser: JSON.stringify(dataSnapshot),
         });
+      });
+      // get joinUser
+      var joiner = firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey + '/joinUser/userId');
+      joiner.once('value', dataSnapshot => {
+        this.setState({
+          joinUser: JSON.stringify(dataSnapshot),
+        });
+      });
+      var checkMaker = firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey + '/makeUser/userIn');
+      checkMaker.once('value', dataSnapshot => {
+        makerIn = JSON.stringify(dataSnapshot);
+      });
+      var checkJoiner = firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey + '/joinUser/userIn');
+      checkJoiner.once('value', dataSnapshot => {
+        joinerIn = JSON.stringify(dataSnapshot);
       });
       // get ChattingList
       var userRef = firebase
@@ -669,15 +750,21 @@ export default class extends React.Component {
       // 내 로그인 정보 불러오ß기
       this.getData();
       this.updateSingleData(this.state.roomKey, getChatList);
-      // fcm
-      let otherToken;
-      firebase
-        .database()
-        .ref('FcmTokenList/' + this.state.id)
-        .once('value', dataSnapshot => {
-          otherToken = dataSnapshot;
-          this.sendToServer(MID, MNAME, '', CHAT_ROOM_IN, '', otherToken);
-        });
+      if (
+        (JSON.stringify(MID) === this.state.makeUser && joinerIn === 'true') ||
+        (JSON.stringify(MID) === this.state.joinUser && makerIn === 'true')
+      ) {
+        //('상대방이 들어와있다면 내가 들어온것을 알린다');
+        // fcm
+        let otherToken;
+        firebase
+          .database()
+          .ref('FcmTokenList/' + this.state.id)
+          .once('value', dataSnapshot => {
+            otherToken = dataSnapshot;
+            this.sendToServer(MID, MNAME, '', CHAT_ROOM_IN, '', otherToken);
+          });
+      }
     } catch (error) {
       console.log('get chattingList error ::: ' + error);
     } finally {
@@ -742,6 +829,8 @@ export default class extends React.Component {
   };
 
   otherCoinGet = async otherConfig => {
+    let MID = await AsyncStorage.getItem('@USER_ID');
+    let MNAME = await AsyncStorage.getItem('@USER_NAME');
     let otherCoin;
     try {
       await LESPO_API.getCoin(otherConfig)
@@ -766,6 +855,22 @@ export default class extends React.Component {
                 '배틀신청을 수락했습니다.',
                 '나의 배틀에 가서 배틀현황을 확인하세요 !',
               );
+              // fcm
+              let otherToken;
+              firebase
+                .database()
+                .ref('FcmTokenList/' + this.state.id)
+                .once('value', dataSnapshot => {
+                  otherToken = dataSnapshot;
+                  this.sendToServer(
+                    MID,
+                    MNAME,
+                    '',
+                    RESPONSE_OK,
+                    '',
+                    otherToken,
+                  );
+                });
             } else {
               // 상대 코인 부족
               console.log('상대방의 코인 갯수: ' + this.state.otherCoin);
@@ -791,9 +896,138 @@ export default class extends React.Component {
     this.setState({isModalVisible: bool});
   };
 
+  // AppState Check
+  _handleAppStateChange = nextAppState => {
+    if (
+      this.state.appState.match(/inactive|background/) &&
+      nextAppState === 'active'
+    ) {
+      console.log('App has come to the foreground!');
+      this._chatRoomUserIn();
+    } else {
+      console.log('App has go to the background!');
+      this._chatRoomUserOut();
+    }
+    this.setState({appState: nextAppState});
+  };
+
+  _chatRoomUserOut = async () => {
+    if (this.state.makeUser === JSON.stringify(this.state.myId)) {
+      firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey + '/makeUser')
+        .update({
+          userIn: false,
+        })
+        .then(data => {
+          //success callback
+          console.log('makeUser OUT: ', data);
+        })
+        .catch(error => {
+          //error callback
+          console.log('makeUser OUT error ', error);
+        });
+    } else {
+      firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey + '/joinUser')
+        .update({
+          userIn: false,
+        })
+        .then(data => {
+          //success callback
+          console.log('joinUser OUT: ', data);
+        })
+        .catch(error => {
+          //error callback
+          console.log('joinUser OUT error ', error);
+        });
+    }
+  };
+
+  _chatRoomUserIn = async () => {
+    if (this.state.makeUser === JSON.stringify(this.state.myId)) {
+      firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey + '/makeUser')
+        .update({
+          userIn: true,
+        })
+        .then(data => {
+          //success callback
+          console.log('makeUser OUT: ', data);
+        })
+        .catch(error => {
+          //error callback
+          console.log('makeUser OUT error ', error);
+        });
+    } else {
+      firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey + '/joinUser')
+        .update({
+          userIn: true,
+        })
+        .then(data => {
+          //success callback
+          console.log('joinUser OUT: ', data);
+        })
+        .catch(error => {
+          //error callback
+          console.log('joinUser OUT error ', error);
+        });
+    }
+    // chatList 추가
+
+    // get ChattingList
+    var userRef = firebase
+      .database()
+      .ref('chatRoomList/' + this.state.roomKey + '/chatList/');
+    // .limitToLast(30);
+    // .orderByChild('key');
+    userRef.once('value', dataSnapshot => {
+      let getChatList = [];
+      dataSnapshot.forEach(child => {
+        let reader = child.val().read;
+        reader[this.state.myId] = this.state.myId;
+        //child.val().read[this.state.myId] = this.state.myId;
+        getChatList.push({
+          key: child.key,
+          user: child.val().user,
+          msg: child.val().msg,
+          date: child.val().date,
+          read: reader,
+          place: child.val().place,
+        });
+      });
+      this.setState({
+        getChatList: getChatList,
+      });
+      this.updateSingleData(this.state.roomKey, getChatList);
+      //('상대방이 들어와있다면 내가 들어온것을 알린다');
+      // fcm
+      let otherToken;
+      firebase
+        .database()
+        .ref('FcmTokenList/' + this.state.id)
+        .once('value', dataSnapshot => {
+          otherToken = dataSnapshot;
+          this.sendToServer(
+            this.state.myId,
+            this.state.myName,
+            '',
+            CHAT_ROOM_IN,
+            '',
+            otherToken,
+          );
+        });
+    });
+  };
+
   // Screen OUT
   componentWillUnmount() {
     console.log('componentWillUnmount ::: [BattleTalk Container]');
+    AppState.removeEventListener('change', this._handleAppStateChange);
     this.removeToastListener();
     // this.state.getChatList.forEach(child => {
     //   console.log('getChild: ' + JSON.stringify(child));
@@ -824,37 +1058,7 @@ export default class extends React.Component {
           console.log('error ', error);
         });
     } else {
-      if (this.state.makeUser !== JSON.stringify(this.state.myId)) {
-        firebase
-          .database()
-          .ref('chatRoomList/' + this.state.roomKey + '/joinUser')
-          .update({
-            userIn: false,
-          })
-          .then(data => {
-            //success callback
-            console.log('joinUser OUT: ', data);
-          })
-          .catch(error => {
-            //error callback
-            console.log('joinUser OUT error ', error);
-          });
-      } else {
-        firebase
-          .database()
-          .ref('chatRoomList/' + this.state.roomKey + '/makeUser')
-          .update({
-            userIn: false,
-          })
-          .then(data => {
-            //success callback
-            console.log('joinUser OUT: ', data);
-          })
-          .catch(error => {
-            //error callback
-            console.log('joinUser OUT error ', error);
-          });
-      }
+      this._chatRoomUserOut();
     }
 
     firebase

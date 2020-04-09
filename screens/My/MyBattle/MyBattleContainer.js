@@ -5,7 +5,11 @@ import firebase from 'firebase';
 import AsyncStorage from '@react-native-community/async-storage';
 import Toast from 'react-native-easy-toast';
 import Firebase from 'react-native-firebase';
-import {CHAT_ROOM_IN, DELETE_UPDATE} from '../../../constants/Strings';
+import {
+  CHAT_ROOM_IN,
+  DELETE_UPDATE,
+  ROOM_OUT,
+} from '../../../constants/Strings';
 
 var M_ID, M_NAME, M_PROFILE;
 
@@ -53,11 +57,21 @@ export default class extends React.Component {
       // 화면에 들어와있을 때 알림
       this.removeToastListener = Firebase.notifications().onNotification(
         notification => {
-          if (notification.android._notification._data.msg !== CHAT_ROOM_IN) {
+          if (
+            notification.android._notification._data.msg !== CHAT_ROOM_IN &&
+            notification.android._notification._data.msg !== ROOM_OUT
+          ) {
             this.refs.toast.show(
               notification.android._notification._data.name +
                 ' : ' +
                 notification.android._notification._data.msg,
+            );
+          } else if (
+            notification.android._notification._data.msg === ROOM_OUT
+          ) {
+            this.refs.toast.show(
+              notification.android._notification._data.name +
+                '님이 채팅방을 나갔습니다.',
             );
           }
         },
@@ -113,6 +127,8 @@ export default class extends React.Component {
             memo: child.val().memo,
             battleState: child.val().battleState,
             battleResult: child.val().battleResult,
+            deleteHistory: child.val().deleteHistory,
+            deleteChat: child.val().deleteChat,
             endUser: child.val().endUser,
             openBox: child.val().openBox,
             requestUser: child.val().requestUser,
@@ -137,77 +153,42 @@ export default class extends React.Component {
   };
 
   deleteMyBattle = async (roomKey, myId, id) => {
-    let makerId;
-    let joinerId;
-    var checkMaker = firebase
-      .database()
-      .ref('chatRoomList/' + roomKey + '/makeUser/userId');
-    checkMaker.once('value', dataSnapshot => {
-      makerId = JSON.stringify(dataSnapshot);
-    });
-    var checkJoiner = firebase
-      .database()
-      .ref('chatRoomList/' + roomKey + '/joinUser/userId');
-    checkJoiner.once('value', dataSnapshot => {
-      joinerId = JSON.stringify(dataSnapshot);
-    });
-
-    if (joinerId === JSON.stringify(myId)) {
-      if (makerId === '""') {
-        console.log('삭제삭제 / 상대방이 만들었고 상대방은 이미 나감');
-        firebase
-          .database()
-          .ref('chatRoomList/' + roomKey)
-          .remove();
-      } else {
-        firebase
-          .database()
-          .ref('chatRoomList/' + roomKey + '/joinUser')
-          .update({
-            userId: '',
-            userIn: false,
-            userName: '',
-            userProfile: '',
-            userRating: '',
-          });
-      }
-    } else if (makerId === JSON.stringify(myId)) {
-      if (joinerId === '""') {
-        this.setState({loading: true});
-        console.log('삭제삭제 / 내가 만들었고 상대방은 이미 나감');
-        firebase
-          .database()
-          .ref('chatRoomList/' + roomKey)
-          .remove();
-      } else {
-        firebase
-          .database()
-          .ref('chatRoomList/' + roomKey + '/makeUser')
-          .update({
-            userId: '',
-            userIn: false,
-            userName: '',
-            userProfile: '',
-            userRating: '',
-          });
-      }
-    }
-    // fcm
-    let otherToken;
     firebase
       .database()
-      .ref('FcmTokenList/' + id)
-      .once('value', dataSnapshot => {
-        otherToken = dataSnapshot;
-        this.sendToServer(
-          id,
-          this.state.myName,
-          this.state.myProfile,
-          CHAT_ROOM_IN,
-          otherToken,
-          roomKey,
-        );
+      .ref('chatRoomList/' + roomKey + '/deleteHistory')
+      .update({
+        [myId]: myId,
       });
+    let deleteHistory = [];
+    let deleteChat = [];
+    var checkDeleteHistory = firebase
+      .database()
+      .ref('chatRoomList/' + roomKey + '/deleteHistory');
+    checkDeleteHistory.once('value', dataSnapshot => {
+      deleteHistory = dataSnapshot.val();
+      console.log(deleteHistory[myId]);
+      this.refs.toast.show('배틀내역을 삭제했습니다.');
+    });
+    var checkDeleteChat = firebase
+      .database()
+      .ref('chatRoomList/' + roomKey + '/deleteChat');
+    checkDeleteChat.once('value', dataSnapshot => {
+      deleteChat = dataSnapshot.val();
+    });
+
+    // 채팅방 + 배틀내역 전부삭제 확인
+    if (
+      deleteHistory[myId] === myId &&
+      deleteHistory[id] === id &&
+      deleteChat[myId] === myId &&
+      deleteChat[id] === id
+    ) {
+      console.log('DELETE CHATROOM');
+      firebase
+        .database()
+        .ref('chatRoomList/' + roomKey)
+        .remove();
+    }
   };
 
   sendToServer = async (

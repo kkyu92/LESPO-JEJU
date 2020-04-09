@@ -66,7 +66,7 @@
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* LespoJejuTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LespoJejuTests.m; sourceTree = "<group>"; };
 		093D24EA89E5EA5DBED1AC72 /* libPods-LespoJeju-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LespoJeju-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07F961A680F5B00A75B9A /* LespoJeju.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LespoJeju.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* 제주배틀투어.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "제주배틀투어.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = LespoJeju/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = LespoJeju/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB21A68108700A75B9A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -252,7 +252,7 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* LespoJeju.app */,
+				13B07F961A680F5B00A75B9A /* 제주배틀투어.app */,
 				00E356EE1AD99517003FC87E /* LespoJejuTests.xctest */,
 				2D02E47B1E0B4A5D006451C7 /* LespoJeju-tvOS.app */,
 				2D02E4901E0B4A5D006451C7 /* LespoJeju-tvOSTests.xctest */,
@@ -323,7 +323,7 @@
 			);
 			name = LespoJeju;
 			productName = LespoJeju;
-			productReference = 13B07F961A680F5B00A75B9A /* LespoJeju.app */;
+			productReference = 13B07F961A680F5B00A75B9A /* 제주배틀투어.app */;
 			productType = "com.apple.product-type.application";
 		};
 		2D02E47A1E0B4A5D006451C7 /* LespoJeju-tvOS */ = {
@@ -815,7 +815,7 @@
 				CODE_SIGN_ENTITLEMENTS = LespoJeju/LespoJeju.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1017;
+				CURRENT_PROJECT_VERSION = 1018;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = ZP3SF2A2ZT;
 				ENABLE_BITCODE = NO;
@@ -829,10 +829,10 @@
 				INFOPLIST_FILE = LespoJeju/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.0.17;
+				MARKETING_VERSION = 1.0.18;
 				OTHER_LDFLAGS = "${inherited}";
 				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.JejuBattle;
-				PRODUCT_NAME = LespoJeju;
+				PRODUCT_NAME = "제주배틀투어";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -848,7 +848,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1017;
+				CURRENT_PROJECT_VERSION = 1018;
 				DEVELOPMENT_TEAM = ZP3SF2A2ZT;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -861,10 +861,10 @@
 				INFOPLIST_FILE = LespoJeju/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.0.17;
+				MARKETING_VERSION = 1.0.18;
 				OTHER_LDFLAGS = "${inherited}";
 				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.JejuBattle;
-				PRODUCT_NAME = LespoJeju;
+				PRODUCT_NAME = "제주배틀투어";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};

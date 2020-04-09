@@ -35,7 +35,7 @@ const Container = styled.ScrollView`
   flex: 1;
 `;
 
-const BattleTalkPresenter = ({loading, chatRoomList, myId}) =>
+const BattleTalkPresenter = ({loading, chatRoomList, myId, deleteChat}) =>
   loading ? (
     <Loader />
   ) : (
@@ -55,9 +55,13 @@ const BattleTalkPresenter = ({loading, chatRoomList, myId}) =>
                     .filter(
                       list =>
                         (list.makeUser.userId === myId &&
-                          list.joinUser.userId !== '') ||
+                          list.joinUser.userId !== '' &&
+                          list.deleteChat[myId] !== myId &&
+                          list.lastMsg !== '') ||
                         (list.makeUser.userId !== '' &&
-                          list.joinUser.userId === myId),
+                          list.joinUser.userId === myId &&
+                          list.deleteChat[myId] !== myId &&
+                          list.lastMsg !== ''),
                     )
                     .map((list, index, array) => (
                       <TalkListSlide
@@ -67,6 +71,7 @@ const BattleTalkPresenter = ({loading, chatRoomList, myId}) =>
                             ? list.joinUser.userId
                             : list.makeUser.userId
                         }
+                        myId={myId}
                         profile={
                           list.makeUser.userId === myId
                             ? list.joinUser.userProfile
@@ -80,6 +85,8 @@ const BattleTalkPresenter = ({loading, chatRoomList, myId}) =>
                         date={moment(list.lastRealTime).format('YYYY-MM-DD')}
                         time={moment(list.lastRealTime).format('LT')}
                         msg={list.lastMsg}
+                        battleState={list.battleState}
+                        deleteChat={deleteChat}
                       />
                     ))}
                 </Section>
@@ -87,7 +94,7 @@ const BattleTalkPresenter = ({loading, chatRoomList, myId}) =>
                 <SearchNo text={'배틀톡 리스트가 없습니다.'} />
               )
             ) : (
-              console.log('null')
+              <SearchNo text={'배틀톡 리스트가 없습니다.'} />
             )}
           </>
         )}

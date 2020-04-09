@@ -25,6 +25,7 @@ export default class extends React.Component {
       },
     } = props;
     this.state = {
+      deleteChat: '',
       appState: AppState.currentState,
       notiCheck: false,
       roomKey,
@@ -765,6 +766,16 @@ export default class extends React.Component {
             this.sendToServer(MID, MNAME, '', CHAT_ROOM_IN, '', otherToken);
           });
       }
+
+      // 상대방이 나갔을 때
+      var checkDeleteChat = firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey + '/deleteChat');
+      checkDeleteChat.on('value', dataSnapshot => {
+        this.setState({
+          deleteChat: dataSnapshot.val(),
+        });
+      });
     } catch (error) {
       console.log('get chattingList error ::: ' + error);
     } finally {
@@ -1004,23 +1015,41 @@ export default class extends React.Component {
         getChatList: getChatList,
       });
       this.updateSingleData(this.state.roomKey, getChatList);
-      //('상대방이 들어와있다면 내가 들어온것을 알린다');
-      // fcm
-      let otherToken;
-      firebase
+      let joinerIn, makerIn;
+      var checkMaker = firebase
         .database()
-        .ref('FcmTokenList/' + this.state.id)
-        .once('value', dataSnapshot => {
-          otherToken = dataSnapshot;
-          this.sendToServer(
-            this.state.myId,
-            this.state.myName,
-            '',
-            CHAT_ROOM_IN,
-            '',
-            otherToken,
-          );
-        });
+        .ref('chatRoomList/' + this.state.roomKey + '/makeUser/userIn');
+      checkMaker.once('value', dataSnapshot => {
+        makerIn = JSON.stringify(dataSnapshot);
+      });
+      var checkJoiner = firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey + '/joinUser/userIn');
+      checkJoiner.once('value', dataSnapshot => {
+        joinerIn = JSON.stringify(dataSnapshot);
+      });
+      if (
+        (this.state.myId === this.state.makeUser && joinerIn === 'true') ||
+        (this.state.myId === this.state.joinUser && makerIn === 'true')
+      ) {
+        //('상대방이 들어와있다면 내가 들어온것을 알린다');
+        // fcm
+        let otherToken;
+        firebase
+          .database()
+          .ref('FcmTokenList/' + this.state.id)
+          .once('value', dataSnapshot => {
+            otherToken = dataSnapshot;
+            this.sendToServer(
+              this.state.myId,
+              this.state.myName,
+              '',
+              CHAT_ROOM_IN,
+              '',
+              otherToken,
+            );
+          });
+      }
     });
   };
 
@@ -1071,8 +1100,14 @@ export default class extends React.Component {
       .off('value');
   }
 
-  onSavePlace = async (place, navigation) => {
+  onSavePlace = async (place, navigation, locations, index) => {
     console.log('onSavePlace::: ' + place);
+    locations = {
+      latitude: locations.latitude,
+      longitude: locations.longitude,
+      index,
+    };
+    console.log(locations);
     navigation.goBack();
     // check user in room
     let makerIn;
@@ -1105,7 +1140,7 @@ export default class extends React.Component {
           .local()
           .format('LT'),
         reader,
-        (place = true),
+        locations,
       );
     } catch (error) {
       console.log('insert Chatting message error ::: ' + error);
@@ -1123,8 +1158,10 @@ export default class extends React.Component {
       myProfile,
       myName,
       myId,
+      id,
       battleState,
       requestUser,
+      deleteChat,
     } = this.state;
     return (
       <>
@@ -1136,6 +1173,7 @@ export default class extends React.Component {
           msgHandler={this.msgHandler}
           msg={msg}
           // 상대 정보
+          id={id}
           profile={profile}
           name={name}
           // 내 정보
@@ -1144,6 +1182,8 @@ export default class extends React.Component {
           myProfile={myProfile}
           battleState={battleState}
           requestUser={requestUser}
+          // 채팅방 나갔는지
+          deleteChat={deleteChat}
           changeModalVisiblity={this.changeModalVisiblity}
           onSavePlace={this.onSavePlace}
         />

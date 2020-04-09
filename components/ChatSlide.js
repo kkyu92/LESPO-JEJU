@@ -12,6 +12,7 @@ import {
   GREY_COLOR2,
 } from '../constants/Colors';
 import Layout from '../constants/Layout';
+import {ROOM_OUT} from '../constants/Strings';
 
 const Container = styled.View`
   flex: 1;
@@ -102,6 +103,15 @@ const ReadText = styled.Text`
   font-size: 10px;
 `;
 
+const RoomOutText = styled.Text`
+  color: ${GREY_COLOR2};
+  width: 100%;
+  text-align: center;
+  justify-content: center;
+  font-size: 14px;
+  margin-top: 20px;
+`;
+
 const ChangeUrl = place => {
   var placeArray = place.split('\n');
   const url = Platform.select({
@@ -131,6 +141,7 @@ const ChatSlide = ({
   myId,
   myName,
   myProfile,
+  onSavePlace,
   navigation,
 }) =>
   // 내가 보낸 메시지
@@ -152,9 +163,19 @@ const ChatSlide = ({
           <DateText>{date}</DateText>
         )}
       </RightTextContainer>
-      {place ? (
+      {place !== false ? (
         <MsgContainer>
-          <Touchable onPress={() => ChangeUrl(msg)}>
+          <Touchable
+            onPress={() =>
+              navigation.navigate({
+                routeName: 'Map',
+                params: {
+                  mainState: 'battle',
+                  onSavePlace: onSavePlace,
+                  battleLocation: place,
+                },
+              })
+            }>
             <RightMsgText style={{textDecorationLine: 'underline'}}>
               {msg}
             </RightMsgText>
@@ -166,6 +187,10 @@ const ChatSlide = ({
         </MsgContainer>
       )}
     </RightContainer>
+  ) : msg === ROOM_OUT ? (
+    <Container>
+      <RoomOutText>-- 상대방이 채팅방을 나갔습니다. --</RoomOutText>
+    </Container>
   ) : (
     <Container>
       {prevUser === user ? (
@@ -190,7 +215,17 @@ const ChatSlide = ({
         />
       )}
       {place ? (
-        <LeftTouchable onPress={() => ChangeUrl(msg)}>
+        <LeftTouchable
+          onPress={() =>
+            navigation.navigate({
+              routeName: 'Map',
+              params: {
+                mainState: 'battle',
+                onSavePlace: onSavePlace,
+                battleLocation: place,
+              },
+            })
+          }>
           <LeftPlaceText style={{textDecorationLine: 'underline'}}>
             {msg}
           </LeftPlaceText>

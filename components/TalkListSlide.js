@@ -1,24 +1,20 @@
 import React from 'react';
 import styled from 'styled-components';
 import {withNavigation} from 'react-navigation';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import {Platform} from 'react-native';
+import {Platform, Alert} from 'react-native';
 import {
   BG_COLOR,
-  TINT_COLOR,
   GREY_COLOR,
-  BLACK_COLOR,
   GREY_COLOR2,
+  TINT_COLOR,
 } from '../constants/Colors';
-import PhotoUri from '../api/PhotoUri';
-import Layout from '../constants/Layout';
-import GetPhoto from '../api/GetPhoto';
+import IconDelete from 'react-native-vector-icons/MaterialIcons';
 
 const BattleTalkContainer = styled.TouchableOpacity`
   padding-top: 5px;
   padding-bottom: 5px;
   padding-left: 20px;
-  padding-right: 20px;
+  padding-right: 10px;
   flex-direction: row;
   border-color: ${GREY_COLOR};
   border-bottom-width: 0.5;
@@ -30,7 +26,7 @@ const BattleProfileContainer = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  width: 80%;
+  width: 70%;
   /* background-color: red; */
 `;
 
@@ -78,15 +74,23 @@ const NullImg = styled.Image`
   border-radius: 30;
 `;
 
+const DeleteBtn = styled.TouchableOpacity`
+  width: 10%;
+  margin-left: 10px;
+`;
+
 // 리스트 기본틀
 const TalkListSlide = ({
   roomKey,
   id,
+  myId,
   profile,
   name,
   msg,
   date,
   time,
+  battleState,
+  deleteChat,
   navigation,
 }) => (
   // 나의 배틀톡 리스트
@@ -120,6 +124,31 @@ const TalkListSlide = ({
       <DateText>{date}</DateText>
       <DateText>{time}</DateText>
     </BattleTalkDateContainer>
+    {battleState === '배틀종료' ? (
+      <DeleteBtn
+        onPress={() =>
+          Alert.alert(
+            '배틀톡 삭제하기',
+            '배틀톡을 삭제합니다.\n상대방과 채팅을 할 수 없습니다.',
+            [
+              {
+                text: '취소',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel',
+              },
+              {
+                text: '삭제',
+                onPress: () => deleteChat(roomKey, myId, id),
+              },
+            ],
+            {cancelable: false},
+          )
+        }>
+        <IconDelete size={30} name={'delete-forever'} color={`${BG_COLOR}`} />
+      </DeleteBtn>
+    ) : (
+      <IconDelete size={30} name={'delete-forever'} color={`${TINT_COLOR}`} />
+    )}
   </BattleTalkContainer>
 );
 

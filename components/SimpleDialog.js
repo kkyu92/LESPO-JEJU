@@ -20,6 +20,7 @@ import {
   BLACK_COLOR,
 } from '../constants/Colors';
 import Toast from 'react-native-easy-toast';
+import IconDelete from 'react-native-vector-icons/Octicons';
 
 export default class SimpleDialog extends Component {
   constructor(props) {
@@ -71,6 +72,9 @@ export default class SimpleDialog extends Component {
     } else if (data === 'FIND') {
       this.props.changeModalVisiblity(false);
       this.props.setData(data, this.state.handleEmail);
+    } else if (data === 'X') {
+      this.props.changeModalVisiblity(false);
+      this.props.setData(data, this.state.rating, this.state.battleResult);
     } else {
       this.props.changeModalVisiblity(false);
       this.props.setData(data, this.state.rating, this.state.battleResult);
@@ -536,9 +540,19 @@ export default class SimpleDialog extends Component {
         style={styles.contentContainer}>
         <View style={[styles.ratingModal, {width: this.state.width - 80}]}>
           <View style={styles.titleView}>
-            <Text style={[styles.ratingText, {color: 'black'}, {fontSize: 30}]}>
-              배틀결과
-            </Text>
+            <View style={styles.ratingBtnView}>
+              <Text
+                style={[styles.ratingText, {color: 'black'}, {fontSize: 30}]}>
+                배틀결과
+              </Text>
+              <TouchableOpacity
+                style={styles.Xbutton}
+                onPress={() => {
+                  this.closeModal('X');
+                }}>
+                <IconDelete size={40} name={'x'} color={`${BG_COLOR}`} />
+              </TouchableOpacity>
+            </View>
             <Text style={styles.centerText}> 내가 선택한 결과 </Text>
             <View style={styles.imageContainer}>
               {this.state.battleResult === 'win' ||
@@ -563,8 +577,7 @@ export default class SimpleDialog extends Component {
             </View>
             <Text style={styles.centerText}>
               {' '}
-              선택한 결과는 수정이 불가능합니다.{'\n'}
-              (다시 선택을 원하시면 선택취소 버튼을 눌러주세요.)
+              다시 선택을 원하시면 '다시 평가하기' 버튼을 눌러주세요.
             </Text>
           </View>
           <View style={styles.ratingBtnView}>
@@ -574,7 +587,10 @@ export default class SimpleDialog extends Component {
               }}
               style={styles.ratingBtn}
               underlayColor={'#f1f1f1'}>
-              <Text style={[styles.text, {color: TINT_COLOR}]}> 선택취소 </Text>
+              <Text style={[styles.text, {color: TINT_COLOR}]}>
+                {' '}
+                다시 평가하기{' '}
+              </Text>
             </TouchableHighlight>
             <TouchableHighlight
               onPress={() => {
@@ -872,6 +888,12 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     alignItems: 'center',
+    justifyContent: 'center',
+  },
+  Xbutton: {
+    width: '50%',
+    alignItems: 'flex-end',
+    alignSelf: 'stretch',
     justifyContent: 'center',
   },
   modal: {

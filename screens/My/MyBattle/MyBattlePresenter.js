@@ -39,8 +39,9 @@ const MyBattlePresenter = ({loading, chatRoomList, myId, deleteMyBattle}) =>
                   {chatRoomList
                     .filter(
                       list =>
-                        list.makeUser.userId === myId ||
-                        list.joinUser.userId === myId,
+                        (list.makeUser.userId === myId ||
+                          list.joinUser.userId === myId) &&
+                        list.deleteHistory[myId] !== myId,
                     )
                     .map(
                       list => (
@@ -82,7 +83,9 @@ const MyBattlePresenter = ({loading, chatRoomList, myId, deleteMyBattle}) =>
                       ),
                     )}
                 </Section>
-              ) : null
+              ) : (
+                <SearchNo text={'나의 배틀 리스트가 없습니다.'} />
+              )
             ) : (
               console.log('null')
             )}

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Modal, Linking, Platform} from 'react-native';
+import {Modal, Linking, Platform, Alert} from 'react-native';
 import {NavigationEvents} from 'react-navigation';
 import SimpleDialog from '../../../components/SimpleDialog';
 import MyBattleDetailPresenter from './MyBattleDetailPresenter';
@@ -9,7 +9,7 @@ import moment from 'moment';
 import {LESPO_API} from '../../../api/Api';
 import Firebase from 'react-native-firebase';
 import Toast from 'react-native-easy-toast';
-import {CHAT_ROOM_IN, RESPONSE_OK} from '../../../constants/Strings';
+import {CHAT_ROOM_IN, RESPONSE_OK, ROOM_OUT} from '../../../constants/Strings';
 
 var M_ID, M_NAME, M_PROFILE;
 
@@ -81,7 +81,10 @@ export default class extends React.Component {
       // 화면에 들어와있을 때 알림
       this.removeToastListener = Firebase.notifications().onNotification(
         notification => {
-          if (notification.android._notification._data.msg !== CHAT_ROOM_IN) {
+          if (
+            notification.android._notification._data.msg !== CHAT_ROOM_IN &&
+            notification.android._notification._data.msg !== ROOM_OUT
+          ) {
             this.refs.toast.show(
               notification.android._notification._data.name +
                 ' : ' +
@@ -143,6 +146,13 @@ export default class extends React.Component {
                 statusText: state,
               });
             });
+          } else if (
+            notification.android._notification._data.msg === ROOM_OUT
+          ) {
+            this.refs.toast.show(
+              notification.android._notification._data.name +
+                '님이 채팅방을 나갔습니다.',
+            );
           } else {
             let makerId, makerName;
             let joinerId, joinerName;
@@ -551,8 +561,18 @@ export default class extends React.Component {
     } else if (data === 'battleEnd') {
       // 배틀 종료 및 평가하기
       this.endBattleFCM('battleEnd');
-      this.checkEndUser();
       this.changeModalVisiblity(true);
+      firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey)
+        .update({
+          battleState: '배틀종료',
+        })
+        .then(
+          this.setState({
+            statusText: '배틀종료',
+          }),
+        );
     } else if (data === 'reCheck') {
       this.setState({isRandomBox: 'reCheck'});
       // console.log(
@@ -575,6 +595,10 @@ export default class extends React.Component {
       });
       this.cancelChoice();
       this.changeModalVisiblity(true);
+    } else if (data === 'X') {
+      this.setState({
+        isRandomBox: '',
+      });
     } else if (data === 'start') {
       this.getBattleResult(rating, result);
     } else if (data === 'success') {
@@ -757,7 +781,16 @@ export default class extends React.Component {
         this.changeModalVisiblity(false);
         this.checkEndUser();
         this.addRating(rating);
-        this.refs.toast.show('상대방의 평가가 끝나면 랜덤박스를 열수있습니다.');
+        setTimeout(() => {
+          Alert.alert(
+            '상대의 평가를 기다리는중입니다.',
+            '악의적인 승패조작은 스포츠배틀의 패널티를 받을 수 있습니다.',
+          ),
+            1000;
+        });
+        // this.refs.toast.show(
+        //   '상대의 평가를 기다리는중입니다.\n상대방의 평가가 끝나면 랜덤박스를 열수있습니다.',
+        // );
       } else {
         this.updateBattleResult('win', myId);
         this.changeModalVisiblity(false);
@@ -1154,6 +1187,9 @@ export default class extends React.Component {
       userProfile: '',
       userRating: '',
     };
+    let lastMsg = '';
+    let lastTime = '';
+    let lastRealTime = '';
     firebase
       .database()
       .ref('chatRoomList/' + this.state.roomKey)
@@ -1161,6 +1197,9 @@ export default class extends React.Component {
         date: moment().format(),
         chatList,
         joinUser,
+        lastRealTime,
+        lastMsg,
+        lastTime,
       })
       .then(data => {
         //success callback
@@ -1277,11 +1316,15 @@ export default class extends React.Component {
         </Modal>
         <Toast
           ref="toast"
-          style={{backgroundColor: '#fee6d0'}}
+          style={{
+            backgroundColor: '#fee6d0',
+            alignSelf: 'center',
+            justifyContent: 'center',
+          }}
           position="bottom"
           positionValue={150}
           fadeInDuration={500}
-          // fadeOutDuration={1500}
+          fadeOutDuration={2500}
           opacity={1}
           textStyle={{color: '#000000'}}
         />

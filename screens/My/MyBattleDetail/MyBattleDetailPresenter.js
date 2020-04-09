@@ -271,20 +271,22 @@ const MyBattleDetailPresenter = ({
           {name !== '' && name !== null ? (
             <>
               <LevelText>{level}</LevelText>
-              <BattleTalkBtn
-                onPress={() =>
-                  navigation.navigate({
-                    routeName: 'BattleTalk',
-                    params: {
-                      roomKey,
-                      id,
-                      profile,
-                      name,
-                    },
-                  })
-                }>
-                <BattleTalkTxt>배틀톡</BattleTalkTxt>
-              </BattleTalkBtn>
+              {statusText === '배틀종료' ? null : (
+                <BattleTalkBtn
+                  onPress={() =>
+                    navigation.navigate({
+                      routeName: 'BattleTalk',
+                      params: {
+                        roomKey,
+                        id,
+                        profile,
+                        name,
+                      },
+                    })
+                  }>
+                  <BattleTalkTxt>배틀톡</BattleTalkTxt>
+                </BattleTalkBtn>
+              )}
             </>
           ) : (
             <LevelText>{level}</LevelText>
@@ -301,11 +303,7 @@ const MyBattleDetailPresenter = ({
                   source={require(`../../../assets/drawable-xxhdpi/icon_profile.png`)}
                 />
               )}
-              {statusText === '배틀종료' ? (
-                <NameText>{'상대방이\n나갔습니다.'}</NameText>
-              ) : (
-                <NameText>{'대기중입니다...'}</NameText>
-              )}
+              <NameText>{'대기중입니다...'}</NameText>
             </UserContainer>
           ) : (
             <UserContainer>
@@ -399,11 +397,11 @@ const MyBattleDetailPresenter = ({
           </Btn>
         ) : endUser1 === myId && endUser2 !== myId && openBox === 'false' ? (
           <Btn onPress={() => setData('reCheck', '', battleResult)}>
-            <BtnText>상대의 평가를 기다리는중.</BtnText>
+            <BtnText>다시 평가하기</BtnText>
           </Btn>
         ) : (
           <Btn>
-            <BtnText>종료된 배틀입니다.</BtnText>
+            <BtnText>종료된 배틀입니다</BtnText>
           </Btn>
         )}
       </Container>

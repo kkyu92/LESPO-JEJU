@@ -283,42 +283,48 @@ const _zoomOut = async (
 };
 
 let INDEX = 0;
+let CHECK = true;
 
-const onSwiperItemChange = async (index, locations) => {
-  INDEX = index;
-  // console.log(JSON.stringify(locations.locations));
-  console.log(INDEX + ' :::onSwiperItemChange::: ' + index);
-  // let location = coordinates.markers[index];
-  let location = locations.locations[index].location;
-  console.log('latlng ::: ' + location.latitude + ', ' + location.longitude);
-  await this.map.animateToRegion({
-    latitude: location.latitude,
-    longitude: location.longitude,
-    latitudeDelta: 0.09,
-    longitudeDelta: 0.035,
-  });
-  console.log('index::: ' + index);
-  if (index !== 0) {
-    locations.mark[index].showCallout();
-  }
-};
+// const onSwiperItemChange = async (index, locations) => {
+//   INDEX = index;
+//   // console.log(JSON.stringify(locations.locations));
+//   console.log(INDEX + ' :::onSwiperItemChange::: ' + index);
+//   // let location = coordinates.markers[index];
+//   let location = locations.locations[index].location;
+//   console.log('latlng ::: ' + location.latitude + ', ' + location.longitude);
+//   await this.map.animateToRegion({
+//     latitude: location.latitude,
+//     longitude: location.longitude,
+//     latitudeDelta: 0.09,
+//     longitudeDelta: 0.035,
+//   });
+//   console.log('index::: ' + index);
+//   if (index !== 0) {
+//     locations.mark[index].showCallout();
+//   }
+// };
 
-const onSwiperItemChangeFlat = (index, locations) => {
-  console.log('onSwiperItemChangeFlat ' + JSON.stringify(index));
-  if (index.index !== index.prevIndex) {
-    console.log('if');
-    INDEX = index.index;
-    console.log(INDEX + ' :::onSwiperItemChange::: ' + index.index);
-    let location = locations.locations[index.index].location;
-    console.log('latlng ::: ' + location.latitude + ', ' + location.longitude);
-    this.map.animateToRegion({
-      latitude: location.latitude,
-      longitude: location.longitude,
-      latitudeDelta: 0.09,
-      longitudeDelta: 0.035,
-    });
-    locations.mark[index.index].showCallout();
-  }
+// const onSwiperItemChangeFlat = (index, locations) => {
+//   console.log('onSwiperItemChangeFlat ' + JSON.stringify(index));
+//   if (index.index !== index.prevIndex) {
+//     console.log('if');
+//     INDEX = index.index;
+//     console.log(INDEX + ' :::onSwiperItemChange::: ' + index.index);
+//     let location = locations.locations[index.index].location;
+//     console.log('latlng ::: ' + location.latitude + ', ' + location.longitude);
+//     this.map.animateToRegion({
+//       latitude: location.latitude,
+//       longitude: location.longitude,
+//       latitudeDelta: 0.09,
+//       longitudeDelta: 0.035,
+//     });
+//     locations.mark[index.index].showCallout();
+//   }
+// };
+
+const indexChange = battleLocation => {
+  INDEX = battleLocation.index;
+  console.log('링크 클릭으로 받아온 인덱스: ' + INDEX);
 };
 
 const onMarkerPressed = (locations, mainState) => {
@@ -330,6 +336,7 @@ const onMarkerPressed = (locations, mainState) => {
   });
 
   if (mainState !== 'map') {
+    CHECK = false;
     console.log('마커클릭 인덱스: ' + locations.key);
     INDEX = locations.key;
   }
@@ -388,6 +395,7 @@ const MapPresenter = ({
   onListChanging,
   onRegionChange,
   onSavePlace,
+  battleLocation,
   listName,
   navigation,
 }) =>
@@ -560,12 +568,21 @@ const MapPresenter = ({
           height: Layout.height,
           position: 'absolute',
         }}
-        initialRegion={{
-          latitude: latitudeMY,
-          longitude: longitudeMY,
-          latitudeDelta: latDelta,
-          longitudeDelta: lonDelta,
-        }}>
+        initialRegion={
+          battleLocation
+            ? {
+                latitude: battleLocation.latitude,
+                longitude: battleLocation.longitude,
+                latitudeDelta: 0.0025,
+                longitudeDelta: 0.0025,
+              }
+            : {
+                latitude: latitudeMY,
+                longitude: longitudeMY,
+                latitudeDelta: latDelta,
+                longitudeDelta: lonDelta,
+              }
+        }>
         {locations
           ? locations.locations
               .filter(list => list.key !== null)
@@ -576,7 +593,12 @@ const MapPresenter = ({
                   // ref={marker => (this.marker = marker)}
                   onPress={() => onMarkerPressed(list)}
                   onCalloutPress={() =>
-                    onSavePlace(list.title + '\n' + list.address, navigation)
+                    onSavePlace(
+                      list.title + '\n' + list.address,
+                      navigation,
+                      list.location,
+                      INDEX,
+                    )
                   }
                   coordinate={list.location}
                   title={list.title}
@@ -590,6 +612,8 @@ const MapPresenter = ({
                         onSavePlace(
                           list.title + '\n' + list.address,
                           navigation,
+                          list.location,
+                          INDEX,
                         )
                       }>
                       <Text style={styles.title}>{list.title}</Text>
@@ -602,27 +626,45 @@ const MapPresenter = ({
       </MapView>
       <ZoomIn
         onPress={() =>
-          _zoomIn(
-            latitude,
-            longitude,
-            latDelta,
-            lonDelta,
-            latitudeMY,
-            longitudeMY,
-          )
+          battleLocation
+            ? _zoomIn(
+                latitude,
+                longitude,
+                latDelta,
+                lonDelta,
+                battleLocation.latitude,
+                battleLocation.longitude,
+              )
+            : _zoomIn(
+                latitude,
+                longitude,
+                latDelta,
+                lonDelta,
+                latitudeMY,
+                longitudeMY,
+              )
         }>
         <ZoomIcon size={30} name={'plus'} color={`${GREY_COLOR3}`} />
       </ZoomIn>
       <ZoomOut
         onPress={() =>
-          _zoomOut(
-            latitude,
-            longitude,
-            latDelta,
-            lonDelta,
-            latitudeMY,
-            longitudeMY,
-          )
+          battleLocation
+            ? _zoomOut(
+                latitude,
+                longitude,
+                latDelta,
+                lonDelta,
+                battleLocation.latitude,
+                battleLocation.longitude,
+              )
+            : _zoomOut(
+                latitude,
+                longitude,
+                latDelta,
+                lonDelta,
+                latitudeMY,
+                longitudeMY,
+              )
         }>
         <ZoomIcon size={30} name={'minus'} color={`${GREY_COLOR3}`} />
       </ZoomOut>
@@ -636,6 +678,7 @@ const MapPresenter = ({
       <NoticeContainer>
         <NoticeText>
           배틀장소의 주소를 클릭해{'\n'}상대방에게 장소를 알려주세요!
+          {battleLocation && CHECK ? indexChange(battleLocation) : null}
         </NoticeText>
       </NoticeContainer>
       <MView>

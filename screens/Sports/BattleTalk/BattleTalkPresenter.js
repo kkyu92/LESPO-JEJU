@@ -187,6 +187,7 @@ const BattleTalkPresenter = ({
   insertChatList,
   msg,
   msgHandler,
+  id,
   profile,
   name,
   myId,
@@ -196,6 +197,7 @@ const BattleTalkPresenter = ({
   battleState,
   requestUser,
   onSavePlace,
+  deleteChat,
   navigation,
 }) =>
   loading ? (
@@ -310,6 +312,7 @@ const BattleTalkPresenter = ({
                       myId={myId}
                       myName={myName}
                       myProfile={myProfile}
+                      onSavePlace={onSavePlace}
                     />
                   ) : index === list.length - 1 ? (
                     <ChatSlide
@@ -327,6 +330,7 @@ const BattleTalkPresenter = ({
                       myName={myName}
                       myId={myId}
                       myProfile={myProfile}
+                      onSavePlace={onSavePlace}
                     />
                   ) : index === 0 ? (
                     <ChatSlide
@@ -344,6 +348,7 @@ const BattleTalkPresenter = ({
                       myName={myName}
                       myId={myId}
                       myProfile={myProfile}
+                      onSavePlace={onSavePlace}
                     />
                   ) : (
                     <ChatSlide
@@ -361,6 +366,7 @@ const BattleTalkPresenter = ({
                       myName={myName}
                       myId={myId}
                       myProfile={myProfile}
+                      onSavePlace={onSavePlace}
                     />
                   ),
                 )}
@@ -373,32 +379,33 @@ const BattleTalkPresenter = ({
           {/* <Text>{JSON.stringify(getChatList)}</Text> */}
         </ChatListContainer>
       </View>
-
-      <InputContainer>
-        <ChatProfile
-          source={
-            myProfile
-              ? {uri: ProfileUri(myProfile)}
-              : require(`../../../assets/drawable-xxhdpi/icon_profile.png`)
-            // console.log('myPofile:' + myProfile))
-          }
-        />
-        <Input
-          onFocus={_scrollToBottom()}
-          onChangeText={msgHandler}
-          value={msg}
-          // autoFocus
-          returnKeyType={'next'}
-          placeholder="메시지 작성"
-          placeholderTextColor={GREY_COLOR2}
-          // onSubmitEditing={onSubmitEditing}
-          autoCorrect={false}
-          multiline={true}
-        />
-        <SendContainer onPress={() => insertChatList(msg)}>
-          <SendText>보내기</SendText>
-        </SendContainer>
-      </InputContainer>
+      {deleteChat[id] === id ? null : (
+        <InputContainer>
+          <ChatProfile
+            source={
+              myProfile
+                ? {uri: ProfileUri(myProfile)}
+                : require(`../../../assets/drawable-xxhdpi/icon_profile.png`)
+              // console.log('myPofile:' + myProfile))
+            }
+          />
+          <Input
+            onFocus={_scrollToBottom()}
+            onChangeText={msgHandler}
+            value={msg}
+            // autoFocus
+            returnKeyType={'next'}
+            placeholder="메시지 작성"
+            placeholderTextColor={GREY_COLOR2}
+            // onSubmitEditing={onSubmitEditing}
+            autoCorrect={false}
+            multiline={true}
+          />
+          <SendContainer onPress={() => insertChatList(msg)}>
+            <SendText>보내기</SendText>
+          </SendContainer>
+        </InputContainer>
+      )}
     </KeyboardAvoidingView>
   );
 

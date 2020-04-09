@@ -108,20 +108,22 @@ const PickerContainer = styled.View`
   align-items: center;
   margin-bottom: 10px;
 `;
-const MemoContainer = styled.View`
+const MemoContainer = styled.ScrollView`
   flex: 1;
   border-radius: 5px;
   border-width: 2px;
   border-color: ${GREY_COLOR};
-  align-items: flex-start;
+  /* align-items: flex-start; */
   margin-bottom: 10px;
-  height: ${Layout.height / 4};
+  /* height: ${Layout.height / 4}; */
 `;
 
 const Memo = styled.TextInput`
   flex: 1;
   padding: 5px;
-  max-height: ${Layout.height / 4};
+  /* max-height: ${Layout.height / 4}; */
+  /* max-height: 100%; */
+  height: ${Layout.height / 4};
   width: 100%;
   max-width: 100%;
 `;
@@ -171,7 +173,7 @@ const BattlePresenter = ({
       enabled>
       <View>
         <ViewTitle>스포츠배틀을 설정하세요!</ViewTitle>
-        <Container>
+        <Container showsVerticalScrollIndicator={false}>
           <Title>원하는 스포츠 선택</Title>
           <PickerContainer>
             <PickerSelect
@@ -245,6 +247,9 @@ const BattlePresenter = ({
                   borderWidth: 0,
                 },
                 // ... You can check the source to find the other keys.
+                // datePickerCon: {
+                //   backgroundColor: 'white',
+                // },
               }}
               onDateChange={getDate => {
                 setDateChange(getDate), (date = getDate);
@@ -268,7 +273,7 @@ const BattlePresenter = ({
           </PickerContainer>
 
           <Title>메모</Title>
-          <MemoContainer>
+          <MemoContainer showsVerticalScrollIndicator={true}>
             <Memo
               onChangeText={setMemoChange}
               returnKeyType={'next'}

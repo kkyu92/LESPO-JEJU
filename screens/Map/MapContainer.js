@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import moment from 'moment';
 import Firebase from 'react-native-firebase';
 import Toast from 'react-native-easy-toast';
-import {CHAT_ROOM_IN} from '../../constants/Strings';
+import {CHAT_ROOM_IN, ROOM_OUT} from '../../constants/Strings';
 
 export default class extends React.PureComponent {
   static navigationOptions = () => {
@@ -23,7 +23,13 @@ export default class extends React.PureComponent {
     const {
       navigation: {
         state: {
-          params: {listChanged, locations, mainState, onSavePlace},
+          params: {
+            listChanged,
+            locations,
+            mainState,
+            onSavePlace,
+            battleLocation,
+          },
         },
       },
     } = props;
@@ -39,6 +45,7 @@ export default class extends React.PureComponent {
       locations,
       mainState,
       onSavePlace,
+      battleLocation,
       listName: '',
       token: null,
       navigation,
@@ -94,11 +101,21 @@ export default class extends React.PureComponent {
       // 화면에 들어와있을 때 알림
       this.removeToastListener = Firebase.notifications().onNotification(
         notification => {
-          if (notification.android._notification._data.msg !== CHAT_ROOM_IN) {
+          if (
+            notification.android._notification._data.msg !== CHAT_ROOM_IN &&
+            notification.android._notification._data.msg !== ROOM_OUT
+          ) {
             this.refs.toast.show(
               notification.android._notification._data.name +
                 ' : ' +
                 notification.android._notification._data.msg,
+            );
+          } else if (
+            notification.android._notification._data.msg === ROOM_OUT
+          ) {
+            this.refs.toast.show(
+              notification.android._notification._data.name +
+                '님이 채팅방을 나갔습니다.',
             );
           }
         },
@@ -709,6 +726,7 @@ export default class extends React.PureComponent {
       locations,
       mainState,
       onSavePlace,
+      battleLocation,
       listName,
     } = this.state;
     // 위치정보 받기 전
@@ -728,6 +746,7 @@ export default class extends React.PureComponent {
             mainState={mainState}
             listName={listName}
             onSavePlace={onSavePlace}
+            battleLocation={battleLocation}
             onListChanging={this.onListChanging}
             onRegionChange={this.onRegionChange}
           />

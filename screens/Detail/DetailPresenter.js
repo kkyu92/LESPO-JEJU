@@ -22,6 +22,7 @@ var scrollViewRef = React.createRef();
 const SwiperView = styled.View``;
 // 전체
 const Container = styled.ScrollView`
+  width: 100%;
   background-color: ${TINT_COLOR};
   flex: 1;
 `;
@@ -220,7 +221,7 @@ const DetailPresenter = ({
   loading ? (
     <Loader />
   ) : reco ? (
-    <Container>
+    <Container scrollIndicatorInsets={{right: 1}}>
       {backgroundPoster.includes('/contents/') ? (
         <Swiper
           marginBottom={20}
@@ -271,7 +272,7 @@ const DetailPresenter = ({
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : null}
       enabled>
-      <Container ref={scrollViewRef}>
+      <Container scrollIndicatorInsets={{right: 1}} ref={scrollViewRef}>
         {backgroundPoster.includes('/contents/') ? (
           <Swiper
             marginBottom={20}
@@ -382,7 +383,7 @@ const DetailPresenter = ({
           <ContextText>휴무일: {detail.holidays}</ContextText>
           <ContextText>이벤트: {detail.events}</ContextText>
           <ContextText>전화번호: {detail.tel_number}</ContextText>
-          <CommentContainer>
+          <CommentContainer showsVerticalScrollIndicator={false}>
             {comments === undefined ? (
               <ContextText>댓글 ( 0 )</ContextText>
             ) : (
@@ -434,7 +435,7 @@ const _scrollToBottom = () => {
   console.log('_scrollToBottom');
   setTimeout(() => {
     scrollViewRef.current.scrollToEnd({animated: true});
-  }, 500);
+  }, 100);
 };
 
 export default DetailPresenter;

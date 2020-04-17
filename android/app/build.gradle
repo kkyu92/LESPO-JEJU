@@ -131,8 +131,8 @@ android {
         applicationId "com.lespojeju"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1018
-        versionName "1.0.18"
+        versionCode 1019
+        versionName "1.0.19"
     }
     splits {
         abi {

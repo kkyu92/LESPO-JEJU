@@ -51,7 +51,7 @@ const BtnImg2 = styled.Image`
 
 const HeaderContainer = styled.View`
   flex-direction: row;
-  margin-top: ${Platform.OS === 'ios' ? '35px' : '15px'};
+  margin-top: ${Platform.OS === 'ios' ? '55px' : '15px'};
   margin-left: 20px;
   margin-right: 20px;
   justify-content: center;

@@ -9,6 +9,7 @@ import Layout from '../../constants/Layout';
 const View = styled.View`
   background-color: ${TINT_COLOR};
   flex: 1;
+  margin-top: ${Platform.OS === 'ios' ? '20px' : '20px'};
   border-top-right-radius: 15px;
   border-top-left-radius: 15px;
   justify-content: center;
@@ -77,11 +78,11 @@ const Text = styled.Text`
 `;
 
 const HeaderContainer = styled.View`
-  flex-direction: row;
-  margin-top: ${Platform.OS === 'ios' ? '35px' : '15px'};
+  flex-direction: column;
+  margin-top: ${Platform.OS === 'ios' ? '50px' : '0px'};
   margin-left: 20px;
   margin-right: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   justify-content: center;
   align-items: center;
   /* background-color: goldenrod; */
@@ -105,6 +106,7 @@ const TripPresenter = ({loading, navigation}) =>
     <>
       <TitleContainer>
         <HeaderContainer>
+          <HeaderText />
           <HeaderText>여행하기</HeaderText>
         </HeaderContainer>
         {/* <TitleText>좋아하는 여행을 찾아보세요!</TitleText> */}

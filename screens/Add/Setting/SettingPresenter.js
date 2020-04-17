@@ -25,10 +25,7 @@ const Container = styled.View`
   padding-left: 20px;
   padding-right: 20px;
   padding-bottom: 20px;
-  margin-top: 20px;
   background-color: white;
-  border-top-left-radius: 15;
-  border-top-right-radius: 15;
 `;
 
 const BtnContainer = styled.TouchableOpacity`
@@ -85,9 +82,9 @@ const SettingPresenter = ({loading, alarm, alarmChange, navigation}) =>
     <Loader />
   ) : (
     <View>
-      <HeaderContainer>
+      {/* <HeaderContainer>
         <HeaderText>설정</HeaderText>
-      </HeaderContainer>
+      </HeaderContainer> */}
       <Container>
         <SwitchContainer>
           <Text>알림설정</Text>
@@ -133,7 +130,7 @@ const SettingPresenter = ({loading, alarm, alarmChange, navigation}) =>
 
         <BtnContainer>
           <Text>버전정보</Text>
-          <VersionText>1.0.18</VersionText>
+          <VersionText>1.0.19</VersionText>
         </BtnContainer>
       </Container>
     </View>

@@ -133,6 +133,7 @@ const CoursePresenter = ({
           <Loader />
         ) : (
           <FlatList
+            scrollIndicatorInsets={{right: 1}}
             data={listChanged}
             renderItem={list => (
               <>

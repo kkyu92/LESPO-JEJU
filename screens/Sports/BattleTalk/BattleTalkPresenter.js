@@ -178,6 +178,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
+var count = 0;
 
 // show DATA
 const BattleTalkPresenter = ({
@@ -198,6 +199,7 @@ const BattleTalkPresenter = ({
   requestUser,
   onSavePlace,
   deleteChat,
+  unMount,
   navigation,
 }) =>
   loading ? (
@@ -390,7 +392,7 @@ const BattleTalkPresenter = ({
             }
           />
           <Input
-            onFocus={_scrollToBottom()}
+            onFocus={_scrollToBottom(unMount)}
             onChangeText={msgHandler}
             value={msg}
             // autoFocus
@@ -409,10 +411,19 @@ const BattleTalkPresenter = ({
     </KeyboardAvoidingView>
   );
 
-const _scrollToBottom = () => {
+const _scrollToBottom = unMount => {
+  console.log('count : ' + unMount);
   setTimeout(() => {
     scrollViewRef.current.scrollToEnd({animated: true});
-  }, 500);
+  }, 100);
+  // if (unMount === 0) {
+  //   setTimeout(() => {
+  //     scrollViewRef.current.scrollToEnd({animated: true});
+  //   }, 100);
+  //   unMount = 1;
+  // } else {
+  //   scrollViewRef.current.scrollToEnd({animated: true});
+  // }
 };
 
 export default withNavigation(BattleTalkPresenter);

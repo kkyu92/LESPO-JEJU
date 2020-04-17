@@ -6,6 +6,12 @@ import {CHAT_ROOM_IN, ROOM_OUT} from '../../../constants/Strings';
 import {Platform} from 'react-native';
 
 export default class extends React.Component {
+  // Title setting
+  static navigationOptions = () => {
+    return {
+      title: '설정',
+    };
+  };
   constructor(props) {
     super(props);
     const {navigation} = this.props;

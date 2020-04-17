@@ -62,7 +62,7 @@ const BattleCoinList = styled.TouchableOpacity`
 
 const NameText = styled.Text`
   color: ${TINT_COLOR};
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 800;
   margin-right: 5px;
 `;
@@ -131,7 +131,7 @@ const BtnImg2 = styled.Image`
 
 const HeaderContainer = styled.View`
   flex-direction: row;
-  margin-top: ${Platform.OS === 'ios' ? '35px' : '15px'};
+  margin-top: ${Platform.OS === 'ios' ? '55px' : '15px'};
   margin-left: 20px;
   margin-right: 20px;
   justify-content: center;
@@ -179,7 +179,9 @@ const MyPresenter = ({
           )}
           <ProfileTextContainer>
             <ProfileNameContainer>
-              <NameText>{name}</NameText>
+              <NameText numberOfLines={1}>
+                {name.length < 10 ? name : name.substring(0, 9) + '...'}
+              </NameText>
               <Rating
                 // type="custom"
                 // ratingImage={STAR_IMAGE}

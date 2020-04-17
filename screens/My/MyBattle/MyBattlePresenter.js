@@ -83,9 +83,7 @@ const MyBattlePresenter = ({loading, chatRoomList, myId, deleteMyBattle}) =>
                       ),
                     )}
                 </Section>
-              ) : (
-                <SearchNo text={'나의 배틀 리스트가 없습니다.'} />
-              )
+              ) : null
             ) : (
               console.log('null')
             )}

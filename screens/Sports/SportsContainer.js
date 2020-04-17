@@ -32,6 +32,7 @@ export default class extends React.Component {
   }
 
   init = () => {
+    this.getData();
     if (!firebase.apps.length) {
       firebase.initializeApp({
         apiKey: 'AIzaSyA1YDEatBC9m11UqOGyrzV6AJXwJDff1fI',
@@ -117,15 +118,37 @@ export default class extends React.Component {
         });
       },
     );
-    let {listChanged, chatRoomList, error} = this.state;
+
     try {
       this.getData();
       // get ChatRoomList
-      let list = [];
+      this.getChatRoomList();
+    } catch (error) {
+      console.log(error);
+      error = "Cnat't get sportsBattle list";
+    }
+    // 화면 돌아왔을 때 reload !
+    // this.subs = [
+    //   this.props.navigation.addListener('willFocus', () => {
+    //     console.log('willFocus ::: reload');
+    //     // this.onListChanging();
+    //     this.setState({
+    //       chatRoomList: [],
+    //     });
+    //   }),
+    // ];
+  }
+
+  // get chatRoomList
+  getChatRoomList = async listName => {
+    console.log('getChatRoomList');
+    let {chatRoomList, listChanged} = this.state;
+    try {
       var userRef = firebase.database().ref('chatRoomList/');
       // .orderByChild('key');
       userRef.on('value', dataSnapshot => {
         chatRoomList = [];
+        listChanged = [];
         dataSnapshot.forEach(child => {
           chatRoomList.push({
             key: child.key,
@@ -145,31 +168,62 @@ export default class extends React.Component {
           chatRoomList.sort(function(a, b) {
             return new Date(b.date) - new Date(a.date);
           });
-          // chatRoomList.reverse();
-          this.setState({
-            chatRoomList: chatRoomList,
-            loading: false,
-          });
+          listChanged = chatRoomList
+            .filter(function(list) {
+              if (listName === 'all') {
+                return list.key;
+              } else if (listName === 'billiards') {
+                return list.sports === '당구' || list.sports === '상관없음';
+              } else if (listName === 'basketball') {
+                return list.sports === '농구' || list.sports === '상관없음';
+              } else if (listName === 'football') {
+                return list.sports === '축구' || list.sports === '상관없음';
+              } else if (listName === 'baseball') {
+                return list.sports === '야구' || list.sports === '상관없음';
+              } else if (listName === 'bowling') {
+                return list.sports === '볼링' || list.sports === '상관없음';
+              } else if (listName === 'golf') {
+                return list.sports === '골프' || list.sports === '상관없음';
+              } else if (listName === 'badminton') {
+                return list.sports === '배드민턴' || list.sports === '상관없음';
+              } else {
+                return list.key;
+              }
+            })
+            .map(function(list) {
+              return list;
+            });
+          listChanged = listChanged
+            .filter(function(list) {
+              return (
+                list.makeUser.userId !== M_ID &&
+                list.chatList === '' &&
+                list.joinUser.userId === ''
+              );
+            })
+            .map(function(list) {
+              return list;
+            });
         });
+        if (listChanged.length === 0) {
+          if (listName !== undefined) {
+            this.setState({
+              chatRoomList: [],
+            });
+            this.state.chatRoomList = [];
+          }
+          this.refs.toast.show('등록배틀리스트가 없습니다.');
+        } else {
+          this.setState({
+            chatRoomList: listChanged,
+          });
+        }
         this.setState({
           loading: false,
         });
       });
-    } catch (error) {
-      console.log(error);
-      error = "Cnat't get sportsBattle list";
-    }
-    // 화면 돌아왔을 때 reload !
-    // this.subs = [
-    //   this.props.navigation.addListener('willFocus', () => {
-    //     console.log('willFocus ::: reload');
-    //     // this.onListChanging();
-    //     this.setState({
-    //       chatRoomList: [],
-    //     });
-    //   }),
-    // ];
-  }
+    } catch (error) {}
+  };
 
   // 나갔을때
   componentWillUnmount() {
@@ -198,40 +252,15 @@ export default class extends React.Component {
 
   // 검색한 결과값
   onListChanging = async () => {
-    const {listName} = this.state;
+    let {listName} = this.state;
     if (listName !== '') {
-      console.log('listChanging ::: ' + listName);
-      let listChanged, error;
       this.setState({
         loading: true,
       });
       try {
-        if (listName === 'latest') {
-          ({
-            data: {results: listChanged},
-          } = await movie.getSearchMovie('latest'));
-        } else if (listName === 'battle') {
-          ({
-            data: {results: listChanged},
-          } = await movie.getSearchMovie('battle'));
-        } else if (listName === 'nearest') {
-          ({
-            data: {results: listChanged},
-          } = await movie.getSearchMovie('nearest'));
-        } else {
-          ({
-            data: {results: listChanged},
-          } = await movie.getSearchMovie('default'));
-        }
+        this.getChatRoomList(listName);
       } catch {
         error = "Can't Search";
-      } finally {
-        this.setState({
-          loading: false,
-          listChanged,
-          listName,
-          error,
-        });
       }
       return;
     }
@@ -247,16 +276,17 @@ export default class extends React.Component {
           listName={listName}
           // listChanged={listChanged}
           chatRoomList={chatRoomList}
-          // onListChanging={this.onListChanging}
-          // handleListUpdate={this.handleListUpdate}
+          onListChanging={this.onListChanging}
+          handleListUpdate={this.handleListUpdate}
+          toast={this.refs.toast}
         />
         <Toast
           ref={'toast'}
           style={{backgroundColor: '#fee6d0'}}
-          position="top"
+          position="bottom"
           positionValue={100}
-          fadeInDuration={750}
-          fadeOutDuration={1500}
+          fadeInDuration={550}
+          fadeOutDuration={2000}
           opacity={1}
           textStyle={{color: '#000000'}}
         />

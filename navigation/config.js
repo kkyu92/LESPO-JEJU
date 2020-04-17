@@ -1,5 +1,18 @@
+import React from 'react';
 import {createStackNavigator} from 'react-navigation-stack';
 import {BG_COLOR, TINT_COLOR} from '../constants/Colors';
+import {TouchableOpacity} from 'react-native';
+import BackBtn from 'react-native-vector-icons/Ionicons';
+
+const Left = ({onPress}) => (
+  <TouchableOpacity onPress={() => onPress}>
+    <BackBtn
+      size={30}
+      name={Platform.OS === 'ios' ? 'ios-arrow-back' : 'md-arrow-back'}
+      color={`${TINT_COLOR}`}
+    />
+  </TouchableOpacity>
+);
 
 // header Styles
 export const headerStyles = {
@@ -14,6 +27,13 @@ export const headerStyles = {
 };
 
 export const nodapStyles = {
+  // headerLeft: ({goBack}) => <Left onPress={goBack} />,
+  headerStyle: {
+    // padding: 10,
+    marginTop: 10,
+    // marginBottom: 10,
+    marginLeft: 5,
+  },
   headerTransparent: true,
   headerTitleStyle: {
     color: BG_COLOR,

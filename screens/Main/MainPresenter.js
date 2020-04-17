@@ -86,7 +86,7 @@ const TouchableContainer = styled.TouchableOpacity`
 
 const HeaderContainer = styled.View`
   flex-direction: row;
-  margin-top: ${Platform.OS === 'ios' ? '35px' : '15px'};
+  margin-top: ${Platform.OS === 'ios' ? '55px' : '15px'};
   margin-left: 20px;
   margin-right: 20px;
   justify-content: center;
@@ -107,7 +107,7 @@ const HeaderText = styled.Text`
 const RightButtonContainer = styled.View`
   position: absolute;
   right: 20px;
-  top: ${Platform.OS === 'ios' ? '25px' : '15px'};
+  top: ${Platform.OS === 'ios' ? '45px' : '15px'};
   flex-direction: row;
   align-items: center;
   justify-content: flex-end;

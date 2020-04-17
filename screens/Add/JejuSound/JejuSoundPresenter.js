@@ -21,9 +21,9 @@ const pickerStyle = {
 
   inputIOS: {
     color: 'white',
-    paddingTop: 13,
+    paddingTop: 12,
     paddingHorizontal: 10,
-    paddingLeft: 55,
+    // paddingLeft: 55,
     paddingBottom: 12,
   },
   inputAndroid: {
@@ -102,7 +102,7 @@ const Container = styled.ScrollView`
 
 const TitleContainer = styled.View`
   flex-direction: row;
-  margin-top: ${Platform.OS === 'ios' ? '35px' : '15px'};
+  margin-top: ${Platform.OS === 'ios' ? '55px' : '15px'};
   margin-left: 20px;
   margin-right: 20px;
   justify-content: center;

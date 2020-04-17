@@ -49,6 +49,7 @@ export default class extends React.Component {
       isModalVisible: false,
       battleState: '',
       requestUser: '',
+      unMount: 0,
       error: null,
     };
     console.log('@@@@@@@: battleTalk' + this.state.makeUser);
@@ -251,7 +252,7 @@ export default class extends React.Component {
 
   // write Data [ set / push = uuid ]
   writeChattingAdd(key, user, msg, date, read, place = false) {
-    let {getChatList} = this.state;
+    let {getChatList, unMount} = this.state;
     getChatList.push({
       key: '',
       user: user,
@@ -308,6 +309,7 @@ export default class extends React.Component {
         );
       });
     this.setState({
+      unMount: 1,
       msg: '',
       getChatList,
     });
@@ -1055,6 +1057,9 @@ export default class extends React.Component {
 
   // Screen OUT
   componentWillUnmount() {
+    this.setState({
+      unMount: true,
+    });
     console.log('componentWillUnmount ::: [BattleTalk Container]');
     AppState.removeEventListener('change', this._handleAppStateChange);
     this.removeToastListener();
@@ -1162,6 +1167,7 @@ export default class extends React.Component {
       battleState,
       requestUser,
       deleteChat,
+      unMount,
     } = this.state;
     return (
       <>
@@ -1186,6 +1192,7 @@ export default class extends React.Component {
           deleteChat={deleteChat}
           changeModalVisiblity={this.changeModalVisiblity}
           onSavePlace={this.onSavePlace}
+          unMount={unMount}
         />
         <Modal
           transparent={true}

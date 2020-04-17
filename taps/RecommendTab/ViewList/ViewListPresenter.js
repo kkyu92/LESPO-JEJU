@@ -63,6 +63,7 @@ const ViewListPresenter = ({loading, listChanged, locations, navigation}) =>
           <Loader />
         ) : (
           <FlatList
+            scrollIndicatorInsets={{right: 1}}
             data={listChanged}
             renderItem={list => (
               <>

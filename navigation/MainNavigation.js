@@ -102,9 +102,10 @@ const HomeNavigation = createStackNavigator(
     Setting: {
       screen: SettingScreen,
       navigationOptions: {
-        headerTransparent: true,
-        headerTintColor: TINT_COLOR,
-        headerStyle: {marginTop: 5},
+        ...headerStyles,
+        // headerTransparent: true,
+        // headerTintColor: TINT_COLOR,
+        // headerStyle: {marginTop: 5},
       },
     },
     // Search

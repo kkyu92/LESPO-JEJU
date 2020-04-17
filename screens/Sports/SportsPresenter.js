@@ -13,20 +13,27 @@ import SearchNo from '../Main/Search/SearchNo';
 import BattleSlide from '../../components/BattleSlide';
 
 const data = [
-  {label: '등록일순', value: 'latest'},
-  {label: '가까운순', value: 'nearest'},
-  {label: '배틀일순', value: 'battle'},
+  {label: '전체', value: 'all'},
+  {label: '당구', value: 'billiards'},
+  {label: '농구', value: 'basketball'},
+  {label: '축구', value: 'football'},
+  {label: '야구', value: 'baseball'},
+  {label: '볼링', value: 'bowling'},
+  {label: '골프', value: 'golf'},
+  {label: '배드민턴', value: 'badminton'},
 ];
 
 const pickerStyle = {
+  width: '100%',
   flex: 1,
+  textalign: 'center',
   alignItems: 'center',
   justifyContent: 'center',
   inputIOS: {
     color: 'white',
-    paddingTop: 13,
+    paddingTop: 12,
     paddingHorizontal: 20,
-    paddingLeft: 55,
+    // paddingLeft: 55,
     paddingBottom: 12,
   },
   inputAndroid: {
@@ -93,14 +100,14 @@ const Container = styled.ScrollView`
   background-color: white;
   border-top-left-radius: 15;
   border-top-right-radius: 15;
-  padding-top: 20;
-  padding-bottom: 20;
+  padding-top: 20px;
+  padding-bottom: 20px;
   flex: 1;
 `;
 
 const HeaderContainer = styled.View`
-  flex-direction: row;
-  margin-top: ${Platform.OS === 'ios' ? '35px' : '15px'};
+  flex-direction: column;
+  margin-top: ${Platform.OS === 'ios' ? '50px' : '0px'};
   margin-left: 20px;
   margin-right: 20px;
   justify-content: center;
@@ -131,7 +138,7 @@ onValueChange = selected => {
 refresh = () => {
   console.log('refresh');
 };
-
+var count = 0;
 // show DATA
 const SportsPresenter = ({
   loading,
@@ -141,6 +148,7 @@ const SportsPresenter = ({
   onListChanging,
   handleListUpdate,
   myId,
+  toast,
   navigation,
 }) =>
   loading ? (
@@ -148,10 +156,11 @@ const SportsPresenter = ({
   ) : (
     <View>
       <HeaderContainer>
+        <HeaderText />
         <HeaderText>스포츠배틀</HeaderText>
       </HeaderContainer>
       <HeaderConatinerPicker>
-        {/* <PickerContainer>
+        <PickerContainer>
           <PickerSelect
             placeholder={{}}
             items={data}
@@ -164,7 +173,7 @@ const SportsPresenter = ({
             style={pickerStyle}
             value={listName}
           />
-        </PickerContainer> */}
+        </PickerContainer>
         <AddBattleContainer
           onPress={() =>
             navigation.navigate({
@@ -182,36 +191,29 @@ const SportsPresenter = ({
             {chatRoomList ? (
               chatRoomList.length > 0 ? (
                 <Section horizontal={false} title="">
-                  {chatRoomList
-                    .filter(
-                      list =>
-                        list.makeUser.userId !== myId &&
-                        list.chatList === '' &&
-                        list.joinUser.userId === '',
-                    )
-                    .map(list => (
-                      <BattleSlide
-                        statusText={''}
-                        roomKey={list.key}
-                        id={list.makeUser.userId}
-                        profile={list.makeUser.userProfile}
-                        name={list.makeUser.userName}
-                        level={list.level}
-                        rate={list.makeUser.userRating}
-                        sport={list.sports}
-                        type={list.battleStyle}
-                        date={list.battleDate}
-                        area={list.area}
-                        memo={list.memo}
-                        coinList={false}
-                      />
-                    ))}
+                  {chatRoomList.map(list => (
+                    <BattleSlide
+                      statusText={''}
+                      roomKey={list.key}
+                      id={list.makeUser.userId}
+                      profile={list.makeUser.userProfile}
+                      name={list.makeUser.userName}
+                      level={list.level}
+                      rate={list.makeUser.userRating}
+                      sport={list.sports}
+                      type={list.battleStyle}
+                      date={list.battleDate}
+                      area={list.area}
+                      memo={list.memo}
+                      coinList={false}
+                    />
+                  ))}
                 </Section>
               ) : (
                 <SearchNo text={'등록된 배틀이 없습니다.'} />
               )
             ) : (
-              console.log('null')
+              <SearchNo text={'등록된 배틀이 없습니다.'} />
             )}
           </>
         )}

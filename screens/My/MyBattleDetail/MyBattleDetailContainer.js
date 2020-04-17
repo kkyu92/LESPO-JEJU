@@ -1053,17 +1053,31 @@ export default class extends React.Component {
     } else if (this.state.isRandomBox === 'success7') {
       product = 'bbq 황금올리브치킨 반반 + 콜라 1.25L';
     }
+    let dateTime = moment()
+      .local()
+      .format('MMDDHHmm');
+    let code = this.state.myId + dateTime - 12345;
+    console.log('당첨코드 : ' + code);
     const params = new URLSearchParams();
     params.append(
       'message',
-      '아이디: ' +
+      '제주배틀투어\n랜덤박스 당첨!\n' +
+        '당첨상품: ' +
+        product +
+        '아이디: ' +
         this.state.myId +
         '\n' +
         '이름: ' +
         this.state.myName +
         '\n' +
-        '당첨상품: ' +
-        product,
+        '배틀종목: ' +
+        this.state.sport +
+        '\n' +
+        '배틀날짜: ' +
+        this.state.date +
+        '\n\n' +
+        '코드: ' +
+        code,
     );
     params.append('to', 'lespojeju@naver.com');
     // params.append('to', 'lespojeju@naver.com');

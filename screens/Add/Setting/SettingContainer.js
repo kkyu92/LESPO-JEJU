@@ -4,6 +4,8 @@ import Firebase from 'react-native-firebase';
 import Toast from 'react-native-easy-toast';
 import {CHAT_ROOM_IN, ROOM_OUT} from '../../../constants/Strings';
 import {Platform} from 'react-native';
+import firebase from 'firebase';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default class extends React.Component {
   // Title setting
@@ -17,17 +19,30 @@ export default class extends React.Component {
     const {navigation} = this.props;
     this.state = {
       loading: true,
+      id: '',
       alarm: true,
       navigation,
       error: null,
     };
   }
 
-  alarmChange = val => {
+  alarmChange = async (val, id) => {
     if (val) {
       this.refs.toast.show('알림을 받습니다.');
+      await firebase
+        .database()
+        .ref('FcmNotiPush')
+        .update({
+          [id]: true,
+        });
     } else {
       this.refs.toast.show('알림을 받지않습니다.');
+      await firebase
+        .database()
+        .ref('FcmNotiPush')
+        .update({
+          [id]: false,
+        });
     }
     this.setState({
       alarm: val,
@@ -35,6 +50,7 @@ export default class extends React.Component {
   };
 
   async componentDidMount() {
+    var id = await AsyncStorage.getItem('@USER_ID');
     // fcm setting
     const enable = await Firebase.messaging().hasPermission();
     if (enable) {
@@ -83,15 +99,29 @@ export default class extends React.Component {
         });
       },
     );
+    let alarmValue;
     let error;
     try {
-      console.log('GETGETGET\n' + Platform.Version.toString());
+      console.log('GET OS VERSION : ' + Platform.Version.toString());
+      await firebase
+        .database()
+        .ref('FcmNotiPush/' + id)
+        .once('value', data => {
+          alarmValue = JSON.stringify(data);
+          if (alarmValue === 'false') {
+            alarmValue = false;
+          } else {
+            alarmValue = true;
+          }
+        });
     } catch (error) {
       console.log(error);
       error = "Cnat't get MORE API";
     } finally {
       this.setState({
         loading: false,
+        id: id,
+        alarm: alarmValue,
         error,
       });
     }
@@ -104,11 +134,12 @@ export default class extends React.Component {
   }
 
   render() {
-    const {loading, alarm} = this.state;
+    const {loading, id, alarm} = this.state;
     return (
       <>
         <SettingPresenter
           loading={loading}
+          id={id}
           alarm={alarm}
           alarmChange={this.alarmChange}
         />

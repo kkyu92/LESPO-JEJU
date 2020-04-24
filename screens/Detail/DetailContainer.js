@@ -67,6 +67,7 @@ export default class extends React.Component {
   }
 
   async componentDidMount() {
+    await AsyncStorage.setItem('@DETAIL_PAGE', 'true');
     // fcm setting
     const enable = await Firebase.messaging().hasPermission();
     if (enable) {
@@ -386,11 +387,12 @@ export default class extends React.Component {
     }
   };
 
-  componentWillUnmount() {
+  componentWillUnmount = async () => {
     console.log('componentWillUnmount[DetailContainer]');
+    await AsyncStorage.setItem('@DETAIL_PAGE', 'false');
     this.removeToastListener();
     this.removeNotificationOpenedListener();
-  }
+  };
 
   render() {
     const {

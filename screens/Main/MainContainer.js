@@ -83,7 +83,7 @@ export default class extends React.Component {
     // 공유하기 Deep Link
     Linking.getInitialURL().then(url => {
       if (url) {
-        console.log('all ev: ' + url);
+        console.log('all ev1: ' + url);
         let id = ShareLink.navigate(url);
         this.props.navigation.navigate({
           routeName: 'Detail',
@@ -95,9 +95,14 @@ export default class extends React.Component {
     });
     Linking.addEventListener(
       'url',
-      (ShareLink.handleOpenURL = id => {
+      (ShareLink.handleOpenURL = async id => {
         let url = id.url;
-        console.log('all ev: ' + url);
+        let deatilCheck = await AsyncStorage.getItem('@DETAIL_PAGE');
+        // detail page 머물러있는경우 링킹이 안되어서 조건 걸어 체크
+        if (deatilCheck === 'true') {
+          this.props.navigation.goBack(null);
+        }
+        console.log('all ev2: ' + url);
         const paths = url.split('?'); // 쿼리스트링 관련한 패키지들을 활용하면 유용합니다.
         if (paths.length > 1) {
           //파라미터가 있다

@@ -85,6 +85,7 @@ const BattleTalkPresenter = ({loading, chatRoomList, myId, deleteChat}) =>
                         date={moment(list.lastRealTime).format('YYYY-MM-DD')}
                         time={moment(list.lastRealTime).format('LT')}
                         msg={list.lastMsg}
+                        unReadCount={list.unReadCount[myId]}
                         battleState={list.battleState}
                         deleteChat={deleteChat}
                       />

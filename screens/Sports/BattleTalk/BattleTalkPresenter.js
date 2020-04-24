@@ -58,6 +58,11 @@ const HeaderContainer = styled.View`
   align-items: center;
   justify-content: space-between;
   padding: 20px;
+  margin-top: ${Platform.OS === 'ios'
+    ? parseInt(Platform.Version) > 12
+      ? '20px'
+      : '0px'
+    : '0px'};
 `;
 const ProfileContainer = styled.View`
   /* background-color: goldenrod; */
@@ -280,6 +285,7 @@ const BattleTalkPresenter = ({
         </HeaderContainer>
         <ChatListContainer
           ref={scrollViewRef}
+          scrollIndicatorInsets={{right: 1}}
           // onContentSizeChange={(contentWidth, contentHeight) => {
           //   console.log('onContentSizeChange');
           //   handleScroll(contentHeight);
@@ -412,7 +418,6 @@ const BattleTalkPresenter = ({
   );
 
 const _scrollToBottom = unMount => {
-  console.log('count : ' + unMount);
   setTimeout(() => {
     scrollViewRef.current.scrollToEnd({animated: true});
   }, 100);

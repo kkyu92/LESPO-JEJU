@@ -77,7 +77,7 @@ const HeaderText = styled.Text`
   /* background-color: gainsboro; */
 `;
 
-const SettingPresenter = ({loading, alarm, alarmChange, navigation}) =>
+const SettingPresenter = ({loading, id, alarm, alarmChange, navigation}) =>
   loading ? (
     <Loader />
   ) : (
@@ -90,7 +90,7 @@ const SettingPresenter = ({loading, alarm, alarmChange, navigation}) =>
           <Text>알림설정</Text>
           <Switch
             value={alarm}
-            onValueChange={val => alarmChange(val)}
+            onValueChange={val => alarmChange(val, id)}
             disabled={false}
             activeText={'On'}
             inActiveText={'Off'}
@@ -130,7 +130,7 @@ const SettingPresenter = ({loading, alarm, alarmChange, navigation}) =>
 
         <BtnContainer>
           <Text>버전정보</Text>
-          <VersionText>1.0.19</VersionText>
+          <VersionText>1.0.20</VersionText>
         </BtnContainer>
       </Container>
     </View>

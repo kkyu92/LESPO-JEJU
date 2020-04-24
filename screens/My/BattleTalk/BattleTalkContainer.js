@@ -7,6 +7,7 @@ import Toast from 'react-native-easy-toast';
 import Firebase from 'react-native-firebase';
 import {CHAT_ROOM_IN, ROOM_OUT} from '../../../constants/Strings';
 import moment from 'moment';
+import {FirebasePush} from '../../../api/PushNoti';
 
 var M_ID, M_NAME, M_PROFILE;
 
@@ -63,6 +64,7 @@ export default class extends React.Component {
               lastMsg: child.val().lastMsg,
               deleteChat: child.val().deleteChat,
               deleteHistory: child.val().deleteHistory,
+              unReadCount: child.val().unReadCount,
             });
             chatRoomList = chatRoomList.filter(
               list => list.joinUser.userId !== '',
@@ -230,14 +232,15 @@ export default class extends React.Component {
         .ref('FcmTokenList/' + id)
         .once('value', dataSnapshot => {
           otherToken = dataSnapshot;
-          this.sendToServer(
+          FirebasePush.sendToServerRoomOut(
+            roomKey,
+            id,
             this.state.myId,
             this.state.myName,
             '',
             ROOM_OUT,
             '',
             otherToken,
-            roomKey,
           );
         });
     }
@@ -252,50 +255,6 @@ export default class extends React.Component {
       .ref('chatRoomList/')
       .off();
   }
-
-  sendToServer = async (
-    senderId,
-    senderName,
-    senderProfile,
-    msg,
-    date,
-    token,
-    roomKey,
-  ) => {
-    const firebase_server_key =
-      'AAAABOeF95E:APA91bGCKfJwCOUeYC8QypsS7yCAtR8ZOZf_rAj1iRK_OvIB3mYXYnva4DAY28XmUZA1GpXsdp1eRf9rPeuIedr7eX_7yFWbL-C_4JfVGSFGorCdzjOA0AyYPxB83M8TTAfUj62tUZhH';
-    // 읽음처리
-    if (msg === ROOM_OUT) {
-      fetch('https://fcm.googleapis.com/fcm/send', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'key=' + firebase_server_key,
-        },
-        body: JSON.stringify({
-          registration_ids: [token],
-          notification: {
-            title: '',
-            body: senderName + '님이 채팅방을 나갔습니다.',
-          },
-          data: {
-            roomKey: roomKey,
-            id: senderId,
-            name: senderName,
-            profile: senderProfile,
-            msg: msg,
-            date: date,
-          },
-        }),
-      })
-        .then(response => {
-          console.log('FCM msg sent!');
-        })
-        .catch(error => {
-          console.error(error);
-        });
-    }
-  };
 
   render() {
     const {loading, chatRoomList, myId} = this.state;

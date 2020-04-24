@@ -26,7 +26,7 @@ export const headerStyles = {
   headerTintColor: TINT_COLOR,
 };
 
-export const nodapStyles = {
+export const dapdapStyles = {
   // headerLeft: ({goBack}) => <Left onPress={goBack} />,
   headerStyle: {
     // padding: 10,

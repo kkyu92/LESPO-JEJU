@@ -15,6 +15,7 @@ import RNIap, {
   PurchaseError,
 } from 'react-native-iap';
 import {CHAT_ROOM_IN, ROOM_OUT} from '../../constants/Strings';
+import {LoginManager} from 'react-native-fbsdk';
 
 const itemSkus = Platform.select({
   ios: ['battleCoin'],
@@ -269,7 +270,9 @@ export default class extends React.Component {
     console.log('setData::: ', data);
     console.log('modal: ' + this.state.modal);
     let ID = await AsyncStorage.getItem('@USER_ID');
+    let SNS = await AsyncStorage.getItem('@USER_PROVIDER');
     let API_TOKEN = await AsyncStorage.getItem('@API_TOKEN');
+
     const config = {
       headers: {
         Authorization: API_TOKEN,
@@ -298,6 +301,9 @@ export default class extends React.Component {
           .catch(error => {
             console.log('error ', error);
           });
+      }
+      if (SNS === 'facebook') {
+        LoginManager.logOut();
       }
       await AsyncStorage.setItem('@AUTO_LOGIN', 'false');
       await AsyncStorage.setItem('@USER_EMAIL', '');

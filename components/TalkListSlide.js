@@ -26,12 +26,12 @@ const BattleProfileContainer = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  width: 70%;
+  width: 60%;
   /* background-color: red; */
 `;
 
 const BattleTalkNameConatiner = styled.View`
-  width: 75%;
+  width: 70%;
   justify-content: center;
   align-items: flex-start;
   /* background-color: green; */
@@ -51,11 +51,34 @@ const NameText = styled.Text`
   margin-bottom: ${Platform.OS === 'ios' ? '3px' : '2px'};
 `;
 
+const MsgContainer = styled.View`
+  width: 10%;
+  border-radius: 30px;
+  background-color: ${BG_COLOR};
+  justify-content: center;
+  align-items: center;
+`;
+const NullMsgContainer = styled.View`
+  width: 10%;
+  border-radius: 30px;
+  background-color: ${TINT_COLOR};
+  justify-content: center;
+  align-items: center;
+`;
+
 const MsgText = styled.Text`
   font-size: 15px;
   color: ${GREY_COLOR2};
   margin-top: ${Platform.OS === 'ios' ? '3px' : '2px'};
   margin-bottom: ${Platform.OS === 'ios' ? '12px' : '10px'};
+`;
+
+const UnReadCount = styled.Text`
+  color: white;
+  font-size: 20px;
+  text-align: center;
+  justify-content: center;
+  align-self: center;
 `;
 
 const DateText = styled.Text`
@@ -87,6 +110,7 @@ const TalkListSlide = ({
   profile,
   name,
   msg,
+  unReadCount,
   date,
   time,
   battleState,
@@ -120,6 +144,16 @@ const TalkListSlide = ({
       </BattleTalkNameConatiner>
     </BattleProfileContainer>
 
+    {unReadCount !== 0 ? (
+      <MsgContainer>
+        <UnReadCount>{unReadCount}</UnReadCount>
+      </MsgContainer>
+    ) : (
+      <NullMsgContainer>
+        <UnReadCount>{unReadCount}</UnReadCount>
+      </NullMsgContainer>
+    )}
+
     <BattleTalkDateContainer>
       <DateText>{date}</DateText>
       <DateText>{time}</DateText>
@@ -147,7 +181,9 @@ const TalkListSlide = ({
         <IconDelete size={30} name={'delete-forever'} color={`${BG_COLOR}`} />
       </DeleteBtn>
     ) : (
-      <IconDelete size={30} name={'delete-forever'} color={`${TINT_COLOR}`} />
+      <DeleteBtn>
+        <IconDelete size={30} name={'delete-forever'} color={`${TINT_COLOR}`} />
+      </DeleteBtn>
     )}
   </BattleTalkContainer>
 );

@@ -28,7 +28,7 @@
 	<array>
 		<dict>
 			<key>CFBundleTypeRole</key>
-			<string>Viewer</string>
+			<string>Editor</string>
 			<key>CFBundleURLName</key>
 			<string></string>
 			<key>CFBundleURLSchemes</key>
@@ -76,7 +76,6 @@
 		<string>naversearchapp</string>
 		<string>naversearchthirdlogin</string>
 		<string>kakao4f9e332e4542802f6f7587f6294cff32</string>
-		<string>kakaolink</string>
 		<string>kakaotalk-5.9.7</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>

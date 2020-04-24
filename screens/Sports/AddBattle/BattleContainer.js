@@ -108,6 +108,8 @@ export default class extends React.Component {
     deleteHistory,
     endUser,
     openBox,
+    requestUser,
+    unReadCount,
   ) {
     firebase
       .database()
@@ -129,6 +131,8 @@ export default class extends React.Component {
         deleteHistory,
         endUser,
         openBox,
+        requestUser,
+        unReadCount,
       })
       .then(data => {
         //success callback
@@ -294,6 +298,7 @@ export default class extends React.Component {
     let deleteChat = '';
     let openBox = false;
     let requestUser = '';
+    let unReadCount = '';
     if (
       this.state.sport !== '스포츠' &&
       this.state.area !== '지역' &&
@@ -319,6 +324,7 @@ export default class extends React.Component {
           endUser,
           openBox,
           requestUser,
+          unReadCount,
         );
         const resetAction = NavigationActions.navigate({
           routeName: 'SportsBattle',

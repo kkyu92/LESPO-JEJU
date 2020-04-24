@@ -3,12 +3,13 @@ import moment from 'moment';
 import firebase from 'firebase';
 import AsyncStorage from '@react-native-community/async-storage';
 import BattleTalkPresenter from './BattleTalkPresenter';
-import {Modal, Alert, AppState} from 'react-native';
+import {Modal, Alert, AppState, PushNotificationIOS} from 'react-native';
 import SimpleDialog from '../../../components/SimpleDialog';
 import Firebase from 'react-native-firebase';
 import Toast from 'react-native-easy-toast';
 import {LESPO_API} from '../../../api/Api';
-import {CHAT_ROOM_IN, RESPONSE_OK} from '../../../constants/Strings';
+import {CHAT_ROOM_IN, RESPONSE_OK, ROOM_OUT} from '../../../constants/Strings';
+import {FirebasePush} from '../../../api/PushNoti';
 
 var M_ID = '';
 var M_NAME = '';
@@ -50,6 +51,7 @@ export default class extends React.Component {
       battleState: '',
       requestUser: '',
       unMount: 0,
+      unReadCount: 0,
       error: null,
     };
     console.log('@@@@@@@: battleTalk' + this.state.makeUser);
@@ -102,6 +104,14 @@ export default class extends React.Component {
           //error callback
           console.log('error ', error);
         });
+      // 안읽은 메시지 카운트 표시
+      firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey + '/unReadCount')
+        .update({
+          [this.state.id]: 0,
+          [this.state.myId]: 0,
+        });
       getChatList.push({
         key: '',
         user: user,
@@ -129,6 +139,18 @@ export default class extends React.Component {
           //error callback
           console.log('error ', error);
         });
+      let count = this.state.unReadCount;
+      count++;
+      this.setState({
+        unReadCount: count,
+      });
+      // 안읽은 메시지 카운트 표시
+      firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey + '/unReadCount')
+        .update({
+          [this.state.id]: count,
+        });
       getChatList.push({
         key: '',
         user: user,
@@ -150,8 +172,9 @@ export default class extends React.Component {
         .ref('FcmTokenList/' + this.state.id)
         .once('value', dataSnapshot => {
           otherToken = dataSnapshot;
-          console.log(otherToken);
-          this.sendToServer(
+          FirebasePush.sendToServerBattleTalk(
+            this.state.roomKey,
+            this.state.id,
             this.state.myId,
             this.state.myName,
             this.state.myProfile,
@@ -243,15 +266,14 @@ export default class extends React.Component {
   };
 
   // msg handler
-  msgHandler = selected => {
-    console.log('setMessage change fun ::: ' + selected);
+  msgHandler = async selected => {
     this.setState({
       msg: selected,
     });
   };
 
   // write Data [ set / push = uuid ]
-  writeChattingAdd(key, user, msg, date, read, place = false) {
+  writeChattingAdd = async (key, user, msg, date, read, place = false) => {
     let {getChatList, unMount} = this.state;
     getChatList.push({
       key: '',
@@ -267,7 +289,7 @@ export default class extends React.Component {
       .push({user, msg, date, read, place})
       .then(data => {
         //success callback
-        console.log('writeChatting Add: ', data);
+        console.log('writeChatting Add Success: ', msg);
       })
       .catch(error => {
         //error callback
@@ -285,7 +307,7 @@ export default class extends React.Component {
       })
       .then(data => {
         //success callback
-        console.log('writeChatting Add: ', data);
+        console.log('writeChatting Add Success: ', msg);
       })
       .catch(error => {
         //error callback
@@ -298,8 +320,9 @@ export default class extends React.Component {
       .ref('FcmTokenList/' + this.state.id)
       .once('value', dataSnapshot => {
         otherToken = dataSnapshot;
-        console.log(otherToken);
-        this.sendToServer(
+        FirebasePush.sendToServerBattleTalk(
+          this.state.roomKey,
+          this.state.id,
           this.state.myId,
           this.state.myName,
           this.state.myProfile,
@@ -313,7 +336,7 @@ export default class extends React.Component {
       msg: '',
       getChatList,
     });
-  }
+  };
 
   // chatting add
   insertChatList = async msg => {
@@ -352,6 +375,11 @@ export default class extends React.Component {
           console.log('insert Chatting message error ::: ' + error);
         }
       } else {
+        let count = this.state.unReadCount;
+        count++;
+        this.setState({
+          unReadCount: count,
+        });
         let reader = {};
         reader[this.state.myId] = this.state.myId;
         try {
@@ -364,6 +392,13 @@ export default class extends React.Component {
               .format('LT'),
             reader,
           );
+          // 안읽은 메시지 카운트 표시
+          firebase
+            .database()
+            .ref('chatRoomList/' + this.state.roomKey + '/unReadCount')
+            .update({
+              [this.state.id]: count,
+            });
         } catch (error) {
           console.log('insert Chatting message error ::: ' + error);
         }
@@ -471,109 +506,6 @@ export default class extends React.Component {
     }
   };
 
-  sendToServer = async (
-    senderId,
-    senderName,
-    senderProfile,
-    msg,
-    date,
-    token,
-  ) => {
-    const firebase_server_key =
-      'AAAABOeF95E:APA91bGCKfJwCOUeYC8QypsS7yCAtR8ZOZf_rAj1iRK_OvIB3mYXYnva4DAY28XmUZA1GpXsdp1eRf9rPeuIedr7eX_7yFWbL-C_4JfVGSFGorCdzjOA0AyYPxB83M8TTAfUj62tUZhH';
-    // 읽음처리
-    if (msg === CHAT_ROOM_IN) {
-      fetch('https://fcm.googleapis.com/fcm/send', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'key=' + firebase_server_key,
-        },
-        body: JSON.stringify({
-          registration_ids: [token],
-          notification: {
-            title: senderName,
-            body: senderName + '님이 채팅방에 참여했습니다.',
-          },
-          data: {
-            roomKey: this.state.roomKey,
-            id: senderId,
-            name: senderName,
-            profile: senderProfile,
-            msg: msg,
-            date: date,
-          },
-        }),
-      })
-        .then(response => {
-          console.log('FCM msg sent!');
-        })
-        .catch(error => {
-          console.error(error);
-        });
-    } else if (msg === RESPONSE_OK) {
-      fetch('https://fcm.googleapis.com/fcm/send', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'key=' + firebase_server_key,
-        },
-        body: JSON.stringify({
-          registration_ids: [token],
-          notification: {
-            title: senderName,
-            body: '배틀을 수락합니다.',
-          },
-          data: {
-            roomKey: this.state.roomKey,
-            id: senderId,
-            name: senderName,
-            profile: senderProfile,
-            msg: msg,
-            date: date,
-          },
-        }),
-      })
-        .then(response => {
-          console.log('FCM msg sent!');
-          console.log('Message: ' + msg);
-        })
-        .catch(error => {
-          console.error(error);
-        });
-    } else {
-      fetch('https://fcm.googleapis.com/fcm/send', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'key=' + firebase_server_key,
-        },
-        body: JSON.stringify({
-          registration_ids: [token],
-          notification: {
-            title: senderName,
-            body: msg,
-          },
-          data: {
-            roomKey: this.state.roomKey,
-            id: senderId,
-            name: senderName,
-            profile: senderProfile,
-            msg: msg,
-            date: date,
-          },
-        }),
-      })
-        .then(response => {
-          console.log('FCM msg sent!');
-          console.log('Message: ' + msg);
-        })
-        .catch(error => {
-          console.error(error);
-        });
-    }
-  };
-
   // init 초기값
   async componentDidMount() {
     AppState.addEventListener('change', this._handleAppStateChange);
@@ -612,6 +544,9 @@ export default class extends React.Component {
                 });
               });
             });
+            this.setState({
+              unReadCount: 0,
+            });
           } else {
             console.log('메시지 받음');
             if (notification.android._notification._data.roomKey === roomKey) {
@@ -641,13 +576,33 @@ export default class extends React.Component {
                   '배틀신청을 수락했습니다.',
                   '나의 배틀에 가서 배틀현황을 확인하세요 !',
                 );
+                let count = this.state.unReadCount;
+                count--;
+                this.setState({
+                  unReadCount: count,
+                });
+                // 안읽은 메시지 카운트 표시
+                firebase
+                  .database()
+                  .ref('chatRoomList/' + this.state.roomKey + '/unReadCount')
+                  .update({
+                    [this.state.myId]: count,
+                    [this.state.id]: 0,
+                  });
               }
             } else {
-              this.refs.toast.show(
-                notification.android._notification._data.name +
-                  ' : ' +
-                  notification.android._notification._data.msg,
-              );
+              if (notification.android._notification._data.msg !== ROOM_OUT) {
+                this.refs.toast.show(
+                  notification.android._notification._data.name +
+                    ' : ' +
+                    notification.android._notification._data.msg,
+                );
+              } else {
+                this.refs.toast.show(
+                  notification.android._notification._data.name +
+                    '님이 채팅방을 나갔습니다.',
+                );
+              }
             }
           }
           this.setState({
@@ -757,6 +712,7 @@ export default class extends React.Component {
         (JSON.stringify(MID) === this.state.makeUser && joinerIn === 'true') ||
         (JSON.stringify(MID) === this.state.joinUser && makerIn === 'true')
       ) {
+        console.log("i'm in");
         //('상대방이 들어와있다면 내가 들어온것을 알린다');
         // fcm
         let otherToken;
@@ -765,10 +721,25 @@ export default class extends React.Component {
           .ref('FcmTokenList/' + this.state.id)
           .once('value', dataSnapshot => {
             otherToken = dataSnapshot;
-            this.sendToServer(MID, MNAME, '', CHAT_ROOM_IN, '', otherToken);
+            FirebasePush.sendToServerBattleTalk(
+              this.state.roomKey,
+              this.state.id,
+              MID,
+              MNAME,
+              '',
+              CHAT_ROOM_IN,
+              '',
+              otherToken,
+            );
           });
       }
-
+      // 안읽은 메시지 카운트 표시
+      firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey + '/unReadCount')
+        .update({
+          [MID]: 0,
+        });
       // 상대방이 나갔을 때
       var checkDeleteChat = firebase
         .database()
@@ -875,7 +846,9 @@ export default class extends React.Component {
                 .ref('FcmTokenList/' + this.state.id)
                 .once('value', dataSnapshot => {
                   otherToken = dataSnapshot;
-                  this.sendToServer(
+                  FirebasePush.sendToServerBattleTalk(
+                    this.state.roomKey,
+                    this.state.id,
                     MID,
                     MNAME,
                     '',
@@ -1042,7 +1015,9 @@ export default class extends React.Component {
           .ref('FcmTokenList/' + this.state.id)
           .once('value', dataSnapshot => {
             otherToken = dataSnapshot;
-            this.sendToServer(
+            FirebasePush.sendToServerBattleTalk(
+              this.state.roomKey,
+              this.state.id,
               this.state.myId,
               this.state.myName,
               '',
@@ -1050,6 +1025,13 @@ export default class extends React.Component {
               '',
               otherToken,
             );
+          });
+        // 안읽은 메시지 카운트 표시
+        firebase
+          .database()
+          .ref('chatRoomList/' + this.state.roomKey + '/unReadCount')
+          .update({
+            [this.state.myId]: 0,
           });
       }
     });

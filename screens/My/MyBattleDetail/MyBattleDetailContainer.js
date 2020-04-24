@@ -10,6 +10,7 @@ import {LESPO_API} from '../../../api/Api';
 import Firebase from 'react-native-firebase';
 import Toast from 'react-native-easy-toast';
 import {CHAT_ROOM_IN, RESPONSE_OK, ROOM_OUT} from '../../../constants/Strings';
+import {FirebasePush} from '../../../api/PushNoti';
 
 var M_ID, M_NAME, M_PROFILE;
 
@@ -442,6 +443,27 @@ export default class extends React.Component {
           //error callback
           console.log('error ', error);
         });
+
+      // 안내 메시지 카운트 추가
+      let count;
+      firebase
+        .database()
+        .ref(
+          'chatRoomList/' +
+            this.state.roomKey +
+            '/unReadCount/' +
+            this.state.id,
+        )
+        .once('value', dataSnapshot => {
+          count = parseInt(JSON.stringify(dataSnapshot));
+          count++;
+        });
+      firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey + '/unReadCount')
+        .update({
+          [this.state.id]: count,
+        });
     }
     // fcm
     let otherToken;
@@ -450,8 +472,9 @@ export default class extends React.Component {
       .ref('FcmTokenList/' + this.state.id)
       .once('value', dataSnapshot => {
         otherToken = dataSnapshot;
-        console.log(otherToken);
-        this.sendToServer(
+        FirebasePush.sendToServerMyBattleDetail(
+          this.state.roomKey,
+          this.state.id,
           this.state.myId,
           this.state.myName,
           this.state.myProfile,
@@ -781,16 +804,14 @@ export default class extends React.Component {
         this.changeModalVisiblity(false);
         this.checkEndUser();
         this.addRating(rating);
+        this.endBattleFCM('end');
         setTimeout(() => {
           Alert.alert(
             '상대의 평가를 기다리는중입니다.',
             '악의적인 승패조작은 스포츠배틀의 패널티를 받을 수 있습니다.',
           ),
-            1000;
+            1500;
         });
-        // this.refs.toast.show(
-        //   '상대의 평가를 기다리는중입니다.\n상대방의 평가가 끝나면 랜덤박스를 열수있습니다.',
-        // );
       } else {
         this.updateBattleResult('win', myId);
         this.changeModalVisiblity(false);
@@ -800,22 +821,6 @@ export default class extends React.Component {
         this.changeModalVisiblity(true);
         this.updateOpenBox();
         this.endBattleFCM('end');
-        // fcm
-        let otherToken;
-        firebase
-          .database()
-          .ref('FcmTokenList/' + this.state.id)
-          .once('value', dataSnapshot => {
-            otherToken = dataSnapshot;
-            console.log(otherToken);
-            this.sendToServer(
-              this.state.myId,
-              this.state.myName,
-              this.state.myProfile,
-              '평가를 완료했습니다.',
-              otherToken,
-            );
-          });
       }
     } else {
       // 패자비교
@@ -827,11 +832,18 @@ export default class extends React.Component {
         winner === '""' &&
         (loser === '""' || loser === JSON.stringify(myId))
       ) {
-        this.refs.toast.show('상대방의 평가를 완료했습니다.');
         this.updateBattleResult('lose', myId);
         this.changeModalVisiblity(false);
         this.checkEndUser();
         this.addRating(rating);
+        this.endBattleFCM('end');
+        setTimeout(() => {
+          Alert.alert(
+            '상대의 평가를 기다리는중입니다.',
+            '악의적인 승패조작은 스포츠배틀의 패널티를 받을 수 있습니다.',
+          ),
+            1500;
+        });
       } else {
         this.updateBattleResult('lose', myId);
         this.changeModalVisiblity(false);
@@ -840,26 +852,11 @@ export default class extends React.Component {
         this.setState({isRandomBox: 'fail'});
         this.changeModalVisiblity(true);
         this.endBattleFCM('end');
-        // fcm
-        let otherToken;
-        firebase
-          .database()
-          .ref('FcmTokenList/' + this.state.id)
-          .once('value', dataSnapshot => {
-            otherToken = dataSnapshot;
-            console.log(otherToken);
-            this.sendToServer(
-              this.state.myId,
-              this.state.myName,
-              this.state.myProfile,
-              '평가를 완료했습니다.',
-              otherToken,
-            );
-          });
       }
     }
   };
 
+  //TODO: fcm 여기로 다 옮기고 unReadCount update
   endBattleFCM = async msg => {
     let statusMsg;
     if (msg === 'battleEnd') {
@@ -923,6 +920,30 @@ export default class extends React.Component {
           //error callback
           console.log('error ', error);
         });
+
+      // 안내 메시지 카운트 추가
+      let count;
+      firebase
+        .database()
+        .ref(
+          'chatRoomList/' +
+            this.state.roomKey +
+            '/unReadCount/' +
+            this.state.id,
+        )
+        .once('value', dataSnapshot => {
+          count = parseInt(JSON.stringify(dataSnapshot));
+          if ((makerIn !== 'true') & (joinerIn !== 'true')) {
+            count++;
+          }
+        });
+      firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey + '/unReadCount')
+        .update({
+          [this.state.id]: count,
+        });
+
       // fcm
       let otherToken;
       firebase
@@ -930,8 +951,9 @@ export default class extends React.Component {
         .ref('FcmTokenList/' + this.state.id)
         .once('value', dataSnapshot => {
           otherToken = dataSnapshot;
-          console.log(otherToken);
-          this.sendToServer(
+          FirebasePush.sendToServerMyBattleDetail(
+            this.state.roomKey,
+            this.state.id,
             this.state.myId,
             this.state.myName,
             this.state.myProfile,
@@ -952,71 +974,6 @@ export default class extends React.Component {
           .format(),
         lastMsg: statusMsg,
       });
-  };
-  // 배틀종료 FCM
-  sendToServer = async (senderId, senderName, senderProfile, msg, token) => {
-    const firebase_server_key =
-      'AAAABOeF95E:APA91bGCKfJwCOUeYC8QypsS7yCAtR8ZOZf_rAj1iRK_OvIB3mYXYnva4DAY28XmUZA1GpXsdp1eRf9rPeuIedr7eX_7yFWbL-C_4JfVGSFGorCdzjOA0AyYPxB83M8TTAfUj62tUZhH';
-    console.log('sendToFcm');
-    if (msg === RESPONSE_OK) {
-      fetch('https://fcm.googleapis.com/fcm/send', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'key=' + firebase_server_key,
-        },
-        body: JSON.stringify({
-          registration_ids: [token],
-          notification: {
-            title: senderName,
-            body: '배틀을 수락합니다.',
-          },
-          data: {
-            roomKey: this.state.roomKey,
-            id: senderId,
-            name: senderName,
-            profile: senderProfile,
-            msg: msg,
-          },
-        }),
-      })
-        .then(response => {
-          console.log('FCM msg sent!');
-          console.log('Message: ' + msg);
-        })
-        .catch(error => {
-          console.error(error);
-        });
-    } else {
-      fetch('https://fcm.googleapis.com/fcm/send', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'key=' + firebase_server_key,
-        },
-        body: JSON.stringify({
-          registration_ids: [token],
-          notification: {
-            title: senderName,
-            body: msg,
-          },
-          data: {
-            roomKey: this.state.roomKey,
-            id: senderId,
-            name: senderName,
-            profile: senderProfile,
-            msg: msg,
-          },
-        }),
-      })
-        .then(response => {
-          console.log('FCM msg sent!');
-          console.log('Message: ' + msg);
-        })
-        .catch(error => {
-          console.error(error);
-        });
-    }
   };
 
   //바로 채팅하기로 링크

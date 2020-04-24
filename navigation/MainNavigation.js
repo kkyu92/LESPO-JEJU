@@ -29,7 +29,7 @@ import {
   headerStyles,
   detailHeaderStyles,
   tapsHeaderStyles,
-  nodapStyles,
+  dapdapStyles,
 } from './config';
 import {TINT_COLOR} from '../constants/Colors';
 
@@ -81,14 +81,14 @@ const HomeNavigation = createStackNavigator(
     SportsBattle: {
       screen: SportsScreen,
       navigationOptions: {
-        ...nodapStyles,
+        ...dapdapStyles,
       },
     },
     // 여행하기
     Trip: {
       screen: TripScreen,
       navigationOptions: {
-        ...nodapStyles,
+        ...dapdapStyles,
       },
     },
     // 공지사항

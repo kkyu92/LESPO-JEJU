@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import Loader from '../../../components/Loader';
 import {BG_COLOR, TINT_COLOR, GREY_COLOR3} from '../../../constants/Colors';
 import Layout from '../../../constants/Layout';
-import {Platform} from 'react-native';
+import {Platform, Alert} from 'react-native';
 import Section from '../../../components/Section';
 import SubSlide from '../../../components/SubSlide';
 import SearchNo from '../../../screens/Main/Search/SearchNo';
@@ -48,16 +48,22 @@ const WFoodPresenter = ({loading, listChanged, locations, navigation}) =>
     <Loader />
   ) : (
     <View>
-      <MapBtn
-        onPress={() =>
-          navigation.navigate({
-            routeName: 'Map',
-            params: {listChanged, locations, mainState},
-          })
-        }>
-        <MapText>지도로 보기</MapText>
-        <Icon size={30} name={'map-marker-radius'} color={`${TINT_COLOR}`} />
-      </MapBtn>
+      {listChanged.length > 0 ? (
+        <MapBtn
+          onPress={() =>
+            navigation.navigate({
+              routeName: 'Map',
+              params: {listChanged, locations, mainState},
+            })
+          }>
+          <MapText>지도로 보기</MapText>
+          <Icon size={30} name={'map-marker-radius'} color={`${TINT_COLOR}`} />
+        </MapBtn>
+      ) : (
+        <MapBtn onPress={() => Alert.alert('등록된 리스트가 없습니다.')}>
+          <MapText>등록리스트 없음</MapText>
+        </MapBtn>
+      )}
       <Container>
         {loading ? (
           <Loader />

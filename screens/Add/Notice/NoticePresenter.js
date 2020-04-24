@@ -33,6 +33,7 @@ const NoticePresenter = ({loading, noticeList, index, handleClickIndex}) =>
         {noticeList ? (
           noticeList
             .filter(list => list.title !== null)
+            .reverse()
             .map(list => (
               <Notice
                 key={list.id}

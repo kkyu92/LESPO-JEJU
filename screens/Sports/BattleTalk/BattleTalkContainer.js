@@ -3,7 +3,7 @@ import moment from 'moment';
 import firebase from 'firebase';
 import AsyncStorage from '@react-native-community/async-storage';
 import BattleTalkPresenter from './BattleTalkPresenter';
-import {Modal, Alert, AppState, PushNotificationIOS} from 'react-native';
+import {Modal, Alert, AppState, Platform} from 'react-native';
 import SimpleDialog from '../../../components/SimpleDialog';
 import Firebase from 'react-native-firebase';
 import Toast from 'react-native-easy-toast';
@@ -21,18 +21,19 @@ export default class extends React.Component {
     const {
       navigation: {
         state: {
-          params: {roomKey, id, profile, name},
+          params: {roomKey, id, profile, name, container},
         },
       },
     } = props;
     this.state = {
-      deleteChat: '',
+      deleteChat: {},
       appState: AppState.currentState,
       notiCheck: false,
       roomKey,
       id,
       profile,
       name,
+      container,
       otherToken: '',
       otherCoin: 0,
       coin: 0,
@@ -50,8 +51,11 @@ export default class extends React.Component {
       isModalVisible: false,
       battleState: '',
       requestUser: '',
-      unMount: 0,
+      unMount: false,
       unReadCount: 0,
+      deleteUser: {},
+      deleteRoomCheck: false,
+      battlePlace: 0,
       error: null,
     };
     console.log('@@@@@@@: battleTalk' + this.state.makeUser);
@@ -81,6 +85,7 @@ export default class extends React.Component {
     checkMaker.once('value', dataSnapshot => {
       makerIn = JSON.stringify(dataSnapshot);
     });
+    console.log('\n1\n');
     var checkJoiner = firebase
       .database()
       .ref('chatRoomList/' + this.state.roomKey + '/joinUser/userIn');
@@ -274,7 +279,7 @@ export default class extends React.Component {
 
   // write Data [ set / push = uuid ]
   writeChattingAdd = async (key, user, msg, date, read, place = false) => {
-    let {getChatList, unMount} = this.state;
+    let {getChatList} = this.state;
     getChatList.push({
       key: '',
       user: user,
@@ -332,7 +337,6 @@ export default class extends React.Component {
         );
       });
     this.setState({
-      unMount: 1,
       msg: '',
       getChatList,
     });
@@ -350,6 +354,7 @@ export default class extends React.Component {
     checkMaker.once('value', dataSnapshot => {
       makerIn = JSON.stringify(dataSnapshot);
     });
+    console.log('\n2\n');
     var checkJoiner = firebase
       .database()
       .ref('chatRoomList/' + this.state.roomKey + '/joinUser/userIn');
@@ -475,10 +480,11 @@ export default class extends React.Component {
               .then(data => {
                 //success callback
                 console.log('joinUser Add: ', data);
+                this.settingFinish();
               })
               .catch(error => {
                 //error callback
-                console.log('error ', error);
+                console.log('joinUser error ', error);
               });
           } else {
             firebase
@@ -489,11 +495,12 @@ export default class extends React.Component {
               })
               .then(data => {
                 //success callback
-                console.log('joinUser Add: ', data);
+                console.log('makeUser Add: ', data);
+                this.settingFinish();
               })
               .catch(error => {
                 //error callback
-                console.log('error ', error);
+                console.log('makeUser error ', error);
               });
           }
         });
@@ -511,7 +518,7 @@ export default class extends React.Component {
     AppState.addEventListener('change', this._handleAppStateChange);
     let MID = await AsyncStorage.getItem('@USER_ID');
     let MNAME = await AsyncStorage.getItem('@USER_NAME');
-    let {getChatList, roomKey, notiCheck} = this.state;
+    let {getChatList, roomKey} = this.state;
 
     let id = await AsyncStorage.getItem('@NOTI_ID');
     if (id) {
@@ -524,6 +531,9 @@ export default class extends React.Component {
     if (enable) {
       this.removeToastListener = Firebase.notifications().onNotification(
         notification => {
+          let reader = {};
+          reader[this.state.id] = this.state.id;
+          reader[MID] = MID;
           // 방 참여 여부 노티
           if (notification.android._notification._data.msg === CHAT_ROOM_IN) {
             console.log('chat Room In Noti');
@@ -543,6 +553,18 @@ export default class extends React.Component {
                   place: child.val().place,
                 });
               });
+
+              // 읽음표시 처리
+              if (
+                getChatList.length > 0 &&
+                getChatList[getChatList.length - 1].read[this.state.id] ===
+                  this.state.id &&
+                getChatList[getChatList.length - 1].read[MID] === MID
+              ) {
+                getChatList.forEach((child, index) => {
+                  getChatList[index].read = reader;
+                });
+              }
             });
             this.setState({
               unReadCount: 0,
@@ -550,9 +572,6 @@ export default class extends React.Component {
           } else {
             console.log('메시지 받음');
             if (notification.android._notification._data.roomKey === roomKey) {
-              let reader = {};
-              reader[this.state.id] = this.state.id;
-              reader[MID] = MID;
               var userRef = firebase
                 .database()
                 .ref('chatRoomList/' + this.state.roomKey + '/chatList/');
@@ -589,6 +608,15 @@ export default class extends React.Component {
                     [this.state.myId]: count,
                     [this.state.id]: 0,
                   });
+              } else if (
+                notification.android._notification._data.msg === ROOM_OUT
+              ) {
+                this.setState({deleteRoomCheck: true});
+                this.props.navigation.goBack();
+                this.props.navigation.state.params.outCheck({
+                  roomOutCheck: true,
+                  roomKey: this.state.roomKey,
+                });
               }
             } else {
               if (notification.android._notification._data.msg !== ROOM_OUT) {
@@ -675,6 +703,7 @@ export default class extends React.Component {
       checkMaker.once('value', dataSnapshot => {
         makerIn = JSON.stringify(dataSnapshot);
       });
+      console.log('\n3\n');
       var checkJoiner = firebase
         .database()
         .ref('chatRoomList/' + this.state.roomKey + '/joinUser/userIn');
@@ -749,16 +778,66 @@ export default class extends React.Component {
           deleteChat: dataSnapshot.val(),
         });
       });
+
+      // 배틀톡, 스포츠배틀 취소된 리스트 확인
+      if (
+        this.state.container === 'BattleTalkList' ||
+        this.state.container === 'SportsBattle'
+      ) {
+        let deleteUser = {};
+        firebase
+          .database()
+          .ref('chatRoomList/' + this.state.roomKey + '/deleteBattle')
+          .once('value', dataSnapshot => {
+            deleteUser = dataSnapshot.val();
+          });
+        if (deleteUser[this.state.id] === this.state.id) {
+          this.setState({deleteRoomCheck: true});
+          this.props.navigation.goBack();
+          this.props.navigation.state.params.outCheck({
+            roomOutCheck: true,
+            roomKey: this.state.roomKey,
+          });
+        }
+      }
+
+      // 배틀용 시설 확인
+      this.onBattlePlaceListChanging();
     } catch (error) {
       console.log('get chattingList error ::: ' + error);
-    } finally {
-      if (typeof getChatList !== 'undefined' && getChatList instanceof Array) {
-        this.setState({
-          loading: false,
-        });
-      }
     }
   }
+
+  settingFinish = async () => {
+    this.setState({
+      loading: false,
+    });
+  };
+
+  // BattlePlace List
+  onBattlePlaceListChanging = async () => {
+    let TOKEN = await AsyncStorage.getItem('@API_TOKEN');
+    const config = {
+      headers: {
+        Authorization: TOKEN,
+      },
+    };
+    let listChanged = [];
+    try {
+      await LESPO_API.getBattlePlaceList(config)
+        .then(response => {
+          listChanged = response.data.data;
+          this.setState({
+            battlePlace: listChanged.length,
+          });
+        })
+        .catch(error => {
+          console.log('get BattlePlaceList fail: ' + error);
+        });
+    } catch (error) {
+      console.log("Cant't get Battle place marker. : " + error);
+    }
+  };
 
   resetNotiData = async () => {
     await AsyncStorage.setItem('@NOTI_ROOMKEY', '');
@@ -883,7 +962,7 @@ export default class extends React.Component {
   };
 
   // AppState Check
-  _handleAppStateChange = nextAppState => {
+  _handleAppStateChange = async nextAppState => {
     if (
       this.state.appState.match(/inactive|background/) &&
       nextAppState === 'active'
@@ -891,8 +970,8 @@ export default class extends React.Component {
       console.log('App has come to the foreground!');
       this._chatRoomUserIn();
     } else {
-      console.log('App has go to the background!');
       this._chatRoomUserOut();
+      console.log('App has go to the background!');
     }
     this.setState({appState: nextAppState});
   };
@@ -929,9 +1008,87 @@ export default class extends React.Component {
           console.log('joinUser OUT error ', error);
         });
     }
+    this.setState({
+      loading: true,
+    });
   };
 
   _chatRoomUserIn = async () => {
+    // 읽음표시 == 0
+    firebase
+      .database()
+      .ref('chatRoomList/' + this.state.roomKey + '/unReadCount')
+      .update({
+        [this.state.myId]: 0,
+      });
+
+    let deleteUser = {};
+    firebase
+      .database()
+      .ref('chatRoomList/' + this.state.roomKey + '/deleteBattle')
+      .once('value', dataSnapshot => {
+        this.setState({
+          deleteUser,
+        });
+        deleteUser = dataSnapshot.val();
+      });
+
+    // Alert.alert(deleteUser[this.state.id], '\n======\n' + this.state.id);
+
+    if (deleteUser[this.state.id] === this.state.id) {
+      this.setState({deleteRoomCheck: true});
+      this.props.navigation.goBack();
+      this.props.navigation.state.params.outCheck({
+        roomOutCheck: true,
+        roomKey: this.state.roomKey,
+      });
+    } else if (
+      deleteUser[this.state.id] !== this.state.id &&
+      (this.state.container === 'BattleTalkList' ||
+        this.state.container === 'SportsBattle')
+    ) {
+      firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey + '/deleteBattle')
+        .on('value', dataSnapshot => {
+          this.setState({
+            deleteUser,
+          });
+          deleteUser = dataSnapshot.val();
+          let flag = '';
+          if (deleteUser[this.state.id] === this.state.id) {
+            // Alert.alert('=======');
+            flag = 'delete';
+            firebase
+              .database()
+              .ref('chatRoomList/' + this.state.roomKey + '/deleteBattle')
+              .off('value');
+            this.setState({deleteRoomCheck: true});
+            this.props.navigation.goBack();
+            this.props.navigation.state.params.outCheck({
+              roomOutCheck: true,
+              roomKey: this.state.roomKey,
+            });
+          } else {
+            setTimeout(() => {
+              if (flag !== 'delete' && !this.state.deleteRoomCheck) {
+                // if (deleteUser[this.state.id] !== null) {
+                // Alert.alert('------');
+                this.defaultRoomIn();
+                firebase
+                  .database()
+                  .ref('chatRoomList/' + this.state.roomKey + '/deleteBattle')
+                  .off('value');
+              }
+            }, 2000);
+          }
+        });
+    } else {
+      this.defaultRoomIn();
+    }
+  };
+
+  defaultRoomIn = () => {
     if (this.state.makeUser === JSON.stringify(this.state.myId)) {
       firebase
         .database()
@@ -941,11 +1098,11 @@ export default class extends React.Component {
         })
         .then(data => {
           //success callback
-          console.log('makeUser OUT: ', data);
+          console.log('makeUser IN: ', data);
         })
         .catch(error => {
           //error callback
-          console.log('makeUser OUT error ', error);
+          console.log('makeUser IN error ', error);
         });
     } else {
       firebase
@@ -956,22 +1113,70 @@ export default class extends React.Component {
         })
         .then(data => {
           //success callback
-          console.log('joinUser OUT: ', data);
+          console.log('joinUser IN: ', data);
         })
         .catch(error => {
           //error callback
-          console.log('joinUser OUT error ', error);
+          console.log('joinUser IN error ', error);
         });
     }
-    // chatList 추가
 
+    let joinerIn, makerIn;
+    var checkMaker = firebase
+      .database()
+      .ref('chatRoomList/' + this.state.roomKey + '/makeUser/userIn');
+    checkMaker.once('value', dataSnapshot => {
+      makerIn = JSON.stringify(dataSnapshot);
+    });
+    console.log('\n4\n');
+    var checkJoiner = firebase
+      .database()
+      .ref('chatRoomList/' + this.state.roomKey + '/joinUser/userIn');
+    checkJoiner.once('value', dataSnapshot => {
+      joinerIn = JSON.stringify(dataSnapshot);
+    });
+    if (
+      (JSON.stringify(this.state.myId) === this.state.makeUser &&
+        joinerIn === 'true') ||
+      (JSON.stringify(this.state.myId) === this.state.joinUser &&
+        makerIn === 'true')
+    ) {
+      console.log('상대방이 들어와있다면 내가 들어온것을 알린다');
+      // fcm
+      let otherToken;
+      firebase
+        .database()
+        .ref('FcmTokenList/' + this.state.id)
+        .once('value', dataSnapshot => {
+          otherToken = dataSnapshot;
+          FirebasePush.sendToServerBattleTalk(
+            this.state.roomKey,
+            this.state.id,
+            this.state.myId,
+            this.state.myName,
+            '',
+            CHAT_ROOM_IN,
+            '',
+            otherToken,
+          );
+        });
+      // 안읽은 메시지 카운트 표시
+      firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey + '/unReadCount')
+        .update({
+          [this.state.myId]: 0,
+        });
+    }
+
+    // chatList 추가
     // get ChattingList
     var userRef = firebase
       .database()
       .ref('chatRoomList/' + this.state.roomKey + '/chatList/');
     // .limitToLast(30);
     // .orderByChild('key');
-    userRef.once('value', dataSnapshot => {
+    userRef.on('value', dataSnapshot => {
       let getChatList = [];
       dataSnapshot.forEach(child => {
         let reader = child.val().read;
@@ -986,71 +1191,89 @@ export default class extends React.Component {
           place: child.val().place,
         });
       });
+
+      // iOS 전원버튼 background 예외처리
+      if (
+        Platform.OS === 'ios' &&
+        getChatList.length === this.state.getChatList.length
+      ) {
+        // setTimeout(() => {
+        //   this.getChatList();
+        // }, 1000);
+        // console.log('ㅇㅏ직켜져있다.');
+        // Alert.alert('아직켜져있다');
+        setTimeout(() => {
+          this.setState({
+            loading: false,
+          });
+        }, 2000);
+      } else {
+        // Alert.alert(JSON.stringify('=== OFF ==='), JSON.stringify(getChatList));
+        firebase
+          .database()
+          .ref('chatRoomList/' + this.state.roomKey + '/chatList/')
+          .off('value');
+        this.setState({
+          loading: false,
+        });
+        // this.updateSingleData(this.state.roomKey, this.state.getChatList);
+        // this.getChatList();
+      }
       this.setState({
         getChatList: getChatList,
       });
-      this.updateSingleData(this.state.roomKey, getChatList);
-      let joinerIn, makerIn;
-      var checkMaker = firebase
-        .database()
-        .ref('chatRoomList/' + this.state.roomKey + '/makeUser/userIn');
-      checkMaker.once('value', dataSnapshot => {
-        makerIn = JSON.stringify(dataSnapshot);
-      });
-      var checkJoiner = firebase
-        .database()
-        .ref('chatRoomList/' + this.state.roomKey + '/joinUser/userIn');
-      checkJoiner.once('value', dataSnapshot => {
-        joinerIn = JSON.stringify(dataSnapshot);
-      });
-      if (
-        (this.state.myId === this.state.makeUser && joinerIn === 'true') ||
-        (this.state.myId === this.state.joinUser && makerIn === 'true')
-      ) {
-        //('상대방이 들어와있다면 내가 들어온것을 알린다');
-        // fcm
-        let otherToken;
-        firebase
-          .database()
-          .ref('FcmTokenList/' + this.state.id)
-          .once('value', dataSnapshot => {
-            otherToken = dataSnapshot;
-            FirebasePush.sendToServerBattleTalk(
-              this.state.roomKey,
-              this.state.id,
-              this.state.myId,
-              this.state.myName,
-              '',
-              CHAT_ROOM_IN,
-              '',
-              otherToken,
-            );
-          });
-        // 안읽은 메시지 카운트 표시
-        firebase
-          .database()
-          .ref('chatRoomList/' + this.state.roomKey + '/unReadCount')
-          .update({
-            [this.state.myId]: 0,
-          });
-      }
     });
+  };
+
+  unMountRestet = async unMount => {
+    this.updateSingleData(this.state.roomKey, this.state.getChatList);
+    // let reader = {};
+    // reader[this.state.myId] = this.state.myId;
+    // reader[this.state.id] = this.state.id;
+    // // 읽음표시
+    // firebase
+    //   .database()
+    //   .ref('chatRoomList/' + this.state.roomKey + '/chatList')
+    //   .once('value', dataSnapshot => {
+    //     dataSnapshot.forEach(child => {
+    //       firebase
+    //         .database()
+    //         .ref(
+    //           'chatRoomList/' + this.state.roomKey + '/chatList/' + child.key,
+    //         )
+    //         .update({
+    //           read: reader,
+    //         });
+    //     });
+    //   });
   };
 
   // Screen OUT
   componentWillUnmount() {
-    this.setState({
-      unMount: true,
-    });
     console.log('componentWillUnmount ::: [BattleTalk Container]');
     AppState.removeEventListener('change', this._handleAppStateChange);
     this.removeToastListener();
-    // this.state.getChatList.forEach(child => {
-    //   console.log('getChild: ' + JSON.stringify(child));
-    // });
+    firebase
+      .database()
+      .ref('chatRoomList/' + this.state.roomKey + '/battleState')
+      .off('value');
+    firebase
+      .database()
+      .ref('chatRoomList/' + this.state.roomKey + '/requestUser')
+      .off('value');
+    firebase
+      .database()
+      .ref('chatRoomList/' + this.state.roomKey + '/deleteChat')
+      .off('value');
+    firebase
+      .database()
+      .ref('chatRoomList/' + this.state.roomKey + '/chatList')
+      .off('value');
+
     if (
       this.state.getChatList.length === 0 &&
-      this.state.makeUser !== JSON.stringify(this.state.myId)
+      this.state.makeUser !== JSON.stringify(this.state.myId) &&
+      !this.state.deleteRoomCheck
     ) {
       let joinUser = {
         userIn: false,
@@ -1074,17 +1297,20 @@ export default class extends React.Component {
           console.log('error ', error);
         });
     } else {
-      this._chatRoomUserOut();
+      if (!this.state.deleteRoomCheck) {
+        console.log('deleteRoomCheck ::: ' + this.state.deleteRoomCheck);
+        console.log('chat length ::: ' + this.state.getChatList.length);
+        this._chatRoomUserOut();
+      } else if (
+        this.state.container === 'BattleTalkList' ||
+        this.state.container === 'SportsBattle'
+      ) {
+        firebase
+          .database()
+          .ref('chatRoomList/' + this.state.roomKey + '/deleteBattle')
+          .off('value');
+      }
     }
-
-    firebase
-      .database()
-      .ref('chatRoomList/' + this.state.roomKey + '/battleState')
-      .off('value');
-    firebase
-      .database()
-      .ref('chatRoomList/' + this.state.roomKey + '/requestUser')
-      .off('value');
   }
 
   onSavePlace = async (place, navigation, locations, index) => {
@@ -1105,6 +1331,7 @@ export default class extends React.Component {
     checkMaker.once('value', dataSnapshot => {
       makerIn = JSON.stringify(dataSnapshot);
     });
+    console.log('\n5\n');
     var checkJoiner = firebase
       .database()
       .ref('chatRoomList/' + this.state.roomKey + '/joinUser/userIn');
@@ -1150,6 +1377,7 @@ export default class extends React.Component {
       requestUser,
       deleteChat,
       unMount,
+      battlePlace,
     } = this.state;
     return (
       <>
@@ -1175,6 +1403,7 @@ export default class extends React.Component {
           changeModalVisiblity={this.changeModalVisiblity}
           onSavePlace={this.onSavePlace}
           unMount={unMount}
+          battlePlace={battlePlace}
         />
         <Modal
           transparent={true}

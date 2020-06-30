@@ -144,10 +144,10 @@ export default class extends React.PureComponent {
       },
     );
     try {
-      let M_ID = await AsyncStorage.getItem('@USER_ID');
-      let M_NAME = await AsyncStorage.getItem('@USER_NAME');
-      let M_PROFILE = await AsyncStorage.getItem('@USER_PROFILE');
-      let M_TOKEN = await AsyncStorage.getItem('@TOKEN');
+      // let M_ID = await AsyncStorage.getItem('@USER_ID');
+      // let M_NAME = await AsyncStorage.getItem('@USER_NAME');
+      // let M_PROFILE = await AsyncStorage.getItem('@USER_PROFILE');
+      // let M_TOKEN = await AsyncStorage.getItem('@TOKEN');
       let TOKEN = await AsyncStorage.getItem('@API_TOKEN');
       this.setState({
         token: TOKEN,

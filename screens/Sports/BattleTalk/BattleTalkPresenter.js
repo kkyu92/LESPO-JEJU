@@ -12,6 +12,7 @@ import {
   SafeAreaView,
   StyleSheet,
   Platform,
+  Alert,
 } from 'react-native';
 import {withNavigation} from 'react-navigation';
 import Layout from '../../../constants/Layout';
@@ -205,6 +206,7 @@ const BattleTalkPresenter = ({
   onSavePlace,
   deleteChat,
   unMount,
+  battlePlace,
   navigation,
 }) =>
   loading ? (
@@ -245,13 +247,15 @@ const BattleTalkPresenter = ({
           <BtnContainer>
             <Btn
               onPress={() =>
-                navigation.navigate({
-                  routeName: 'Map',
-                  params: {
-                    mainState: 'battle',
-                    onSavePlace: onSavePlace,
-                  },
-                })
+                battlePlace !== 0
+                  ? navigation.navigate({
+                      routeName: 'Map',
+                      params: {
+                        mainState: 'battle',
+                        onSavePlace: onSavePlace,
+                      },
+                    })
+                  : Alert.alert('배틀용 시설 컨텐츠 없음.')
               }>
               <BtnText>시설보기</BtnText>
             </Btn>

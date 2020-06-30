@@ -1,5 +1,5 @@
 import React from 'react';
-import {Platform} from 'react-native';
+import {Platform, Alert} from 'react-native';
 import BattleTalkPresenter from './BattleTalkPresenter';
 import firebase from 'firebase';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -18,9 +18,12 @@ export default class extends React.Component {
     this.state = {
       loading: true,
       chatRoomList: [],
+      id: '',
       myId: '',
       myName: '',
       myProfile: '',
+      roomOutCheck: false,
+      roomKey: null,
       error: null,
       navigation,
     };
@@ -64,8 +67,45 @@ export default class extends React.Component {
               lastMsg: child.val().lastMsg,
               deleteChat: child.val().deleteChat,
               deleteHistory: child.val().deleteHistory,
+              deleteBattle: child.val().deleteBattle,
               unReadCount: child.val().unReadCount,
             });
+            // console.log('MID ::: ' + M_ID);
+            // console.log('makeUserId ::: ' + child.val().makeUser.userId);
+            // console.log('joinUserId ::: ' + child.val().joinUser.userId);
+            // let id = '';
+            // if (child.val().makeUser.userId === M_ID) {
+            //   id = child.val().joinUser.userId;
+            // } else if (child.val().joinUser.userId === M_ID) {
+            //   id = child.val().makeUser.userId;
+            // }
+            // console.log('deleteUSer ::: ' + id);
+            // if (
+            //   child.val().deleteBattle[id] === id &&
+            //   id !== '' &&
+            //   !this.state.roomOutCheck
+            // ) {
+            //   Alert.alert('상대방이 배틀을 취소하였습니다.111');
+            //   this.setState({
+            //     id: id,
+            //     loading: true,
+            //   });
+            //   setTimeout(() => {
+            //     firebase
+            //       .database()
+            //       .ref('chatRoomList/' + child.key)
+            //       .remove()
+            //       .then(data => {
+            //         //success callback
+            //         console.log('chatRoom Out: ', data);
+            //       })
+            //       .catch(error => {
+            //         //error callback
+            //         console.log('error ', error);
+            //       });
+            //     this.setState({loading: false});
+            //   }, 1000);
+            // }
             chatRoomList = chatRoomList.filter(
               list => list.joinUser.userId !== '',
             );
@@ -246,6 +286,31 @@ export default class extends React.Component {
     }
   };
 
+  outCheck = check => {
+    this.setState(check);
+    if (this.state.roomOutCheck) {
+      this.setState({loading: true});
+      Alert.alert('상대방이 배틀을 취소했습니다.');
+      setTimeout(() => {
+        firebase
+          .database()
+          .ref('chatRoomList/' + this.state.roomKey)
+          .remove()
+          .then(data => {
+            //success callback
+            console.log('chatRoom Out: ', data);
+          })
+          .catch(error => {
+            //error callback
+            console.log('error ', error);
+          });
+        this.setState({loading: false});
+      }, 2000);
+
+      // this.props.navigation.goBack();
+    }
+  };
+
   componentWillUnmount() {
     console.log('componentWillUnmount[MY BattleTalkContainer]');
     this.removeToastListener();
@@ -254,17 +319,33 @@ export default class extends React.Component {
       .database()
       .ref('chatRoomList/')
       .off();
+    if (this.state.roomOutCheck) {
+      // firebase
+      //   .database()
+      //   .ref('chatRoomList/' + this.state.roomKey)
+      //   .remove()
+      //   .then(data => {
+      //     //success callback
+      //     console.log('chatRoom Out: ', data);
+      //   })
+      //   .catch(error => {
+      //     //error callback
+      //     console.log('error ', error);
+      //   });
+    }
   }
 
   render() {
-    const {loading, chatRoomList, myId} = this.state;
+    const {loading, chatRoomList, myId, id} = this.state;
     return (
       <>
         <BattleTalkPresenter
           loading={loading}
           chatRoomList={chatRoomList}
           myId={myId}
+          id={id}
           deleteChat={this.deleteChat}
+          outCheck={this.outCheck}
         />
         <Toast
           ref="toast"

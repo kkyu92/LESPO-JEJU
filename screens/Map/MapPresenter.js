@@ -283,7 +283,6 @@ const _zoomOut = async (
 };
 
 let INDEX = 0;
-let CHECK = true;
 
 // const onSwiperItemChange = async (index, locations) => {
 //   INDEX = index;
@@ -336,7 +335,6 @@ const onMarkerPressed = (locations, mainState) => {
   });
 
   if (mainState !== 'map') {
-    CHECK = false;
     console.log('마커클릭 인덱스: ' + locations.key);
     INDEX = locations.key;
   }
@@ -678,7 +676,7 @@ const MapPresenter = ({
       <NoticeContainer>
         <NoticeText>
           배틀장소의 주소를 클릭해{'\n'}상대방에게 장소를 알려주세요!
-          {battleLocation && CHECK ? indexChange(battleLocation) : null}
+          {battleLocation ? indexChange(battleLocation) : null}
         </NoticeText>
       </NoticeContainer>
       <MView>

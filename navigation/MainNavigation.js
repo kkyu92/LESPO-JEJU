@@ -1,4 +1,5 @@
 import React from 'react';
+import {Platform} from 'react-native';
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 import TabNavigation from './TabNavigation';
@@ -25,10 +26,12 @@ import MyBattleTalkScreen from '../screens/My/BattleTalk/BattleTalkContainer';
 import ChatScreen from '../screens/Sports/BattleTalk/Chat';
 import MyWishListScreen from '../screens/My/WishList/WishListContainer';
 import MapScreen from '../screens/Map/MapContainer';
+import NullScreen from '../screens/Null/NullContainer';
 import {
   headerStyles,
   detailHeaderStyles,
   tapsHeaderStyles,
+  tapsHeaderStyles_ios,
   dapdapStyles,
 } from './config';
 import {TINT_COLOR} from '../constants/Colors';
@@ -92,22 +95,35 @@ const HomeNavigation = createStackNavigator(
       },
     },
     // 공지사항
-    Notice: {
-      screen: NoticeScreen,
-      navigationOptions: {
-        ...headerStyles,
-      },
-    },
+    Notice:
+      Platform.OS === 'android'
+        ? {
+            screen: NoticeScreen,
+            navigationOptions: {
+              ...headerStyles,
+            },
+          }
+        : {
+            screen: NoticeScreen,
+            navigationOptions: {
+              header: null,
+            },
+          },
     // 설정
-    Setting: {
-      screen: SettingScreen,
-      navigationOptions: {
-        ...headerStyles,
-        // headerTransparent: true,
-        // headerTintColor: TINT_COLOR,
-        // headerStyle: {marginTop: 5},
-      },
-    },
+    Setting:
+      Platform.OS === 'android'
+        ? {
+            screen: SettingScreen,
+            navigationOptions: {
+              ...headerStyles,
+            },
+          }
+        : {
+            screen: SettingScreen,
+            navigationOptions: {
+              header: null,
+            },
+          },
     // Search
     Search: {
       screen: SearchScreen,
@@ -132,13 +148,22 @@ const HomeNavigation = createStackNavigator(
       },
     },
     // 내정보 화면
-    MyBattleList: {
-      screen: MyBattleScreen,
-      navigationOptions: {
-        ...tapsHeaderStyles,
-        headerTitle: '나의 배틀',
-      },
-    },
+    MyBattleList:
+      Platform.OS === 'android'
+        ? {
+            screen: MyBattleScreen,
+            navigationOptions: {
+              ...tapsHeaderStyles,
+              headerTitle: '나의 배틀',
+            },
+          }
+        : {
+            screen: MyBattleScreen,
+            navigationOptions: {
+              ...tapsHeaderStyles_ios,
+              headerTitle: '나의 배틀',
+            },
+          },
     MyBattleDetail: {
       screen: MyBattleDetailScreen,
       navigationOptions: {
@@ -146,13 +171,22 @@ const HomeNavigation = createStackNavigator(
         headerTitle: '배틀 신청내용',
       },
     },
-    MyBattleTalk: {
-      screen: MyBattleTalkScreen,
-      navigationOptions: {
-        ...tapsHeaderStyles,
-        headerTitle: '배틀톡',
-      },
-    },
+    MyBattleTalk:
+      Platform.OS === 'android'
+        ? {
+            screen: MyBattleTalkScreen,
+            navigationOptions: {
+              ...tapsHeaderStyles,
+              headerTitle: '배틀톡',
+            },
+          }
+        : {
+            screen: MyBattleTalkScreen,
+            navigationOptions: {
+              ...tapsHeaderStyles_ios,
+              headerTitle: '배틀톡',
+            },
+          },
     Chat: {
       screen: ChatScreen,
       navigationOptions: {
@@ -160,13 +194,22 @@ const HomeNavigation = createStackNavigator(
         headerTitle: 'Chat',
       },
     },
-    MyWishList: {
-      screen: MyWishListScreen,
-      navigationOptions: {
-        ...tapsHeaderStyles,
-        headerTitle: '위시리스트',
-      },
-    },
+    MyWishList:
+      Platform.OS === 'android'
+        ? {
+            screen: MyWishListScreen,
+            navigationOptions: {
+              ...tapsHeaderStyles,
+              headerTitle: '위시리스트',
+            },
+          }
+        : {
+            screen: MyWishListScreen,
+            navigationOptions: {
+              ...tapsHeaderStyles_ios,
+              headerTitle: '위시리스트',
+            },
+          },
     // 지도 화면
     Map: {
       screen: MapScreen,
@@ -214,16 +257,25 @@ const HomeNavigation = createStackNavigator(
         headerTitle: '운동시설',
       },
     },
+    // NULL 화면
+    Null: {
+      screen: NullScreen,
+      navigationOptions: {
+        ...dapdapStyles,
+      },
+    },
   },
   {
     //TODO: 옆에서 나오는거 할때 사용하면 좋을듯
     // transparentCard: true,
-
     // 화면전환시 텝 사라질때 어색한부분
-    headerMode: 'screen',
+    // headerMode: 'screen',
     // 텝 벡버튼 보여지는 부분
     // headerBackTitleVisible: false,
-    mode: 'card',
+    // mode: 'card',
+    // defaultNavigationOptions: {
+    //   gesturesEnabled: false,
+    // },
   },
 );
 

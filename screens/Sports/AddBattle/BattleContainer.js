@@ -106,6 +106,7 @@ export default class extends React.Component {
     battleResult,
     deleteChat,
     deleteHistory,
+    deleteBattle,
     endUser,
     openBox,
     requestUser,
@@ -129,6 +130,7 @@ export default class extends React.Component {
         battleResult,
         deleteChat,
         deleteHistory,
+        deleteBattle,
         endUser,
         openBox,
         requestUser,
@@ -296,6 +298,7 @@ export default class extends React.Component {
     };
     let deleteHistory = '';
     let deleteChat = '';
+    let deleteBattle = '';
     let openBox = false;
     let requestUser = '';
     let unReadCount = '';
@@ -321,6 +324,7 @@ export default class extends React.Component {
           battleResult,
           deleteChat,
           deleteHistory,
+          deleteBattle,
           endUser,
           openBox,
           requestUser,

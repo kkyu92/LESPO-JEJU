@@ -135,7 +135,7 @@ export default class extends React.Component {
       await LESPO_API.getDetailItem(this.state.id, config)
         .then(response => {
           listChanged = response.data.data;
-          console.log('get list: ' + JSON.stringify(listChanged));
+          // console.log('get list: ' + JSON.stringify(listChanged));
           if (JSON.stringify(listChanged.matched_content_images) === '[]') {
             this.setState({
               backgroundPoster: 'no',

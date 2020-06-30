@@ -115,6 +115,7 @@ const TalkListSlide = ({
   time,
   battleState,
   deleteChat,
+  outCheck,
   navigation,
 }) => (
   // 나의 배틀톡 리스트
@@ -127,6 +128,8 @@ const TalkListSlide = ({
           id,
           profile,
           name,
+          container: 'BattleTalkList',
+          outCheck: outCheck,
         },
       })
     }>

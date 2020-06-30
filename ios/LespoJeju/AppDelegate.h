@@ -12,5 +12,10 @@
 @interface AppDelegate : UIResponder <UIApplicationDelegate,UNUserNotificationCenterDelegate>
 
 @property (nonatomic, strong) UIWindow *window;
+//int main(int argc, char * argv[]) {
+//    @autoreleasepool {
+//        return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));
+//    }
+//}
 
 @end

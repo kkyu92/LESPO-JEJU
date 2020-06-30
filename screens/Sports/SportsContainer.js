@@ -1,5 +1,5 @@
 import React from 'react';
-import {Platform} from 'react-native';
+import {Platform, Alert} from 'react-native';
 import SportsPresenter from './SportsPresenter';
 import {tv, movie} from '../../api/Api';
 import firebase from 'firebase';
@@ -24,6 +24,8 @@ export default class extends React.Component {
       myProfile: null,
       navigation,
       toast: null,
+      roomOutCheck: false,
+      roomKey: null,
       error: null,
     };
     console.log('constructor ----');
@@ -164,6 +166,12 @@ export default class extends React.Component {
             memo: child.val().memo,
             battleState: child.val().battleState,
             battleResult: child.val().battleResult,
+            lastRealTime: child.val().lastRealTime,
+            lastMsg: child.val().lastMsg,
+            deleteChat: child.val().deleteChat,
+            deleteHistory: child.val().deleteHistory,
+            deleteBattle: child.val().deleteBattle,
+            unReadCount: child.val().unReadCount,
           });
           chatRoomList.sort(function(a, b) {
             return new Date(b.date) - new Date(a.date);
@@ -206,21 +214,24 @@ export default class extends React.Component {
             });
         });
         if (listChanged.length === 0) {
-          if (listName !== undefined) {
-            this.setState({
-              chatRoomList: [],
-            });
-            this.state.chatRoomList = [];
-          }
+          // if (listName !== undefined) {
+          //   this.setState({
+          //     chatRoomList: [],
+          //   });
+          //   this.state.chatRoomList = [];
+          // }
+          this.setState({
+            chatRoomList: [],
+            loading: false,
+          });
+          this.state.chatRoomList = [];
           this.refs.toast.show('등록배틀리스트가 없습니다.');
         } else {
           this.setState({
             chatRoomList: listChanged,
+            loading: false,
           });
         }
-        this.setState({
-          loading: false,
-        });
       });
     } catch (error) {}
   };
@@ -266,6 +277,29 @@ export default class extends React.Component {
     }
   };
 
+  outCheck = check => {
+    this.setState(check);
+    if (this.state.roomOutCheck) {
+      Alert.alert('상대방이 배틀을 취소했습니다.');
+      this.setState({loading: true});
+      setTimeout(() => {
+        firebase
+          .database()
+          .ref('chatRoomList/' + this.state.roomKey)
+          .remove()
+          .then(data => {
+            //success callback
+            console.log('chatRoom Out: ', data);
+            this.setState({loading: false});
+          })
+          .catch(error => {
+            //error callback
+            console.log('error ', error);
+          });
+      }, 2000);
+    }
+  };
+
   render() {
     const {loading, listName, listChanged, myId, chatRoomList} = this.state;
     return (
@@ -279,6 +313,7 @@ export default class extends React.Component {
           onListChanging={this.onListChanging}
           handleListUpdate={this.handleListUpdate}
           toast={this.refs.toast}
+          outCheck={this.outCheck}
         />
         <Toast
           ref={'toast'}

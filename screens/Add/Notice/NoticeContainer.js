@@ -1,5 +1,6 @@
 import React from 'react';
-import {tv, LESPO_API} from '../../../api/Api';
+import 'react-native-gesture-handler';
+import {LESPO_API} from '../../../api/Api';
 import NoticePresenter from './NoticePresenter';
 import Firebase from 'react-native-firebase';
 import Toast from 'react-native-easy-toast';
@@ -113,13 +114,14 @@ export default class extends React.Component {
   };
 
   render() {
-    const {loading, noticeList, index} = this.state;
+    const {loading, noticeList, index, navigation} = this.state;
     return (
       <>
         <NoticePresenter
           loading={loading}
           noticeList={noticeList}
           index={index}
+          navigation={navigation}
           handleClickIndex={this.handleClickIndex}
         />
         <Toast

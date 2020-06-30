@@ -1,4 +1,5 @@
 import React from 'react';
+import {Platform} from 'react-native';
 import {createStackNavigator} from 'react-navigation-stack';
 import {BG_COLOR, TINT_COLOR} from '../constants/Colors';
 import {TouchableOpacity} from 'react-native';
@@ -59,6 +60,14 @@ export const tapsHeaderStyles = {
     backgroundColor: BG_COLOR,
     borderBottomWidth: 0,
   },
+  headerTitleStyle: {
+    color: TINT_COLOR,
+  },
+  headerTintColor: TINT_COLOR,
+};
+
+export const tapsHeaderStyles_ios = {
+  headerTransparent: true,
   headerTitleStyle: {
     color: TINT_COLOR,
   },

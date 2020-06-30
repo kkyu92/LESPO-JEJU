@@ -6,6 +6,8 @@
 	<array>
 		<string>com.lespo.jejuBattle</string>
 	</array>
+	<key>CFBundleAllowMixedLocalizations</key>
+	<string>true</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -116,6 +118,7 @@
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>fetch</string>
 		<string>processing</string>
 		<string>remote-notification</string>
 	</array>

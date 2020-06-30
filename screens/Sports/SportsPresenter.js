@@ -149,6 +149,7 @@ const SportsPresenter = ({
   handleListUpdate,
   myId,
   toast,
+  outCheck,
   navigation,
 }) =>
   loading ? (
@@ -206,6 +207,7 @@ const SportsPresenter = ({
                       area={list.area}
                       memo={list.memo}
                       coinList={false}
+                      outCheck={outCheck}
                     />
                   ))}
                 </Section>

@@ -12,8 +12,6 @@ import {
   GREY_COLOR2,
   RED_COLOR,
 } from '../constants/Colors';
-import PhotoUri from '../api/PhotoUri';
-import Layout from '../constants/Layout';
 
 function ChangeColor() {
   let ColorCode =
@@ -217,6 +215,8 @@ const BattleSlide = ({
   area,
   memo,
   coinList,
+  outCheck,
+  loadingCheck,
   navigation,
 }) =>
   statusText === '배틀신청중' ? (
@@ -237,6 +237,7 @@ const BattleSlide = ({
             memo,
             statusText,
             level,
+            loadingCheck,
           },
         })
       }>
@@ -281,6 +282,7 @@ const BattleSlide = ({
             statusText,
             level,
             requestUser,
+            loadingCheck,
           },
         })
       }>
@@ -328,6 +330,7 @@ const BattleSlide = ({
             memo,
             statusText,
             level,
+            loadingCheck,
           },
         })
       }>
@@ -372,6 +375,7 @@ const BattleSlide = ({
             statusText,
             battleResult,
             level,
+            loadingCheck,
           },
         })
       }>
@@ -455,6 +459,8 @@ const BattleSlide = ({
             id,
             profile,
             name,
+            container: 'SportsBattle',
+            outCheck: outCheck,
           },
         })
       }>

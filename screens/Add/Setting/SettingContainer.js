@@ -1,4 +1,5 @@
 import React from 'react';
+import 'react-native-gesture-handler';
 import SettingPresenter from './SettingPresenter';
 import Firebase from 'react-native-firebase';
 import Toast from 'react-native-easy-toast';
@@ -134,13 +135,14 @@ export default class extends React.Component {
   }
 
   render() {
-    const {loading, id, alarm} = this.state;
+    const {loading, id, alarm, navigation} = this.state;
     return (
       <>
         <SettingPresenter
           loading={loading}
           id={id}
           alarm={alarm}
+          navigation={navigation}
           alarmChange={this.alarmChange}
         />
         <Toast

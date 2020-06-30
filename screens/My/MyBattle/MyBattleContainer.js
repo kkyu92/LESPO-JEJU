@@ -1,5 +1,5 @@
 import React from 'react';
-import {Platform} from 'react-native';
+import {Platform, Alert} from 'react-native';
 import MyBattlePresenter from './MyBattlePresenter';
 import firebase from 'firebase';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -129,6 +129,7 @@ export default class extends React.Component {
             battleResult: child.val().battleResult,
             deleteHistory: child.val().deleteHistory,
             deleteChat: child.val().deleteChat,
+            deleteBattle: child.val().deleteBattle,
             endUser: child.val().endUser,
             openBox: child.val().openBox,
             requestUser: child.val().requestUser,
@@ -137,19 +138,21 @@ export default class extends React.Component {
             return new Date(b.date) - new Date(a.date);
           });
           // chatRoomList.reverse();
-          this.setState({
-            chatRoomList: chatRoomList,
-          });
+        });
+        this.setState({
+          chatRoomList: chatRoomList,
+          loading: false,
         });
       });
     } catch (error) {
       console.log(error);
       error = "Cnat't get ChatRoomList";
-    } finally {
-      this.setState({
-        loading: false,
-      });
     }
+  };
+
+  loadingCheck = check => {
+    this.setState(check);
+    console.log('\n\n\n\n' + this.state.loading);
   };
 
   deleteMyBattle = async (roomKey, myId, id) => {
@@ -254,6 +257,7 @@ export default class extends React.Component {
           chatRoomList={chatRoomList}
           myId={myId}
           deleteMyBattle={this.deleteMyBattle}
+          loadingCheck={this.loadingCheck}
         />
         <Toast
           ref="toast"

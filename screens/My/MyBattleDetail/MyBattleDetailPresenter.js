@@ -34,18 +34,23 @@ const Container = styled.ScrollView`
 const BattleContainer = styled.View`
   padding-top: 5px;
   padding-bottom: 5px;
-  padding-left: 20px;
-  padding-right: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  /* border-radius: 5px;
+  border-width: 1px;
+  border-color: burlywood; */
 `;
 
-const BattleTitleConatiner = styled.View`
-  width: 20%;
-  justify-content: center;
-  align-items: center;
-  /* background-color: green; */
+const BattleContainerList = styled.View`
+  width: 70%;
+  flex-direction: column;
+`;
+
+const BattleList = styled.View`
+  flex-direction: row;
 `;
 
 const TopContainer = styled.View`
@@ -122,20 +127,18 @@ const MidText = styled.Text`
   margin-bottom: 10px;
 `;
 
-const BattleTextContainer = styled.View`
-  width: 43%;
-  /* background-color: royalblue; */
-`;
-
 const TitleText = styled.Text`
+  width: 30%;
   color: ${BG_COLOR};
   font-size: 14px;
   font-weight: 800;
   margin-top: ${Platform.OS === 'ios' ? '6px' : '5px'};
   margin-bottom: ${Platform.OS === 'ios' ? '6px' : '5px'};
+  text-align: center;
 `;
 
 const GetText = styled.Text`
+  width: 70%;
   font-size: 14px;
   color: #333333;
   margin-top: 5px;
@@ -167,7 +170,7 @@ const Status = styled.View`
   border-width: 1;
   border-color: ${BG_COLOR};
   padding: 5px;
-  margin-left: 10px;
+  margin-left: 5px;
 `;
 
 const StatusText = styled.Text`
@@ -182,6 +185,7 @@ const StatusRequest = styled.View`
   border-width: 1;
   border-color: ${RED_COLOR};
   padding: 5px;
+  margin-left: 5px;
 `;
 
 const StatusTextRequest = styled.Text`
@@ -198,7 +202,7 @@ const StatusIng = styled.View`
   border-color: ${BG_COLOR};
   background-color: ${BG_COLOR};
   padding: 5px;
-  margin-left: 10px;
+  margin-left: 5px;
 `;
 
 const StatusTextIng = styled.Text`
@@ -213,7 +217,7 @@ const StatusEnd = styled.View`
   border-color: ${GREY_COLOR2};
   background-color: ${GREY_COLOR};
   padding: 5px;
-  margin-left: 10px;
+  margin-left: 5px;
 `;
 
 const StatusTextEnd = styled.Text`
@@ -259,6 +263,7 @@ const MyBattleDetailPresenter = ({
   battleResult,
   changeModalVisiblity,
   setData,
+  outCheck,
   navigation,
 }) =>
   loading ? (
@@ -281,6 +286,7 @@ const MyBattleDetailPresenter = ({
                         id,
                         profile,
                         name,
+                        outCheck: outCheck,
                       },
                     })
                   }>
@@ -334,21 +340,28 @@ const MyBattleDetailPresenter = ({
 
         <MidText>배틀 신청 내용</MidText>
         <BattleContainer>
-          <BattleTitleConatiner>
-            <TitleText>배틀종목</TitleText>
-            <TitleText>매칭형태</TitleText>
-            <TitleText>배틀날짜</TitleText>
-            <TitleText>배틀지역</TitleText>
-            <TitleText>메 모</TitleText>
-          </BattleTitleConatiner>
-
-          <BattleTextContainer>
-            <GetText>{sport}</GetText>
-            <GetText>{type}</GetText>
-            <GetText>{date}</GetText>
-            <GetText>{area}</GetText>
-            <GetText numberOfLines={1}>{memo}</GetText>
-          </BattleTextContainer>
+          <BattleContainerList>
+            <BattleList>
+              <TitleText>배틀종목</TitleText>
+              <GetText>{sport}</GetText>
+            </BattleList>
+            <BattleList>
+              <TitleText>매칭형태</TitleText>
+              <GetText>{type}</GetText>
+            </BattleList>
+            <BattleList>
+              <TitleText>배틀날짜</TitleText>
+              <GetText>{date}</GetText>
+            </BattleList>
+            <BattleList>
+              <TitleText>배틀지역</TitleText>
+              <GetText>{area}</GetText>
+            </BattleList>
+            <BattleList>
+              <TitleText>메 모</TitleText>
+              <GetText numberOfLines={5}>{memo}</GetText>
+            </BattleList>
+          </BattleContainerList>
 
           {statusText === '배틀신청중' ? (
             <Status>

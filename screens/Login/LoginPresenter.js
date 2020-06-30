@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {StyleSheet, Platform} from 'react-native';
 import styled from 'styled-components';
 import LinearGradient from 'react-native-linear-gradient';
+import AppleIcon from 'react-native-vector-icons/AntDesign';
 import {
   BG_COLOR,
   TINT_COLOR,
@@ -13,6 +14,8 @@ import Loader from '../../components/Loader';
 import {withNavigation} from 'react-navigation';
 import {LoginManager, AccessToken} from 'react-native-fbsdk';
 import {NaverLogin, getProfile} from '@react-native-seoul/naver-login';
+import {View} from 'react-native';
+import {AppleButton} from '@invertase/react-native-apple-authentication';
 
 const FBSDK = require('react-native-fbsdk');
 const {GraphRequest, GraphRequestManager} = FBSDK;
@@ -98,6 +101,26 @@ const ImgView = styled.View`
   align-items: center;
 `;
 
+const AppleImgContainer = styled.TouchableOpacity`
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: ${Layout.width / 9};
+  margin-top: 10px;
+  background-color: black;
+  border-radius: 10px;
+`;
+
+const AppleText = styled.Text`
+  color: white;
+  font-weight: 800;
+  align-self: center;
+  text-align: center;
+  justify-content: center;
+  margin-left: 5px;
+`;
+
 const ImgContainer = styled.TouchableOpacity`
   justify-content: center;
   align-items: center;
@@ -150,6 +173,7 @@ const LoginPresenter = ({
   onSNSLogin,
   onLogin,
   changeModalVisiblity,
+  onAppleButtonPress,
   navigation,
 }) =>
   loading ? (
@@ -283,6 +307,24 @@ const LoginPresenter = ({
           />
         </ImgContainer>
       </ImgView>
+      {Platform.OS === 'ios' ? (
+        parseInt(Platform.Version) >= 13 ? (
+          <AppleButton
+            buttonStyle={AppleButton.Style.BLACK}
+            buttonType={AppleButton.Type.SIGN_IN}
+            style={{
+              width: '100%',
+              height: Layout.width / 9,
+              marginTop: 10,
+            }}
+            onPress={() => onAppleButtonPress()}
+          />
+        ) : null
+      ) : // <AppleImgContainer onPress={() => onAppleButtonPress()}>
+      //   <AppleIcon size={15} name={'apple1'} color={`${TINT_COLOR}`} />
+      //   <AppleText>Sign in with Apple</AppleText>
+      // </AppleImgContainer>
+      null}
     </ViewContainer>
   );
 {

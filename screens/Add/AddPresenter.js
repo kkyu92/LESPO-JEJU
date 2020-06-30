@@ -1,7 +1,7 @@
 import React from 'react';
+import 'react-native-gesture-handler';
 import {withNavigation} from 'react-navigation';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import Loader from '../../components/Loader';
 import {GREY_COLOR, BG_COLOR, TINT_COLOR} from '../../constants/Colors';
 import {Linking} from 'react-native';

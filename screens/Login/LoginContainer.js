@@ -10,6 +10,12 @@ import firebase from 'firebase';
 import {NavigationActions} from 'react-navigation';
 import Toast from 'react-native-easy-toast';
 import SimpleDialog from '../../components/SimpleDialog';
+import appleAuth, {
+  AppleButton,
+  AppleAuthRequestOperation,
+  AppleAuthRequestScope,
+  AppleAuthCredentialState,
+} from '@invertase/react-native-apple-authentication';
 
 if (!KakaoLogins) {
   console.error('Module is Not Linked');
@@ -188,6 +194,27 @@ export default class extends React.Component {
       }),
     ];
   }
+
+  onAppleButtonPress = async () => {
+    // performs login request
+    const appleAuthRequestResponse = await appleAuth.performRequest({
+      requestedOperation: AppleAuthRequestOperation.LOGIN,
+      requestedScopes: [
+        AppleAuthRequestScope.EMAIL,
+        AppleAuthRequestScope.FULL_NAME,
+      ],
+    });
+
+    // get current authentication state for user
+    const credentialState = await appleAuth.getCredentialStateForUser(
+      appleAuthRequestResponse.user,
+    );
+    console.log('credentialState::: ' + JSON.stringify(credentialState));
+    // use credentialState response to ensure the user is authenticated
+    if (credentialState === AppleAuthCredentialState.AUTHORIZED) {
+      console.log('user is authenticated');
+    }
+  };
 
   resetSignUpCheck = async () => {
     try {
@@ -524,6 +551,7 @@ export default class extends React.Component {
           onLogin={this.onLogin}
           // kakaoLogout={kakaoLogout}
           changeModalVisiblity={this.changeModalVisiblity}
+          onAppleButtonPress={this.onAppleButtonPress}
         />
         <Modal
           transparent={true}

@@ -49,7 +49,7 @@ target 'LespoJeju' do
 
   pod 'FBSDKLoginKit'
 
-
+  pod 'RNGestureHandler', :podspec => '../node_modules/react-native-gesture-handler/RNGestureHandler.podspec'
 
 
   target 'LespoJejuTests' do

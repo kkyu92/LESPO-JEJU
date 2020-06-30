@@ -1,5 +1,4 @@
 import React from 'react';
-import {withNavigation} from 'react-navigation';
 import styled from 'styled-components';
 import Loader from '../../../components/Loader';
 import {BG_COLOR, TINT_COLOR, BLACK_COLOR} from '../../../constants/Colors';
@@ -16,6 +15,7 @@ const View = styled.View`
 
 const TitleContainer = styled.View`
   padding: 20px;
+  margin-top: ${parseInt(Platform.Version) > 12 ? '20px' : '0px'};
 `;
 
 const TitleText = styled.Text`
@@ -35,72 +35,93 @@ const Container = styled.ScrollView`
   flex: 1;
 `;
 
-const BattleTalkPresenter = ({loading, chatRoomList, myId, deleteChat}) =>
+const TopContainer = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  background-color: ${BG_COLOR};
+  height: 60px;
+`;
+
+const BattleTalkPresenter = ({
+  loading,
+  chatRoomList,
+  myId,
+  id,
+  deleteChat,
+  outCheck,
+}) =>
   loading ? (
     <Loader />
   ) : (
-    <View>
-      <TitleContainer>
-        <TitleText>나의 배틀상대와{'\n'}대화해보세요.</TitleText>
-      </TitleContainer>
-      <Container>
-        {loading ? (
-          <Loader />
-        ) : (
-          <>
-            {chatRoomList ? (
-              chatRoomList.length > 0 ? (
-                <Section horizontal={false} title="">
-                  {chatRoomList
-                    .filter(
-                      list =>
-                        (list.makeUser.userId === myId &&
-                          list.joinUser.userId !== '' &&
-                          list.deleteChat[myId] !== myId &&
-                          list.lastMsg !== '') ||
-                        (list.makeUser.userId !== '' &&
-                          list.joinUser.userId === myId &&
-                          list.deleteChat[myId] !== myId &&
-                          list.lastMsg !== ''),
-                    )
-                    .map((list, index, array) => (
-                      <TalkListSlide
-                        roomKey={list.key}
-                        id={
-                          list.makeUser.userId === myId
-                            ? list.joinUser.userId
-                            : list.makeUser.userId
-                        }
-                        myId={myId}
-                        profile={
-                          list.makeUser.userId === myId
-                            ? list.joinUser.userProfile
-                            : list.makeUser.userProfile
-                        }
-                        name={
-                          list.makeUser.userId === myId
-                            ? list.joinUser.userName
-                            : list.makeUser.userName
-                        }
-                        date={moment(list.lastRealTime).format('YYYY-MM-DD')}
-                        time={moment(list.lastRealTime).format('LT')}
-                        msg={list.lastMsg}
-                        unReadCount={list.unReadCount[myId]}
-                        battleState={list.battleState}
-                        deleteChat={deleteChat}
-                      />
-                    ))}
-                </Section>
+    <>
+      {Platform.OS === 'ios' ? <TopContainer /> : null}
+      <View>
+        <TitleContainer>
+          <TitleText>나의 배틀상대와{'\n'}대화해보세요.</TitleText>
+        </TitleContainer>
+        <Container>
+          {loading ? (
+            <Loader />
+          ) : (
+            <>
+              {chatRoomList ? (
+                chatRoomList.length > 0 ? (
+                  <Section horizontal={false} title="">
+                    {chatRoomList
+                      .filter(
+                        list =>
+                          (list.makeUser.userId === myId &&
+                            list.joinUser.userId !== '' &&
+                            list.deleteChat[myId] !== myId &&
+                            list.deleteBattle[id] !== id &&
+                            list.lastMsg !== '') ||
+                          (list.makeUser.userId !== '' &&
+                            list.joinUser.userId === myId &&
+                            list.deleteChat[myId] !== myId &&
+                            list.deleteBattle[id] !== id &&
+                            list.lastMsg !== ''),
+                      )
+                      .map((list, index, array) => (
+                        <TalkListSlide
+                          roomKey={list.key}
+                          id={
+                            list.makeUser.userId === myId
+                              ? list.joinUser.userId
+                              : list.makeUser.userId
+                          }
+                          myId={myId}
+                          profile={
+                            list.makeUser.userId === myId
+                              ? list.joinUser.userProfile
+                              : list.makeUser.userProfile
+                          }
+                          name={
+                            list.makeUser.userId === myId
+                              ? list.joinUser.userName
+                              : list.makeUser.userName
+                          }
+                          date={moment(list.lastRealTime).format('YYYY-MM-DD')}
+                          time={moment(list.lastRealTime).format('LT')}
+                          msg={list.lastMsg}
+                          unReadCount={list.unReadCount[myId]}
+                          battleState={list.battleState}
+                          deleteChat={deleteChat}
+                          outCheck={outCheck}
+                        />
+                      ))}
+                  </Section>
+                ) : (
+                  <SearchNo text={'배틀톡 리스트가 없습니다.'} />
+                )
               ) : (
                 <SearchNo text={'배틀톡 리스트가 없습니다.'} />
-              )
-            ) : (
-              <SearchNo text={'배틀톡 리스트가 없습니다.'} />
-            )}
-          </>
-        )}
-      </Container>
-    </View>
+              )}
+            </>
+          )}
+        </Container>
+      </View>
+    </>
   );
 
-export default withNavigation(BattleTalkPresenter);
+export default BattleTalkPresenter;

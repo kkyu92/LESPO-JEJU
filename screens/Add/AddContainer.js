@@ -1,4 +1,5 @@
 import React from 'react';
+import 'react-native-gesture-handler';
 import AddPresenter from './AddPresenter';
 import Toast from 'react-native-easy-toast';
 import Firebase from 'react-native-firebase';

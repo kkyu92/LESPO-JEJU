@@ -67,12 +67,26 @@ export default class extends React.Component {
       openBox: false,
       roomMaker: '',
       error: null,
+      roomDelete: '',
+      roomOutCheck: false,
       navigation,
     };
     console.log('room ID :' + JSON.stringify(roomKey));
     console.log('user ID :' + JSON.stringify(id));
     console.log('statusText :' + statusText);
   }
+
+  outCheck = check => {
+    this.setState(check);
+    if (this.state.roomOutCheck) {
+      console.log('\n\n=======\ncheck1::: ' + check);
+      this.setState({error: true});
+      this.props.navigation.goBack();
+      this.props.navigation.state.params.loadingCheck({
+        loading: true,
+      });
+    }
+  };
 
   // 시작시 불러옴
   async componentDidMount() {
@@ -148,43 +162,49 @@ export default class extends React.Component {
               });
             });
           } else if (
-            notification.android._notification._data.msg === ROOM_OUT
+            notification.android._notification._data.roomKey ===
+            this.state.roomKey
           ) {
-            this.refs.toast.show(
-              notification.android._notification._data.name +
-                '님이 채팅방을 나갔습니다.',
-            );
-          } else {
-            let makerId, makerName;
-            let joinerId, joinerName;
-            var checkMaker = firebase
-              .database()
-              .ref('chatRoomList/' + this.state.roomKey + '/makeUser');
-            checkMaker.once('value', dataSnapshot => {
-              console.log(dataSnapshot);
-              makerId = dataSnapshot.val().userId;
-              makerName = dataSnapshot.val().userName;
-              console.log(makerId, makerName);
-            });
-            var checkJoiner = firebase
-              .database()
-              .ref('chatRoomList/' + this.state.roomKey + '/joinUser');
-            checkJoiner.once('value', dataSnapshot => {
-              console.log(dataSnapshot);
-              joinerId = dataSnapshot.val().userId;
-              joinerName = dataSnapshot.val().userName;
-              console.log(joinerId, joinerName);
-            });
-            if (this.state.myId === makerId) {
+            if (notification.android._notification._data.msg === ROOM_OUT) {
               this.setState({
-                name: joinerName,
+                error: true,
               });
-            } else if (this.state.myId === joinerId) {
-              this.setState({
-                name: makerName,
+              this.props.navigation.goBack();
+              this.props.navigation.state.params.loadingCheck({
+                loading: true,
               });
+            } else {
+              let makerId, makerName;
+              let joinerId, joinerName;
+              var checkMaker = firebase
+                .database()
+                .ref('chatRoomList/' + this.state.roomKey + '/makeUser');
+              checkMaker.once('value', dataSnapshot => {
+                console.log(dataSnapshot);
+                makerId = dataSnapshot.val().userId;
+                makerName = dataSnapshot.val().userName;
+                console.log(makerId, makerName);
+              });
+              var checkJoiner = firebase
+                .database()
+                .ref('chatRoomList/' + this.state.roomKey + '/joinUser');
+              checkJoiner.once('value', dataSnapshot => {
+                console.log(dataSnapshot);
+                joinerId = dataSnapshot.val().userId;
+                joinerName = dataSnapshot.val().userName;
+                console.log(joinerId, joinerName);
+              });
+              if (this.state.myId === makerId) {
+                this.setState({
+                  name: joinerName,
+                });
+              } else if (this.state.myId === joinerId) {
+                this.setState({
+                  name: makerName,
+                });
+              }
+              console.log('myId: ' + this.state.myId);
             }
-            console.log('myId: ' + this.state.myId);
           }
         },
       );
@@ -363,6 +383,27 @@ export default class extends React.Component {
       }
       this.setState({
         loading: false,
+      });
+
+      let deleteUser = [];
+      var deleteBattle = firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey + '/deleteBattle');
+      deleteBattle.on('value', dataSnapshot => {
+        deleteUser = dataSnapshot.val();
+        console.log('deleteUser ::: ' + deleteUser[this.state.id]);
+        console.log('this.stat.id ::: ' + this.state.id);
+        if (deleteUser[this.state.id] === this.state.id) {
+          console.log('check2::: ' + this.state.roomOutCheck);
+          this.setState({
+            loading: true,
+            error: true,
+          });
+          this.props.navigation.goBack();
+          this.props.navigation.state.params.loadingCheck({
+            loading: true,
+          });
+        }
       });
 
       // else if (
@@ -1133,23 +1174,79 @@ export default class extends React.Component {
 
   // 방장이 나간다
   deleteChatRoom = async () => {
-    firebase
+    // 방에 들어와있을때
+    let makerIn, joinerIn, joinerID;
+    var checkMaker = firebase
       .database()
-      .ref('chatRoomList/' + this.state.roomKey)
-      .remove()
-      .then(data => {
-        //success callback
-        console.log('chatRoom Out: ', data);
-      })
-      .catch(error => {
-        //error callback
-        console.log('error ', error);
+      .ref('chatRoomList/' + this.state.roomKey + '/makeUser/userIn');
+    checkMaker.once('value', dataSnapshot => {
+      makerIn = JSON.stringify(dataSnapshot);
+    });
+    var checkJoiner = firebase
+      .database()
+      .ref('chatRoomList/' + this.state.roomKey + '/joinUser/userIn');
+    checkJoiner.once('value', dataSnapshot => {
+      joinerIn = JSON.stringify(dataSnapshot);
+    });
+    var checkJoinerID = firebase
+      .database()
+      .ref('chatRoomList/' + this.state.roomKey + '/joinUser/userId');
+    checkJoinerID.once('value', dataSnapshot => {
+      console.log('userID ::: ' + dataSnapshot.val());
+      this.setState({
+        id: dataSnapshot.val(),
       });
-    this.props.navigation.goBack(null);
+      joinerID = dataSnapshot.val();
+      this.state.id = dataSnapshot.val();
+    });
+    if (
+      (makerIn === 'true' && joinerIn === 'false') ||
+      (makerIn === 'false' && joinerIn === 'true')
+    ) {
+      console.log(this.state.id);
+      console.log('===========');
+      // fcm
+      let otherToken;
+      firebase
+        .database()
+        .ref('FcmTokenList/' + this.state.id)
+        .once('value', dataSnapshot => {
+          otherToken = dataSnapshot;
+          FirebasePush.sendToServerMyBattleDetail(
+            this.state.roomKey,
+            this.state.id,
+            this.state.myId,
+            this.state.myName,
+            this.state.myProfile,
+            ROOM_OUT,
+            otherToken,
+          );
+        });
+      this.props.navigation.goBack();
+      this.props.navigation.state.params.loadingCheck({
+        loading: true,
+      });
+    } else if (joinerID === '') {
+      this.setState({roomDelete: 'delete'});
+      this.props.navigation.goBack();
+    } else {
+      let deleteUser = {};
+      deleteUser[this.state.myId] = this.state.myId;
+
+      firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey)
+        .update({
+          deleteBattle: deleteUser,
+        });
+      this.props.navigation.goBack();
+    }
+    Alert.alert('배틀을 취소했습니다.');
   };
 
   // 참여자가 나간다
   outChatRoom = async () => {
+    Alert.alert('배틀을 취소했습니다.', '');
     let chatList = '';
     let joinUser = {
       userIn: false,
@@ -1180,7 +1277,7 @@ export default class extends React.Component {
         //error callback
         console.log('error ', error);
       });
-    this.props.navigation.goBack(null);
+    this.props.navigation.goBack();
   };
 
   componentWillUnmount() {
@@ -1188,27 +1285,56 @@ export default class extends React.Component {
     this.removeToastListener();
     this.removeNotificationOpenedListener();
     this.subs.forEach(sub => sub.remove());
-    const {roomKey, myId} = this.state;
+    const {roomKey, myId, roomDelete, error} = this.state;
     firebase
       .database()
       .ref('chatRoomList/' + roomKey + '/requestUser')
-      .off();
+      .off('value');
     firebase
       .database()
       .ref('chatRoomList/' + roomKey + '/endUser')
-      .off();
+      .off('value');
     firebase
       .database()
       .ref('chatRoomList/' + roomKey + '/battleState')
-      .off();
+      .off('value');
     firebase
       .database()
       .ref('chatRoomList/' + roomKey + '/battleResult/lose')
-      .off();
+      .off('value');
     firebase
       .database()
       .ref('chatRoomList/' + roomKey + '/battleResult/win')
-      .off();
+      .off('value');
+    firebase
+      .database()
+      .ref('chatRoomList/' + roomKey + '/deleteBattle')
+      .off('value');
+    if (error) {
+      Alert.alert('상대방이 배틀을 취소했습니다.');
+      this.setState({loading: true});
+      setTimeout(() => {
+        firebase
+          .database()
+          .ref('chatRoomList/' + this.state.roomKey)
+          .remove()
+          .then(data => {
+            //success callback
+            console.log('chatRoom Out: ', data);
+            this.setState({loading: false});
+          })
+          .catch(error => {
+            //error callback
+            console.log('error ', error);
+          });
+      }, 1000);
+    }
+    if (roomDelete === 'delete') {
+      firebase
+        .database()
+        .ref('chatRoomList/' + this.state.roomKey)
+        .remove();
+    }
   }
 
   render() {
@@ -1268,6 +1394,7 @@ export default class extends React.Component {
           battleResult={battleResult}
           changeModalVisiblity={this.changeModalVisiblity}
           setData={this.setData}
+          outCheck={this.outCheck}
         />
         <Modal
           transparent={true}

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>21064185745-fb1njvds9706momuka6q07ke7r47na8u.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.21064185745-fb1njvds9706momuka6q07ke7r47na8u</string>
+	<key>API_KEY</key>
+	<string>AIzaSyB1MmZqZSsulLsArJQh1bpx63nZzzyP_P8</string>
+	<key>GCM_SENDER_ID</key>
+	<string>21064185745</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>org.reactjs.native.example.JejuBattle</string>
+	<key>PROJECT_ID</key>
+	<string>lespo-261906</string>
+	<key>STORAGE_BUCKET</key>
+	<string>lespo-261906.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:21064185745:ios:d5f61db741e17121e00c30</string>
+	<key>DATABASE_URL</key>
+	<string>https://lespo-261906.firebaseio.com</string>
+</dict>
+</plist>

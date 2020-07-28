@@ -4,7 +4,7 @@ import SettingPresenter from './SettingPresenter';
 import Firebase from 'react-native-firebase';
 import Toast from 'react-native-easy-toast';
 import {CHAT_ROOM_IN, ROOM_OUT} from '../../../constants/Strings';
-import {Platform} from 'react-native';
+import {Platform, Linking, Alert, AppState} from 'react-native';
 import firebase from 'firebase';
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -22,35 +22,85 @@ export default class extends React.Component {
       loading: true,
       id: '',
       alarm: true,
+      permissionCheck: false,
       navigation,
       error: null,
+      appState: AppState.currentState,
     };
   }
 
   alarmChange = async (val, id) => {
+    console.log(val);
+    this.setState({
+      loading: true,
+    });
     if (val) {
-      this.refs.toast.show('알림을 받습니다.');
-      await firebase
-        .database()
-        .ref('FcmNotiPush')
-        .update({
-          [id]: true,
-        });
+      const enable = await Firebase.messaging().hasPermission();
+      if (!enable) {
+        Alert.alert(
+          '알림권한 설정',
+          '앱의 알림권한이 차단되어 있어 상대방의 메시지나 배틀알림을 받을 수 없습니다.\n앱 설정에서 알림을 허용해주세요.',
+          [
+            {
+              text: '취소',
+              onPress: () => (
+                this._noPermission(!val, id), console.log(this.state.alarm)
+              ),
+            },
+            {
+              text: '허용하기',
+              onPress: () => (
+                this._onPermission(val, id, enable),
+                console.log(this.state.alarm)
+              ),
+            },
+          ],
+        );
+      } else {
+        this._onPermission(val, id, enable);
+      }
     } else {
-      this.refs.toast.show('알림을 받지않습니다.');
-      await firebase
-        .database()
-        .ref('FcmNotiPush')
-        .update({
-          [id]: false,
-        });
+      this._noPermission(val, id);
     }
+  };
+
+  _onPermission = async (val, id, enable) => {
+    this.refs.toast.show('알림을 받습니다.');
+    await firebase
+      .database()
+      .ref('FcmNotiPush')
+      .update({
+        [id]: true,
+      });
     this.setState({
       alarm: val,
+      loading: false,
+    });
+    if (!enable) {
+      this.setState({
+        permissionCheck: true,
+      });
+      Linking.openSettings();
+    }
+  };
+
+  _noPermission = async (val, id) => {
+    this.refs.toast.show('알림을 받지않습니다.');
+    await firebase
+      .database()
+      .ref('FcmNotiPush')
+      .update({
+        [id]: false,
+      });
+    this.setState({
+      alarm: val,
+      loading: false,
     });
   };
 
   async componentDidMount() {
+    AppState.addEventListener('change', this._handleAppStateChange);
+    console.log(this.state.appState);
     var id = await AsyncStorage.getItem('@USER_ID');
     // fcm setting
     const enable = await Firebase.messaging().hasPermission();
@@ -78,11 +128,7 @@ export default class extends React.Component {
         },
       );
     } else {
-      try {
-        Firebase.messaging().requestPermission();
-      } catch (error) {
-        alert('user reject permission');
-      }
+      this.removeToastListener = () => {};
     }
     // 최소화에서 들어옴
     this.removeNotificationOpenedListener = Firebase.notifications().onNotificationOpened(
@@ -109,15 +155,15 @@ export default class extends React.Component {
         .ref('FcmNotiPush/' + id)
         .once('value', data => {
           alarmValue = JSON.stringify(data);
-          if (alarmValue === 'false') {
-            alarmValue = false;
-          } else {
+          if (enable) {
             alarmValue = true;
+          } else {
+            alarmValue = false;
           }
         });
     } catch (error) {
-      console.log(error);
       error = "Cnat't get MORE API";
+      alert(error);
     } finally {
       this.setState({
         loading: false,
@@ -125,13 +171,40 @@ export default class extends React.Component {
         alarm: alarmValue,
         error,
       });
+      await firebase
+        .database()
+        .ref('FcmNotiPush')
+        .update({
+          [id]: alarmValue,
+        });
     }
   }
+
+  // appState
+  _handleAppStateChange = async nextAppState => {
+    if (
+      this.state.appState.match(/inactive|background/) &&
+      nextAppState === 'active' &&
+      this.state.permissionCheck === true
+    ) {
+      const enable = await Firebase.messaging().hasPermission();
+      if (enable) {
+        console.log('알람 허용하고 돌아옴');
+        this._onPermission(true, this.state.id, enable);
+      } else {
+        console.log('알람 허용 안하고 돌아옴');
+        this._noPermission(false, this.state.id);
+      }
+      this.setState({permissionCheck: false});
+    }
+    this.setState({appState: nextAppState});
+  };
 
   componentWillUnmount() {
     console.log('componentWillUnmount[SettingContainer]');
     this.removeToastListener();
     this.removeNotificationOpenedListener();
+    AppState.removeEventListener('change', this._handleAppStateChange);
   }
 
   render() {

@@ -52,6 +52,7 @@ export default class extends React.Component {
         this.refs.toast.show('코인 충전을 취소하였습니다.');
       } else {
         console.warn(err.code, err.message);
+        alert(err.code, err.message);
       }
     }
   };
@@ -77,10 +78,10 @@ export default class extends React.Component {
           });
         })
         .catch(error => {
-          console.log('getCoin fail: ' + error);
+          alert('getCoin fail: ' + error);
         });
     } catch (error) {
-      console.log(error);
+      alert(error);
     }
   };
 
@@ -106,7 +107,7 @@ export default class extends React.Component {
             }
           }
         } catch (error) {
-          console.log(error);
+          alert(error);
         }
         // if (Platform.OS === 'ios') {
         //     // RNIap.finishTransactionIOS(purchase.transactionId);
@@ -131,6 +132,7 @@ export default class extends React.Component {
       const products = await RNIap.getProducts(itemSkus);
       this.setState({products: products, provider});
     } catch (err) {
+      alert(err);
       console.warn(err); // standardized err.code and err.message available
     }
 
@@ -160,11 +162,7 @@ export default class extends React.Component {
         },
       );
     } else {
-      try {
-        Firebase.messaging().requestPermission();
-      } catch (error) {
-        alert('user reject permission');
-      }
+      this.removeToastListener = () => {};
     }
     // 최소화에서 들어옴
     this.removeNotificationOpenedListener = Firebase.notifications().onNotificationOpened(
@@ -230,7 +228,7 @@ export default class extends React.Component {
           });
         })
         .catch(error => {
-          console.log('getRating fail: ' + error);
+          alert('getRating fail: ' + error);
         });
       await LESPO_API.getCoin(config)
         .then(response => {
@@ -239,7 +237,7 @@ export default class extends React.Component {
           });
         })
         .catch(error => {
-          console.log('getCoin fail: ' + error);
+          alert('getCoin fail: ' + error);
         });
       this.setState({
         loading: false,
@@ -248,7 +246,7 @@ export default class extends React.Component {
       });
     } catch (e) {
       // error reading value
-      console.log('getData ERROR ::: ' + e);
+      alert('getData [MyContainer] ::: ' + e);
     }
   };
 
@@ -289,7 +287,7 @@ export default class extends React.Component {
             console.log('delete FCM Token');
           })
           .catch(error => {
-            console.log('error ', error);
+            alert('user delete ', error);
           });
         await firebase
           .database()
@@ -299,7 +297,7 @@ export default class extends React.Component {
             console.log('delete API Token');
           })
           .catch(error => {
-            console.log('error ', error);
+            alert('api tocken delete ', error);
           });
       }
       if (SNS === 'facebook') {

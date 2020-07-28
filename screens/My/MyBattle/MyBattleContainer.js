@@ -45,7 +45,7 @@ export default class extends React.Component {
       }
     } catch (e) {
       // error reading value
-      console.log('getData ERROR ::: ' + e);
+      alert('getData [MyBattle] ::: ' + e);
     }
   };
 
@@ -77,11 +77,7 @@ export default class extends React.Component {
         },
       );
     } else {
-      try {
-        Firebase.messaging().requestPermission();
-      } catch (error) {
-        alert('user reject permission');
-      }
+      this.removeToastListener = () => {};
     }
     // 최소화에서 들어옴
     this.removeNotificationOpenedListener = Firebase.notifications().onNotificationOpened(
@@ -145,8 +141,8 @@ export default class extends React.Component {
         });
       });
     } catch (error) {
-      console.log(error);
       error = "Cnat't get ChatRoomList";
+      alert(error);
     }
   };
 
@@ -234,7 +230,7 @@ export default class extends React.Component {
         console.log('Message: ' + msg);
       })
       .catch(error => {
-        console.error(error);
+        alert(error);
       });
   };
 

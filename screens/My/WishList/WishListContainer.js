@@ -52,11 +52,7 @@ export default class extends React.Component {
         },
       );
     } else {
-      try {
-        Firebase.messaging().requestPermission();
-      } catch (error) {
-        alert('user reject permission');
-      }
+      this.removeToastListener = () => {};
     }
     // 최소화에서 들어옴
     this.removeNotificationOpenedListener = Firebase.notifications().onNotificationOpened(
@@ -176,8 +172,8 @@ export default class extends React.Component {
       // console.log('wish List : ' + JSON.stringify(allList));
       // console.log('wish List Locatoins : ' + JSON.stringify(locations));
     } catch (error) {
-      console.log(error);
       error = "Cnat't get WishList";
+      alert(error);
     } finally {
       this.setState({
         loading: false,

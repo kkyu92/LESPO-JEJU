@@ -639,11 +639,7 @@ export default class extends React.Component {
         },
       );
     } else {
-      try {
-        Firebase.messaging().requestPermission();
-      } catch (error) {
-        alert('user reject permission');
-      }
+      this.removeToastListener = () => {};
     }
 
     try {

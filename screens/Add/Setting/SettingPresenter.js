@@ -144,7 +144,7 @@ const SettingPresenter = ({loading, id, alarm, alarmChange, navigation}) =>
 
           <BtnContainer>
             <Text>버전정보</Text>
-            <VersionText>1.0.24</VersionText>
+            <VersionText>1.1.0</VersionText>
           </BtnContainer>
         </Container>
       </View>

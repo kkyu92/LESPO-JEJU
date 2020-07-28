@@ -13,5 +13,6 @@ export const BLUE = '#89aade';
 export const GREEN_COLOR = '#63bb3d';
 export const PURPLE_COLOR = '#7237f8';
 export const ACTIVE_COLOR = BG_COLOR;
+export const TRANSPARENT_BLACK = '#D6000000';
 
 export const _COLOR = '';

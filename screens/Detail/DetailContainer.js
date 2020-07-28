@@ -2,12 +2,15 @@ import React from 'react';
 import DetailPresenter from './DetailPresenter';
 import {LESPO_API} from '../../api/Api';
 import AsyncStorage from '@react-native-community/async-storage';
-import {Keyboard} from 'react-native';
+import {Keyboard, Modal, Platform} from 'react-native';
 import Toast from 'react-native-easy-toast';
 import Firebase from 'react-native-firebase';
 import Animated from 'react-native-reanimated';
 import RNKakaoLink from 'react-native-kakao-links';
+import Share from 'react-native-share';
 import {CHAT_ROOM_IN, ROOM_OUT} from '../../constants/Strings';
+import SimpleDialog from '../../components/SimpleDialog';
+import GetPhoto from '../../api/GetPhoto';
 
 export default class extends React.Component {
   static navigationOptions = () => {
@@ -57,6 +60,8 @@ export default class extends React.Component {
       reco,
       navigation,
       msg: '',
+      isModalVisible: false,
+      modal: null,
     };
     this.rowTranslateAnimatedValues = {};
     Array(20)
@@ -94,11 +99,7 @@ export default class extends React.Component {
         },
       );
     } else {
-      try {
-        Firebase.messaging().requestPermission();
-      } catch (error) {
-        alert('user reject permission');
-      }
+      this.removeToastListener = () => {};
     }
     // 최소화에서 들어옴
     this.removeNotificationOpenedListener = Firebase.notifications().onNotificationOpened(
@@ -237,7 +238,67 @@ export default class extends React.Component {
     }
   };
 
+  // {
+  //   excludeActivityTypes: [
+  //     'com.apple.UIKit.activity.PostToWeibo',
+  //     'com.apple.UIKit.activity.Print',
+  //     'com.apple.UIKit.activity.CopyToPasteboard',
+  //     'com.apple.UIKit.activity.AssignToContact',
+  //     'com.apple.UIKit.activity.SaveToCameraRoll',
+  //     'com.apple.UIKit.activity.AddToReadingList',
+  //     'com.apple.UIKit.activity.PostToFlickr',
+  //     'com.apple.UIKit.activity.PostToVimeo',
+  //     'com.apple.UIKit.activity.PostToTencentWeibo',
+  //     'com.apple.UIKit.activity.AirDrop',
+  //     'com.apple.UIKit.activity.OpenInIBooks',
+  //     'com.apple.UIKit.activity.MarkupAsPDF',
+  //     'com.apple.reminders.RemindersEditorExtension',
+  //     'com.apple.mobilenotes.SharingExtension',
+  //     'com.apple.mobileslideshow.StreamShareService',
+  //     'com.linkedin.LinkedIn.ShareExtension',
+  //     'pinterest.ShareExtension',
+  //     'com.google.GooglePlus.ShareExtension',
+  //     'com.tumblr.tumblr.Share-With-Tumblr',
+  //     'net.whatsapp.WhatsApp.ShareExtension',
+  //   ],
+  // },
+
+  elseLink = async () => {
+    // console.log('' + img);
+    // const url = `data : image / png; base64, ${img} `;
+    const options = {
+      title: this.state.title,
+      message: this.state.title + '\n' + this.state.overview,
+      url:
+        Platform.OS === 'android'
+          ? '\nhttps://play.google.com/store/apps/details?id=com.lespojeju'
+          : '\nttps://play.google.com/store/apps/details?id=com.lespojeju',
+    };
+    await Share.open(options)
+      .then(res => {
+        console.log('Shared: ' + res);
+      })
+      .catch(err => {
+        console.log('Error: ' + err);
+      });
+  };
+
   kakaoLink = async (title, desc, img, id) => {
+    // console.log('' + img);
+    // const url = `data : image / png; base64, ${img} `;
+    // const options = {
+    //   title: title,
+    //   message: title + '\n' + desc,
+    //   url: '\nhttps://play.google.com/store/apps/details?id=com.lespojeju',
+    //   showAppsToView: true,
+    // };
+    // Share.open(options)
+    //   .then(res => {
+    //     console.log('Shared: ' + res);
+    //   })
+    //   .catch(err => {
+    //     console.log('Error: ' + err);
+    //   });
     try {
       const options = {
         objectType: 'custom', //required
@@ -387,6 +448,47 @@ export default class extends React.Component {
     }
   };
 
+  changeModalVisiblity = modal => {
+    if (modal === false) {
+      this.setState({
+        isModalVisible: false,
+      });
+    } else {
+      this.setState({
+        isModalVisible: true,
+        modal: modal,
+      });
+    }
+  };
+
+  setData = async data => {
+    if (data === 'kakao') {
+      this.kakaoLink(
+        this.state.title,
+        this.state.overview,
+        GetPhoto(this.state.backgroundPoster),
+        'id=' + this.state.id,
+      );
+    } else {
+      // this.elseLink();
+      const options = {
+        title: this.state.title,
+        message: this.state.title + '\n' + this.state.overview,
+        url:
+          Platform.OS === 'android'
+            ? '\nhttps://play.google.com/store/apps/details?id=com.lespojeju'
+            : '\nhttps://itunes.apple.com/kr/app/apple-store/JejuBattle',
+      };
+      Share.open(options)
+        .then(res => {
+          console.log('Shared: ' + res);
+        })
+        .catch(err => {
+          console.log('Error: ' + err);
+        });
+    }
+  };
+
   componentWillUnmount = async () => {
     console.log('componentWillUnmount[DetailContainer]');
     await AsyncStorage.setItem('@DETAIL_PAGE', 'false');
@@ -409,6 +511,8 @@ export default class extends React.Component {
       isWish,
       comments,
       reco,
+      modal,
+      isModalVisible,
     } = this.state;
     return (
       <>
@@ -434,7 +538,19 @@ export default class extends React.Component {
           comments={comments}
           deleteComment={this.deleteComment}
           reco={reco}
+          changeModalVisiblity={this.changeModalVisiblity}
         />
+        <Modal
+          transparent={true}
+          visible={isModalVisible}
+          onRequestClose={() => this.changeModalVisiblity(false)}
+          animationType="fade">
+          <SimpleDialog
+            battleState={modal}
+            changeModalVisiblity={this.changeModalVisiblity}
+            setData={this.setData}
+          />
+        </Modal>
         <Toast
           ref="toast"
           style={{backgroundColor: '#fee6d0'}}

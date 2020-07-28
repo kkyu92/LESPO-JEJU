@@ -43,11 +43,7 @@ export default class extends React.Component {
         },
       );
     } else {
-      try {
-        Firebase.messaging().requestPermission();
-      } catch (error) {
-        alert('user reject permission');
-      }
+      this.removeToastListener = () => {};
     }
     // 최소화에서 들어옴
     this.removeNotificationOpenedListener = Firebase.notifications().onNotificationOpened(
@@ -68,8 +64,8 @@ export default class extends React.Component {
     let error;
     try {
     } catch (error) {
-      console.log(error);
       error = "Cnat't get MORE API";
+      alert(error);
     } finally {
       this.setState({
         loading: false,

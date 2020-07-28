@@ -123,7 +123,7 @@ export default class extends React.Component {
       }
     } catch (e) {
       // error reading value
-      console.log('getData ERROR ::: ' + e);
+      alert('getData ERROR ::: ' + e);
     }
   };
 
@@ -157,11 +157,7 @@ export default class extends React.Component {
         },
       );
     } else {
-      try {
-        Firebase.messaging().requestPermission();
-      } catch (error) {
-        alert('user reject permission');
-      }
+      this.removeToastListener = () => {};
     }
     // 최소화에서 들어옴
     this.removeNotificationOpenedListener = Firebase.notifications().onNotificationOpened(
@@ -243,7 +239,7 @@ export default class extends React.Component {
         })
         .catch(error => {
           //error callback
-          console.log('error ', error);
+          alert(error);
         });
       firebase
         .database()
@@ -263,7 +259,7 @@ export default class extends React.Component {
         })
         .catch(error => {
           //error callback
-          console.log('error ', error);
+          alert(error);
         });
       // fcm
       let otherToken;
@@ -302,7 +298,7 @@ export default class extends React.Component {
           })
           .catch(error => {
             //error callback
-            console.log('error ', error);
+            alert(error);
           });
         this.setState({loading: false});
       }, 2000);

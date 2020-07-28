@@ -3,10 +3,9 @@ import {NavigationActions} from 'react-navigation';
 import MainPresenter from './MainPresenter';
 import {LESPO_API} from '../../api/Api';
 import Firebase from 'react-native-firebase';
-import firebase from 'firebase';
 import AsyncStorage from '@react-native-community/async-storage';
 import Toast from 'react-native-easy-toast';
-import {Linking, Platform} from 'react-native';
+import {Linking, Platform, Alert} from 'react-native';
 import {CHAT_ROOM_IN, ROOM_OUT} from '../../constants/Strings';
 import {ShareLink} from '../../components/Linking';
 
@@ -60,7 +59,7 @@ export default class extends React.Component {
       try {
         Firebase.messaging().requestPermission();
       } catch (error) {
-        alert('user reject permission');
+        Alert.alert('user reject permission');
       }
     }
     // 최소화에서 들어옴
@@ -205,8 +204,7 @@ export default class extends React.Component {
     this.subs.forEach(sub => sub.remove());
     this.removeNotificationOpenedListener();
     Linking.removeEventListener('url', ShareLink.handleOpenURL);
-    firebase
-      .database()
+    Firebase.database()
       .ref('FcmTokenList')
       .off();
   }

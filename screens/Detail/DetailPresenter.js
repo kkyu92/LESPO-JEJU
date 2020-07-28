@@ -217,6 +217,7 @@ const DetailPresenter = ({
   comments,
   deleteComment,
   reco,
+  changeModalVisiblity,
 }) =>
   loading ? (
     <Loader />
@@ -315,15 +316,7 @@ const DetailPresenter = ({
           <HeaderContainer>
             <HeaderText>{title}</HeaderText>
             <IconContainer>
-              <TouchableOpacity
-                onPress={() =>
-                  kakaoLink(
-                    title,
-                    overview,
-                    GetPhoto(backgroundPoster),
-                    'id=' + id,
-                  )
-                }>
+              <TouchableOpacity onPress={() => changeModalVisiblity('share')}>
                 <ShareIcon
                   source={require(`../../assets/drawable-xxhdpi/icon_share_copy.png`)}
                 />

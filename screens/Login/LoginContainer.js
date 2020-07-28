@@ -208,6 +208,18 @@ export default class extends React.Component {
     // get current authentication state for user
     const credentialState = await appleAuth.getCredentialStateForUser(
       appleAuthRequestResponse.user,
+      appleAuthRequestResponse.email,
+      appleAuthRequestResponse.fullName,
+      appleAuthRequestResponse.identityToken,
+    );
+    Alert.alert(
+      appleAuthRequestResponse.user +
+        '\n' +
+        appleAuthRequestResponse.email +
+        '\n' +
+        appleAuthRequestResponse.fullName +
+        '\n' +
+        appleAuthRequestResponse.identityToken,
     );
     console.log('credentialState::: ' + JSON.stringify(credentialState));
     // use credentialState response to ensure the user is authenticated

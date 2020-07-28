@@ -308,19 +308,19 @@ const LoginPresenter = ({
         </ImgContainer>
       </ImgView>
       {Platform.OS === 'ios' ? (
-        parseInt(Platform.Version) >= 13 ? (
-          <AppleButton
-            buttonStyle={AppleButton.Style.BLACK}
-            buttonType={AppleButton.Type.SIGN_IN}
-            style={{
-              width: '100%',
-              height: Layout.width / 9,
-              marginTop: 10,
-            }}
-            onPress={() => onAppleButtonPress()}
-          />
-        ) : null
-      ) : // <AppleImgContainer onPress={() => onAppleButtonPress()}>
+        // parseInt(Platform.Version) >= 13 ? (
+        <AppleButton
+          buttonStyle={AppleButton.Style.BLACK}
+          buttonType={AppleButton.Type.SIGN_IN}
+          style={{
+            width: '100%',
+            height: Layout.width / 9,
+            marginTop: 10,
+          }}
+          onPress={() => onAppleButtonPress()}
+        />
+      ) : // ) : null
+      // <AppleImgContainer onPress={() => onAppleButtonPress()}>
       //   <AppleIcon size={15} name={'apple1'} color={`${TINT_COLOR}`} />
       //   <AppleText>Sign in with Apple</AppleText>
       // </AppleImgContainer>

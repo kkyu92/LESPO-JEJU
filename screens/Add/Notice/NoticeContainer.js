@@ -52,11 +52,7 @@ export default class extends React.Component {
         },
       );
     } else {
-      try {
-        Firebase.messaging().requestPermission();
-      } catch (error) {
-        alert('user reject permission');
-      }
+      this.removeToastListener = () => {};
     }
     // 최소화에서 들어옴
     this.removeNotificationOpenedListener = Firebase.notifications().onNotificationOpened(
@@ -82,8 +78,8 @@ export default class extends React.Component {
       } = await LESPO_API.getNotice());
       console.log('Success: ' + noticeList);
     } catch (error) {
-      console.log('Notice get api ::: ' + error);
       error = "Cant't get Notice.";
+      alert(error);
     } finally {
       this.setState({
         loading: false,

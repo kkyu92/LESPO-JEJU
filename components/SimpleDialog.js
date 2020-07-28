@@ -18,6 +18,7 @@ import {
   TINT_COLOR,
   GREY_COLOR3,
   BLACK_COLOR,
+  TRANSPARENT_BLACK,
 } from '../constants/Colors';
 import Toast from 'react-native-easy-toast';
 import IconDelete from 'react-native-vector-icons/Octicons';
@@ -75,6 +76,10 @@ export default class SimpleDialog extends Component {
     } else if (data === 'X') {
       this.props.changeModalVisiblity(false);
       this.props.setData(data, this.state.rating, this.state.battleResult);
+    } else if (data === 'closeShare') {
+      this.props.changeModalVisiblity(false);
+    } else if (data === 'else') {
+      this.props.setData(data);
     } else {
       this.props.changeModalVisiblity(false);
       this.props.setData(data, this.state.rating, this.state.battleResult);
@@ -139,6 +144,55 @@ export default class SimpleDialog extends Component {
               underlayColor={'#f1f1f1'}>
               <Text style={[styles.text, {color: 'orange'}]}> 로그아웃 </Text>
             </TouchableHighlight>
+          </View>
+        </View>
+      </TouchableOpacity>
+    ) : this.props.battleState === 'share' ? (
+      <TouchableOpacity
+        onPress={() => this.closeModal('closeShare')}
+        activeOpacity={1}
+        disabled={false}
+        style={styles.contentContainer}>
+        <View style={[styles.battleModal, {width: this.state.width - 80}]}>
+          <View style={styles.textView}>
+            <Text style={[styles.text, {color: 'black'}, {fontSize: 20}]}>
+              공유하기
+            </Text>
+            {/* <Text style={styles.text}> Modal Text </Text> */}
+          </View>
+          <View style={styles.buttonView}>
+            <TouchableHighlight
+              onPress={() => this.closeModal('kakao')}
+              style={styles.touchableShare}
+              underlayColor={'#f1f1f1'}>
+              <Image
+                style={styles.imageKakao}
+                source={require(`../assets/drawable-xxhdpi/kakao_logo.png`)}
+              />
+            </TouchableHighlight>
+            <TouchableHighlight
+              onPress={() => this.closeModal('else')}
+              style={styles.touchableShare}
+              underlayColor={'#f1f1f1'}>
+              <Image
+                style={styles.imageShare}
+                source={require(`../assets/drawable-xxhdpi/icon_share_copy.png`)}
+              />
+            </TouchableHighlight>
+          </View>
+          <View style={styles.buttonView}>
+            <View style={styles.touchableHighlight} underlayColor={'#f1f1f1'}>
+              <Text style={[styles.textSmall, {color: 'black'}]}>
+                {' '}
+                카카오톡으로 공유{' '}
+              </Text>
+            </View>
+            <View style={styles.touchableHighlight} underlayColor={'#f1f1f1'}>
+              <Text style={[styles.textSmall, {color: 'black'}]}>
+                {' '}
+                다른앱으로 공유{' '}
+              </Text>
+            </View>
           </View>
         </View>
       </TouchableOpacity>
@@ -887,6 +941,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
+    backgroundColor: TRANSPARENT_BLACK,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -1024,6 +1079,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 60,
   },
+  imageKakao: {
+    width: 38,
+    height: 35,
+  },
+  imageShare: {
+    width: 33,
+    height: 35,
+  },
   image: {
     width: 43,
     height: 40,
@@ -1063,6 +1126,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 10,
   },
+  textSmall: {
+    margin: 5,
+    fontSize: 12,
+    textAlign: 'center',
+  },
   text: {
     margin: 5,
     fontSize: 16,
@@ -1094,6 +1162,13 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     alignItems: 'center',
     borderRadius: 10,
+  },
+  touchableShare: {
+    flex: 1,
+    backgroundColor: 'white',
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    paddingTop: 10,
   },
   textView: {
     flex: 1,
